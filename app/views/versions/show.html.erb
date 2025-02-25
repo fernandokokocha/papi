@@ -1,0 +1,13 @@
+<h1><%= "#{@version.project.name}-#{@version.name}" %></h1>
+
+<div class="flex-container">
+
+  <% @version.endpoints.each do |endpoint| %>
+    <div class="card">
+      <header><%= "#{endpoint.verb} #{endpoint.url}" %></header>
+    </div>
+  <% end %>
+
+</div>
+
+<%= link_to "Back", projects_path %>

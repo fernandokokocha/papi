@@ -1,0 +1,5 @@
+<% @projects.each do |project| %>
+  <% project.versions.each do |version| %>
+    <%= link_to "#{project.name}-#{version.name}", project_version_path(id: version.id, project_id: project.id) %>
+  <% end %>
+<% end %>

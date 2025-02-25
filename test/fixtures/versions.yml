@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+project1v1:
+  name: v1
+  project: one
+
+project2v1:
+  name: v1
+  project: two
+
+project2v2:
+  name: v2
+  project: two
