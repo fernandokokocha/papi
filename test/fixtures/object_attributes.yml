@@ -1,0 +1,16 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  parent: object1
+  name: name
+  value: p1 (PrimitiveNode)
+
+two:
+  parent: object1
+  name: age
+  value: p2 (PrimitiveNode)
+
+three:
+  parent: object2
+  name: name
+  value: p3 (PrimitiveNode)

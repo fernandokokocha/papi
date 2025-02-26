@@ -1,11 +1,13 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
-  http_verb: 1
-  url: MyString
-  version: one
+endpoint1:
+  http_verb: 0
+  url: /resource
+  version: project1v1
+  endpoint_root: object1 (ObjectNode)
 
-two:
+endpoint2:
   http_verb: 1
-  url: MyString
-  version: two
+  url: /resource
+  version: project1v1
+  endpoint_root: object2 (ObjectNode)

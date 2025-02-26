@@ -10,14 +10,39 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_02_19_083627) do
+ActiveRecord::Schema[8.0].define(version: 2025_02_25_112217) do
   create_table "endpoints", force: :cascade do |t|
     t.integer "http_verb"
     t.string "url"
     t.integer "version_id", null: false
+    t.string "endpoint_root_type", null: false
+    t.integer "endpoint_root_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["endpoint_root_type", "endpoint_root_id"], name: "index_endpoints_on_endpoint_root"
     t.index ["version_id"], name: "index_endpoints_on_version_id"
+  end
+
+  create_table "object_attributes", force: :cascade do |t|
+    t.string "name"
+    t.string "value_type", null: false
+    t.integer "value_id", null: false
+    t.integer "parent_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["parent_id"], name: "index_object_attributes_on_parent_id"
+    t.index ["value_type", "value_id"], name: "index_object_attributes_on_value"
+  end
+
+  create_table "object_nodes", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "primitive_nodes", force: :cascade do |t|
+    t.integer "kind", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "projects", force: :cascade do |t|
@@ -35,5 +60,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_19_083627) do
   end
 
   add_foreign_key "endpoints", "versions"
+  add_foreign_key "object_attributes", "object_nodes", column: "parent_id"
   add_foreign_key "versions", "projects"
 end
