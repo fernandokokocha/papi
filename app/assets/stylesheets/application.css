@@ -8,23 +8,5 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
-.flex-container {
-    display: flex;
-    flex-direction: column;
-}
-
-.card {
-    margin: 10px 0;
-    display: inline;
-
-    header {
-        display: block;
-        font-size: 20px;
-        padding: 10px;
-        background: aquamarine;
-    }
-
-    .card-body {
-        margin: 0 10px;
-    }
-}
+@import 'projects.css';
+@import 'version.css';

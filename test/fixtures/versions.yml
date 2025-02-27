@@ -2,12 +2,13 @@
 
 project1v1:
   name: v1
-  project: one
-
-project2v1:
-  name: v1
-  project: two
-
-project2v2:
+  order: 0
+  project: project1
+project1v2:
   name: v2
-  project: two
+  order: 1
+  project: project1
+project1v3:
+  name: v3
+  order: 2
+  project: project1

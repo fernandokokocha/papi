@@ -29,3 +29,39 @@ o21a0:
   order: 0
   name: name
   value: p4 (PrimitiveNode)
+
+o3a0:
+  parent: object3
+  order: 0
+  name: first_name
+  value: p5 (PrimitiveNode)
+
+o3a1:
+  parent: object3
+  order: 1
+  name: age
+  value: p6 (PrimitiveNode)
+
+o4a0:
+  parent: object4
+  order: 0
+  name: name
+  value: p7 (PrimitiveNode)
+
+o4a1:
+  parent: object4
+  order: 1
+  name: child
+  value: object21 (ObjectNode)
+
+o41a0:
+  parent: object41
+  order: 0
+  name: first_name
+  value: p8 (PrimitiveNode)
+
+o41a1:
+  parent: object41
+  order: 1
+  name: last_name
+  value: p9 (PrimitiveNode)

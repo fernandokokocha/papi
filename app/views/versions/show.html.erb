@@ -1,16 +1,11 @@
-<h1><%= "#{@version.project.name}-#{@version.name}" %></h1>
+<div class="version-view">
+  <h1><%= @version.project.name %></h1>
 
-<div class="flex-container">
-
-  <% @version.endpoints.each do |endpoint| %>
-    <div class="card">
-      <header><%= "#{endpoint.verb} #{endpoint.url}" %></header>
-      <div class="card-body">
-        <pre><%= endpoint.endpoint_root.print(0) %></pre>
-      </div>
-    </div>
-  <% end %>
-
+  <div class="flex-container">
+    <%= render "version", version: @version.previous, class_name: 'previous' %>
+    <%= render "version", version: @version, class_name: 'current' %>
+    <%= render "version", version: @version.next, class_name: 'next' %>
+  </div>
 </div>
 
 <%= link_to "Back", projects_path %>

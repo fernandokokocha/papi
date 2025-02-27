@@ -1,0 +1,15 @@
+.projects-view {
+    .flex-container {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .project-card {
+        display: flex;
+        flex-direction: column;
+        font-size: 20px;
+        padding: 5px;
+        margin: 5px;
+        background: aquamarine;
+    }
+}

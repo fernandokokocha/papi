@@ -1,5 +1,12 @@
-<% @projects.each do |project| %>
-  <% project.versions.each do |version| %>
-    <%= link_to "#{project.name}-#{version.name}", project_version_path(id: version.id, project_id: project.id) %>
-  <% end %>
-<% end %>
+<div class="projects-view">
+  <div class="flex-container">
+    <% @projects.each do |project| %>
+      <div class="project-card">
+        <header><%= project.name %></header>
+        <% project.versions.each do |version| %>
+          <%= link_to version.name, project_version_path(id: version.id, project_id: project.id) %>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+</div>
