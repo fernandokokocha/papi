@@ -6,7 +6,7 @@
     <div class="card">
       <header><%= "#{endpoint.verb} #{endpoint.url}" %></header>
       <div class="card-body">
-        <%= endpoint.endpoint_root.print %>
+        <pre><%= endpoint.endpoint_root.print(0) %></pre>
       </div>
     </div>
   <% end %>

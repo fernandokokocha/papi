@@ -2,9 +2,9 @@
 
 p1:
   kind: 0
-
 p2:
   kind: 1
-
 p3:
+  kind: 0
+p4:
   kind: 0

@@ -25,6 +25,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_25_112217) do
 
   create_table "object_attributes", force: :cascade do |t|
     t.string "name"
+    t.integer "order"
     t.string "value_type", null: false
     t.integer "value_id", null: false
     t.integer "parent_id", null: false

@@ -1,16 +1,31 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-one:
+o1a0:
   parent: object1
+  order: 0
   name: name
   value: p1 (PrimitiveNode)
 
-two:
+o1a1:
   parent: object1
+  order: 1
   name: age
   value: p2 (PrimitiveNode)
 
-three:
+o2a0:
   parent: object2
+  order: 0
   name: name
   value: p3 (PrimitiveNode)
+
+o2a1:
+  parent: object2
+  order: 1
+  name: child
+  value: object21 (ObjectNode)
+
+o21a0:
+  parent: object21
+  order: 0
+  name: name
+  value: p4 (PrimitiveNode)
