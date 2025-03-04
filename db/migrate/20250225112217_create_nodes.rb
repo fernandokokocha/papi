@@ -10,8 +10,8 @@ class CreateNodes < ActiveRecord::Migration[8.0]
     end
 
     create_table :object_attributes do |t|
-      t.string :name
-      t.integer :order
+      t.string :name, null: false
+      t.integer :order, null: false
       t.references :value, polymorphic: true, index: true, null: false
       t.references :parent, null: false, foreign_key: { to_table: :object_nodes }
 

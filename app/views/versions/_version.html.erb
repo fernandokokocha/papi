@@ -1,13 +1,21 @@
 <div class="version <%= class_name %>">
-  <h2><%= class_name %></h2>
   <% if version %>
+    <h2><%= class_name %></h2>
     <h3><%= link_to version.name, project_version_path(id: version.id, project_id: version.project.id) %></h3>
     <div><%= version.created_at %></div>
     <% version.endpoints.each do |endpoint| %>
       <div class="card">
         <header><%= "#{endpoint.verb} #{endpoint.url}" %></header>
         <div class="card-body">
-          <pre><%= endpoint.endpoint_root.print(0) %></pre>
+          <code><%= endpoint.endpoint_root.print(0) %></code>
+          <hr>
+          <table>
+            <% endpoint.endpoint_root.lines(0).each do |line| %>
+              <tr>
+                <td><%= line %></td>
+              </tr>
+            <% end %>
+          </table>
         </div>
       </div>
     <% end %>

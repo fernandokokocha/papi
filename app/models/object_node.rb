@@ -7,7 +7,17 @@ class ObjectNode < ApplicationRecord
 
   def print_content(t)
     object_attributes.sort_by(&:order).map do |oa|
-      "#{oa.print(t+2)}"
+      "#{oa.print(t + 2)}"
     end.join(",\n")
+  end
+
+  def lines(t)
+    [ "{",
+     *content_lines(t + 2),
+     " " * t + "}" ]
+  end
+
+  def content_lines(t)
+    object_attributes.sort_by(&:order).map { |oa| oa.lines(t) }.flatten
   end
 end

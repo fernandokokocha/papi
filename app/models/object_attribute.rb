@@ -5,4 +5,13 @@ class ObjectAttribute < ApplicationRecord
   def print(t)
     (" " * t) + "#{name}: #{value.print(t)}"
   end
+
+  def lines(t)
+    value_lines = value.lines(t)
+    if value_lines.is_a?(Array)
+      [ " " * t + "#{name}: #{value_lines.shift}" ] + value_lines
+    else
+      " " * t + "#{name}: #{value_lines}"
+    end
+  end
 end

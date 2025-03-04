@@ -11,13 +11,16 @@
         &.previous {
             background: white;
         }
+
         &.current {
             background: yellow;
             flex-grow: 2;
         }
+
         &.next {
             background: white;
         }
+
         .card {
             margin: 10px 0;
             display: inline;
@@ -31,6 +34,15 @@
 
             .card-body {
                 margin: 0 10px;
+
+                code {
+                    white-space: pre;
+                }
+
+                table {
+                    font-family: monospace;
+                    white-space: pre;
+                }
             }
         }
     }

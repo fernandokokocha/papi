@@ -12,8 +12,8 @@
 
 ActiveRecord::Schema[8.0].define(version: 2025_02_25_112217) do
   create_table "endpoints", force: :cascade do |t|
-    t.integer "http_verb"
-    t.string "url"
+    t.integer "http_verb", null: false
+    t.string "url", null: false
     t.integer "version_id", null: false
     t.string "endpoint_root_type", null: false
     t.integer "endpoint_root_id", null: false
@@ -24,8 +24,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_25_112217) do
   end
 
   create_table "object_attributes", force: :cascade do |t|
-    t.string "name"
-    t.integer "order"
+    t.string "name", null: false
+    t.integer "order", null: false
     t.string "value_type", null: false
     t.integer "value_id", null: false
     t.integer "parent_id", null: false
@@ -47,14 +47,14 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_25_112217) do
   end
 
   create_table "projects", force: :cascade do |t|
-    t.string "name"
+    t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "versions", force: :cascade do |t|
-    t.string "name"
-    t.integer "order"
+    t.string "name", null: false
+    t.integer "order", null: false
     t.integer "project_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
