@@ -13,7 +13,6 @@
         }
 
         &.current {
-            background: yellow;
             flex-grow: 2;
         }
 

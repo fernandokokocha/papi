@@ -7,8 +7,8 @@
       <div class="card">
         <header><%= "#{endpoint.verb} #{endpoint.url}" %></header>
         <div class="card-body">
-          <code><%= endpoint.endpoint_root.print(0) %></code>
-          <hr>
+          <!--          <code><%#= endpoint.endpoint_root.print(0) %></code>-->
+          <!--          <hr>-->
           <table>
             <% endpoint.endpoint_root.lines(0).each do |line| %>
               <tr>
