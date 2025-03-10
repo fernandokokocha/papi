@@ -5,7 +5,11 @@ class Diff
     @endpoint1 = endpoint1
     @endpoint2 = endpoint2
 
-    @before, @after = diff_objects(@endpoint1.endpoint_root, @endpoint2.endpoint_root, 0)
+    if @endpoint1
+      @before, @after = diff_objects(@endpoint1.endpoint_root, @endpoint2.endpoint_root, 0)
+    else
+      @before, @after = diff_nil(@endpoint2.endpoint_root, 0)
+    end
   end
 
   def diff_objects(object1, object2, t, parent_name = "")
@@ -61,6 +65,40 @@ class Diff
 
     before << DiffLine.new(" " * t + "}", :no_change)
     after << DiffLine.new(" " * t + "}", :no_change)
+
+    [ before, after ]
+  end
+
+  def diff_nil(object, t, parent_name = "")
+    first_line = " " * t
+    unless parent_name.empty?
+      first_line += parent_name + ": "
+    end
+    first_line += "{"
+    before = [
+      DiffLine.new("", :blank)
+    ]
+    after = [
+      DiffLine.new(first_line, :added)
+    ]
+
+    object.object_attributes.sort_by { |oa| oa.order }.each do |oa|
+      value = oa.value
+      if value.kind_of?(ObjectNode)
+        child_diff = diff_nil(oa.value, t + 2, oa.name)
+        child_diff_after = child_diff[1].each_with_index.map do |diff, i|
+          before << DiffLine.new("", :blank)
+          DiffLine.new(" " * t + diff.line, diff.change)
+        end
+        after = after + child_diff_after
+      else
+        before << DiffLine.new("", :blank)
+        after << DiffLine.new(oa.lines(t + 2), :added)
+      end
+    end
+
+    before << DiffLine.new("", :blank)
+    after << DiffLine.new(" " * t + "}", :added)
 
     [ before, after ]
   end

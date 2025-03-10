@@ -1,11 +1,37 @@
 <div class="version-view">
   <h1><%= @version.project.name %></h1>
+  <table class="layout">
+    <thead>
+      <tr>
+        <th class="previous"><%= @previous_version.nil? ? "" : @previous_version.name %></th>
+        <th class="current"><%= @version.name %></th>
+        <th class="next"><%= @next_version.nil? ? "" : @next_version.name %></th>
+      </tr>
+    </thead>
+    <% @version.endpoints.each do |endpoint| %>
+      <% if (@diff = endpoint.diff(@previous_version)) %>
+        <tr>
+          <td>
+            <%= render "endpoint", endpoint_name: endpoint.name, diff_lines: endpoint.diff(@previous_version).before %>
+          </td>
+          <td>
+            <%= render "endpoint", endpoint_name: endpoint.name, diff_lines: endpoint.diff(@previous_version).after %>
+          </td>
+          <td></td>
+        </tr>
+      <% else %>
+        <tr>
+          <td>
+            <%= render "endpoint", endpoint_name: endpoint.name, diff_lines: Diff.new(nil, endpoint).before %>
+          </td>
+          <td>
+            <%= render "endpoint", endpoint_name: endpoint.name, diff_lines: Diff.new(nil, endpoint).after %>
+          </td>
+          <td></td>
+        </tr>
+      <% end %>
+    <% end %>
+  </table>
 
-  <div class="flex-container">
-    <%= render "version", version: @version.previous, class_name: 'previous' %>
-    <%= render "version", version: @version, class_name: 'current' %>
-    <%= render "version", version: @version.next, class_name: 'next' %>
-  </div>
+  <%= link_to "Back", projects_path %>
 </div>
-
-<%= link_to "Back", projects_path %>

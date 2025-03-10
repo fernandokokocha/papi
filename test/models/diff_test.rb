@@ -1,6 +1,23 @@
 require "test_helper"
 
 class DiffTest < ActiveSupport::TestCase
+  test "nil -> empty object" do
+    endpoint1 = nil
+    endpoint2 = FactoryBot.create(:endpoint)
+
+    diff = Diff.new(endpoint1, endpoint2)
+    expected = [
+      DiffLine.new("", :blank),
+      DiffLine.new("", :blank)
+    ]
+    assert_equal expected, diff.before
+    expected = [
+      DiffLine.new("{", :no_change),
+      DiffLine.new("}", :no_change)
+    ]
+    assert_equal expected, diff.after
+  end
+
   test "empty object -> empty object" do
     endpoint1 = FactoryBot.create(:endpoint)
     endpoint2 = FactoryBot.create(:endpoint)

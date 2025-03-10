@@ -1,5 +1,5 @@
 class ObjectNode < ApplicationRecord
-  has_many :object_attributes, foreign_key: :parent_id
+  has_many :object_attributes, foreign_key: :parent_id, dependent: :destroy
 
   def print(t)
     "{\n" + print_content(t) + "\n" + (" " * t) + "}"

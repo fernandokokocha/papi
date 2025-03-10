@@ -1,46 +1,54 @@
 .version-view {
-    .flex-container {
-        display: flex;
-        flex-direction: row;
-    }
+    table.layout {
+        width: 100%;
 
-    .version {
-        margin: 5px;
-        padding: 5px;
+        th {
+            background: aquamarine;
 
-        &.previous {
-            background: white;
-        }
-
-        &.current {
-            flex-grow: 2;
-        }
-
-        &.next {
-            background: white;
-        }
-
-        .card {
-            margin: 10px 0;
-            display: inline;
-
-            header {
-                display: block;
-                font-size: 20px;
-                padding: 10px;
-                background: aquamarine;
+            &.previous, &.current {
+                width: 45%;
             }
 
-            .card-body {
-                margin: 0 10px;
+            &.next {
+                width: 10%;
+            }
+        }
+    }
 
-                code {
-                    white-space: pre;
+    table.lines {
+        padding: 2px;
+        width: 100%;
+
+        thead {
+            background: aquamarine;
+            text-align: left;
+        }
+
+        tbody {
+            font-family: monospace;
+            white-space: pre;
+
+            tr {
+                height: 15px;
+
+                td {
+                    padding: 0;
                 }
 
-                table {
-                    font-family: monospace;
-                    white-space: pre;
+                &.added {
+                    background: greenyellow;
+                }
+
+                &.removed {
+                    background: lightpink;
+                }
+
+                &.type_changed {
+                    background: sandybrown;
+                }
+
+                &.no_change {
+                    background: white;
                 }
             }
         }

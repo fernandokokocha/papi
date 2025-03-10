@@ -14,4 +14,15 @@ class Endpoint < ApplicationRecord
   def verb
     VERB_TRANSLATIONS[http_verb.to_sym]
   end
+
+  def name
+    "#{verb} #{url}"
+  end
+
+  def diff(previous_version)
+    return nil if previous_version.nil?
+    previous_endpoint = previous_version.endpoints.find_by(url: url, http_verb: http_verb)
+    return nil if previous_endpoint.nil?
+    Diff.new(previous_endpoint, self)
+  end
 end
