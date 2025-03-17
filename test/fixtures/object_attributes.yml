@@ -12,6 +12,12 @@ o1a1:
   name: age
   value: p2 (PrimitiveNode)
 
+o1a2:
+  parent: object1
+  order: 1
+  name: ref
+  value: p10 (PrimitiveNode)
+
 o2a0:
   parent: object2
   order: 0
@@ -42,6 +48,12 @@ o3a1:
   name: age
   value: p6 (PrimitiveNode)
 
+o3a2:
+  parent: object3
+  order: 2
+  name: ref
+  value: p11 (PrimitiveNode)
+
 o4a0:
   parent: object4
   order: 0
@@ -52,7 +64,7 @@ o4a1:
   parent: object4
   order: 1
   name: child
-  value: object21 (ObjectNode)
+  value: object41 (ObjectNode)
 
 o41a0:
   parent: object41

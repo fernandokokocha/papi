@@ -12,8 +12,8 @@ class DiffTest < ActiveSupport::TestCase
     ]
     assert_equal expected, diff.before
     expected = [
-      DiffLine.new("{", :no_change),
-      DiffLine.new("}", :no_change)
+      DiffLine.new("{", :added),
+      DiffLine.new("}", :added)
     ]
     assert_equal expected, diff.after
   end
