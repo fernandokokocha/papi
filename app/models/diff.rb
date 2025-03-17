@@ -25,15 +25,15 @@ class Diff
       DiffLine.new(first_line, :no_change)
     ]
 
-    object1.object_attributes.sort_by { |oa| oa.order }.each do |oa|
-      o2_attrs = object2.object_attributes.where(name: oa.name).limit(1)
-      if o2_attrs.empty?
-        before << DiffLine.new(oa.lines(t + 2), :removed)
-        after << DiffLine.new("", :blank)
+    object2.object_attributes.sort_by { |oa| oa.order }.each do |oa|
+      o1_attrs = object1.object_attributes.where(name: oa.name).limit(1)
+      if o1_attrs.empty?
+        before << DiffLine.new("", :blank)
+        after << DiffLine.new(oa.lines(t + 2), :added)
       else
-        value = o2_attrs[0].value
+        value = o1_attrs[0].value
         if value.kind_of?(ObjectNode)
-          child_diff = diff_objects(oa.value, o2_attrs[0].value, t + 2, oa.name)
+          child_diff = diff_objects(o1_attrs[0].value, oa.value, t + 2, oa.name)
           child_diff_before = child_diff[0].each_with_index.map do |diff, i|
             DiffLine.new(" " * t + diff.line, diff.change)
           end
@@ -47,17 +47,17 @@ class Diff
           before << DiffLine.new(oa.lines(t + 2), :no_change)
           after << DiffLine.new(oa.lines(t + 2), :no_change)
         else
-          before << DiffLine.new(oa.lines(t + 2), :type_changed)
-          after << DiffLine.new(o2_attrs[0].lines(t + 2), :type_changed)
+          before << DiffLine.new(o1_attrs[0].lines(t + 2), :type_changed)
+          after << DiffLine.new(oa.lines(t + 2), :type_changed)
         end
       end
     end
 
-    object2.object_attributes.sort_by { |oa| oa.order }.each do |oa|
-      o1_attrs = object1.object_attributes.where(name: oa.name).limit(1)
-      if o1_attrs.empty?
-        before << DiffLine.new("", :blank)
-        after << DiffLine.new(oa.lines(t + 2), :added)
+    object1.object_attributes.sort_by { |oa| oa.order }.each do |oa|
+      o2_attrs = object2.object_attributes.where(name: oa.name).limit(1)
+      if o2_attrs.empty?
+        before << DiffLine.new(oa.lines(t + 2), :removed)
+        after << DiffLine.new("", :blank)
       else
         #
       end

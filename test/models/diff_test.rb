@@ -93,15 +93,15 @@ class DiffTest < ActiveSupport::TestCase
     diff = Diff.new(endpoint1, endpoint2)
     expected = [
       DiffLine.new("{", :no_change),
-      DiffLine.new("  name: string", :removed),
       DiffLine.new("", :blank),
+      DiffLine.new("  name: string", :removed),
       DiffLine.new("}", :no_change)
     ]
     assert_equal expected, diff.before
     expected = [
       DiffLine.new("{", :no_change),
-      DiffLine.new("", :blank),
       DiffLine.new("  city: string", :added),
+      DiffLine.new("", :blank),
       DiffLine.new("}", :no_change)
     ]
     assert_equal expected, diff.after
