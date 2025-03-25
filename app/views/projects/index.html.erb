@@ -4,7 +4,10 @@
       <div class="project-card">
         <header><%= project.name %></header>
         <% project.versions.each do |version| %>
-          <%= link_to version.name, project_version_path(id: version.id, project_id: project.id) %>
+          <div>
+            <%= link_to version.name, project_version_path(id: version.id, project_id: project.id) %>
+            <span class="date"><%= version.created_at %></span>
+          </div>
         <% end %>
       </div>
     <% end %>

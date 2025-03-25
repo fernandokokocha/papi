@@ -3,52 +3,63 @@
         width: 100%;
 
         th {
-            background: aquamarine;
+            background: white;
+            font-size: 26px;
 
             &.previous, &.current {
-                width: 45%;
+                width: 40%;
             }
 
             &.next {
-                width: 10%;
+                width: 20%;
+            }
+
+            .date {
+                font-size: 16px;
             }
         }
     }
 
-    table.lines {
-        padding: 2px;
-        width: 100%;
+    .lines-container {
+        padding: 0 0 10px 0;
 
-        thead {
-            background: aquamarine;
-            text-align: left;
-        }
+        table.lines {
+            width: 100%;
+            padding: 0 0 10px 0;
 
-        tbody {
-            font-family: monospace;
-            white-space: pre;
+            th {
+                font-size: 18px;
+                background: aquamarine;
+                text-align: left;
+            }
 
-            tr {
-                height: 15px;
+            tbody {
+                background: azure;
+                font-family: monospace;
+                white-space: pre;
 
-                td {
-                    padding: 0;
-                }
+                tr {
+                    height: 15px;
 
-                &.added {
-                    background: greenyellow;
-                }
+                    td {
+                        padding: 0;
+                    }
 
-                &.removed {
-                    background: lightpink;
-                }
+                    &.added {
+                        background: greenyellow;
+                    }
 
-                &.type_changed {
-                    background: sandybrown;
-                }
+                    &.removed {
+                        background: lightpink;
+                    }
 
-                &.no_change {
-                    background: white;
+                    &.type_changed {
+                        background: sandybrown;
+                    }
+
+                    &.no_change {
+                        background: white;
+                    }
                 }
             }
         }

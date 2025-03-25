@@ -1,12 +1,16 @@
-<table class="lines">
-  <thead>
-  <tr>
-    <th><%= endpoint_name %></th>
-  </tr>
-  </thead>
-  <tbody>
-  <% diff_lines.each do |diff_line| %>
-    <tr class="<%= diff_line.change %>"><td><%= diff_line.line %></td></tr>
-  <% end %>
-  </tbody>
-</table>
+<div class="lines-container">
+  <table class="lines">
+    <thead>
+    <tr>
+      <th><%= endpoint_name %></th>
+    </tr>
+    </thead>
+    <tbody>
+    <% diff_lines.each do |diff_line| %>
+      <tr class="<%= diff_line.change %>">
+        <td><%= diff_line.line %></td>
+      </tr>
+    <% end %>
+    </tbody>
+  </table>
+</div>

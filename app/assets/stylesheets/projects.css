@@ -11,5 +11,9 @@
         padding: 5px;
         margin: 5px;
         background: aquamarine;
+
+        .date {
+            font-size: 16px;
+        }
     }
 }

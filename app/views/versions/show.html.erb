@@ -3,9 +3,22 @@
   <table class="layout">
     <thead>
       <tr>
-        <th class="previous"><%= @previous_version.nil? ? "" : @previous_version.name %></th>
-        <th class="current"><%= @version.name %></th>
-        <th class="next"><%= @next_version.nil? ? "" : @next_version.name %></th>
+        <th class="previous">
+          <% if @previous_version.present? %>
+            <%= link_to @previous_version.name, project_version_path(id: @previous_version.id, project_id: @previous_version.project.id) %>
+            <div class="date"><%= @previous_version.created_at %></div>
+          <% end %>
+        </th>
+        <th class="current">
+          <%= @version.name %>
+          <div class="date"><%= @version.created_at %></div>
+        </th>
+        <th class="next">
+          <% if @next_version.present? %>
+            <%= link_to "see next - #{@next_version.name}", project_version_path(id: @next_version.id, project_id: @next_version.project.id) %>
+            <div class="date"><%= @next_version.created_at %></div>
+          <% end %>
+        </th>
       </tr>
     </thead>
     <% @version.endpoints.each do |endpoint| %>
