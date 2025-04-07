@@ -17,6 +17,8 @@
           <% if @next_version.present? %>
             <%= link_to "see next - #{@next_version.name}", project_version_path(id: @next_version.id, project_id: @next_version.project.id) %>
             <div class="date"><%= @next_version.created_at %></div>
+          <% else %>
+            <%= link_to "Create new version", new_project_version_path(project_id: @version.project.id) %>
           <% end %>
         </th>
       </tr>
