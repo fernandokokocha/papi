@@ -18,6 +18,10 @@
                 font-size: 16px;
             }
         }
+
+        td {
+            vertical-align: top;
+        }
     }
 
     .lines-container {
@@ -59,6 +63,42 @@
 
                     &.no_change {
                         background: white;
+                    }
+                }
+
+                & .endpoint_form_object {
+                    white-space: normal;
+
+                    & span[data-value="string"] {
+                        background: red;
+
+                        & select {
+                            background: red;
+                        }
+                    }
+
+                    & span[data-value="number"] {
+                        background: cornflowerblue;
+
+                        & select {
+                            background: cornflowerblue;
+                        }
+                    }
+
+                    & span[data-value="object"] {
+                        background: sandybrown;
+
+                        & select {
+                            background: sandybrown;
+                        }
+                    }
+
+                    & .endpoint_form_object_attribute {
+                        padding-left: 20px;
+                    }
+
+                    & .endpoint_form_object_new_attribute {
+                        padding-left: 20px;
                     }
                 }
             }

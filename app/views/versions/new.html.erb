@@ -21,6 +21,7 @@
             <%= render "endpoint", endpoint_name: endpoint.name, diff_lines: endpoint.diff(@latest_version).before %>
           </td>
           <td>
+            <%= render "endpoint_form", endpoint_name: endpoint.name, root: endpoint.endpoint_root  %>
           </td>
         </tr>
       <% end %>
