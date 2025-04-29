@@ -28,12 +28,20 @@ class Diff
     object2.object_attributes.sort_by { |oa| oa.order }.each do |oa|
       o1_attrs = object1.object_attributes.where(name: oa.name).limit(1)
       if o1_attrs.empty?
-        before << DiffLine.new("", :blank)
-        after << DiffLine.new(oa.lines(t + 2), :added)
+        lines = oa.lines(t + 2)
+        if lines.kind_of?(Array)
+          lines.each do |l|
+            before << DiffLine.new("", :blank)
+            after << DiffLine.new(l, :added)
+          end
+        else
+          before << DiffLine.new("", :blank)
+          after << DiffLine.new(lines, :added)
+        end
       else
         value = o1_attrs[0].value
-        if value.kind_of?(ObjectNode)
-          child_diff = diff_objects(o1_attrs[0].value, oa.value, t + 2, oa.name)
+        if value.kind_of?(ObjectNode) && oa.value.kind_of?(ObjectNode)
+          child_diff = diff_objects(value, oa.value, t + 2, oa.name)
           child_diff_before = child_diff[0].each_with_index.map do |diff, i|
             DiffLine.new(" " * t + diff.line, diff.change)
           end
@@ -43,6 +51,18 @@ class Diff
             DiffLine.new(" " * t + diff.line, diff.change)
           end
           after = after + child_diff_after
+        elsif value.kind_of?(ObjectNode)
+          child_diff = diff_nil(value, 0, oa.name)
+          child_diff[1].each do |diff|
+            before << DiffLine.new(" " * t + diff.line, diff.change)
+            after << DiffLine.new("", :blank)
+          end
+        elsif oa.value.kind_of?(ObjectNode)
+          child_diff = diff_nil(oa.value, 0, oa.name)
+          child_diff[1].each do |diff|
+            before << DiffLine.new("", :blank)
+            after << DiffLine.new(" " * t + diff.line, diff.change)
+          end
         elsif value.kind == oa.value.kind
           before << DiffLine.new(oa.lines(t + 2), :no_change)
           after << DiffLine.new(oa.lines(t + 2), :no_change)
