@@ -20,10 +20,11 @@ export default class extends Controller {
     emptyObject() {
         const container = document.createElement("div")
         container.className = "endpoint_form_object";
+        container.setAttribute("data-controller", "object")
         container.innerHTML = `{ 
           <div data-object-target="newAttribute" class="endpoint_form_object_new_attribute">
             <input data-object-target="input" type="text" value="new" />
-            <button data-action="object#addAttribute" type="button">+</button>
+            <button data-action="object#addAttribute root#update" type="button">+</button>
           </div>
         }`
 

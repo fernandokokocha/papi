@@ -2,11 +2,22 @@
   <table class="lines">
     <thead>
     <tr>
-      <th><%= endpoint_name %></th>
+      <th>
+        <%= f.hidden_field :http_verb, value: endpoint.http_verb, name: "version[endpoints_attributes][][http_verb]" %>
+        <%= f.hidden_field :url, value: endpoint.url, name: "version[endpoints_attributes][][url]" %>
+        <%= endpoint.name %>
+      </th>
     </tr>
     </thead>
     <tbody>
-      <tr><td><%= render "endpoint_form_object", object: root %></td></tr>
+    <tr>
+      <td>
+        <div data-controller="root">
+          <%= f.hidden_field :endpoint_root, value: "", "data-root-target": "endpointRoot", name: "version[endpoints_attributes][][endpoint_root]" %>
+          <%= render "endpoint_form_object", object: endpoint.endpoint_root %>
+        </div>
+     </td>
+    </tr>
     </tbody>
   </table>
 </div>

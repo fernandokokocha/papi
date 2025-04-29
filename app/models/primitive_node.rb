@@ -12,4 +12,7 @@ class PrimitiveNode < ApplicationRecord
   def lines(t)
     kind.to_s
   end
+  def ==(other)
+    self.class == other.class && kind == other.kind
+  end
 end

@@ -5,16 +5,15 @@ export default class extends Controller {
 
     addAttribute() {
         this.newAttributeTarget.before(this.newAttribute(this.inputTarget.value))
-
-        this.inputTarget.value = "";
+        this.inputTarget.value = "new";
     }
 
     newAttribute(name) {
         const container = document.createElement("div")
         container.className = "endpoint_form_object_attribute"
-        container.innerHTML = `${name}: 
+        container.innerHTML = `<span>${name}</span>: 
           <span data-controller="value" data-value-target="span" data-value="string">  
-            <select name="value" id="value" data-action="value#change">
+            <select data-action="value#change root#update">
               <option selected="selected" value="string">string</option>
               <option value="number">number</option>
               <option value="object">object</option>

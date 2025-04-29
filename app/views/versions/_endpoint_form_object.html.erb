@@ -2,12 +2,12 @@
   {
   <% object.object_attributes.order(:order).each do |oa| %>
     <div class="endpoint_form_object_attribute">
-      <%= oa.name %>: <%= render "endpoint_form_value", value: oa.value %>
+      <span><%= oa.name %></span>: <%= render "endpoint_form_value", value: oa.value %>
     </div>
   <% end %>
   <div data-object-target="newAttribute" class="endpoint_form_object_new_attribute">
     <input data-object-target="input" type="text" value="new" />
-    <button data-action="object#addAttribute" type="button">+</button>
+    <button data-action="object#addAttribute root#update" type="button">+</button>
   </div>
   }
 </div>
