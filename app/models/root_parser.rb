@@ -1,4 +1,4 @@
-class X
+class RootParser
   def parse_object(str)
     root = ObjectNode.new
     attrs = split_by_comma(str[1...-1])

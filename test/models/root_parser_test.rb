@@ -1,14 +1,14 @@
 require "test_helper"
 
-class XTest < ActiveSupport::TestCase
+class RootParserTest < ActiveSupport::TestCase
   test "parse {}" do
-    actual = X.new.parse_object("{}")
+    actual = RootParser.new.parse_object("{}")
     expected = ObjectNode.new
     assert_equal expected, actual
   end
 
   test "parse { a: string }" do
-    actual = X.new.parse_object("{ a: string }")
+    actual = RootParser.new.parse_object("{ a: string }")
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "a")
     ])
@@ -17,7 +17,7 @@ class XTest < ActiveSupport::TestCase
   end
 
   test "parse { a: number }" do
-    actual = X.new.parse_object("{ a: number }")
+    actual = RootParser.new.parse_object("{ a: number }")
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "a", value:
         FactoryBot.create(:primitive_node, kind: "number"))
@@ -27,7 +27,7 @@ class XTest < ActiveSupport::TestCase
   end
 
   test "parse { a: string, b: number }" do
-    actual = X.new.parse_object("{ a: string, b: number }")
+    actual = RootParser.new.parse_object("{ a: string, b: number }")
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "a"),
       FactoryBot.create(:object_attribute, order: 1, name: "b", value:
@@ -38,7 +38,7 @@ class XTest < ActiveSupport::TestCase
   end
 
   test "parse { a: { b: string } }" do
-    actual = X.new.parse_object("{ a: { b: string } }")
+    actual = RootParser.new.parse_object("{ a: { b: string } }")
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "a", value:
         FactoryBot.create(:object_node, object_attributes: [
@@ -50,7 +50,7 @@ class XTest < ActiveSupport::TestCase
   end
 
   test "parse { a: { b: string, c: number } }" do
-    actual = X.new.parse_object("{ a: { b: string, c: number } }")
+    actual = RootParser.new.parse_object("{ a: { b: string, c: number } }")
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "a", value:
         FactoryBot.create(:object_node, object_attributes: [
@@ -65,7 +65,7 @@ class XTest < ActiveSupport::TestCase
   end
 
   test "parse real life problem" do
-    actual = X.new.parse_object("{name:string,child:{first_name:string,last_name:string,third_name:number},elo:string}")
+    actual = RootParser.new.parse_object("{name:string,child:{first_name:string,last_name:string,third_name:number},elo:string}")
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "name"),
       FactoryBot.create(:object_attribute, order: 1, name: "child", value:
@@ -83,7 +83,7 @@ class XTest < ActiveSupport::TestCase
   end
 
   test "parse three levels of nesting" do
-    actual = X.new.parse_object("{name:string,child:{first_name:string,last_name:string,obj:{new:string}}}")
+    actual = RootParser.new.parse_object("{name:string,child:{first_name:string,last_name:string,obj:{new:string}}}")
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "name"),
       FactoryBot.create(:object_attribute, order: 1, name: "child", value:

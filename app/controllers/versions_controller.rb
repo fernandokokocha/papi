@@ -20,7 +20,7 @@ class VersionsController < ApplicationController
     params[:version][:project_id] = params[:project_id]
     roots = []
     params[:version][:endpoints_attributes].map do |endpoint_attr|
-      roots << X.new.parse_object(endpoint_attr[:original_endpoint_root])
+      roots << RootParser.new.parse_object(endpoint_attr[:original_endpoint_root])
     end
     @version = Version.new(params[:version])
     @version.endpoints.zip(roots) do |endpoint, endpoint_root|
