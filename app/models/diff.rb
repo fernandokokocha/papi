@@ -12,114 +12,145 @@ class Diff
     end
   end
 
-  def diff_objects(object1, object2, t, parent_name = "")
-    first_line = " " * t
-    unless parent_name.empty?
-      first_line += parent_name + ": "
-    end
-    first_line += "{"
-    before = [
-      DiffLine.new(first_line, :no_change)
-    ]
-    after = [
-      DiffLine.new(first_line, :no_change)
-    ]
+  def diff_objects(object1, object2, indent, parent_name = "")
+    before = []
+    after = []
 
-    object2.object_attributes.sort_by { |oa| oa.order }.each do |oa|
-      o1_attrs = object1.object_attributes.where(name: oa.name).limit(1)
-      if o1_attrs.empty?
-        lines = oa.lines(t + 2)
-        if lines.kind_of?(Array)
-          lines.each do |l|
-            before << DiffLine.new("", :blank)
-            after << DiffLine.new(l, :added)
-          end
-        else
-          before << DiffLine.new("", :blank)
-          after << DiffLine.new(lines, :added)
-        end
-      else
-        value = o1_attrs[0].value
-        if value.kind_of?(ObjectNode) && oa.value.kind_of?(ObjectNode)
-          child_diff = diff_objects(value, oa.value, t + 2, oa.name)
-          child_diff_before = child_diff[0].each_with_index.map do |diff, i|
-            DiffLine.new(" " * t + diff.line, diff.change)
-          end
-          before = before + child_diff_before
+    # Add opening line
+    opening_line = create_opening_line(indent, parent_name)
+    before << DiffLine.new(opening_line, :no_change)
+    after << DiffLine.new(opening_line, :no_change)
 
-          child_diff_after = child_diff[1].each_with_index.map do |diff, i|
-            DiffLine.new(" " * t + diff.line, diff.change)
-          end
-          after = after + child_diff_after
-        elsif value.kind_of?(ObjectNode)
-          child_diff = diff_nil(value, 0, oa.name)
-          child_diff[1].each do |diff|
-            before << DiffLine.new(" " * t + diff.line, diff.change)
-            after << DiffLine.new("", :blank)
-          end
-        elsif oa.value.kind_of?(ObjectNode)
-          child_diff = diff_nil(oa.value, 0, oa.name)
-          child_diff[1].each do |diff|
-            before << DiffLine.new("", :blank)
-            after << DiffLine.new(" " * t + diff.line, diff.change)
-          end
-        elsif value.kind == oa.value.kind
-          before << DiffLine.new(oa.lines(t + 2), :no_change)
-          after << DiffLine.new(oa.lines(t + 2), :no_change)
-        else
-          before << DiffLine.new(o1_attrs[0].lines(t + 2), :type_changed)
-          after << DiffLine.new(oa.lines(t + 2), :type_changed)
-        end
-      end
-    end
+    # Process additions and changes
+    process_added_and_changed_attributes(object1, object2, indent, before, after)
 
-    object1.object_attributes.sort_by { |oa| oa.order }.each do |oa|
-      o2_attrs = object2.object_attributes.where(name: oa.name).limit(1)
-      if o2_attrs.empty?
-        before << DiffLine.new(oa.lines(t + 2), :removed)
-        after << DiffLine.new("", :blank)
-      else
-        #
-      end
-    end
+    # Process removals
+    process_removed_attributes(object1, object2, indent, before, after)
 
-    before << DiffLine.new(" " * t + "}", :no_change)
-    after << DiffLine.new(" " * t + "}", :no_change)
+    # Add closing line
+    closing_line = " " * indent + "}"
+    before << DiffLine.new(closing_line, :no_change)
+    after << DiffLine.new(closing_line, :no_change)
 
     [ before, after ]
   end
 
-  def diff_nil(object, t, parent_name = "")
-    first_line = " " * t
-    unless parent_name.empty?
-      first_line += parent_name + ": "
-    end
-    first_line += "{"
-    before = [
-      DiffLine.new("", :blank)
-    ]
-    after = [
-      DiffLine.new(first_line, :added)
-    ]
+  def diff_nil(object, indent, parent_name = "")
+    before = [ DiffLine.new("", :blank) ]
 
-    object.object_attributes.sort_by { |oa| oa.order }.each do |oa|
-      value = oa.value
-      if value.kind_of?(ObjectNode)
-        child_diff = diff_nil(oa.value, t + 2, oa.name)
-        child_diff_after = child_diff[1].each_with_index.map do |diff, i|
-          before << DiffLine.new("", :blank)
-          DiffLine.new(" " * t + diff.line, diff.change)
-        end
-        after = after + child_diff_after
+    # Add opening line
+    opening_line = create_opening_line(indent, parent_name)
+    after = [ DiffLine.new(opening_line, :added) ]
+
+    # Process all attributes as added
+    object.object_attributes.sort_by { |oa| oa.order }.each do |attribute|
+      if attribute.value.kind_of?(ObjectNode)
+        process_added_object_node(attribute, indent, before, after)
       else
         before << DiffLine.new("", :blank)
-        after << DiffLine.new(oa.lines(t + 2), :added)
+        after << DiffLine.new(attribute.lines(indent + 2), :added)
       end
     end
 
+    # Add closing line
     before << DiffLine.new("", :blank)
-    after << DiffLine.new(" " * t + "}", :added)
+    after << DiffLine.new(" " * indent + "}", :added)
 
     [ before, after ]
+  end
+
+  private
+
+  def create_opening_line(indent, parent_name)
+    line = " " * indent
+    line += "#{parent_name}: " unless parent_name.empty?
+    line += "{"
+  end
+
+  def process_added_and_changed_attributes(object1, object2, indent, before, after)
+    object2.object_attributes.sort_by { |oa| oa.order }.each do |attribute|
+      matching_attributes = object1.object_attributes.where(name: attribute.name).limit(1)
+
+      if matching_attributes.empty?
+        add_attribute_as_added(attribute, indent, before, after)
+      else
+        compare_attribute_values(matching_attributes[0], attribute, indent, before, after)
+      end
+    end
+  end
+
+  def process_removed_attributes(object1, object2, indent, before, after)
+    object1.object_attributes.sort_by { |oa| oa.order }.each do |attribute|
+      matching_attributes = object2.object_attributes.where(name: attribute.name).limit(1)
+
+      if matching_attributes.empty?
+        before << DiffLine.new(attribute.lines(indent + 2), :removed)
+        after << DiffLine.new("", :blank)
+      end
+    end
+  end
+
+  def add_attribute_as_added(attribute, indent, before, after)
+    lines = attribute.lines(indent + 2)
+
+    if lines.kind_of?(Array)
+      lines.each do |line|
+        before << DiffLine.new("", :blank)
+        after << DiffLine.new(line, :added)
+      end
+    else
+      before << DiffLine.new("", :blank)
+      after << DiffLine.new(lines, :added)
+    end
+  end
+
+  def compare_attribute_values(original_attribute, new_attribute, indent, before, after)
+    original_value = original_attribute.value
+    new_value = new_attribute.value
+
+    if original_value.kind_of?(ObjectNode) && new_value.kind_of?(ObjectNode)
+      process_nested_objects(original_value, new_value, indent, new_attribute.name, before, after)
+    elsif original_value.kind_of?(ObjectNode)
+      process_removed_object_node(original_value, indent, new_attribute.name, before, after)
+    elsif new_value.kind_of?(ObjectNode)
+      process_added_object_node(new_attribute, indent, before, after)
+    elsif original_value.kind == new_value.kind
+      before << DiffLine.new(new_attribute.lines(indent + 2), :no_change)
+      after << DiffLine.new(new_attribute.lines(indent + 2), :no_change)
+    else
+      before << DiffLine.new(original_attribute.lines(indent + 2), :type_changed)
+      after << DiffLine.new(new_attribute.lines(indent + 2), :type_changed)
+    end
+  end
+
+  def process_nested_objects(original_value, new_value, indent, attribute_name, before, after)
+    child_diff = diff_objects(original_value, new_value, indent + 2, attribute_name)
+
+    child_diff_before = child_diff[0].each_with_index.map do |diff, _|
+      DiffLine.new(diff.line, diff.change)
+    end
+    before.concat(child_diff_before)
+
+    child_diff_after = child_diff[1].each_with_index.map do |diff, _|
+      DiffLine.new(diff.line, diff.change)
+    end
+    after.concat(child_diff_after)
+  end
+
+  def process_removed_object_node(object_node, indent, attribute_name, before, after)
+    child_diff = diff_nil(object_node, 0, attribute_name)
+    child_diff[1].each do |diff|
+      before << DiffLine.new(" " * indent + diff.line, diff.change)
+      after << DiffLine.new("", :blank)
+    end
+  end
+
+  def process_added_object_node(attribute, indent, before, after)
+    child_diff = diff_nil(attribute.value, indent + 2, attribute.name)
+    child_diff_after = child_diff[1].each_with_index.map do |diff, _|
+      before << DiffLine.new("", :blank)
+      DiffLine.new(" " * indent + diff.line, diff.change)
+    end
+    after.concat(child_diff_after)
   end
 end
