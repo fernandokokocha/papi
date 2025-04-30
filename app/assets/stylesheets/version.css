@@ -66,6 +66,52 @@
                     }
                 }
 
+            }
+        }
+    }
+
+
+    .new-version-form-container {
+        padding: 0 0 10px 0;
+
+        table.new-version-form {
+            width: 100%;
+            padding: 0 0 10px 0;
+
+            th {
+                font-size: 18px;
+                background: aquamarine;
+                text-align: left;
+            }
+
+            tbody {
+                font-family: monospace;
+                white-space: normal;
+
+                tr {
+                    height: 15px;
+
+                    td {
+                        padding: 0;
+                    }
+
+                    &.added {
+                        background: greenyellow;
+                    }
+
+                    &.removed {
+                        background: lightpink;
+                    }
+
+                    &.type_changed {
+                        background: sandybrown;
+                    }
+
+                    &.no_change {
+                        background: white;
+                    }
+                }
+
                 & .endpoint_form_object {
                     white-space: normal;
 
