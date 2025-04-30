@@ -5,6 +5,7 @@ class CreateEndpoints < ActiveRecord::Migration[8.0]
       t.string :url, null: false
       t.references :version, null: false, foreign_key: true
       t.references :endpoint_root, polymorphic: true, index: true, null: false
+      t.string :original_endpoint_root, null: false
 
       t.timestamps
     end

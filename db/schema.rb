@@ -17,6 +17,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_25_112217) do
     t.integer "version_id", null: false
     t.string "endpoint_root_type", null: false
     t.integer "endpoint_root_id", null: false
+    t.string "original_endpoint_root", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["endpoint_root_type", "endpoint_root_id"], name: "index_endpoints_on_endpoint_root"

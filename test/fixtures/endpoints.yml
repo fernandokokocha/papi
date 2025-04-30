@@ -5,21 +5,25 @@ project1v2e1:
   url: /resource
   version: project1v2
   endpoint_root: object1 (ObjectNode)
+  original_endpoint_root: ""
 
 project1v2e2:
   http_verb: 1
   url: /resource
   version: project1v2
   endpoint_root: object2 (ObjectNode)
+  original_endpoint_root: ""
 
 project1v3e1:
   http_verb: 0
   url: /resource
   version: project1v3
   endpoint_root: object3 (ObjectNode)
+  original_endpoint_root: ""
 
 project1v3e2:
   http_verb: 1
   url: /resource
   version: project1v3
   endpoint_root: object4 (ObjectNode)
+  original_endpoint_root: ""
