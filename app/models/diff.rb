@@ -111,9 +111,9 @@ class Diff
     if original_value.kind_of?(ObjectNode) && new_value.kind_of?(ObjectNode)
       process_nested_objects(original_value, new_value, indent, new_attribute.name, before, after)
     elsif original_value.kind_of?(ObjectNode)
-      process_removed_object_node(original_value, indent, new_attribute.name, before, after)
+      process_object_changed_to_primitive(original_attribute, new_attribute, indent, before, after)
     elsif new_value.kind_of?(ObjectNode)
-      process_added_object_node(new_attribute, indent, before, after)
+      process_primitive_changed_to_object(original_attribute, new_attribute, indent, before, after)
     elsif original_value.kind == new_value.kind
       before << DiffLine.new(new_attribute.lines(indent + 2), :no_change)
       after << DiffLine.new(new_attribute.lines(indent + 2), :no_change)
@@ -137,19 +137,31 @@ class Diff
     after.concat(child_diff_after)
   end
 
-  def process_removed_object_node(object_node, indent, attribute_name, before, after)
-    child_diff = diff_nil(object_node, 0, attribute_name)
-    child_diff[1].each do |diff|
-      before << DiffLine.new(" " * indent + diff.line, diff.change)
-      after << DiffLine.new("", :blank)
-    end
-  end
-
   def process_added_object_node(attribute, indent, before, after)
     child_diff = diff_nil(attribute.value, indent + 2, attribute.name)
-    child_diff_after = child_diff[1].each_with_index.map do |diff, _|
+    child_diff_after = child_diff[1].each_with_index.map do |diff, i|
       before << DiffLine.new("", :blank)
-      DiffLine.new(" " * indent + diff.line, diff.change)
+      DiffLine.new(diff.line, diff.change)
+    end
+    after.concat(child_diff_after)
+  end
+
+  def process_object_changed_to_primitive(original_attribute, new_attribute, indent, before, after)
+    child_diff = diff_nil(original_attribute.value, indent + 2, original_attribute.name)
+    child_diff_before = child_diff[1].each_with_index.map do |diff, i|
+      after_diff_line = i == 0 ? (" " * (indent + 2)) + "#{new_attribute.name}: #{new_attribute.value.kind}" : ""
+      after << DiffLine.new(after_diff_line, :type_changed)
+      DiffLine.new(diff.line, :type_changed)
+    end
+    before.concat(child_diff_before)
+  end
+
+  def process_primitive_changed_to_object(original_attribute, new_attribute, indent, before, after)
+    child_diff = diff_nil(new_attribute.value, indent + 2, new_attribute.name)
+    child_diff_after = child_diff[1].each_with_index.map do |diff, i|
+      before_diff_line = i == 0 ? (" " * (indent + 2)) + "#{original_attribute.name}: #{original_attribute.value.kind}" : ""
+      before << DiffLine.new(before_diff_line, :type_changed)
+      DiffLine.new(diff.line, :type_changed)
     end
     after.concat(child_diff_after)
   end
