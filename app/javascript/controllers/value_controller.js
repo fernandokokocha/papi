@@ -8,12 +8,11 @@ export default class extends Controller {
         this.spanTarget.setAttribute("data-value", event.target.value)
 
         if (oldValue === "object") {
-            console.log(this.spanTarget.nextElementSibling)
-            this.spanTarget.nextElementSibling.remove()
+            this.spanTarget.nextElementSibling.nextElementSibling.remove()
         }
 
         if (event.target.value === "object") {
-            this.spanTarget.after(this.emptyObject())
+            this.spanTarget.nextElementSibling.after(this.emptyObject())
         }
     }
 

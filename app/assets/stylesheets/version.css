@@ -116,24 +116,18 @@
                     white-space: normal;
 
                     & span[data-value="string"] {
-                        background: red;
-
                         & select {
                             background: red;
                         }
                     }
 
                     & span[data-value="number"] {
-                        background: cornflowerblue;
-
                         & select {
                             background: cornflowerblue;
                         }
                     }
 
                     & span[data-value="object"] {
-                        background: sandybrown;
-
                         & select {
                             background: sandybrown;
                         }

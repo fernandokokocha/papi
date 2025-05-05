@@ -2,9 +2,11 @@
   <span data-controller="value" data-value-target="span" data-value="<%= value.kind %>">
     <%= select_tag "value", options_for_select(%w[string number object], value.kind), { "data-action": "value#change root#update", id: nil, name: nil } %>
   </span>
+  <button type="button" data-action="root#removeAttribute">x</button>
 <% elsif value.kind_of?(ObjectNode) %>
   <span data-controller="value" data-value-target="span" data-value="object">
     <%= select_tag "value", options_for_select(%w[string number object], "object"), { "data-action": "value#change root#update", id: nil, name: nil } %>
   </span>
+  <button type="button" data-action="root#removeAttribute">x</button>
   <%= render "endpoint_form_object", object: value %>
 <% end %>

@@ -23,10 +23,15 @@ export default class extends Controller {
         const select = span.children[0]
         let value
         if (select.value === "object") {
-            value = this.readObject(span.nextElementSibling)
+            value = this.readObject(span.nextElementSibling.nextElementSibling)
         } else {
             value = select.value
         }
         return `${name}:${value}`
+    }
+
+    removeAttribute(event) {
+        event.target.parentElement.remove();
+        this.update();
     }
 }
