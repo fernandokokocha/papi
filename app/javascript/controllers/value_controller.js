@@ -4,6 +4,8 @@ export default class extends Controller {
     static targets = ["span", "select"]
 
     change(event) {
+        console.log("change");
+        console.log(this.spanTarget);
         const oldValue = this.spanTarget.getAttribute("data-value")
         this.spanTarget.setAttribute("data-value", event.target.value)
 
@@ -12,7 +14,8 @@ export default class extends Controller {
         }
 
         if (event.target.value === "object") {
-            this.spanTarget.nextElementSibling.after(this.emptyObject())
+            this.spanTarget.after(this.emptyObject())
+            this.spanTarget.after(this.closeButton())
         }
     }
 
@@ -28,5 +31,14 @@ export default class extends Controller {
         }`
 
         return container;
+    }
+
+    closeButton() {
+        const button = document.createElement("button")
+        button.setAttribute("type", "button")
+        button.setAttribute("data-action", "root#removeAttribute")
+        button.innerText = "x";
+
+        return button;
     }
 }

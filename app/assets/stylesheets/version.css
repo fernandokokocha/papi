@@ -123,13 +123,19 @@
 
                     & span[data-value="number"] {
                         & select {
-                            background: cornflowerblue;
+                            background: lawngreen;
                         }
                     }
 
                     & span[data-value="object"] {
                         & select {
                             background: sandybrown;
+                        }
+                    }
+
+                    & span[data-value="boolean"] {
+                        & select {
+                            background: cornflowerblue;
                         }
                     }
 

@@ -84,8 +84,17 @@ class Diff
       matching_attributes = object2.object_attributes.where(name: attribute.name).limit(1)
 
       if matching_attributes.empty?
-        before << DiffLine.new(attribute.lines(indent + 2), :removed)
-        after << DiffLine.new("", :blank)
+        lines = attribute.lines(indent + 2)
+
+        if lines.kind_of?(Array)
+          lines.each do |line|
+            before << DiffLine.new(line, :removed)
+            after << DiffLine.new("", :blank)
+          end
+        else
+          before << DiffLine.new(lines, :removed)
+          after << DiffLine.new("", :blank)
+        end
       end
     end
   end

@@ -25,6 +25,8 @@ class RootParser
       PrimitiveNode.new(kind: "string")
     elsif raw_value == "number"
       PrimitiveNode.new(kind: "number")
+    elsif raw_value == "boolean"
+      PrimitiveNode.new(kind: "boolean")
     else
       parse_object(raw_value)
     end

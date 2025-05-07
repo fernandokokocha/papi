@@ -1,5 +1,5 @@
 class PrimitiveNode < ApplicationRecord
-  enum :kind, [ :string, :number ]
+  enum :kind, [ :string, :number, :boolean ]
 
   def print(t)
     kind.to_s

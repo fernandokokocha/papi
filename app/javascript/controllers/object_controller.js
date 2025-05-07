@@ -16,9 +16,11 @@ export default class extends Controller {
             <select data-action="value#change root#update">
               <option selected="selected" value="string">string</option>
               <option value="number">number</option>
+              <option value="boolean">boolean</option>
               <option value="object">object</option>
             </select>
           </span>
+          <button type="button" data-action="root#removeAttribute">x</button>
           `
 
         return container;

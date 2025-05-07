@@ -77,3 +77,9 @@ o41a1:
   order: 1
   name: last_name
   value: p9 (PrimitiveNode)
+
+o5:
+  parent: object4
+  order: 2
+  name: is_pies
+  value: p12 (PrimitiveNode)
