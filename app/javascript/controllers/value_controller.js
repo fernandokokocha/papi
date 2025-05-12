@@ -12,8 +12,7 @@ export default class extends Controller {
         }
 
         if (event.target.value === "object") {
-            this.spanTarget.after(this.emptyObject())
-            this.spanTarget.after(this.closeButton())
+            this.spanTarget.nextElementSibling.after(this.emptyObject())
         }
     }
 
