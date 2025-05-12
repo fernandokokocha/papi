@@ -25,6 +25,26 @@
           </td>
         </tr>
       <% end %>
+      <tr data-controller="endpoint" data-endpoint-target="container">
+        <td></td>
+        <td>
+          <div class="new-version-form-container">
+            <table class="new-version-form">
+              <thead>
+              <tr>
+                <th data-endpoint-target="nameholder">
+                  <%= select_tag :new_verb, options_for_select(%w[GET POST PATCH PUT DELETE], :get), { id: nil, name: nil, "data-endpoint-target": "verb" } %>
+                  <%= text_field_tag 'url', '/resource', "data-endpoint-target": "url" %>
+                  <%= button_tag 'Add', type: 'button', "data-action": "endpoint#add" %>
+                </th>
+              </tr>
+              </thead>
+              <tbody data-endpoint-target="body">
+              </tbody>
+            </table>
+          </div>
+        </td>
+      </tr>
       <tr>
         <td></td>
         <td>

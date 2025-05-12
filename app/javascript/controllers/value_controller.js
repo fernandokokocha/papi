@@ -4,8 +4,6 @@ export default class extends Controller {
     static targets = ["span", "select"]
 
     change(event) {
-        console.log("change");
-        console.log(this.spanTarget);
         const oldValue = this.spanTarget.getAttribute("data-value")
         this.spanTarget.setAttribute("data-value", event.target.value)
 
