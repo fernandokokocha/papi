@@ -7,13 +7,13 @@ class DiffTest < ActiveSupport::TestCase
 
     diff = Diff.new(endpoint1, endpoint2)
     expected = [
-      DiffLine.new("", :blank),
-      DiffLine.new("", :blank)
+      DiffLine.new("", :blank, 0),
+      DiffLine.new("", :blank, 0)
     ]
     assert_equal expected, diff.before
     expected = [
-      DiffLine.new("{", :added),
-      DiffLine.new("}", :added)
+      DiffLine.new("{", :added, 0),
+      DiffLine.new("}", :added, 0)
     ]
     assert_equal expected, diff.after
   end
@@ -24,8 +24,8 @@ class DiffTest < ActiveSupport::TestCase
 
     diff = Diff.new(endpoint1, endpoint2)
     expected = [
-      DiffLine.new("{", :no_change),
-      DiffLine.new("}", :no_change)
+      DiffLine.new("{", :no_change, 0),
+      DiffLine.new("}", :no_change, 0)
     ]
     assert_equal expected, diff.before
     assert_equal expected, diff.after
@@ -41,15 +41,15 @@ class DiffTest < ActiveSupport::TestCase
 
     diff = Diff.new(endpoint1, endpoint2)
     expected = [
-      DiffLine.new("{", :no_change),
-      DiffLine.new("", :blank),
-      DiffLine.new("}", :no_change)
+      DiffLine.new("{", :no_change, 0),
+      DiffLine.new("", :blank, 0),
+      DiffLine.new("}", :no_change, 0)
     ]
     assert_equal expected, diff.before
     expected = [
-      DiffLine.new("{", :no_change),
-      DiffLine.new("  name: string", :added),
-      DiffLine.new("}", :no_change)
+      DiffLine.new("{", :no_change, 0),
+      DiffLine.new("  name: string", :added, 2),
+      DiffLine.new("}", :no_change, 0)
     ]
     assert_equal expected, diff.after
   end
@@ -64,16 +64,16 @@ class DiffTest < ActiveSupport::TestCase
 
     diff = Diff.new(endpoint1, endpoint2)
     expected = [
-      DiffLine.new("{", :no_change),
-      DiffLine.new("  name: string", :removed),
-      DiffLine.new("}", :no_change)
+      DiffLine.new("{", :no_change, 0),
+      DiffLine.new("  name: string", :removed, 2),
+      DiffLine.new("}", :no_change, 0)
     ]
     assert_equal expected, diff.before
 
     expected = [
-      DiffLine.new("{", :no_change),
-      DiffLine.new("", :blank),
-      DiffLine.new("}", :no_change)
+      DiffLine.new("{", :no_change, 0),
+      DiffLine.new("", :blank, 0),
+      DiffLine.new("}", :no_change, 0)
     ]
     assert_equal expected, diff.after
   end
@@ -92,17 +92,17 @@ class DiffTest < ActiveSupport::TestCase
 
     diff = Diff.new(endpoint1, endpoint2)
     expected = [
-      DiffLine.new("{", :no_change),
-      DiffLine.new("", :blank),
-      DiffLine.new("  name: string", :removed),
-      DiffLine.new("}", :no_change)
+      DiffLine.new("{", :no_change, 0),
+      DiffLine.new("", :blank, 0),
+      DiffLine.new("  name: string", :removed, 2),
+      DiffLine.new("}", :no_change, 0)
     ]
     assert_equal expected, diff.before
     expected = [
-      DiffLine.new("{", :no_change),
-      DiffLine.new("  city: string", :added),
-      DiffLine.new("", :blank),
-      DiffLine.new("}", :no_change)
+      DiffLine.new("{", :no_change, 0),
+      DiffLine.new("  city: string", :added, 2),
+      DiffLine.new("", :blank, 0),
+      DiffLine.new("}", :no_change, 0)
     ]
     assert_equal expected, diff.after
   end
@@ -122,17 +122,17 @@ class DiffTest < ActiveSupport::TestCase
 
     diff = Diff.new(endpoint1, endpoint2)
     expected = [
-      DiffLine.new("{", :no_change),
-      DiffLine.new("  name: string", :no_change),
-      DiffLine.new("", :blank),
-      DiffLine.new("}", :no_change)
+      DiffLine.new("{", :no_change, 0),
+      DiffLine.new("  name: string", :no_change, 2),
+      DiffLine.new("", :blank, 0),
+      DiffLine.new("}", :no_change, 0)
     ]
     assert_equal expected, diff.before
     expected = [
-      DiffLine.new("{", :no_change),
-      DiffLine.new("  name: string", :no_change),
-      DiffLine.new("  city: string", :added),
-      DiffLine.new("}", :no_change)
+      DiffLine.new("{", :no_change, 0),
+      DiffLine.new("  name: string", :no_change, 2),
+      DiffLine.new("  city: string", :added, 2),
+      DiffLine.new("}", :no_change, 0)
     ]
     assert_equal expected, diff.after
   end
@@ -151,15 +151,15 @@ class DiffTest < ActiveSupport::TestCase
 
     diff = Diff.new(endpoint1, endpoint2)
     expected = [
-      DiffLine.new("{", :no_change),
-      DiffLine.new("  name: string", :type_changed),
-      DiffLine.new("}", :no_change)
+      DiffLine.new("{", :no_change, 0),
+      DiffLine.new("  name: string", :type_changed, 2),
+      DiffLine.new("}", :no_change, 0)
     ]
     assert_equal expected, diff.before
     expected = [
-      DiffLine.new("{", :no_change),
-      DiffLine.new("  name: number", :type_changed),
-      DiffLine.new("}", :no_change)
+      DiffLine.new("{", :no_change, 0),
+      DiffLine.new("  name: number", :type_changed, 2),
+      DiffLine.new("}", :no_change, 0)
     ]
     assert_equal expected, diff.after
   end
@@ -187,23 +187,25 @@ class DiffTest < ActiveSupport::TestCase
 
     diff = Diff.new(endpoint1, endpoint2)
     expected = [
-      DiffLine.new("{", :no_change),
-      DiffLine.new("  name: string", :no_change),
-      DiffLine.new("  child: {", :no_change),
-      DiffLine.new("    name: string", :no_change),
-      DiffLine.new("", :blank),
-      DiffLine.new("  }", :no_change),
-      DiffLine.new("}", :no_change)
+      DiffLine.new("{", :no_change, 0),
+      DiffLine.new("  name: string", :no_change, 2),
+      DiffLine.new("  child:", :no_change, 2),
+      DiffLine.new("  {", :no_change, 2),
+      DiffLine.new("    name: string", :no_change, 4),
+      DiffLine.new("", :blank, 0),
+      DiffLine.new("  }", :no_change, 2),
+      DiffLine.new("}", :no_change, 0)
     ]
     assert_equal expected, diff.before
     expected = [
-      DiffLine.new("{", :no_change),
-      DiffLine.new("  name: string", :no_change),
-      DiffLine.new("  child: {", :no_change),
-      DiffLine.new("    name: string", :no_change),
-      DiffLine.new("    age: number", :added),
-      DiffLine.new("  }", :no_change),
-      DiffLine.new("}", :no_change)
+      DiffLine.new("{", :no_change, 0),
+      DiffLine.new("  name: string", :no_change, 2),
+      DiffLine.new("  child:", :no_change, 2),
+      DiffLine.new("  {", :no_change, 2),
+      DiffLine.new("    name: string", :no_change, 4),
+      DiffLine.new("    age: number", :added, 4),
+      DiffLine.new("  }", :no_change, 2),
+      DiffLine.new("}", :no_change, 0)
     ]
     assert_equal expected, diff.after
   end

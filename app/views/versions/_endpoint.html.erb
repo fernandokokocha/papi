@@ -8,7 +8,7 @@
     <tbody>
     <% diff_lines.each do |diff_line| %>
       <tr class="<%= diff_line.change %>">
-        <td><%= diff_line.line %></td>
+        <td><%= diff_line.line_with_span_if_primitive %></td>
       </tr>
     <% end %>
     </tbody>

@@ -50,7 +50,7 @@
                     }
 
                     &.added {
-                        background: greenyellow;
+                        background: #D1FFBD;
                     }
 
                     &.removed {
@@ -64,12 +64,24 @@
                     &.no_change {
                         background: white;
                     }
-                }
 
+                    span {
+                        padding: 1px;
+                        margin: 1px;
+                        &.number {
+                            background: lawngreen;
+                        }
+                        &.boolean {
+                            background: cornflowerblue;
+                        }
+                        &.string {
+                            background: red;
+                        }
+                    }
+                }
             }
         }
     }
-
 
     .new-version-form-container {
         padding: 0 0 10px 0;
@@ -96,7 +108,7 @@
                     }
 
                     &.added {
-                        background: greenyellow;
+                        background: #D1FFBD;
                     }
 
                     &.removed {
