@@ -1,4 +1,4 @@
-<div class="version-view">
+<div class="version-view" data-controller="endpoint" >
   <h1><%= @version.project.name %></h1>
   <%= form_with model: [@project, @version] do |f| %>
     <%= f.hidden_field :order %>
@@ -25,7 +25,7 @@
           </td>
         </tr>
       <% end %>
-      <tr data-controller="endpoint" data-endpoint-target="container">
+      <tr data-endpoint-target="container">
         <td></td>
         <td>
           <div class="new-version-form-container">

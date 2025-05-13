@@ -21,6 +21,10 @@
 
         td {
             vertical-align: top;
+
+            &.removed-endpoint {
+                background: red;
+            }
         }
     }
 

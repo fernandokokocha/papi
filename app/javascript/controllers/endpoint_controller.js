@@ -17,6 +17,11 @@ export default class extends Controller {
         this.bodyTarget.innerHTML = this.emptyObject()
     }
 
+    remove(event) {
+        const layoutTD = event.target.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
+        layoutTD.innerHTML = ''
+    }
+
     emptyObject() {
         return `
             <tr>

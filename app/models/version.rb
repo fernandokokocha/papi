@@ -11,6 +11,12 @@ class Version < ApplicationRecord
     project.versions.find_by(order: order + 1)
   end
 
+  def removed_endpoints
+    return [] unless self.next
+    next_endpoints = self.next.endpoints
+    endpoints.reject { |e| next_endpoints.any? { |ne| ne.url == e.url && ne.http_verb == e.http_verb } }
+  end
+
   amoeba do
     enable
   end

@@ -6,6 +6,7 @@
         <%= f.hidden_field :http_verb, value: endpoint.http_verb, name: "version[endpoints_attributes][][http_verb]" %>
         <%= f.hidden_field :url, value: endpoint.url, name: "version[endpoints_attributes][][url]" %>
         <%= endpoint.name %>
+        <button type="button" data-action="endpoint#remove">x</button>
       </th>
     </tr>
     </thead>

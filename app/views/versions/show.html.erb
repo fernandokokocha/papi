@@ -46,6 +46,16 @@
         </tr>
       <% end %>
     <% end %>
+
+    <% @previous_version.removed_endpoints.each do |endpoint| %>
+      <tr>
+        <td class="removed-endpoint">
+          <%= render "endpoint", endpoint_name: endpoint.name, diff_lines: endpoint.diff(@previous_version).before %>
+        </td>
+        <td>
+        </td>
+      </tr>
+    <% end %>
   </table>
 
   <%= link_to "Back", projects_path %>
