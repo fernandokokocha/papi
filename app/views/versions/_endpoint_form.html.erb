@@ -3,9 +3,8 @@
     <thead>
     <tr>
       <th>
-        <%= f.hidden_field :http_verb, value: endpoint.http_verb, name: "version[endpoints_attributes][][http_verb]" %>
-        <%= f.hidden_field :url, value: endpoint.url, name: "version[endpoints_attributes][][url]" %>
-        <%= endpoint.name %>
+        <%= select_tag :http_verb, options_for_select({ "GET": "verb_get", "POST": "verb_post", "DELETE": "verb_delete", "PATCH": "verb_patch", "PUT": "verb_put" }, endpoint.http_verb), { id: nil, name: "version[endpoints_attributes][][http_verb]" } %>
+        <%= f.text_field :url, value: endpoint.url, name: "version[endpoints_attributes][][url]" %>
         <button type="button" data-action="endpoint#remove">x</button>
       </th>
     </tr>
@@ -17,7 +16,7 @@
           <%= f.hidden_field :endpoint_root, value: "", "data-root-target": "endpointRoot", name: "version[endpoints_attributes][][original_endpoint_root]" %>
           <%= render "endpoint_form_object", object: endpoint.endpoint_root %>
         </div>
-     </td>
+      </td>
     </tr>
     </tbody>
   </table>

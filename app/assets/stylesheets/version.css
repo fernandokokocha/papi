@@ -22,67 +22,70 @@
         td {
             vertical-align: top;
 
-            &.removed-endpoint {
-                background: red;
-            }
-        }
-    }
+            .lines-container {
+                padding: 0 0 10px 0;
 
-    .lines-container {
-        padding: 0 0 10px 0;
+                table.lines {
+                    width: 100%;
+                    padding: 0 0 10px 0;
 
-        table.lines {
-            width: 100%;
-            padding: 0 0 10px 0;
-
-            th {
-                font-size: 18px;
-                background: aquamarine;
-                text-align: left;
-            }
-
-            tbody {
-                background: azure;
-                font-family: monospace;
-                white-space: pre;
-
-                tr {
-                    height: 15px;
-
-                    td {
-                        padding: 0;
+                    th {
+                        font-size: 18px;
+                        background: aquamarine;
+                        text-align: left;
                     }
 
-                    &.added {
-                        background: #D1FFBD;
-                    }
+                    tbody {
+                        font-family: monospace;
+                        white-space: pre;
 
-                    &.removed {
-                        background: lightpink;
-                    }
+                        tr {
+                            height: 15px;
 
-                    &.type_changed {
-                        background: sandybrown;
-                    }
+                            td {
+                                padding: 0;
+                            }
 
-                    &.no_change {
-                        background: white;
-                    }
+                            &.added {
+                                background: #D1FFBD;
+                            }
 
-                    span {
-                        padding: 1px;
-                        margin: 1px;
-                        &.number {
-                            background: lawngreen;
-                        }
-                        &.boolean {
-                            background: cornflowerblue;
-                        }
-                        &.string {
-                            background: red;
+                            &.removed {
+                                background: lightpink;
+                            }
+
+                            &.type_changed {
+                                background: sandybrown;
+                            }
+
+                            &.no_change {
+                                background: white;
+                            }
+
+                            span {
+                                padding: 1px;
+                                margin: 1px;
+                                &.number {
+                                    background: lawngreen;
+                                }
+                                &.boolean {
+                                    background: cornflowerblue;
+                                }
+                                &.string {
+                                    background: red;
+                                }
+                            }
                         }
                     }
                 }
+            }
+
+            &.removed-endpoint {
+                background: lightpink;
+            }
+
+            &.added-endpoint {
+                background: #D1FFBD;
             }
         }
     }

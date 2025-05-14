@@ -17,6 +17,18 @@ class Version < ApplicationRecord
     endpoints.reject { |e| next_endpoints.any? { |ne| ne.url == e.url && ne.http_verb == e.http_verb } }
   end
 
+  def added_endpoints
+    return [] unless self.previous
+    next_endpoints = self.previous.endpoints
+    endpoints.reject { |e| next_endpoints.any? { |ne| ne.url == e.url && ne.http_verb == e.http_verb } }
+  end
+
+  def changed_endpoints
+    return [] unless self.previous
+    next_endpoints = self.previous.endpoints
+    endpoints.reject { |e| next_endpoints.none? { |ne| ne.url == e.url && ne.http_verb == e.http_verb } }
+  end
+
   amoeba do
     enable
   end

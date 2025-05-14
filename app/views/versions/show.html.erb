@@ -23,34 +23,46 @@
         </th>
       </tr>
     </thead>
-    <% @version.endpoints.each do |endpoint| %>
+
+    <% @version.changed_endpoints.each do |endpoint| %>
       <% if (@diff = endpoint.diff(@previous_version)) %>
         <tr>
           <td>
-            <%= render "endpoint", endpoint_name: endpoint.name, diff_lines: endpoint.diff(@previous_version).before %>
+            <%= render "endpoint_diff_changed", endpoint_name: endpoint.name, diff_lines: endpoint.diff(@previous_version).before %>
           </td>
           <td>
-            <%= render "endpoint", endpoint_name: endpoint.name, diff_lines: endpoint.diff(@previous_version).after %>
+            <%= render "endpoint_diff_changed", endpoint_name: endpoint.name, diff_lines: endpoint.diff(@previous_version).after %>
           </td>
           <td></td>
         </tr>
       <% else %>
         <tr>
           <td>
-            <%= render "endpoint", endpoint_name: endpoint.name, diff_lines: Diff.new(nil, endpoint).before %>
+            <%= render "endpoint_diff_changed", endpoint_name: endpoint.name, diff_lines: Diff.new(nil, endpoint).before %>
           </td>
           <td>
-            <%= render "endpoint", endpoint_name: endpoint.name, diff_lines: Diff.new(nil, endpoint).after %>
+            <%= render "endpoint_diff_changed", endpoint_name: endpoint.name, diff_lines: Diff.new(nil, endpoint).after %>
           </td>
           <td></td>
         </tr>
       <% end %>
     <% end %>
 
-    <% @previous_version.removed_endpoints.each do |endpoint| %>
+    <% @version.added_endpoints.each do |endpoint| %>
+      <tr>
+        <td>
+        </td>
+        <td class="added-endpoint">
+          <%= render "endpoint_diff_added", endpoint_name: endpoint.name, diff_lines: Diff.new(nil, endpoint).after %>
+        </td>
+        <td></td>
+      </tr>
+    <% end %>
+
+    <% @previous_version&.removed_endpoints&.each do |endpoint| %>
       <tr>
         <td class="removed-endpoint">
-          <%= render "endpoint", endpoint_name: endpoint.name, diff_lines: endpoint.diff(@previous_version).before %>
+          <%= render "endpoint_diff_removed", endpoint_name: endpoint.name, diff_lines: endpoint.diff(@previous_version).before %>
         </td>
         <td>
         </td>
