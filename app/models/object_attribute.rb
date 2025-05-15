@@ -14,4 +14,8 @@ class ObjectAttribute < ApplicationRecord
       " " * t + "#{name}: #{value_lines}"
     end
   end
+
+  def to_example_json
+    '"' + name + '": ' + value.to_example_json
+  end
 end

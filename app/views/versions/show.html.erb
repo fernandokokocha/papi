@@ -28,20 +28,20 @@
       <% if (@diff = endpoint.diff(@previous_version)) %>
         <tr>
           <td>
-            <%= render "endpoint_diff_changed", endpoint_name: endpoint.name, diff_lines: endpoint.diff(@previous_version).before %>
+            <%= render "endpoint_diff_changed", endpoint: endpoint, diff_lines: endpoint.diff(@previous_version).before %>
           </td>
           <td>
-            <%= render "endpoint_diff_changed", endpoint_name: endpoint.name, diff_lines: endpoint.diff(@previous_version).after %>
+            <%= render "endpoint_diff_changed", endpoint: endpoint, diff_lines: endpoint.diff(@previous_version).after %>
           </td>
           <td></td>
         </tr>
       <% else %>
         <tr>
           <td>
-            <%= render "endpoint_diff_changed", endpoint_name: endpoint.name, diff_lines: Diff.new(nil, endpoint).before %>
+            <%= render "endpoint_diff_changed", endpoint: endpoint, diff_lines: Diff.new(nil, endpoint).before %>
           </td>
           <td>
-            <%= render "endpoint_diff_changed", endpoint_name: endpoint.name, diff_lines: Diff.new(nil, endpoint).after %>
+            <%= render "endpoint_diff_changed", endpoint: endpoint, diff_lines: Diff.new(nil, endpoint).after %>
           </td>
           <td></td>
         </tr>
@@ -53,7 +53,7 @@
         <td>
         </td>
         <td class="added-endpoint">
-          <%= render "endpoint_diff_added", endpoint_name: endpoint.name, diff_lines: Diff.new(nil, endpoint).after %>
+          <%= render "endpoint_diff_added", endpoint: endpoint, diff_lines: Diff.new(nil, endpoint).after %>
         </td>
         <td></td>
       </tr>
@@ -62,7 +62,7 @@
     <% @previous_version&.removed_endpoints&.each do |endpoint| %>
       <tr>
         <td class="removed-endpoint">
-          <%= render "endpoint_diff_removed", endpoint_name: endpoint.name, diff_lines: endpoint.diff(@previous_version).before %>
+          <%= render "endpoint_diff_removed", endpoint: endpoint, diff_lines: endpoint.diff(@previous_version).before %>
         </td>
         <td>
         </td>

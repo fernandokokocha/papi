@@ -2,7 +2,14 @@
   <table class="lines">
     <thead>
     <tr>
-      <th><%= endpoint_name %></th>
+      <th>
+        <%= endpoint.name %>
+        <button type="button" onclick="
+        (function copy() {
+          navigator.clipboard.writeText('<%= endpoint.example_json %>');
+        })()
+        ">Example JSON</button>
+      </th>
     </tr>
     </thead>
     <tbody>

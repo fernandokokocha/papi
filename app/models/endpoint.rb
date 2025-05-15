@@ -25,4 +25,8 @@ class Endpoint < ApplicationRecord
     return nil if previous_endpoint.nil?
     Diff.new(previous_endpoint, self)
   end
+
+  def example_json
+    endpoint_root.to_example_json
+  end
 end

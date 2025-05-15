@@ -21,6 +21,14 @@ class ObjectNode < ApplicationRecord
     object_attributes.sort_by(&:order).map { |oa| oa.lines(t) }.flatten
   end
 
+  def to_example_json
+    attrs = object_attributes.order(:order).map do |oa|
+      oa.to_example_json
+    end
+
+    "{ " + attrs.join(", ") + " }"
+  end
+
   def ==(other)
     children_match = object_attributes.all? do |attr|
       found = other.object_attributes.where(name: attr.name).first

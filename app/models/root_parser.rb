@@ -1,6 +1,6 @@
 class RootParser
   def parse_object(str)
-    root = ObjectNode.create
+    root = ObjectNode.new
     attrs = split_by_comma(str[1...-1])
     attrs.map.with_index do |attr, i|
       raw_name = attr.split(":")[0]
@@ -14,8 +14,7 @@ class RootParser
       end
 
       value = parse_value(raw_value)
-
-      ObjectAttribute.create(name: raw_name, value: value, order: i, parent: root)
+      root.object_attributes.build(name: raw_name, value: value, order: i, parent: root)
     end
     root
   end

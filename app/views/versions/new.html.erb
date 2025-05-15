@@ -1,6 +1,7 @@
 <div class="version-view" data-controller="endpoint" >
   <h1><%= @version.project.name %></h1>
   <%= form_with model: [@project, @version] do |f| %>
+    <%= f.hidden_field :project_id %>
     <%= f.hidden_field :order %>
     <table class="layout">
       <thead>
@@ -18,7 +19,7 @@
       <% @version.endpoints.each do |endpoint| %>
         <tr>
           <td>
-            <%= render "endpoint_diff_changed", endpoint_name: endpoint.name, diff_lines: endpoint.diff(@latest_version).before %>
+            <%= render "endpoint_diff_changed", endpoint: endpoint, diff_lines: endpoint.diff(@latest_version).before %>
           </td>
           <td>
             <%= render "endpoint_form", endpoint: endpoint, f: f %>

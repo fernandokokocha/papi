@@ -29,13 +29,4 @@ export default class extends Controller {
 
         return container;
     }
-
-    closeButton() {
-        const button = document.createElement("button")
-        button.setAttribute("type", "button")
-        button.setAttribute("data-action", "root#removeAttribute")
-        button.innerText = "x";
-
-        return button;
-    }
 }

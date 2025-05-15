@@ -17,16 +17,13 @@ class VersionsController < ApplicationController
 
   def create
     params.permit!
-    params[:version][:project_id] = params[:project_id]
-    roots = []
     params[:version][:endpoints_attributes].map do |endpoint_attr|
-      roots << RootParser.new.parse_object(endpoint_attr[:original_endpoint_root])
+      endpoint_root =  RootParser.new.parse_object(endpoint_attr[:original_endpoint_root])
+      endpoint_root.save
+      endpoint_attr[:endpoint_root_id] = endpoint_root.id
+      endpoint_attr[:endpoint_root_type] = "ObjectNode"
     end
     @version = Version.new(params[:version])
-    @version.endpoints.zip(roots) do |endpoint, endpoint_root|
-      endpoint.endpoint_root_id = endpoint_root.id
-      endpoint.endpoint_root_type = "ObjectNode"
-    end
 
     if @version.save
       redirect_to project_version_path(id: @version.id, project_id: @version.project.id)
