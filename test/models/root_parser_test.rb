@@ -9,6 +9,7 @@ class RootParserTest < ActiveSupport::TestCase
 
   test "parse { a: string }" do
     actual = RootParser.new.parse_object("{ a: string }")
+    actual.save
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "a")
     ])
@@ -18,6 +19,7 @@ class RootParserTest < ActiveSupport::TestCase
 
   test "parse { a: number }" do
     actual = RootParser.new.parse_object("{ a: number }")
+    actual.save
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "a", value:
         FactoryBot.create(:primitive_node, kind: "number"))
@@ -28,6 +30,7 @@ class RootParserTest < ActiveSupport::TestCase
 
   test "parse { a: string, b: number }" do
     actual = RootParser.new.parse_object("{ a: string, b: number }")
+    actual.save
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "a"),
       FactoryBot.create(:object_attribute, order: 1, name: "b", value:
@@ -39,6 +42,7 @@ class RootParserTest < ActiveSupport::TestCase
 
   test "parse { a: { b: string } }" do
     actual = RootParser.new.parse_object("{ a: { b: string } }")
+    actual.save
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "a", value:
         FactoryBot.create(:object_node, object_attributes: [
@@ -51,6 +55,7 @@ class RootParserTest < ActiveSupport::TestCase
 
   test "parse { a: { b: string, c: number } }" do
     actual = RootParser.new.parse_object("{ a: { b: string, c: number } }")
+    actual.save
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "a", value:
         FactoryBot.create(:object_node, object_attributes: [
@@ -66,6 +71,7 @@ class RootParserTest < ActiveSupport::TestCase
 
   test "parse real life problem" do
     actual = RootParser.new.parse_object("{name:string,child:{first_name:string,last_name:string,third_name:number},elo:string}")
+    actual.save
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "name"),
       FactoryBot.create(:object_attribute, order: 1, name: "child", value:
@@ -84,6 +90,7 @@ class RootParserTest < ActiveSupport::TestCase
 
   test "parse three levels of nesting" do
     actual = RootParser.new.parse_object("{name:string,child:{first_name:string,last_name:string,obj:{new:string}}}")
+    actual.save
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "name"),
       FactoryBot.create(:object_attribute, order: 1, name: "child", value:
