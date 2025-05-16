@@ -1,15 +1,55 @@
 class Diff
-  attr_accessor :endpoint1, :endpoint2, :before, :after
+  attr_accessor :before, :after
 
-  def initialize(endpoint1, endpoint2)
-    @endpoint1 = endpoint1
-    @endpoint2 = endpoint2
+  def diff(value1, value2, indent = 0, parent_name = "")
+    @before = []
+    @after = []
 
-    if @endpoint1
-      @before, @after = diff_objects(@endpoint1.endpoint_root, @endpoint2.endpoint_root, 0)
+    if value1.nil? && value2.nil?
+      return self
+    elsif value1.nil?
+      if value2.is_a?(ObjectNode)
+        @before, @after = diff_nil(value2, indent, parent_name)
+      elsif value2.is_a?(PrimitiveNode)
+        @before << DiffLine.new("", :blank, 0)
+        @after << DiffLine.new(primitive_line(value2, indent, parent_name), :added, indent)
+      else
+        @before << DiffLine.new("", :blank, 0)
+        @after << DiffLine.new(value_line(value2, indent, parent_name), :added, indent)
+      end
+    elsif value2.nil?
+      if value1.is_a?(ObjectNode)
+        @after, @before = diff_nil(value1, indent, parent_name)
+        @before.each { |line| line.change = line.change == :added ? :removed : line.change }
+        @after.each { |line| line.change = :blank }
+      elsif value1.is_a?(PrimitiveNode)
+        @before << DiffLine.new(primitive_line(value1, indent, parent_name), :removed, indent)
+        @after << DiffLine.new("", :blank, 0)
+      else
+        @before << DiffLine.new(value_line(value1, indent, parent_name), :removed, indent)
+        @after << DiffLine.new("", :blank, 0)
+      end
+    elsif value1.is_a?(ObjectNode) && value2.is_a?(ObjectNode)
+      @before, @after = diff_objects(value1, value2, indent, parent_name)
+    elsif value1.is_a?(PrimitiveNode) && value2.is_a?(PrimitiveNode)
+      if value1.kind == value2.kind
+        line = primitive_line(value1, indent, parent_name)
+        @before << DiffLine.new(line, :no_change, indent)
+        @after << DiffLine.new(line, :no_change, indent)
+      else
+        @before << DiffLine.new(primitive_line(value1, indent, parent_name), :type_changed, indent)
+        @after << DiffLine.new(primitive_line(value2, indent, parent_name), :type_changed, indent)
+      end
+    elsif value1.is_a?(ObjectNode)
+      process_object_changed_to_other(value1, value2, indent, parent_name)
+    elsif value2.is_a?(ObjectNode)
+      process_other_changed_to_object(value1, value2, indent, parent_name)
     else
-      @before, @after = diff_nil(@endpoint2.endpoint_root, 0)
+      @before << DiffLine.new(value_line(value1, indent, parent_name), :type_changed, indent)
+      @after << DiffLine.new(value_line(value2, indent, parent_name), :type_changed, indent)
     end
+
+    self
   end
 
   def diff_objects(object1, object2, indent, parent_name = "")
@@ -72,6 +112,56 @@ class Diff
   end
 
   private
+
+  def value_line(value, indent, parent_name)
+    space = " " * indent
+    if parent_name.empty?
+      "#{space}#{value}"
+    else
+      if value.is_a?(PrimitiveNode)
+        "#{space}#{parent_name}: #{value.kind}"
+      else
+        "#{space}#{parent_name}: #{value}"
+      end
+    end
+  end
+
+  def primitive_line(primitive, indent, parent_name)
+    space = " " * indent
+    if parent_name.empty?
+      "#{space}#{primitive.kind}"
+    else
+      "#{space}#{parent_name}: #{primitive.kind}"
+    end
+  end
+
+  def process_object_changed_to_other(object, other, indent, parent_name)
+    object_diff = diff_nil(object, indent, parent_name)
+    object_diff_before = object_diff[1].each_with_index.map do |diff, i|
+      if i == 0 && parent_name.length > 0
+        @after << DiffLine.new(value_line(other, indent, parent_name), :type_changed, indent)
+      else
+        @after << DiffLine.new("", :blank, 0)
+      end
+      new_diff = DiffLine.new(diff.line, :type_changed, diff.indent)
+      new_diff
+    end
+    @before.concat(object_diff_before)
+  end
+
+  def process_other_changed_to_object(other, object, indent, parent_name)
+    object_diff = diff_nil(object, indent, parent_name)
+    object_diff_after = object_diff[1].each_with_index.map do |diff, i|
+      if i == 0 && parent_name.length > 0
+        @before << DiffLine.new(value_line(other, indent, parent_name), :type_changed, indent)
+      else
+        @before << DiffLine.new("", :blank, 0)
+      end
+      new_diff = DiffLine.new(diff.line, :type_changed, diff.indent)
+      new_diff
+    end
+    @after.concat(object_diff_after)
+  end
 
   def process_added_and_changed_attributes(object1, object2, indent, before, after)
     object2.object_attributes.sort_by { |oa| oa.order }.each do |attribute|

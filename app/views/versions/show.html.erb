@@ -27,10 +27,11 @@
     <% @version.existing_endpoints.each do |previous_endpoint, endpoint| %>
       <tr>
         <td>
-          <%= render "endpoint_diff_changed", endpoint: previous_endpoint, diff_lines: Diff.new(previous_endpoint, endpoint).before %>
+          <% diff = Diff.new.diff(previous_endpoint.endpoint_root, endpoint.endpoint_root) %>
+          <%= render "endpoint_diff_changed", endpoint: previous_endpoint, diff_lines: diff.before %>
         </td>
         <td>
-          <%= render "endpoint_diff_changed", endpoint: endpoint, diff_lines: Diff.new(previous_endpoint, endpoint).after %>
+          <%= render "endpoint_diff_changed", endpoint: endpoint, diff_lines: diff.after %>
         </td>
         <td></td>
       </tr>
@@ -41,7 +42,8 @@
         <td>
         </td>
         <td class="added-endpoint">
-          <%= render "endpoint_diff_added", endpoint: endpoint, diff_lines: Diff.new(nil, endpoint).after %>
+          <% diff = Diff.new.diff(nil, endpoint) %>
+          <%= render "endpoint_diff_added", endpoint: endpoint, diff_lines: diff.after %>
         </td>
         <td></td>
       </tr>
@@ -50,7 +52,8 @@
     <% @previous_version&.removed_endpoints&.each do |endpoint| %>
       <tr>
         <td class="removed-endpoint">
-          <%= render "endpoint_diff_removed", endpoint: endpoint, diff_lines: Diff.new(nil, endpoint).after %>
+          <% diff = Diff.new.diff(nil, endpoint) %>
+          <%= render "endpoint_diff_removed", endpoint: endpoint, diff_lines: diff.after %>
         </td>
         <td>
         </td>
