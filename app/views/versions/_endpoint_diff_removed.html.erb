@@ -14,9 +14,15 @@
     </thead>
     <tbody>
     <% diff_lines.each do |diff_line| %>
-      <tr>
-        <td><%= diff_line.line_with_span_if_primitive %></td>
-      </tr>
+      <% if diff_line.type %>
+        <tr>
+          <td><%= diff_line.pre_type %><% if diff_line.type %><span class="<%= diff_line.type %>"><%= diff_line.type %></span><% end %></td>
+        </tr>
+      <% else %>
+        <tr>
+          <td><%= diff_line.line %></td>
+        </tr>
+      <% end %>
     <% end %>
     </tbody>
   </table>

@@ -20,7 +20,6 @@ class Endpoint < ApplicationRecord
   end
 
   def diff(previous_version)
-    return nil if previous_version.nil?
     previous_endpoint = previous_version.endpoints.find_by(url: url, http_verb: http_verb)
     return nil if previous_endpoint.nil?
     Diff.new(previous_endpoint, self)

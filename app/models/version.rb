@@ -23,10 +23,16 @@ class Version < ApplicationRecord
     endpoints.reject { |e| next_endpoints.any? { |ne| ne.name == e.name } }
   end
 
-  def changed_endpoints
+  def existing_endpoints
     return [] unless self.previous
-    next_endpoints = self.previous.endpoints
-    endpoints.reject { |e| next_endpoints.none? { |ne| ne.name == e.name } }
+    previous_endpoints = self.previous.endpoints
+    ret = []
+    endpoints.each do |e|
+      found = previous_endpoints.find { |ne| ne.name == e.name }
+      ret << [ e, found ] if found
+    end
+
+    ret
   end
 
   amoeba do

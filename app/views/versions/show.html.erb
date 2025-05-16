@@ -2,50 +2,38 @@
   <h1><%= @version.project.name %></h1>
   <table class="layout">
     <thead>
-      <tr>
-        <th class="previous">
-          <% if @previous_version.present? %>
-            <%= link_to @previous_version.name, project_version_path(id: @previous_version.id, project_id: @previous_version.project.id) %>
-            <div class="date"><%= @previous_version.created_at %></div>
-          <% end %>
-        </th>
-        <th class="current">
-          <%= @version.name %>
-          <div class="date"><%= @version.created_at %></div>
-        </th>
-        <th class="next">
-          <% if @next_version.present? %>
-            <%= link_to "see next - #{@next_version.name}", project_version_path(id: @next_version.id, project_id: @next_version.project.id) %>
-            <div class="date"><%= @next_version.created_at %></div>
-          <% else %>
-            <%= link_to "Create new version", new_project_version_path(project_id: @version.project.id) %>
-          <% end %>
-        </th>
-      </tr>
+    <tr>
+      <th class="previous">
+        <% if @previous_version.present? %>
+          <%= link_to @previous_version.name, project_version_path(id: @previous_version.id, project_id: @previous_version.project.id) %>
+          <div class="date"><%= @previous_version.created_at %></div>
+        <% end %>
+      </th>
+      <th class="current">
+        <%= @version.name %>
+        <div class="date"><%= @version.created_at %></div>
+      </th>
+      <th class="next">
+        <% if @next_version.present? %>
+          <%= link_to "see next - #{@next_version.name}", project_version_path(id: @next_version.id, project_id: @next_version.project.id) %>
+          <div class="date"><%= @next_version.created_at %></div>
+        <% else %>
+          <%= link_to "Create new version", new_project_version_path(project_id: @version.project.id) %>
+        <% end %>
+      </th>
+    </tr>
     </thead>
 
-    <% @version.changed_endpoints.each do |endpoint| %>
-      <% if (@diff = endpoint.diff(@previous_version)) %>
-        <tr>
-          <td>
-            <%= render "endpoint_diff_changed", endpoint: endpoint, diff_lines: endpoint.diff(@previous_version).before %>
-          </td>
-          <td>
-            <%= render "endpoint_diff_changed", endpoint: endpoint, diff_lines: endpoint.diff(@previous_version).after %>
-          </td>
-          <td></td>
-        </tr>
-      <% else %>
-        <tr>
-          <td>
-            <%= render "endpoint_diff_changed", endpoint: endpoint, diff_lines: Diff.new(nil, endpoint).before %>
-          </td>
-          <td>
-            <%= render "endpoint_diff_changed", endpoint: endpoint, diff_lines: Diff.new(nil, endpoint).after %>
-          </td>
-          <td></td>
-        </tr>
-      <% end %>
+    <% @version.existing_endpoints.each do |previous_endpoint, endpoint| %>
+      <tr>
+        <td>
+          <%= render "endpoint_diff_changed", endpoint: previous_endpoint, diff_lines: Diff.new(previous_endpoint, endpoint).before %>
+        </td>
+        <td>
+          <%= render "endpoint_diff_changed", endpoint: endpoint, diff_lines: Diff.new(previous_endpoint, endpoint).after %>
+        </td>
+        <td></td>
+      </tr>
     <% end %>
 
     <% @version.added_endpoints.each do |endpoint| %>
@@ -62,7 +50,7 @@
     <% @previous_version&.removed_endpoints&.each do |endpoint| %>
       <tr>
         <td class="removed-endpoint">
-          <%= render "endpoint_diff_removed", endpoint: endpoint, diff_lines: endpoint.diff(@previous_version).before %>
+          <%= render "endpoint_diff_removed", endpoint: endpoint, diff_lines: Diff.new(nil, endpoint).after %>
         </td>
         <td>
         </td>
