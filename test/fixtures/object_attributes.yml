@@ -1,85 +1,79 @@
 # Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
 
-o1a0:
-  parent: object1
+o11a0:
+  parent: object11
   order: 0
   name: name
   value: p1 (PrimitiveNode)
 
-o1a1:
-  parent: object1
-  order: 1
-  name: age
-  value: p2 (PrimitiveNode)
-
-o1a2:
-  parent: object1
+o11a1:
+  parent: object11
   order: 1
   name: ref
-  value: p10 (PrimitiveNode)
+  value: p5 (PrimitiveNode)
 
-o2a0:
-  parent: object2
+o11a2:
+  parent: object11
+  order: 2
+  name: is_pies
+  value: p6 (PrimitiveNode)
+
+o11a3:
+  parent: object11
+  order: 3
+  name: obj1
+  value: object111 (ObjectNode)
+
+o111a0:
+  parent: object111
   order: 0
   name: name
-  value: p3 (PrimitiveNode)
+  value: p9 (PrimitiveNode)
 
-o2a1:
-  parent: object2
-  order: 1
-  name: child
-  value: object21 (ObjectNode)
+o12a0:
+  parent: object12
+  order: 0
+  name: name
+  value: p2 (PrimitiveNode)
 
 o21a0:
   parent: object21
   order: 0
   name: name
-  value: p4 (PrimitiveNode)
+  value: p3 (PrimitiveNode)
 
-o3a0:
-  parent: object3
-  order: 0
-  name: first_name
-  value: p5 (PrimitiveNode)
-
-o3a1:
-  parent: object3
+o21a1:
+  parent: object21
   order: 1
-  name: age
-  value: p6 (PrimitiveNode)
-
-o3a2:
-  parent: object3
-  order: 2
   name: ref
-  value: p11 (PrimitiveNode)
-
-o4a0:
-  parent: object4
-  order: 0
-  name: name
   value: p7 (PrimitiveNode)
 
-o4a1:
-  parent: object4
-  order: 1
-  name: child
-  value: object41 (ObjectNode)
-
-o41a0:
-  parent: object41
-  order: 0
-  name: first_name
-  value: p8 (PrimitiveNode)
-
-o41a1:
-  parent: object41
-  order: 1
-  name: last_name
-  value: p9 (PrimitiveNode)
-
-o5:
-  parent: object4
+o21a2:
+  parent: object21
   order: 2
   name: is_pies
-  value: p12 (PrimitiveNode)
+  value: p8 (PrimitiveNode)
+
+o21a3:
+  parent: object21
+  order: 3
+  name: obj1
+  value: object211 (ObjectNode)
+
+o211a0:
+  parent: object211
+  order: 0
+  name: first_name
+  value: p10 (PrimitiveNode)
+
+o211a1:
+  parent: object211
+  order: 1
+  name: last_name
+  value: p11 (PrimitiveNode)
+
+o22a0:
+  parent: object22
+  order: 0
+  name: name
+  value: p3 (PrimitiveNode)

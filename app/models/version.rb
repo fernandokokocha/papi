@@ -14,19 +14,19 @@ class Version < ApplicationRecord
   def removed_endpoints
     return [] unless self.next
     next_endpoints = self.next.endpoints
-    endpoints.reject { |e| next_endpoints.any? { |ne| ne.url == e.url && ne.http_verb == e.http_verb } }
+    endpoints.reject { |e| next_endpoints.any? { |ne| ne.name == e.name } }
   end
 
   def added_endpoints
-    return [] unless self.previous
+    return endpoints unless self.previous
     next_endpoints = self.previous.endpoints
-    endpoints.reject { |e| next_endpoints.any? { |ne| ne.url == e.url && ne.http_verb == e.http_verb } }
+    endpoints.reject { |e| next_endpoints.any? { |ne| ne.name == e.name } }
   end
 
   def changed_endpoints
     return [] unless self.previous
     next_endpoints = self.previous.endpoints
-    endpoints.reject { |e| next_endpoints.none? { |ne| ne.url == e.url && ne.http_verb == e.http_verb } }
+    endpoints.reject { |e| next_endpoints.none? { |ne| ne.name == e.name } }
   end
 
   amoeba do

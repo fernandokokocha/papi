@@ -3,25 +3,22 @@
 p1:
   kind: 0
 p2:
-  kind: 1
+  kind: 0
 p3:
   kind: 0
 p4:
   kind: 0
-
 p5:
-  kind: 0
-p6:
   kind: 1
+p6:
+  kind: 2
 p7:
   kind: 0
 p8:
-  kind: 0
+  kind: 2
 p9:
   kind: 0
 p10:
   kind: 0
 p11:
-  kind: 1
-p12:
-  kind: 2
+  kind: 0
