@@ -2,15 +2,15 @@
 
 project1v1:
   name: v1
-  order: 0
+  order: 1
   project: project1
   created_at: '2025-01-10 12:00'
 project1v2:
   name: v2
-  order: 1
+  order: 2
   project: project1
   created_at: '2025-02-01 12:00'
 project1v3:
   name: v3
-  order: 2
+  order: 3
   project: project1

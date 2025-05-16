@@ -9,10 +9,10 @@ class VersionsController < ApplicationController
     @project = Project.find(params[:project_id])
     @latest_version = @project.latest_version
     @version = @latest_version.amoeba_dup
-    @version.name = "New Version"
+    @version.order = @latest_version.order + 1
+    @version.name = "v#{@version.order}"
     @version.created_at = Time.now
     @version.updated_at = Time.now
-    @version.order = @latest_version.order + 1
   end
 
   def create
