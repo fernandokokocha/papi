@@ -22,7 +22,7 @@ class Endpoint < ApplicationRecord
   def diff(previous_version)
     previous_endpoint = previous_version.endpoints.find_by(url: url, http_verb: http_verb)
     return nil if previous_endpoint.nil?
-    Diff.new(previous_endpoint, self)
+    Diff.new.diff(previous_endpoint.endpoint_root, self)
   end
 
   def example_json

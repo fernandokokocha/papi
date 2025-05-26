@@ -2,10 +2,10 @@ require "test_helper"
 
 class DiffTest < ActiveSupport::TestCase
   test "nil -> empty object" do
-    endpoint1 = nil
-    endpoint2 = FactoryBot.create(:endpoint)
+    value1 =  nil
+    value2 =  FactoryBot.create(:object_node)
 
-    diff = Diff.new.diff(endpoint1, endpoint2)
+    diff = Diff.new.diff(value1, value2)
     expected = [
       DiffLine.new("", :blank, 0),
       DiffLine.new("", :blank, 0)
@@ -19,10 +19,10 @@ class DiffTest < ActiveSupport::TestCase
   end
 
   test "empty object -> empty object" do
-    endpoint1 = FactoryBot.create(:endpoint)
-    endpoint2 = FactoryBot.create(:endpoint)
+    value1 =  FactoryBot.create(:object_node)
+    value2 =  FactoryBot.create(:object_node)
 
-    diff = Diff.new.diff(endpoint1, endpoint2)
+    diff = Diff.new.diff(value1, value2)
     expected = [
       DiffLine.new("{", :no_change, 0),
       DiffLine.new("}", :no_change, 0)
@@ -32,14 +32,12 @@ class DiffTest < ActiveSupport::TestCase
   end
 
   test "empty object -> object with one attr" do
-    endpoint1 = FactoryBot.create(:endpoint)
-    endpoint2 = FactoryBot.create(:endpoint, endpoint_root:
-      FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name")
-      ])
-    )
+    value1 =  FactoryBot.create(:object_node)
+    value2 =  FactoryBot.create(:object_node, object_attributes: [
+      FactoryBot.create(:object_attribute, name: "name")
+    ])
 
-    diff = Diff.new.diff(endpoint1, endpoint2)
+    diff = Diff.new.diff(value1, value2)
     expected = [
       DiffLine.new("{", :no_change, 0),
       DiffLine.new("", :blank, 0),
@@ -55,14 +53,12 @@ class DiffTest < ActiveSupport::TestCase
   end
 
   test "object with one attr -> empty object" do
-    endpoint1 = FactoryBot.create(:endpoint, endpoint_root:
-      FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name")
-      ])
-    )
-    endpoint2 = FactoryBot.create(:endpoint)
+    value1 =  FactoryBot.create(:object_node, object_attributes: [
+      FactoryBot.create(:object_attribute, name: "name")
+    ])
+    value2 =  FactoryBot.create(:object_node)
 
-    diff = Diff.new.diff(endpoint1, endpoint2)
+    diff = Diff.new.diff(value1, value2)
     expected = [
       DiffLine.new("{", :no_change, 0),
       DiffLine.new("  name: string", :removed, 2),
@@ -79,18 +75,15 @@ class DiffTest < ActiveSupport::TestCase
   end
 
   test "object with one attr -> object with different attr" do
-    endpoint1 = FactoryBot.create(:endpoint, endpoint_root:
-      FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name")
-      ])
-    )
-    endpoint2 = FactoryBot.create(:endpoint, endpoint_root:
-      FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "city")
-      ])
-    )
+    value1 =  FactoryBot.create(:object_node, object_attributes: [
+      FactoryBot.create(:object_attribute, name: "name")
+    ])
 
-    diff = Diff.new.diff(endpoint1, endpoint2)
+    value2 =  FactoryBot.create(:object_node, object_attributes: [
+      FactoryBot.create(:object_attribute, name: "city")
+    ])
+
+    diff = Diff.new.diff(value1, value2)
     expected = [
       DiffLine.new("{", :no_change, 0),
       DiffLine.new("", :blank, 0),
@@ -108,19 +101,15 @@ class DiffTest < ActiveSupport::TestCase
   end
 
   test "object with one attr -> object with two attrs" do
-    endpoint1 = FactoryBot.create(:endpoint, endpoint_root:
-      FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name")
-      ])
-    )
-    endpoint2 = FactoryBot.create(:endpoint, endpoint_root:
-      FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name"),
-        FactoryBot.create(:object_attribute, name: "city")
-      ])
-    )
+    value1 =  FactoryBot.create(:object_node, object_attributes: [
+      FactoryBot.create(:object_attribute, name: "name")
+    ])
+    value2 =  FactoryBot.create(:object_node, object_attributes: [
+      FactoryBot.create(:object_attribute, name: "name"),
+      FactoryBot.create(:object_attribute, name: "city")
+    ])
 
-    diff = Diff.new.diff(endpoint1, endpoint2)
+    diff = Diff.new.diff(value1, value2)
     expected = [
       DiffLine.new("{", :no_change, 0),
       DiffLine.new("  name: string", :no_change, 2),
@@ -138,18 +127,15 @@ class DiffTest < ActiveSupport::TestCase
   end
 
   test "object with one attr -> object with changed attr" do
-    endpoint1 = FactoryBot.create(:endpoint, endpoint_root:
-      FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name")
-      ])
-    )
-    endpoint2 = FactoryBot.create(:endpoint, endpoint_root:
-      FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name", value: FactoryBot.create(:primitive_node, kind: "number"))
-      ])
-    )
+    value1 =  FactoryBot.create(:object_node, object_attributes: [
+      FactoryBot.create(:object_attribute, name: "name")
+    ])
 
-    diff = Diff.new.diff(endpoint1, endpoint2)
+    value2 =  FactoryBot.create(:object_node, object_attributes: [
+      FactoryBot.create(:object_attribute, name: "name", value: FactoryBot.create(:primitive_node, kind: "number"))
+    ])
+
+    diff = Diff.new.diff(value1, value2)
     expected = [
       DiffLine.new("{", :no_change, 0),
       DiffLine.new("  name: string", :type_changed, 2),
@@ -165,27 +151,25 @@ class DiffTest < ActiveSupport::TestCase
   end
 
   test "nested object added one attr" do
-    endpoint1 = FactoryBot.create(:endpoint, endpoint_root:
-      FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name"),
-        FactoryBot.create(:object_attribute, name: "child", value:
-          FactoryBot.create(:object_node, object_attributes: [
-            FactoryBot.create(:object_attribute, name: "name")
-          ]))
-      ])
-    )
-    endpoint2 = FactoryBot.create(:endpoint, endpoint_root:
-      FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name"),
-        FactoryBot.create(:object_attribute, name: "child", value:
-          FactoryBot.create(:object_node, object_attributes: [
-            FactoryBot.create(:object_attribute, name: "name"),
-            FactoryBot.create(:object_attribute, name: "age", value: FactoryBot.create(:primitive_node, kind: "number"))
-          ]))
-      ])
-    )
+    value1 =  FactoryBot.create(:object_node, object_attributes: [
+      FactoryBot.create(:object_attribute, name: "name"),
+      FactoryBot.create(:object_attribute, name: "child", value:
+        FactoryBot.create(:object_node, object_attributes: [
+          FactoryBot.create(:object_attribute, name: "name")
+        ]))
+    ])
 
-    diff = Diff.new.diff(endpoint1, endpoint2)
+    value2 =  FactoryBot.create(:object_node, object_attributes: [
+      FactoryBot.create(:object_attribute, name: "name"),
+      FactoryBot.create(:object_attribute, name: "child", value:
+        FactoryBot.create(:object_node, object_attributes: [
+          FactoryBot.create(:object_attribute, name: "name"),
+          FactoryBot.create(:object_attribute, name: "age", value:
+            FactoryBot.create(:primitive_node, kind: "number"))
+        ]))
+    ])
+
+    diff = Diff.new.diff(value1, value2)
     expected = [
       DiffLine.new("{", :no_change, 0),
       DiffLine.new("  name: string", :no_change, 2),
@@ -253,31 +237,5 @@ class DiffTest < ActiveSupport::TestCase
       DiffLine.new("", :blank, 0)
     ]
     assert_equal expected, diff.after
-  end
-
-  test "object -> primitive" do
-    value1 = FactoryBot.create(:object_node, object_attributes: [
-      FactoryBot.create(:object_attribute, name: "field")
-    ])
-    value2 = FactoryBot.create(:primitive_node, kind: "string")
-
-    diff = Diff.new.diff(value1, value2, 0, "data")
-    assert_equal :type_changed, diff.before.first.change
-    assert_equal :type_changed, diff.after.first.change
-    assert_includes diff.before.map(&:line).join, "{"
-    assert_includes diff.after.map(&:line).join, "string"
-  end
-
-  test "primitive -> object" do
-    value1 = FactoryBot.create(:primitive_node, kind: "string")
-    value2 = FactoryBot.create(:object_node, object_attributes: [
-      FactoryBot.create(:object_attribute, name: "field")
-    ])
-
-    diff = Diff.new.diff(value1, value2, 0, "data")
-    assert_equal :type_changed, diff.before.first.change
-    assert_equal :type_changed, diff.after.first.change
-    assert_includes diff.before.map(&:line).join, "string"
-    assert_includes diff.after.map(&:line).join, "{"
   end
 end
