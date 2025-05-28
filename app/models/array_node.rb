@@ -4,4 +4,15 @@ class ArrayNode < ApplicationRecord
   def to_example_json
     `[ #{value.to_example_json} ]`
   end
+
+  def to_diff(change, indent = 0)
+    ret = Diff::Lines.new([ Diff::Line.new("[", change, indent) ])
+    ret.concat(value.to_diff(change, indent + 1))
+    ret.concat([ Diff::Line.new("]", change, indent) ])
+    ret
+  end
+
+  def ==(other)
+    (self.class == other.class) && self.value == other.value
+  end
 end

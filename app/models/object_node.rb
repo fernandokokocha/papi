@@ -10,9 +10,7 @@ class ObjectNode < ApplicationRecord
   end
 
   def to_diff(change, indent = 0)
-    ret = Diff::Lines.new([
-      Diff::Line.new("{", change, indent)
-    ])
+    ret = Diff::Lines.new([ Diff::Line.new("{", change, indent) ])
 
     object_attributes.sort_by(&:order).each do |oa|
       attribute_lines = oa.value.to_diff(change, indent + 1)
