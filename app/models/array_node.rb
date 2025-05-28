@@ -2,7 +2,8 @@ class ArrayNode < ApplicationRecord
   belongs_to :value, polymorphic: true
 
   def to_example_json
-    `[ #{value.to_example_json} ]`
+    inside = %W[#{value.to_example_json} #{value.to_example_json} #{value.to_example_json}]
+    "[ #{inside.join(", ")} ]"
   end
 
   def to_diff(change, indent = 0)

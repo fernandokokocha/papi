@@ -1,5 +1,3 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 o11a0:
   parent: object11
   order: 0
@@ -77,3 +75,129 @@ o22a0:
   order: 0
   name: name
   value: p3 (PrimitiveNode)
+
+o31a0:
+  parent: object31
+  order: 0
+  name: name
+  value: p301 (PrimitiveNode)
+
+o31a1:
+  parent: object31
+  order: 1
+  name: ref
+  value: p302 (PrimitiveNode)
+
+o31a2:
+  parent: object31
+  order: 2
+  name: is_pies
+  value: p303 (PrimitiveNode)
+
+o31a3:
+  parent: object31
+  order: 3
+  name: obj1
+  value: object311 (ObjectNode)
+
+o31a4:
+  parent: object31
+  order: 4
+  name: array1
+  value: array33 (ArrayNode)
+
+o31a5:
+  parent: object31
+  order: 5
+  name: array2
+  value: array34 (ArrayNode)
+
+o311a0:
+  parent: object311
+  order: 0
+  name: first_name
+  value: p304 (PrimitiveNode)
+
+o311a1:
+  parent: object311
+  order: 1
+  name: last_name
+  value: p305 (PrimitiveNode)
+
+o33a0:
+  parent: object33
+  order: 0
+  name: id
+  value: p310 (PrimitiveNode)
+
+o33a1:
+  parent: object33
+  order: 1
+  name: is_confirmed
+  value: p311 (PrimitiveNode)
+
+o42a0:
+  parent: object42
+  order: 0
+  name: name
+  value: p401 (PrimitiveNode)
+
+o41a0:
+  parent: object41
+  order: 0
+  name: name
+  value: p403 (PrimitiveNode)
+
+o41a1:
+  parent: object41
+  order: 1
+  name: ref
+  value: p404 (PrimitiveNode)
+
+o41a2:
+  parent: object41
+  order: 2
+  name: is_pies
+  value: p405 (PrimitiveNode)
+
+o41a3:
+  parent: object41
+  order: 3
+  name: obj1
+  value: object411 (ObjectNode)
+
+o41a4:
+  parent: object41
+  order: 4
+  name: array1
+  value: array43 (ArrayNode)
+
+o41a5:
+  parent: object41
+  order: 5
+  name: array2
+  value: array44 (ArrayNode)
+
+o411a0:
+  parent: object411
+  order: 0
+  name: first_name
+  value: p406 (PrimitiveNode)
+
+o411a1:
+  parent: object411
+  order: 1
+  name: last_name
+  value: p407 (PrimitiveNode)
+
+o43a0:
+  parent: object43
+  order: 0
+  name: id
+  value: p409 (PrimitiveNode)
+
+o43a1:
+  parent: object43
+  order: 1
+  name: is_confirmed
+  value: p410 (PrimitiveNode)

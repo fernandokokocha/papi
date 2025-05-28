@@ -1,12 +1,9 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 project1v1e1:
   http_verb: 0
   url: /thing
   version: project1v1
   endpoint_root: object11 (ObjectNode)
   original_endpoint_root: ""
-
 project1v1e2:
   http_verb: 1
   url: /old_thing
@@ -20,11 +17,49 @@ project1v2e1:
   version: project1v2
   endpoint_root: object21 (ObjectNode)
   original_endpoint_root: ""
-
 project1v2e2:
   http_verb: 0
   url: /new_thing
   version: project1v2
   endpoint_root: object22 (ObjectNode)
   original_endpoint_root: ""
+
+project1v3e1:
+  http_verb: 0
+  url: /thing
+  version: project1v3
+  endpoint_root: object31 (ObjectNode)
+  original_endpoint_root: ""
+project1v3e2:
+  http_verb: 0
+  url: /new_thing
+  version: project1v3
+  endpoint_root: array31 (ArrayNode)
+  original_endpoint_root: ""
+project1v3e3:
+  http_verb: 0
+  url: /array_endpoint
+  version: project1v3
+  endpoint_root: array32 (ArrayNode)
+  original_endpoint_root: ""
+
+project1v4e1:
+  http_verb: 0
+  url: /thing
+  version: project1v4
+  endpoint_root: object41 (ObjectNode)
+  original_endpoint_root: ""
+project1v4e2:
+  http_verb: 0
+  url: /new_thing
+  version: project1v4
+  endpoint_root: p402 (PrimitiveNode)
+  original_endpoint_root: ""
+project1v4e3:
+  http_verb: 0
+  url: /array_endpoint
+  version: project1v4
+  endpoint_root: array42 (ArrayNode)
+  original_endpoint_root: ""
+
 

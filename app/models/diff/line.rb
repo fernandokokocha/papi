@@ -5,24 +5,29 @@ class Diff::Line
     @whole_line = whole_line
     @change = change
     @indent = indent
-    @is_opening = whole_line == "{"
+    @is_opening = %w({ [).include?(whole_line)
 
-    parse_whole_line
+    infer_type
   end
 
   def add_parent(name)
     @whole_line = name + ": " + @whole_line
-    parse_whole_line
+    infer_type
   end
 
-  def parse_whole_line
-    words = @whole_line.split(":")
-    if words.length > 1
-      @pre_type = words[0] + ": "
-      @type = words[1].strip!
+  def infer_type
+    if @whole_line.end_with?("string")
+      @type = "string"
+      @pre_type = @whole_line[0..-7]
+    elsif @whole_line.end_with?("number")
+      @type = "number"
+      @pre_type = @whole_line[0..-7]
+    elsif @whole_line.end_with?("boolean")
+      @type = "boolean"
+      @pre_type = @whole_line[0..-8]
     else
-      @pre_type = @whole_line
       @type = nil
+      @pre_type = @whole_line
     end
   end
 

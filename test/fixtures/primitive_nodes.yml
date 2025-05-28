@@ -1,5 +1,3 @@
-# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
-
 p1:
   kind: 0
 p2:
@@ -22,3 +20,51 @@ p10:
   kind: 0
 p11:
   kind: 0
+
+p300:
+  kind: 0
+p301:
+  kind: 0
+p302:
+  kind: 0
+p303:
+  kind: 2
+p304:
+  kind: 0
+p305:
+  kind: 0
+p306:
+  kind: 0
+p307:
+  kind: 0
+p308:
+  kind: 0
+p309:
+  kind: 1
+p310:
+  kind: 0
+p311:
+  kind: 2
+
+p400:
+  kind: 0
+p401:
+  kind: 0
+p402:
+  kind: 0
+p403:
+  kind: 0
+p404:
+  kind: 0
+p405:
+  kind: 2
+p406:
+  kind: 0
+p407:
+  kind: 0
+p408:
+  kind: 1
+p409:
+  kind: 1
+p410:
+  kind: 2

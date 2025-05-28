@@ -9,7 +9,9 @@ class Diff::ObjectNodeToObjectNode
       matching_attribute = value1.object_attributes.where(name: oa.name).limit(1)
       if matching_attribute.empty?
         before.add_line(Diff::Line.new("", :blank, 0))
-        after.add_line(Diff::Line.new("#{oa.name}: #{oa.value.kind}", :added, indent + 1))
+        subdiff = oa.value.to_diff(:added, indent + 1)
+        subdiff.add_parent(oa.name)
+        after.concat(subdiff)
       else
         other = matching_attribute.first
 
@@ -24,7 +26,10 @@ class Diff::ObjectNodeToObjectNode
       matching_attribute = value2.object_attributes.where(name: oa.name).limit(1)
       next if matching_attribute.present?
 
-      before.add_line(Diff::Line.new("#{oa.name}: #{oa.value.kind}", :removed, indent + 1))
+      subdiff = oa.value.to_diff(:removed, indent + 1)
+      subdiff.add_parent(oa.name)
+      before.concat(subdiff)
+
       after.add_line(Diff::Line.new("", :blank, 0))
     end
 
