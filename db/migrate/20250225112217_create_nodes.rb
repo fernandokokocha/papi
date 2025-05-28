@@ -17,5 +17,11 @@ class CreateNodes < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
+
+    create_table :array_nodes do |t|
+      t.references :value, polymorphic: true, index: true, null: false
+
+      t.timestamps
+    end
   end
 end

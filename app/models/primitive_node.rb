@@ -1,16 +1,10 @@
 class PrimitiveNode < ApplicationRecord
   enum :kind, [ :string, :number, :boolean ]
 
-  def print(t)
-    kind.to_s
-  end
-
-  def print_table(t)
-    kind.to_s.html_safe
-  end
-
-  def lines(t)
-    kind.to_s
+  def to_diff(change, indent = 0)
+    Diff::Lines.new([
+      Diff::Line.new(kind.to_s, change, indent)
+    ])
   end
 
   def to_example_json

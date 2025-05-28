@@ -8,21 +8,16 @@
         (function copy() {
           navigator.clipboard.writeText('<%= endpoint.example_json %>');
           })()
-        ">Example JSON</button>
+        ">Example JSON
+        </button>
       </th>
     </tr>
     </thead>
     <tbody>
     <% diff_lines.each do |diff_line| %>
-      <% if diff_line.type %>
-        <tr>
-          <td><%= diff_line.pre_type %><% if diff_line.type %><span class="<%= diff_line.type %>"><%= diff_line.type %></span><% end %></td>
-        </tr>
-      <% else %>
-        <tr>
-          <td><%= diff_line.line %></td>
-        </tr>
-      <% end %>
+      <tr>
+        <td><%= diff_line.line %></td>
+      </tr>
     <% end %>
     </tbody>
   </table>

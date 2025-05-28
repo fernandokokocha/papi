@@ -1,32 +1,27 @@
 class ObjectNode < ApplicationRecord
   has_many :object_attributes, foreign_key: :parent_id, dependent: :destroy
 
-  def print(t)
-    "{\n" + print_content(t) + "\n" + (" " * t) + "}"
-  end
-
-  def print_content(t)
-    object_attributes.sort_by(&:order).map do |oa|
-      "#{oa.print(t + 2)}"
-    end.join(",\n")
-  end
-
-  def lines(t)
-    [ "{",
-     *content_lines(t + 2),
-     " " * t + "}" ]
-  end
-
-  def content_lines(t)
-    object_attributes.sort_by(&:order).map { |oa| oa.lines(t) }.flatten
-  end
-
   def to_example_json
     attrs = object_attributes.order(:order).map do |oa|
       oa.to_example_json
     end
 
     "{ " + attrs.join(", ") + " }"
+  end
+
+  def to_diff(change, indent = 0)
+    ret = Diff::Lines.new([
+      Diff::Line.new("{", change, indent)
+    ])
+
+    object_attributes.sort_by(&:order).each do |oa|
+      attribute_lines = oa.value.to_diff(change, indent + 1)
+      attribute_lines.add_parent(oa.name)
+      ret.concat(attribute_lines)
+    end
+
+    ret.concat([ Diff::Line.new("}", change, indent) ])
+    ret
   end
 
   def ==(other)

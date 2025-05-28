@@ -12,4 +12,8 @@ FactoryBot.define do
     association :value, factory: :primitive_node
     association :parent, factory: :object_node
   end
+
+  factory :array_node do
+    association :value, factory: :primitive_node
+  end
 end

@@ -19,7 +19,7 @@
       <% @version.endpoints.each do |endpoint| %>
         <tr>
           <td>
-            <%= render "endpoint_diff_changed", endpoint: endpoint, diff_lines: endpoint.diff(@latest_version).before %>
+            <%= render "endpoint_diff_changed", endpoint: endpoint, diff_lines: endpoint.endpoint_root.to_diff(:no_change) %>
           </td>
           <td>
             <%= render "endpoint_form", endpoint: endpoint, f: f %>

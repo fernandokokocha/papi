@@ -11,6 +11,14 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[8.0].define(version: 2025_02_25_112217) do
+  create_table "array_nodes", force: :cascade do |t|
+    t.string "value_type", null: false
+    t.integer "value_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["value_type", "value_id"], name: "index_array_nodes_on_value"
+  end
+
   create_table "endpoints", force: :cascade do |t|
     t.integer "http_verb", null: false
     t.string "url", null: false

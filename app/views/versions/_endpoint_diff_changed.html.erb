@@ -15,15 +15,9 @@
     </thead>
     <tbody>
     <% diff_lines.each do |diff_line| %>
-      <% if diff_line.type %>
-        <tr class="<%= diff_line.change %>">
-          <td><%= diff_line.pre_type %><% if diff_line.type %><span class="<%= diff_line.type %>"><%= diff_line.type %></span><% end %></td>
-        </tr>
-      <% else %>
-        <tr class="<%= diff_line.change %>">
-          <td><%= diff_line.line %></td>
-        </tr>
-      <% end %>
+      <tr class="<%= diff_line.change %>">
+        <td><%= diff_line.line %></td>
+      </tr>
     <% end %>
     </tbody>
   </table>
