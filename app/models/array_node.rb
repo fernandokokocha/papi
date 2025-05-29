@@ -13,6 +13,10 @@ class ArrayNode < ApplicationRecord
     ret
   end
 
+  def serialize
+    "[ #{value.serialize} ]"
+  end
+
   def ==(other)
     (self.class == other.class) && self.value == other.value
   end

@@ -4,7 +4,7 @@ export default class extends Controller {
     static targets = ["endpointRoot"]
 
     connect() {
-        this.update()
+        // this.update()
     }
 
     update() {

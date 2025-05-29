@@ -22,6 +22,10 @@ class ObjectNode < ApplicationRecord
     ret
   end
 
+  def serialize
+    "{ #{object_attributes.map(&:serialize).join(", ")} }"
+  end
+
   def ==(other)
     children_match = object_attributes.all? do |attr|
       found = other.object_attributes.where(name: attr.name).first

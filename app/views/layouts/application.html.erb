@@ -20,8 +20,9 @@
     <%# Includes all stylesheet files in app/assets/stylesheets %>
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
-    <%= vite_client_tag %>
-    <%= vite_javascript_tag 'application' %>
+
+    <%= yield :vite %>
+
     <!--
       If using a TypeScript entrypoint file:
         vite_typescript_tag 'application'

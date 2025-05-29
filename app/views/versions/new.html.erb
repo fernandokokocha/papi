@@ -22,30 +22,17 @@
             <%= render "endpoint_diff_changed", endpoint: endpoint, diff_lines: endpoint.endpoint_root.to_diff(:no_change) %>
           </td>
           <td>
-            <%= render "endpoint_form", endpoint: endpoint, f: f %>
+
+            <div class="react-root"
+                 data-initial-root="<%= endpoint.endpoint_root.serialize %>"
+                 data-initial-verb="<%= endpoint.verb %>"
+                 data-initial-url="<%= endpoint.url %>"
+            ></div>
+
+            <%#= render "endpoint_form", endpoint: endpoint, f: f %>
           </td>
         </tr>
       <% end %>
-      <tr data-endpoint-target="container">
-        <td></td>
-        <td>
-          <div class="new-version-form-container">
-            <table class="new-version-form">
-              <thead>
-              <tr>
-                <th data-endpoint-target="nameholder">
-                  <%= select_tag :new_verb, options_for_select(%w[GET POST PATCH PUT DELETE], :get), { id: nil, name: nil, "data-endpoint-target": "verb" } %>
-                  <%= text_field_tag 'url', '/resource', "data-endpoint-target": "url" %>
-                  <%= button_tag 'Add', type: 'button', "data-action": "endpoint#add" %>
-                </th>
-              </tr>
-              </thead>
-              <tbody data-endpoint-target="body">
-              </tbody>
-            </table>
-          </div>
-        </td>
-      </tr>
       <tr>
         <td></td>
         <td>
@@ -57,3 +44,9 @@
 
   <%= link_to "Back", projects_path %>
 </div>
+
+<% content_for :vite do %>
+  <%= vite_client_tag %>
+  <%= vite_javascript_tag "root.jsx" %>
+<% end %>
+
