@@ -1,5 +1,5 @@
 const trimEdgesAndWhitespace = (str) => {
-    if (str.length <= 2) return ''; // If string is too short, return empty string
+    if (str.length <= 2) return '';
     return str.slice(1, -1).trim();
 }
 
@@ -12,7 +12,6 @@ const splitByComma = (str) => {
             if (deep === 0) {
                 const splitted = tmp.split(":")
                 const rest = tmp.slice(splitted[0].length + 1)
-                // console.log({splitted, rest})
                 ret.push({
                     name: splitted[0].trim(),
                     value: deserialize(rest)
