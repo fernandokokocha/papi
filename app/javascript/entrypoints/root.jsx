@@ -3,7 +3,6 @@ import {createRoot} from 'react-dom/client'
 import EndpointForm from '../components/EndpointForm.jsx'
 
 document.addEventListener('turbo:load', () => {
-    console.log('witam')
     const containers = document.getElementsByClassName('react-root')
     Array.from(containers).forEach(container => {
         const dataset = container.dataset
