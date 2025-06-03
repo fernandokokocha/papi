@@ -1,4 +1,24 @@
 .version-view {
+    select:has(option[value="string"]:checked) {
+        background: red;
+    }
+
+    select:has(option[value="number"]:checked) {
+        background: lawngreen;
+    }
+
+    select:has(option[value="boolean"]:checked) {
+        background: cornflowerblue;
+    }
+
+    select:has(option[value="object"]:checked) {
+        background: sandybrown;
+    }
+
+    select:has(option[value="array"]:checked) {
+        background: yellow;
+    }
+
     table.layout {
         width: 100%;
 
@@ -65,12 +85,15 @@
                             span {
                                 padding: 1px;
                                 margin: 1px;
+
                                 &.number {
                                     background: lawngreen;
                                 }
+
                                 &.boolean {
                                     background: cornflowerblue;
                                 }
+
                                 &.string {
                                     background: red;
                                 }
@@ -131,38 +154,20 @@
                     }
                 }
 
-                & .endpoint_form_object {
+                & .object {
                     white-space: normal;
 
-                    & span[data-value="string"] {
-                        & select {
-                            background: red;
-                        }
-                    }
-
-                    & span[data-value="number"] {
-                        & select {
-                            background: lawngreen;
-                        }
-                    }
-
-                    & span[data-value="object"] {
-                        & select {
-                            background: sandybrown;
-                        }
-                    }
-
-                    & span[data-value="boolean"] {
-                        & select {
-                            background: cornflowerblue;
-                        }
-                    }
-
-                    & .endpoint_form_object_attribute {
+                    .object-attribute {
                         padding-left: 20px;
                     }
 
-                    & .endpoint_form_object_new_attribute {
+                    .object-new-attribute {
+                        padding-left: 20px;
+                    }
+                }
+
+                & .array {
+                    .array-value {
                         padding-left: 20px;
                     }
                 }

@@ -28,6 +28,12 @@ class Diff::Lines
     @lines << line
   end
 
+  def level_with_blank_lines(other)
+    (other.length - @lines.length).times do
+      @lines << Diff::Line.new("", :blank, 0)
+    end
+  end
+
   def print
     @lines.each do |line|
       puts "#{line.indent} #{line.whole_line} (#{line.change})"

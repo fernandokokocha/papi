@@ -18,6 +18,10 @@ class PrimitiveNode < ApplicationRecord
     end
   end
 
+  def serialize
+    kind.to_s
+  end
+
   def ==(other)
     self.class == other.class && kind == other.kind
   end
