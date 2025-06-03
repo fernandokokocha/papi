@@ -27,7 +27,6 @@ const splitByComma = (str) => {
         } else if (str[i] === "}") {
             deep -= 1
             tmp += str[i]
-
         } else {
             tmp += str[i]
         }

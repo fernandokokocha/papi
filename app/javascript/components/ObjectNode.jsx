@@ -5,7 +5,7 @@ import ObjectAttribute from "~/components/ObjectAttribute.jsx";
 const ObjectNode = ({onChange, onDelete, onAdd, attributes, path, canBeDeleted}) => {
     const [newName, setNewName] = useState("new")
 
-    const addDisabled = attributes.some(({name}) => name === name)
+    const addDisabled = attributes.some(({name}) => name === newName)
 
     return (
         <div className="object">

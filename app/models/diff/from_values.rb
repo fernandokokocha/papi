@@ -12,6 +12,9 @@ class Diff::FromValues
   def add_parent(name)
     @before.add_parent(name)
     @after.add_parent(name)
+
+    @before.level_with_blank_lines(@after)
+    @after.level_with_blank_lines(@before)
   end
 
   def print

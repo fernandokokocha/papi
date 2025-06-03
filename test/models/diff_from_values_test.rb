@@ -54,6 +54,30 @@ class DiffFromValuesTest < ActiveSupport::TestCase
     assert_equal expected, diff.after
   end
 
+  test "string -> object with parent" do
+    value1 = FactoryBot.create(:primitive_node, kind: "string")
+    value2 = FactoryBot.create(:object_node, object_attributes: [
+      FactoryBot.create(:object_attribute, name: "name")
+    ])
+
+    diff = Diff::FromValues.new(value1, value2)
+    diff.add_parent("parent")
+    expected = Diff::Lines.new([
+                                 Diff::Line.new("parent: string", :type_changed, 0),
+                                 Diff::Line.new("", :blank, 0),
+                                 Diff::Line.new("", :blank, 0),
+                                 Diff::Line.new("", :blank, 0)
+                               ])
+    assert_equal expected, diff.before
+    expected = Diff::Lines.new([
+                                 Diff::Line.new("parent:", :type_changed, 0),
+                                 Diff::Line.new("{", :type_changed, 0),
+                                 Diff::Line.new("name: string", :type_changed, 1),
+                                 Diff::Line.new("}", :type_changed, 0)
+                               ])
+    assert_equal expected, diff.after
+  end
+
   # primitive to array
   test "string -> array" do
     value1 = FactoryBot.create(:primitive_node, kind: "string")
@@ -345,20 +369,20 @@ class DiffFromValuesTest < ActiveSupport::TestCase
 
     diff = Diff::FromValues.new(value1, value2)
     expected = Diff::Lines.new([
-      Diff::Line.new("[", :no_change, 0),
-      Diff::Line.new("string", :type_changed, 1),
-      Diff::Line.new("", :blank, 0),
-      Diff::Line.new("", :blank, 0),
-      Diff::Line.new("]", :no_change, 0)
-    ])
+                                 Diff::Line.new("[", :no_change, 0),
+                                 Diff::Line.new("string", :type_changed, 1),
+                                 Diff::Line.new("", :blank, 0),
+                                 Diff::Line.new("", :blank, 0),
+                                 Diff::Line.new("]", :no_change, 0)
+                               ])
     assert_equal expected, diff.before
     expected = Diff::Lines.new([
-      Diff::Line.new("[", :no_change, 0),
-      Diff::Line.new("{", :type_changed, 1),
-      Diff::Line.new("name: string", :type_changed, 2),
-      Diff::Line.new("}", :type_changed, 1),
-      Diff::Line.new("]", :no_change, 0)
-    ])
+                                 Diff::Line.new("[", :no_change, 0),
+                                 Diff::Line.new("{", :type_changed, 1),
+                                 Diff::Line.new("name: string", :type_changed, 2),
+                                 Diff::Line.new("}", :type_changed, 1),
+                                 Diff::Line.new("]", :no_change, 0)
+                               ])
     assert_equal expected, diff.after
   end
 
@@ -371,16 +395,16 @@ class DiffFromValuesTest < ActiveSupport::TestCase
 
     diff = Diff::FromValues.new(value1, value2)
     expected = Diff::Lines.new([
-      Diff::Line.new("[", :type_changed, 0),
-      Diff::Line.new("string", :type_changed, 1),
-      Diff::Line.new("]", :type_changed, 0)
-    ])
+                                 Diff::Line.new("[", :type_changed, 0),
+                                 Diff::Line.new("string", :type_changed, 1),
+                                 Diff::Line.new("]", :type_changed, 0)
+                               ])
     assert_equal expected, diff.before
     expected = Diff::Lines.new([
-      Diff::Line.new("{", :type_changed, 0),
-      Diff::Line.new("name: string", :type_changed, 1),
-      Diff::Line.new("}", :type_changed, 0)
-    ])
+                                 Diff::Line.new("{", :type_changed, 0),
+                                 Diff::Line.new("name: string", :type_changed, 1),
+                                 Diff::Line.new("}", :type_changed, 0)
+                               ])
     assert_equal expected, diff.after
   end
 
@@ -391,16 +415,16 @@ class DiffFromValuesTest < ActiveSupport::TestCase
 
     diff = Diff::FromValues.new(value1, value2)
     expected = Diff::Lines.new([
-      Diff::Line.new("[", :type_changed, 0),
-      Diff::Line.new("number", :type_changed, 1),
-      Diff::Line.new("]", :type_changed, 0)
-    ])
+                                 Diff::Line.new("[", :type_changed, 0),
+                                 Diff::Line.new("number", :type_changed, 1),
+                                 Diff::Line.new("]", :type_changed, 0)
+                               ])
     assert_equal expected, diff.before
     expected = Diff::Lines.new([
-      Diff::Line.new("string", :type_changed, 0),
-      Diff::Line.new("", :blank, 0),
-      Diff::Line.new("", :blank, 0)
-    ])
+                                 Diff::Line.new("string", :type_changed, 0),
+                                 Diff::Line.new("", :blank, 0),
+                                 Diff::Line.new("", :blank, 0)
+                               ])
     assert_equal expected, diff.after
   end
 end

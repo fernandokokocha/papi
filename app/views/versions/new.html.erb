@@ -28,8 +28,6 @@
                  data-initial-verb="<%= endpoint.verb %>"
                  data-initial-url="<%= endpoint.url %>"
             ></div>
-
-            <%#= render "endpoint_form", endpoint: endpoint, f: f %>
           </td>
         </tr>
       <% end %>
@@ -45,8 +43,4 @@
   <%= link_to "Back", projects_path %>
 </div>
 
-<% content_for :vite do %>
-  <%= vite_client_tag %>
-  <%= vite_javascript_tag "root.jsx" %>
-<% end %>
 

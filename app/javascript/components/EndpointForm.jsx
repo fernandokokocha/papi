@@ -73,16 +73,16 @@ const EndpointForm = ({initialRoot, initialVerb, initialUrl}) => {
                         <select value={verb}
                                 onChange={(e) => setVerb(e.target.value)}
                                 name="version[endpoints_attributes][][http_verb]">
-                            <option value="http_get">GET</option>
-                            <option value="http_post">POST</option>
-                            <option value="http_delete">DELETE</option>
-                            <option value="http_put">PUT</option>
-                            <option value="http_patch">PATCH</option>
+                            <option value="verb_get">GET</option>
+                            <option value="verb_post">POST</option>
+                            <option value="verb_delete">DELETE</option>
+                            <option value="verb_put">PUT</option>
+                            <option value="verb_patch">PATCH</option>
                         </select>
                         <input type="text"
                                value={url}
                                onChange={(e) => setUrl(e.target.value)}
-                               name="version[endpoints_attributes][][http_url]">
+                               name="version[endpoints_attributes][][url]">
                         </input>
                         <button type="button">x</button>
                     </th>

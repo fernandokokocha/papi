@@ -21,7 +21,8 @@
     <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
 
-    <%= yield :vite %>
+    <%= vite_client_tag %>
+    <%= vite_javascript_tag "root.jsx" %>
 
     <!--
       If using a TypeScript entrypoint file:
