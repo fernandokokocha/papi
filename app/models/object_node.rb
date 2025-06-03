@@ -23,7 +23,7 @@ class ObjectNode < ApplicationRecord
   end
 
   def serialize
-    "{ #{object_attributes.map(&:serialize).join(", ")} }"
+    "{ #{object_attributes.order(:order).map(&:serialize).join(", ")} }"
   end
 
   def ==(other)
