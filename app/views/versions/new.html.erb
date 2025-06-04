@@ -22,7 +22,6 @@
             <%= render "endpoint_diff_changed", endpoint: endpoint, diff_lines: endpoint.endpoint_root.to_diff(:no_change) %>
           </td>
           <td>
-
             <div class="react-root"
                  data-initial-root="<%= endpoint.endpoint_root.serialize %>"
                  data-initial-verb="<%= endpoint.verb %>"
@@ -31,6 +30,7 @@
           </td>
         </tr>
       <% end %>
+      <tr id="react-add-endpoint"></tr>
       <tr>
         <td></td>
         <td>
@@ -43,4 +43,15 @@
   <%= link_to "Back", projects_path %>
 </div>
 
-
+<template id="empty-endpoint">
+  <tr>
+    <td></td>
+    <td>
+      <div class="react-root"
+           data-initial-root=""
+           data-initial-verb=""
+           data-initial-url=""
+      ></div>
+    </td>
+  </tr>
+</template>
