@@ -3,12 +3,14 @@ import Value from "~/components/Value.jsx";
 import serialize from "~/helpers/serialize.js";
 import deserialize from "~/helpers/deserialize.js";
 import findByPath from "~/helpers/findByPath.js";
+import DeletedEndpoint from "~/components/DeletedEndpoint.jsx";
 
 const EndpointForm = ({initialRoot, initialVerb, initialUrl}) => {
     const [root, setRoot] = useState(initialRoot)
     const [parsedRoot, setParsedRoot] = useState(deserialize(initialRoot))
     const [verb, setVerb] = useState(initialVerb)
     const [url, setUrl] = useState(initialUrl)
+    const [deleted, setDeleted] = useState(false)
 
     const removeNode = (e, path) => {
         e.preventDefault()
@@ -64,6 +66,10 @@ const EndpointForm = ({initialRoot, initialVerb, initialUrl}) => {
         setRoot(newRootString)
     }
 
+    if (deleted) {
+        return <DeletedEndpoint verb={verb} url={url}/>
+    }
+
     return (
         <div className="new-version-form-container">
             <table className="new-version-form">
@@ -84,7 +90,9 @@ const EndpointForm = ({initialRoot, initialVerb, initialUrl}) => {
                                onChange={(e) => setUrl(e.target.value)}
                                name="version[endpoints_attributes][][url]">
                         </input>
-                        <button type="button">x</button>
+                        <button type="button" onClick={() => {
+                            setDeleted(true)
+                        }}>x</button>
                     </th>
                 </tr>
                 </thead>

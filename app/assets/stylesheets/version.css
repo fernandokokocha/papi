@@ -103,7 +103,7 @@
                 }
             }
 
-            &.removed-endpoint {
+            & .deleted-endpoint {
                 background: lightpink;
             }
 

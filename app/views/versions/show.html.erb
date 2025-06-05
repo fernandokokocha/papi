@@ -50,8 +50,10 @@
 
     <% @previous_version&.removed_endpoints&.each do |endpoint| %>
       <tr>
-        <td class="removed-endpoint">
-          <%= render "endpoint_diff_removed", endpoint: endpoint, diff_lines: endpoint.endpoint_root.to_diff(:removed) %>
+        <td>
+          <div class="deleted-endpoint">
+            <%= render "endpoint_diff_removed", endpoint: endpoint, diff_lines: endpoint.endpoint_root.to_diff(:removed) %>
+          </div>
         </td>
         <td>
         </td>

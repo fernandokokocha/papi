@@ -20,7 +20,7 @@ const AddEndpointForm = () => {
         const clone = template.content.cloneNode(true);
         const div = clone.querySelector(".react-root")
 
-        div.setAttribute("data-initial-root", "{}");
+        div.setAttribute("data-initial-root", "string");
         div.setAttribute("data-initial-verb", verb);
         div.setAttribute("data-initial-url", url);
 
