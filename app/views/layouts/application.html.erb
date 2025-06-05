@@ -38,6 +38,14 @@
   </head>
 
   <body>
-    <%= yield %>
+    <header class="topbar">
+      <div class="topbar-content">
+        <%= link_to "Papi", root_path, class: "topbar-brand" %>
+      </div>
+    </header>
+    
+    <main class="main-content">
+      <%= yield %>
+    </main>
   </body>
 </html>
