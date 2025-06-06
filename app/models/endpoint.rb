@@ -28,4 +28,8 @@ class Endpoint < ApplicationRecord
   def example_json
     endpoint_root.to_example_json
   end
+
+  def page_url
+    "#{verb}-#{url}"
+  end
 end

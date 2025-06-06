@@ -19,6 +19,189 @@
         background: yellow;
     }
 
+    span.string {
+        background: red;
+    }
+
+    span.number {
+        background: lawngreen;
+    }
+
+    span.boolean {
+        background: cornflowerblue;
+    }
+
+    span.object {
+        background: sandybrown;
+    }
+
+    span.array {
+        background: yellow;
+    }
+
+    .title-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .main-container {
+        display: flex;
+        flex-direction: row;
+        align-items: flex-start;
+        gap: 10px;
+
+        aside {
+            background: lightcyan;
+            position: sticky;
+            top: 0;
+
+            .link-container {
+                padding: 1px 5px;
+            }
+
+            .aside-section {
+                font-weight: 800;
+                padding: 5px;
+                text-transform: uppercase;
+
+                &.added {
+                    background: lightgreen;
+                }
+
+                &.removed {
+                    background: pink;
+                }
+
+            }
+        }
+
+        .version-container {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+
+            .version-name-container {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                flex-grow: 1;
+                justify-content: space-between;
+                /*align-items: stretch;*/
+                gap: 5px;
+
+                .version-name {
+                    flex-basis: 0;
+                    flex-grow: 1;
+                    background: dodgerblue;
+                    text-align: center;
+                    font-weight: 800;
+                    font-size: 28px;
+
+                    .date {
+                        font-size: 14px;
+                    }
+                }
+            }
+
+            .endpoint-name-container {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                flex-grow: 1;
+                justify-content: space-between;
+                /*align-items: stretch;*/
+                gap: 5px;
+
+                .endpoint-name {
+                    flex-basis: 0;
+                    flex-grow: 1;
+                    background: lightblue;
+                    font-weight: 800;
+                    padding: 8px 0;
+
+                    &.removed {
+                        background: pink;
+                    }
+
+                    &.added {
+                        background: lightgreen;
+                    }
+                }
+
+                .endpoint-name-placeholder {
+                    flex-basis: 0;
+                    flex-grow: 1;
+                }
+            }
+
+            .endpoint-section-container {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                flex-grow: 1;
+                justify-content: space-between;
+                /*align-items: stretch;*/
+                gap: 5px;
+
+                .endpoint-section {
+                    flex-basis: 0;
+                    flex-grow: 1;
+                    background: azure;
+                    padding: 5px 0;
+                }
+
+                .endpoint-section-placeholder {
+                    flex-basis: 0;
+                    flex-grow: 1;
+                }
+            }
+
+            .endpoint-root-container {
+                width: 100%;
+                display: flex;
+                flex-direction: row;
+                flex-grow: 1;
+                justify-content: space-between;
+                /*align-items: stretch;*/
+                gap: 5px;
+
+                .endpoint-root {
+                    flex-basis: 0;
+                    flex-grow: 1;
+                }
+
+                .endpoint-root-placeholder {
+                    flex-basis: 0;
+                    flex-grow: 1;
+                }
+            }
+
+            .line {
+                font-family: monospace;
+                white-space: pre;
+
+                &.added {
+                    background: #D1FFBD;
+                }
+
+                &.removed {
+                    background: lightpink;
+                }
+
+                &.type_changed {
+                    background: sandybrown;
+                }
+
+                &.no_change {
+                    background: white;
+                }
+            }
+        }
+    }
+
+
     table.layout {
         width: 100%;
 
