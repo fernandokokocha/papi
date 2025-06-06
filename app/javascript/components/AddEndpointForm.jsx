@@ -1,10 +1,6 @@
 import React, {useRef, useState} from 'react'
 import {createRoot} from "react-dom/client";
-import EndpointForm from "~/components/EndpointForm.jsx";
-
-const emptyEndpoint = (verb, url) => {
-
-}
+import JSONSchemaForm from "~/components/JSONSchemaForm.jsx";
 
 const AddEndpointForm = () => {
     const [verb, setVerb] = useState("verb_get")
@@ -12,52 +8,44 @@ const AddEndpointForm = () => {
     const ref = useRef(null)
 
     const addEndpoint = () => {
-        const td = ref.current;
-        const tr = td.parentElement;
-        const tbody = tr.parentElement;
+        const insertBeforeMe = ref.current.parentElement.parentElement.parentElement;
+        const insertInMe = ref.current.parentElement.parentElement.parentElement.parentElement;
 
         const template = document.querySelector("#empty-endpoint");
         const clone = template.content.cloneNode(true);
-        const div = clone.querySelector(".react-root")
 
+        const verbSelect = clone.querySelector("select[name='version[endpoints_attributes][][http_verb]']")
+        verbSelect.value = verb
+
+        const urlInput = clone.querySelector("input[name='version[endpoints_attributes][][url]']")
+        urlInput.value = url
+
+        const div = clone.querySelector(".react-json-schema")
         div.setAttribute("data-initial-root", "string");
-        div.setAttribute("data-initial-verb", verb);
-        div.setAttribute("data-initial-url", url);
 
-        tbody.insertBefore(clone, tr)
+        insertInMe.insertBefore(clone, insertBeforeMe)
 
         const dataset = div.dataset
         const root = createRoot(div)
-        root.render(<EndpointForm {...dataset}/>)
+        root.render(<JSONSchemaForm {...dataset}/>)
     }
 
     return (
-        <>
-            <td ref={ref}></td>
-            <td>
-                <div className="lines-container">
-                    <thead>
-                    <tr>
-                        <th>
-                            <select onChange={(e) => {
-                                setVerb(e.target.value)
-                            }}>
-                                <option value="verb_get" selected={verb === "verb_get"}>GET</option>
-                                <option value="verb_post" selected={verb === "verb_post"}>POST</option>
-                                <option value="verb_delete" selected={verb === "verb_delete"}>DELETE</option>
-                                <option value="verb_put" selected={verb === "verb_put"}>PUT</option>
-                                <option value="verb_patch" selected={verb === "verb_patch"}>PATCH</option>
-                            </select>
-                            <input type="text" value="/resource" value={url} onChange={(e) => {
-                                setUrl(e.target.value)
-                            }}/>
-                            <button type="button" onClick={addEndpoint}>Add</button>
-                        </th>
-                    </tr>
-                    </thead>
-                </div>
-            </td>
-        </>
+        <div ref={ref}>
+            <select onChange={(e) => {
+                setVerb(e.target.value)
+            }}>
+                <option value="verb_get" selected={verb === "verb_get"}>GET</option>
+                <option value="verb_post" selected={verb === "verb_post"}>POST</option>
+                <option value="verb_delete" selected={verb === "verb_delete"}>DELETE</option>
+                <option value="verb_put" selected={verb === "verb_put"}>PUT</option>
+                <option value="verb_patch" selected={verb === "verb_patch"}>PATCH</option>
+            </select>
+            <input type="text" value={url} onChange={(e) => {
+                setUrl(e.target.value)
+            }}/>
+            <button type="button" onClick={addEndpoint}>Add</button>
+        </div>
     )
 }
 

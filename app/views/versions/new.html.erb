@@ -1,57 +1,91 @@
-<div class="version-view" data-controller="endpoint" >
-  <h1><%= @version.project.name %></h1>
+<div class="version-view">
+  <div class="version-view">
+    <div class="title-container">
+      <h1>New version for <%= @version.project.name %></h1>
+    </div>
+  </div>
+
   <%= form_with model: [@project, @version] do |f| %>
     <%= f.hidden_field :project_id %>
     <%= f.hidden_field :order %>
-    <table class="layout">
-      <thead>
-      <tr>
-        <th class="previous">
-          <%= @latest_version.name %>
-          <div class="date"><%= @latest_version.created_at %></div>
-        </th>
-        <th class="current">
-          <%= f.text_field :name %>
-          <div class="date"><%= @version.created_at %></div>
-        </th>
-      </tr>
-      </thead>
-      <% @version.endpoints.each do |endpoint| %>
-        <tr>
-          <td>
-            <%= render "endpoint_diff_changed", endpoint: endpoint, diff_lines: endpoint.endpoint_root.to_diff(:no_change) %>
-          </td>
-          <td>
-            <div class="react-root"
-                 data-initial-root="<%= endpoint.endpoint_root.serialize %>"
-                 data-initial-verb="<%= endpoint.verb %>"
-                 data-initial-url="<%= endpoint.url %>"
-            ></div>
-          </td>
-        </tr>
-      <% end %>
-      <tr id="react-add-endpoint"></tr>
-      <tr>
-        <td></td>
-        <td>
-          <%= f.submit %>
-        </td>
-      </tr>
-    </table>
+
+    <div class="main-container">
+      <div class="version-container">
+        <div class="version-name-container">
+          <div class="version-name">
+            Latest version <%= @latest_version.name %>
+            <div class="date"><%= @latest_version.created_at.strftime("%Y-%m-%d") %></div>
+          </div>
+          <div class="version-name">
+            <%= f.text_field :name %>
+            <div class="date"><%= @version.created_at.strftime("%Y-%m-%d") %></div>
+          </div>
+        </div>
+
+        <% @version.existing_endpoints.each do |endpoint, previous_endpoint| %>
+          <% diff = previous_endpoint.endpoint_root.to_diff(:no_change) %>
+          <%= render "endpoint_new", endpoint: endpoint, diff: diff %>
+        <% end %>
+
+        <div class="endpoint-name-container">
+          <div class="endpoint-name-placeholder"></div>
+          <div class="endpoint-name added">
+            <div id="react-add-endpoint"></div>
+
+          </div>
+
+        </div>
+
+        <%= f.submit %>
+      </div>
+    </div>
   <% end %>
 
   <%= link_to "Back", projects_path %>
 </div>
 
 <template id="empty-endpoint">
-  <tr>
-    <td></td>
-    <td>
-      <div class="react-root"
-           data-initial-root=""
+  <div class="endpoint-name-container">
+    <div class="endpoint-name-placeholder"></div>
+    <div class="endpoint-name">
+      <select value="" name="version[endpoints_attributes][][http_verb]">
+        <option value="verb_get">GET</option>
+        <option value="verb_post">POST</option>
+        <option value="verb_delete">DELETE</option>
+        <option value="verb_put">PUT</option>
+        <option value="verb_patch">PATCH</option>
+      </select>
+      <input type="text"
+             value=""
+             name="version[endpoints_attributes][][url]" />
+    </div>
+  </div>
+
+  <div class="endpoint-section-container">
+    <div class="endpoint-section">INPUT</div>
+    <div class="endpoint-section">INPUT</div>
+  </div>
+
+  <div class="endpoint-section-container">
+    <div class="endpoint-section">OUTPUT</div>
+    <div class="endpoint-section">OUTPUT</div>
+  </div>
+
+  <div class="endpoint-root-container">
+    <div class="endpoint-root-placeholder">
+    </div>
+    <div class="endpoint-root">
+      <div class="react-json-schema"
+           data-initial-root="string"
            data-initial-verb=""
            data-initial-url=""
       ></div>
-    </td>
-  </tr>
+    </div>
+  </div>
+
+  <div class="endpoint-section-container">
+    <div class="endpoint-section">ERRORS</div>
+    <div class="endpoint-section">ERRORS</div>
+  </div>
+
 </template>

@@ -1,0 +1,47 @@
+<div class="endpoint-name-container">
+  <div class="endpoint-name" id="<%= endpoint.page_url %>">
+    <%= endpoint.name %>
+  </div>
+  <div class="endpoint-name">
+    <select value="<%= endpoint.http_verb %>" name="version[endpoints_attributes][][http_verb]">
+      <option value="verb_get">GET</option>
+      <option value="verb_post">POST</option>
+      <option value="verb_delete">DELETE</option>
+      <option value="verb_put">PUT</option>
+      <option value="verb_patch">PATCH</option>
+    </select>
+    <input type="text"
+           value="<%= endpoint.url %>"
+          name="version[endpoints_attributes][][url]" />
+  </div>
+</div>
+
+<div class="endpoint-section-container">
+  <div class="endpoint-section">INPUT</div>
+  <div class="endpoint-section">INPUT</div>
+</div>
+
+<div class="endpoint-section-container">
+  <div class="endpoint-section">OUTPUT</div>
+  <div class="endpoint-section">OUTPUT</div>
+</div>
+
+<div class="endpoint-root-container">
+  <div class="endpoint-root">
+    <% diff.each do |diff_line| %>
+      <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
+    <% end %>
+  </div>
+  <div class="endpoint-root">
+    <div class="react-json-schema"
+         data-initial-root="<%= endpoint.endpoint_root.serialize %>"
+         data-initial-verb="<%= endpoint.verb %>"
+         data-initial-url="<%= endpoint.url %>"
+    ></div>
+  </div>
+</div>
+
+<div class="endpoint-section-container">
+  <div class="endpoint-section">ERRORS</div>
+  <div class="endpoint-section">ERRORS</div>
+</div>

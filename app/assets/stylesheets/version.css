@@ -88,13 +88,12 @@
                 flex-direction: row;
                 flex-grow: 1;
                 justify-content: space-between;
-                /*align-items: stretch;*/
                 gap: 5px;
 
                 .version-name {
                     flex-basis: 0;
                     flex-grow: 1;
-                    background: dodgerblue;
+                    background: deepskyblue;
                     text-align: center;
                     font-weight: 800;
                     font-size: 28px;
@@ -111,7 +110,6 @@
                 flex-direction: row;
                 flex-grow: 1;
                 justify-content: space-between;
-                /*align-items: stretch;*/
                 gap: 5px;
 
                 .endpoint-name {
@@ -142,7 +140,6 @@
                 flex-direction: row;
                 flex-grow: 1;
                 justify-content: space-between;
-                /*align-items: stretch;*/
                 gap: 5px;
 
                 .endpoint-section {
@@ -164,7 +161,6 @@
                 flex-direction: row;
                 flex-grow: 1;
                 justify-content: space-between;
-                /*align-items: stretch;*/
                 gap: 5px;
 
                 .endpoint-root {
@@ -197,6 +193,24 @@
                 &.no_change {
                     background: white;
                 }
+            }
+        }
+
+        & .object {
+            white-space: normal;
+
+            .object-attribute {
+                padding-left: 20px;
+            }
+
+            .object-new-attribute {
+                padding-left: 20px;
+            }
+        }
+
+        & .array {
+            .array-value {
+                padding-left: 20px;
             }
         }
     }
