@@ -1,36 +1,38 @@
-<div class="endpoint-name-container">
-  <div class="endpoint-name" id="<%= endpoint.page_url %>">
-    <%= endpoint.name %>
+<div class="endpoint-container" id="<%= endpoint.page_url %>">
+  <div class="endpoint-name-container">
+    <div class="endpoint-name">
+      <%= endpoint.name %>
+    </div>
+    <div class="endpoint-name">
+      <%= endpoint.name %>
+    </div>
   </div>
-  <div class="endpoint-name">
-    <%= endpoint.name %>
+
+  <div class="endpoint-section-container">
+    <div class="endpoint-section">INPUT</div>
+    <div class="endpoint-section">INPUT</div>
   </div>
-</div>
 
-<div class="endpoint-section-container">
-  <div class="endpoint-section">INPUT</div>
-  <div class="endpoint-section">INPUT</div>
-</div>
-
-<div class="endpoint-section-container">
-  <div class="endpoint-section">OUTPUT</div>
-  <div class="endpoint-section">OUTPUT</div>
-</div>
-
-<div class="endpoint-root-container">
-  <div class="endpoint-root">
-    <% diff_before.each do |diff_line| %>
-      <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
-    <% end %>
+  <div class="endpoint-section-container">
+    <div class="endpoint-section">OUTPUT</div>
+    <div class="endpoint-section">OUTPUT</div>
   </div>
-  <div class="endpoint-root">
-    <% diff_after.each do |diff_line| %>
-      <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
-    <% end %>
-  </div>
-</div>
 
-<div class="endpoint-section-container">
-  <div class="endpoint-section">ERRORS</div>
-  <div class="endpoint-section">ERRORS</div>
+  <div class="endpoint-root-container">
+    <div class="endpoint-root">
+      <% diff_before.each do |diff_line| %>
+        <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
+      <% end %>
+    </div>
+    <div class="endpoint-root">
+      <% diff_after.each do |diff_line| %>
+        <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="endpoint-section-container">
+    <div class="endpoint-section">ERRORS</div>
+    <div class="endpoint-section">ERRORS</div>
+  </div>
 </div>

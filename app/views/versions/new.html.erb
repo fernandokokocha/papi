@@ -27,13 +27,13 @@
           <%= render "endpoint_new", endpoint: endpoint, diff: diff %>
         <% end %>
 
-        <div class="endpoint-name-container">
-          <div class="endpoint-name-placeholder"></div>
-          <div class="endpoint-name added">
-            <div id="react-add-endpoint"></div>
-
+        <div class="endpoint-container">
+          <div class="endpoint-name-container">
+            <div class="endpoint-name-placeholder"></div>
+            <div class="endpoint-name added">
+              <div id="react-add-endpoint"></div>
+            </div>
           </div>
-
         </div>
 
         <%= f.submit %>
@@ -45,47 +45,46 @@
 </div>
 
 <template id="empty-endpoint">
-  <div class="endpoint-name-container">
-    <div class="endpoint-name-placeholder"></div>
-    <div class="endpoint-name">
-      <select value="" name="version[endpoints_attributes][][http_verb]">
-        <option value="verb_get">GET</option>
-        <option value="verb_post">POST</option>
-        <option value="verb_delete">DELETE</option>
-        <option value="verb_put">PUT</option>
-        <option value="verb_patch">PATCH</option>
-      </select>
-      <input type="text"
-             value=""
-             name="version[endpoints_attributes][][url]" />
+  <div class="endpoint-container">
+    <div class="endpoint-name-container">
+      <div class="endpoint-name-placeholder"></div>
+      <div class="endpoint-name">
+        <select value="" name="version[endpoints_attributes][][http_verb]">
+          <option value="verb_get">GET</option>
+          <option value="verb_post">POST</option>
+          <option value="verb_delete">DELETE</option>
+          <option value="verb_put">PUT</option>
+          <option value="verb_patch">PATCH</option>
+        </select>
+        <input type="text"
+               value=""
+               name="version[endpoints_attributes][][url]"/>
+      </div>
+    </div>
+
+    <div class="endpoint-section-container">
+      <div class="endpoint-section">INPUT</div>
+      <div class="endpoint-section">INPUT</div>
+    </div>
+
+    <div class="endpoint-section-container">
+      <div class="endpoint-section">OUTPUT</div>
+      <div class="endpoint-section">OUTPUT</div>
+    </div>
+
+    <div class="endpoint-root-container">
+      <div class="endpoint-root-placeholder">
+      </div>
+      <div class="endpoint-root">
+        <div class="react-json-schema"
+             data-initial-root="string"
+        ></div>
+      </div>
+    </div>
+
+    <div class="endpoint-section-container">
+      <div class="endpoint-section">ERRORS</div>
+      <div class="endpoint-section">ERRORS</div>
     </div>
   </div>
-
-  <div class="endpoint-section-container">
-    <div class="endpoint-section">INPUT</div>
-    <div class="endpoint-section">INPUT</div>
-  </div>
-
-  <div class="endpoint-section-container">
-    <div class="endpoint-section">OUTPUT</div>
-    <div class="endpoint-section">OUTPUT</div>
-  </div>
-
-  <div class="endpoint-root-container">
-    <div class="endpoint-root-placeholder">
-    </div>
-    <div class="endpoint-root">
-      <div class="react-json-schema"
-           data-initial-root="string"
-           data-initial-verb=""
-           data-initial-url=""
-      ></div>
-    </div>
-  </div>
-
-  <div class="endpoint-section-container">
-    <div class="endpoint-section">ERRORS</div>
-    <div class="endpoint-section">ERRORS</div>
-  </div>
-
 </template>

@@ -53,9 +53,10 @@
         gap: 10px;
 
         aside {
+            width: 200px;
             background: lightcyan;
             position: sticky;
-            top: 0;
+            top: 70px;
 
             .link-container {
                 padding: 1px 5px;
@@ -89,6 +90,8 @@
                 flex-grow: 1;
                 justify-content: space-between;
                 gap: 5px;
+                position: sticky;
+                top: 0;
 
                 .version-name {
                     flex-basis: 0;
@@ -104,73 +107,81 @@
                 }
             }
 
-            .endpoint-name-container {
-                width: 100%;
-                display: flex;
-                flex-direction: row;
-                flex-grow: 1;
-                justify-content: space-between;
-                gap: 5px;
+            .endpoint-container {
+                margin-bottom: 10px;
+                border: 2px solid black;
 
-                .endpoint-name {
-                    flex-basis: 0;
+                .endpoint-name-container {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: row;
                     flex-grow: 1;
-                    background: lightblue;
-                    font-weight: 800;
-                    padding: 8px 0;
+                    justify-content: space-between;
+                    gap: 5px;
+                    position: sticky;
+                    top: 32px;
 
-                    &.removed {
-                        background: pink;
+                    .endpoint-name {
+                        flex-basis: 0;
+                        flex-grow: 1;
+                        background: lightskyblue;
+                        font-weight: 800;
+                        padding: 8px 0;
+
+                        &.removed {
+                            background: pink;
+                        }
+
+                        &.added {
+                            background: lightgreen;
+                        }
                     }
 
-                    &.added {
-                        background: lightgreen;
+                    .endpoint-name-placeholder {
+                        flex-basis: 0;
+                        flex-grow: 1;
                     }
                 }
 
-                .endpoint-name-placeholder {
-                    flex-basis: 0;
+                .endpoint-section-container {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: row;
                     flex-grow: 1;
-                }
-            }
+                    justify-content: space-between;
+                    gap: 5px;
+                    margin-bottom: 1px;
 
-            .endpoint-section-container {
-                width: 100%;
-                display: flex;
-                flex-direction: row;
-                flex-grow: 1;
-                justify-content: space-between;
-                gap: 5px;
+                    .endpoint-section {
+                        flex-basis: 0;
+                        flex-grow: 1;
+                        background: lightblue;
+                        padding: 5px 0;
+                    }
 
-                .endpoint-section {
-                    flex-basis: 0;
-                    flex-grow: 1;
-                    background: azure;
-                    padding: 5px 0;
-                }
-
-                .endpoint-section-placeholder {
-                    flex-basis: 0;
-                    flex-grow: 1;
-                }
-            }
-
-            .endpoint-root-container {
-                width: 100%;
-                display: flex;
-                flex-direction: row;
-                flex-grow: 1;
-                justify-content: space-between;
-                gap: 5px;
-
-                .endpoint-root {
-                    flex-basis: 0;
-                    flex-grow: 1;
+                    .endpoint-section-placeholder {
+                        flex-basis: 0;
+                        flex-grow: 1;
+                    }
                 }
 
-                .endpoint-root-placeholder {
-                    flex-basis: 0;
+                .endpoint-root-container {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: row;
                     flex-grow: 1;
+                    justify-content: space-between;
+                    gap: 5px;
+
+                    .endpoint-root {
+                        flex-basis: 0;
+                        flex-grow: 1;
+                    }
+
+                    .endpoint-root-placeholder {
+                        flex-basis: 0;
+                        flex-grow: 1;
+                    }
                 }
             }
 
@@ -197,8 +208,6 @@
         }
 
         & .object {
-            white-space: normal;
-
             .object-attribute {
                 padding-left: 20px;
             }
@@ -211,163 +220,6 @@
         & .array {
             .array-value {
                 padding-left: 20px;
-            }
-        }
-    }
-
-
-    table.layout {
-        width: 100%;
-
-        th {
-            background: white;
-            font-size: 26px;
-
-            &.previous, &.current {
-                width: 40%;
-            }
-
-            &.next {
-                width: 20%;
-            }
-
-            .date {
-                font-size: 16px;
-            }
-        }
-
-        td {
-            vertical-align: top;
-
-            .lines-container {
-                padding: 0 0 10px 0;
-
-                table.lines {
-                    width: 100%;
-                    padding: 0 0 10px 0;
-
-                    th {
-                        font-size: 18px;
-                        background: aquamarine;
-                        text-align: left;
-                    }
-
-                    tbody {
-                        font-family: monospace;
-                        white-space: pre;
-
-                        tr {
-                            height: 15px;
-
-                            td {
-                                padding: 0;
-                            }
-
-                            &.added {
-                                background: #D1FFBD;
-                            }
-
-                            &.removed {
-                                background: lightpink;
-                            }
-
-                            &.type_changed {
-                                background: sandybrown;
-                            }
-
-                            &.no_change {
-                                background: white;
-                            }
-
-                            span {
-                                padding: 1px;
-                                margin: 1px;
-
-                                &.number {
-                                    background: lawngreen;
-                                }
-
-                                &.boolean {
-                                    background: cornflowerblue;
-                                }
-
-                                &.string {
-                                    background: red;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            & .deleted-endpoint {
-                background: lightpink;
-            }
-
-            &.added-endpoint {
-                background: #D1FFBD;
-            }
-        }
-    }
-
-    .new-version-form-container {
-        padding: 0 0 10px 0;
-
-        table.new-version-form {
-            width: 100%;
-            padding: 0 0 10px 0;
-
-            th {
-                font-size: 18px;
-                background: aquamarine;
-                text-align: left;
-            }
-
-            tbody {
-                font-family: monospace;
-                white-space: normal;
-
-                tr {
-                    height: 15px;
-
-                    td {
-                        padding: 0;
-                    }
-
-                    &.added {
-                        background: #D1FFBD;
-                    }
-
-                    &.removed {
-                        background: lightpink;
-                    }
-
-                    &.type_changed {
-                        background: sandybrown;
-                    }
-
-                    &.no_change {
-                        background: white;
-                    }
-                }
-
-                & .object {
-                    white-space: normal;
-
-                    .object-attribute {
-                        padding-left: 20px;
-                    }
-
-                    .object-new-attribute {
-                        padding-left: 20px;
-                    }
-                }
-
-                & .array {
-                    .array-value {
-                        padding-left: 20px;
-                    }
-                }
             }
         }
     }

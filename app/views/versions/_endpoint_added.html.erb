@@ -1,31 +1,33 @@
-<div class="endpoint-name-container">
-  <div class="endpoint-name-placeholder"></div>
-  <div class="endpoint-name added" id="<%= endpoint.page_url %>">
-    <%= endpoint.name %>
+<div class="endpoint-container" id="<%= endpoint.page_url %>">
+  <div class="endpoint-name-container">
+    <div class="endpoint-name-placeholder"></div>
+    <div class="endpoint-name added">
+      <%= endpoint.name %>
+    </div>
   </div>
-</div>
 
-<div class="endpoint-section-container">
-  <div class="endpoint-section-placeholder"></div>
-  <div class="endpoint-section">INPUT</div>
-</div>
-
-<div class="endpoint-section-container">
-  <div class="endpoint-section-placeholder"></div>
-  <div class="endpoint-section">OUTPUT</div>
-</div>
-
-<div class="endpoint-root-container">
-  <div class="endpoint-root-placeholder">
+  <div class="endpoint-section-container">
+    <div class="endpoint-section-placeholder"></div>
+    <div class="endpoint-section">INPUT</div>
   </div>
-  <div class="endpoint-root">
-    <% diff.each do |diff_line| %>
-      <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
-    <% end %>
-  </div>
-</div>
 
-<div class="endpoint-section-container">
-  <div class="endpoint-section-placeholder"></div>
-  <div class="endpoint-section">ERRORS</div>
+  <div class="endpoint-section-container">
+    <div class="endpoint-section-placeholder"></div>
+    <div class="endpoint-section">OUTPUT</div>
+  </div>
+
+  <div class="endpoint-root-container">
+    <div class="endpoint-root-placeholder">
+    </div>
+    <div class="endpoint-root">
+      <% diff.each do |diff_line| %>
+        <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="endpoint-section-container">
+    <div class="endpoint-section-placeholder"></div>
+    <div class="endpoint-section">ERRORS</div>
+  </div>
 </div>
