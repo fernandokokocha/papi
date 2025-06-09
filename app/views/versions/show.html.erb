@@ -22,7 +22,7 @@
         </div>
       <% end %>
       <div class="aside-section removed">Removed</div>
-      <% @previous_version&.removed_endpoints.each do |endpoint| %>
+      <% @previous_version&.removed_endpoints&.each do |endpoint| %>
         <div class="link-container">
           <a href="<%= "##{endpoint.page_url}" %>"><%= endpoint.name %></a>
         </div>
@@ -49,7 +49,7 @@
         <%= render "endpoint_added", endpoint: endpoint, diff: diff %>
       <% end %>
 
-      <% @previous_version&.removed_endpoints.each do |endpoint| %>
+      <% @previous_version&.removed_endpoints&.each do |endpoint| %>
         <% diff = endpoint.endpoint_root.to_diff(:no_change) %>
         <%= render "endpoint_removed", endpoint: endpoint, diff: diff %>
       <% end %>
