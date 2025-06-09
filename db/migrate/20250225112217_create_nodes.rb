@@ -23,5 +23,9 @@ class CreateNodes < ActiveRecord::Migration[8.0]
 
       t.timestamps
     end
+
+    create_table :nothing_nodes do |t|
+      t.timestamps
+    end
   end
 end

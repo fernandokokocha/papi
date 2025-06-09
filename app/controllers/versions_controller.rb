@@ -18,7 +18,7 @@ class VersionsController < ApplicationController
   def create
     params.permit!
     params[:version][:endpoints_attributes].map do |endpoint_attr|
-      endpoint_root =  RootParser.new.parse_value(endpoint_attr[:original_endpoint_root])
+      endpoint_root =  JSONSchemaParser.new.parse_value(endpoint_attr[:original_endpoint_root])
       endpoint_root.save
       endpoint_attr[:endpoint_root_id] = endpoint_root.id
       endpoint_attr[:endpoint_root_type] = endpoint_root.class.name

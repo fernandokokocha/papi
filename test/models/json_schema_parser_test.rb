@@ -1,14 +1,20 @@
 require "test_helper"
 
-class RootParserTest < ActiveSupport::TestCase
+class JSONSchemaParserTest < ActiveSupport::TestCase
+  test "parse empty string" do
+    actual = JSONSchemaParser.new.parse_value("")
+    expected = NothingNode.new
+    assert_equal expected, actual
+  end
+
   test "parse {}" do
-    actual = RootParser.new.parse_value("{}")
+    actual = JSONSchemaParser.new.parse_value("{}")
     expected = ObjectNode.new
     assert_equal expected, actual
   end
 
   test "parse { a: string }" do
-    actual = RootParser.new.parse_value("{ a: string }")
+    actual = JSONSchemaParser.new.parse_value("{ a: string }")
     actual.save
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "a")
@@ -18,7 +24,7 @@ class RootParserTest < ActiveSupport::TestCase
   end
 
   test "parse { a: number }" do
-    actual = RootParser.new.parse_value("{ a: number }")
+    actual = JSONSchemaParser.new.parse_value("{ a: number }")
     actual.save
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "a", value:
@@ -29,7 +35,7 @@ class RootParserTest < ActiveSupport::TestCase
   end
 
   test "parse { a: string, b: number }" do
-    actual = RootParser.new.parse_value("{ a: string, b: number }")
+    actual = JSONSchemaParser.new.parse_value("{ a: string, b: number }")
     actual.save
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "a"),
@@ -41,7 +47,7 @@ class RootParserTest < ActiveSupport::TestCase
   end
 
   test "parse { a: { b: string } }" do
-    actual = RootParser.new.parse_value("{ a: { b: string } }")
+    actual = JSONSchemaParser.new.parse_value("{ a: { b: string } }")
     actual.save
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "a", value:
@@ -54,7 +60,7 @@ class RootParserTest < ActiveSupport::TestCase
   end
 
   test "parse { a: { b: string, c: number } }" do
-    actual = RootParser.new.parse_value("{ a: { b: string, c: number } }")
+    actual = JSONSchemaParser.new.parse_value("{ a: { b: string, c: number } }")
     actual.save
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "a", value:
@@ -70,7 +76,7 @@ class RootParserTest < ActiveSupport::TestCase
   end
 
   test "parse real life problem" do
-    actual = RootParser.new.parse_value("{name:string,child:{first_name:string,last_name:string,third_name:number},elo:string}")
+    actual = JSONSchemaParser.new.parse_value("{name:string,child:{first_name:string,last_name:string,third_name:number},elo:string}")
     actual.save
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "name"),
@@ -89,7 +95,7 @@ class RootParserTest < ActiveSupport::TestCase
   end
 
   test "parse three levels of nesting" do
-    actual = RootParser.new.parse_value("{name:string,child:{first_name:string,last_name:string,obj:{new:string}}}")
+    actual = JSONSchemaParser.new.parse_value("{name:string,child:{first_name:string,last_name:string,obj:{new:string}}}")
     actual.save
     expected = FactoryBot.create(:object_node, object_attributes: [
       FactoryBot.create(:object_attribute, order: 0, name: "name"),
@@ -109,7 +115,7 @@ class RootParserTest < ActiveSupport::TestCase
   end
 
   test "parse array of strings" do
-    actual = RootParser.new.parse_value("[string]")
+    actual = JSONSchemaParser.new.parse_value("[string]")
     actual.save
     expected = FactoryBot.create(:array_node, value:
       FactoryBot.create(:primitive_node)
@@ -119,7 +125,7 @@ class RootParserTest < ActiveSupport::TestCase
   end
 
   test "parse array of objects" do
-    actual = RootParser.new.parse_value("[{ a: string }]")
+    actual = JSONSchemaParser.new.parse_value("[{ a: string }]")
     actual.save
     expected = FactoryBot.create(:array_node, value:
       FactoryBot.create(:object_node, object_attributes: [
@@ -130,7 +136,7 @@ class RootParserTest < ActiveSupport::TestCase
   end
 
   test "parse primitive" do
-    actual = RootParser.new.parse_value("boolean")
+    actual = JSONSchemaParser.new.parse_value("boolean")
     actual.save
     expected = FactoryBot.create(:primitive_node, kind: "boolean")
 
@@ -138,7 +144,7 @@ class RootParserTest < ActiveSupport::TestCase
   end
 
   test "complex example" do
-    actual = RootParser.new.parse_value("{name:string,ref:string,is_pies:boolean,obj1:{first_name:string,last_name:string},array1:[{id:number,is_confirmed:boolean}],array2:[number]}")
+    actual = JSONSchemaParser.new.parse_value("{name:string,ref:string,is_pies:boolean,obj1:{first_name:string,last_name:string},array1:[{id:number,is_confirmed:boolean}],array2:[number]}")
     actual.save
 
     expected = FactoryBot.create(:object_node, object_attributes: [

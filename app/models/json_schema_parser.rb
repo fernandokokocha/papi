@@ -1,5 +1,7 @@
-class RootParser
+class JSONSchemaParser
   def parse_value(raw_value)
+    return NothingNode.new if raw_value.empty?
+
     value = raw_value.gsub(/\s+/, "")
 
     if value.start_with? "string"

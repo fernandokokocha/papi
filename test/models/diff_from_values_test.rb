@@ -98,6 +98,22 @@ class DiffFromValuesTest < ActiveSupport::TestCase
     assert_equal expected, diff.after
   end
 
+  # primitive to nothing
+  test "primitive -> nothing" do
+    value1 = FactoryBot.create(:primitive_node, kind: "string")
+    value2 = FactoryBot.create(:nothing_node)
+
+    diff = Diff::FromValues.new(value1, value2)
+    expected = Diff::Lines.new([
+                                 Diff::Line.new("string", :removed, 0)
+                               ])
+    assert_equal expected, diff.before
+    expected = Diff::Lines.new([
+                                 Diff::Line.new("", :blank, 0)
+                               ])
+    assert_equal expected, diff.after
+  end
+
   # object to primitive
   test "object -> string" do
     value1 = FactoryBot.create(:object_node, object_attributes: [
@@ -320,6 +336,28 @@ class DiffFromValuesTest < ActiveSupport::TestCase
     assert_equal expected, diff.after
   end
 
+  # object to nothing
+  test "object -> nothing" do
+    value1 = FactoryBot.create(:object_node, object_attributes: [
+      FactoryBot.create(:object_attribute, name: "name")
+    ])
+    value2 = FactoryBot.create(:nothing_node)
+
+    diff = Diff::FromValues.new(value1, value2)
+    expected = Diff::Lines.new([
+                                 Diff::Line.new("{", :removed, 0),
+                                 Diff::Line.new("name: string", :removed, 1),
+                                 Diff::Line.new("}", :removed, 0)
+                               ])
+    assert_equal expected, diff.before
+    expected = Diff::Lines.new([
+                                 Diff::Line.new("", :blank, 0),
+                                 Diff::Line.new("", :blank, 0),
+                                 Diff::Line.new("", :blank, 0)
+                               ])
+    assert_equal expected, diff.after
+  end
+
   # array to array
   test "array of strings -> same thing" do
     value1 = FactoryBot.create(:array_node, value: FactoryBot.create(:primitive_node, kind: "string"))
@@ -425,6 +463,95 @@ class DiffFromValuesTest < ActiveSupport::TestCase
                                  Diff::Line.new("", :blank, 0),
                                  Diff::Line.new("", :blank, 0)
                                ])
+    assert_equal expected, diff.after
+  end
+
+  # array to nothing
+  test "array -> nothing" do
+    value1 = FactoryBot.create(:array_node, value: FactoryBot.create(:primitive_node, kind: "string"))
+    value2 = FactoryBot.create(:nothing_node)
+
+    diff = Diff::FromValues.new(value1, value2)
+    expected = Diff::Lines.new([
+                                 Diff::Line.new("[", :removed, 0),
+                                 Diff::Line.new("string", :removed, 1),
+                                 Diff::Line.new("]", :removed, 0)
+                               ])
+    assert_equal expected, diff.before
+    expected = Diff::Lines.new([
+                                 Diff::Line.new("", :blank, 0),
+                                 Diff::Line.new("", :blank, 0),
+                                 Diff::Line.new("", :blank, 0)
+                               ])
+    assert_equal expected, diff.after
+  end
+
+  # nothing to primitive
+  test "nothing -> primitive" do
+    value1 = FactoryBot.create(:nothing_node)
+    value2 = FactoryBot.create(:primitive_node, kind: "string")
+
+    diff = Diff::FromValues.new(value1, value2)
+    expected = Diff::Lines.new([
+                                 Diff::Line.new("", :blank, 0)
+                               ])
+    assert_equal expected, diff.before
+    expected = Diff::Lines.new([
+                                 Diff::Line.new("string", :added, 0)
+                               ])
+    assert_equal expected, diff.after
+  end
+
+  # nothing to object
+  test "nothing -> object" do
+    value1 = FactoryBot.create(:nothing_node)
+    value2 = FactoryBot.create(:object_node, object_attributes: [
+      FactoryBot.create(:object_attribute, name: "name")
+    ])
+
+    diff = Diff::FromValues.new(value1, value2)
+    expected = Diff::Lines.new([
+                                 Diff::Line.new("", :blank, 0),
+                                 Diff::Line.new("", :blank, 0),
+                                 Diff::Line.new("", :blank, 0)
+                               ])
+    assert_equal expected, diff.before
+    expected = Diff::Lines.new([
+                                 Diff::Line.new("{", :added, 0),
+                                 Diff::Line.new("name: string", :added, 1),
+                                 Diff::Line.new("}", :added, 0)
+                               ])
+    assert_equal expected, diff.after
+  end
+
+  # nothing to array
+  test "nothing -> array" do
+    value1 = FactoryBot.create(:nothing_node)
+    value2 = FactoryBot.create(:array_node, value: FactoryBot.create(:primitive_node, kind: "string"))
+
+    diff = Diff::FromValues.new(value1, value2)
+    expected = Diff::Lines.new([
+                                 Diff::Line.new("", :blank, 0),
+                                 Diff::Line.new("", :blank, 0),
+                                 Diff::Line.new("", :blank, 0)
+                               ])
+    assert_equal expected, diff.before
+    expected = Diff::Lines.new([
+                                 Diff::Line.new("[", :added, 0),
+                                 Diff::Line.new("string", :added, 1),
+                                 Diff::Line.new("]", :added, 0)
+                               ])
+    assert_equal expected, diff.after
+  end
+
+  # nothing to nothing
+  test "nothing -> nothing" do
+    value1 = FactoryBot.create(:nothing_node)
+    value2 = FactoryBot.create(:nothing_node)
+
+    diff = Diff::FromValues.new(value1, value2)
+    expected = Diff::Lines.new([])
+    assert_equal expected, diff.before
     assert_equal expected, diff.after
   end
 end
