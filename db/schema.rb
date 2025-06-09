@@ -23,12 +23,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_02_25_112217) do
     t.integer "http_verb", null: false
     t.string "url", null: false
     t.integer "version_id", null: false
-    t.string "endpoint_root_type", null: false
-    t.integer "endpoint_root_id", null: false
-    t.string "original_endpoint_root", null: false
+    t.string "input_type", null: false
+    t.integer "input_id", null: false
+    t.string "output_type", null: false
+    t.integer "output_id", null: false
+    t.string "original_input_string", null: false
+    t.string "original_output_string", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["endpoint_root_type", "endpoint_root_id"], name: "index_endpoints_on_endpoint_root"
+    t.index ["input_type", "input_id"], name: "index_endpoints_on_input"
+    t.index ["output_type", "output_id"], name: "index_endpoints_on_output"
     t.index ["version_id"], name: "index_endpoints_on_version_id"
   end
 

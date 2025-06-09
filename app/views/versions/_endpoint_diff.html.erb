@@ -13,6 +13,19 @@
     <div class="endpoint-section">INPUT</div>
   </div>
 
+  <div class="endpoint-root-container">
+    <div class="endpoint-root">
+      <% input_diff.before.each do |diff_line| %>
+        <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
+      <% end %>
+    </div>
+    <div class="endpoint-root">
+      <% input_diff.after.each do |diff_line| %>
+        <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
+      <% end %>
+    </div>
+  </div>
+
   <div class="endpoint-section-container">
     <div class="endpoint-section">OUTPUT</div>
     <div class="endpoint-section">OUTPUT</div>
@@ -20,12 +33,12 @@
 
   <div class="endpoint-root-container">
     <div class="endpoint-root">
-      <% diff_before.each do |diff_line| %>
+      <% output_diff.before.each do |diff_line| %>
         <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
       <% end %>
     </div>
     <div class="endpoint-root">
-      <% diff_after.each do |diff_line| %>
+      <% output_diff.after.each do |diff_line| %>
         <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
       <% end %>
     </div>

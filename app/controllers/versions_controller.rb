@@ -18,17 +18,22 @@ class VersionsController < ApplicationController
   def create
     params.permit!
     params[:version][:endpoints_attributes].map do |endpoint_attr|
-      endpoint_root =  JSONSchemaParser.new.parse_value(endpoint_attr[:original_endpoint_root])
-      endpoint_root.save
-      endpoint_attr[:endpoint_root_id] = endpoint_root.id
-      endpoint_attr[:endpoint_root_type] = endpoint_root.class.name
+      output =  JSONSchemaParser.new.parse_value(endpoint_attr[:original_output_string])
+      output.save
+      endpoint_attr[:output_id] = output.id
+      endpoint_attr[:output_type] = output.class.name
+
+      input =  JSONSchemaParser.new.parse_value(endpoint_attr[:original_input_string])
+      input.save
+      endpoint_attr[:input_id] = input.id
+      endpoint_attr[:input_type] = input.class.name
     end
     @version = Version.new(params[:version])
-
 
     if @version.save
       redirect_to project_version_path(id: @version.id, project_id: @version.project.id)
     else
+      puts @version.errors.full_messages
       render :new, status: :unprocessable_entity
     end
   end

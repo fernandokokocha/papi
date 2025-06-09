@@ -4,11 +4,11 @@ class NothingNode < ApplicationRecord
   end
 
   def to_example_json
-    "<empty>"
+    ""
   end
 
   def serialize
-    "<empty>"
+    ""
   end
 
   def ==(other)

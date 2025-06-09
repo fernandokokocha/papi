@@ -11,18 +11,28 @@
     <div class="endpoint-section-placeholder"></div>
   </div>
 
+  <div class="endpoint-root-container">
+    <div class="endpoint-root">
+      <% input_diff.each do |diff_line| %>
+        <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
+      <% end %>
+    </div>
+    <div class="endpoint-root-placeholder">
+    </div>
+  </div>
+
   <div class="endpoint-section-container">
     <div class="endpoint-section">OUTPUT</div>
     <div class="endpoint-section-placeholder"></div>
   </div>
 
   <div class="endpoint-root-container">
-  </div>
-  <div class="endpoint-root">
-    <% diff.each do |diff_line| %>
-      <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
-    <% end %>
-  </div>
-  <div class="endpoint-root-placeholder">
+    <div class="endpoint-root">
+      <% output_diff.each do |diff_line| %>
+        <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
+      <% end %>
+    </div>
+    <div class="endpoint-root-placeholder">
+    </div>
   </div>
 </div>

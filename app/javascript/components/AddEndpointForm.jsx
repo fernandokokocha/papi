@@ -20,14 +20,14 @@ const AddEndpointForm = () => {
         const urlInput = clone.querySelector("input[name='version[endpoints_attributes][][url]']")
         urlInput.value = url
 
-        const div = clone.querySelector(".react-json-schema")
-        div.setAttribute("data-initial-root", "string");
+        const divs = clone.querySelectorAll(".react-json-schema")
+        divs.forEach((div) => {
+            const dataset = div.dataset
+            const root = createRoot(div)
+            root.render(<JSONSchemaForm {...dataset}/>)
+        })
 
         insertInMe.insertBefore(clone, insertBeforeMe)
-
-        const dataset = div.dataset
-        const root = createRoot(div)
-        root.render(<JSONSchemaForm {...dataset}/>)
     }
 
     return (
@@ -50,7 +50,3 @@ const AddEndpointForm = () => {
 }
 
 export default AddEndpointForm
-
-
-
-

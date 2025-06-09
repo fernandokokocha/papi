@@ -4,7 +4,7 @@ import serialize from "~/helpers/serialize.js";
 import deserialize from "~/helpers/deserialize.js";
 import findByPath from "~/helpers/findByPath.js";
 
-const JSONSchemaForm = ({initialRoot}) => {
+const JSONSchemaForm = ({initialRoot, name}) => {
     const [root, setRoot] = useState(initialRoot)
     const [parsedRoot, setParsedRoot] = useState(deserialize(initialRoot))
 
@@ -65,7 +65,7 @@ const JSONSchemaForm = ({initialRoot}) => {
     return (
         <>
             <input type="hidden"
-                   name="version[endpoints_attributes][][original_endpoint_root]"
+                   name={name}
                    value={root}>
             </input>
             <Value

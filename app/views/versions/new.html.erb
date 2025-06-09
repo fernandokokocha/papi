@@ -23,8 +23,9 @@
         </div>
 
         <% @version.existing_endpoints.each do |endpoint, previous_endpoint| %>
-          <% diff = previous_endpoint.endpoint_root.to_diff(:no_change) %>
-          <%= render "endpoint_new", endpoint: endpoint, diff: diff %>
+          <% input_diff = previous_endpoint.input.to_diff(:no_change) %>
+          <% output_diff = previous_endpoint.output.to_diff(:no_change) %>
+          <%= render "endpoint_new", endpoint: endpoint, input_diff: input_diff, output_diff: output_diff %>
         <% end %>
 
         <div class="endpoint-container">
@@ -85,6 +86,17 @@
       <div class="endpoint-section">INPUT</div>
     </div>
 
+    <div class="endpoint-root-container">
+      <div class="endpoint-root-placeholder">
+      </div>
+      <div class="endpoint-root">
+        <div class="react-json-schema"
+             data-initial-root="string"
+             data-name="version[endpoints_attributes][][original_input_string]"
+        ></div>
+      </div>
+    </div>
+
     <div class="endpoint-section-container">
       <div class="endpoint-section">OUTPUT</div>
       <div class="endpoint-section">OUTPUT</div>
@@ -96,6 +108,7 @@
       <div class="endpoint-root">
         <div class="react-json-schema"
              data-initial-root="string"
+             data-name="version[endpoints_attributes][][original_output_string]"
         ></div>
       </div>
     </div>
