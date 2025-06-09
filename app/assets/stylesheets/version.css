@@ -108,7 +108,7 @@
             }
 
             .endpoint-container {
-                margin-bottom: 10px;
+                margin-bottom: 2px;
                 border: 2px solid black;
 
                 .endpoint-name-container {
@@ -210,16 +210,20 @@
         & .object {
             .object-attribute {
                 padding-left: 20px;
+                font-family: monospace;
+
             }
 
             .object-new-attribute {
                 padding-left: 20px;
+                font-family: monospace;
             }
         }
 
         & .array {
             .array-value {
                 padding-left: 20px;
+                font-family: monospace;
             }
         }
     }

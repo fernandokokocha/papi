@@ -21,7 +21,7 @@ project1v2e2:
   http_verb: 0
   url: /new_thing
   version: project1v2
-  endpoint_root: object22 (ObjectNode)
+  endpoint_root: n1 (NothingNode)
   original_endpoint_root: ""
 
 project1v3e1:
