@@ -44,6 +44,23 @@
   <%= link_to "Back", projects_path %>
 </div>
 
+<script>
+    function removeEndpoint(el) {
+        const parent = el.parentElement
+        const sibling = parent.previousElementSibling;
+        const root = parent.parentElement.parentElement.querySelector(".react-json-schema")
+
+        parent.classList.add("removed")
+        parent.innerText = sibling.innerText;
+        root.innerText = '';
+    }
+
+    function removeNewEndpoint(el) {
+        const parent = el.parentElement.parentElement.parentElement
+        parent.remove();
+    }
+</script>
+
 <template id="empty-endpoint">
   <div class="endpoint-container">
     <div class="endpoint-name-container">
@@ -59,6 +76,7 @@
         <input type="text"
                value=""
                name="version[endpoints_attributes][][url]"/>
+        <button type="button" onClick="removeNewEndpoint(this)">x</button>
       </div>
     </div>
 

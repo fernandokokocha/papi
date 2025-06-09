@@ -8,8 +8,8 @@ const AddEndpointForm = () => {
     const ref = useRef(null)
 
     const addEndpoint = () => {
-        const insertBeforeMe = ref.current.parentElement.parentElement.parentElement;
-        const insertInMe = ref.current.parentElement.parentElement.parentElement.parentElement;
+        const insertBeforeMe = ref.current.parentElement.parentElement.parentElement.parentElement;
+        const insertInMe = ref.current.parentElement.parentElement.parentElement.parentElement.parentElement;
 
         const template = document.querySelector("#empty-endpoint");
         const clone = template.content.cloneNode(true);
