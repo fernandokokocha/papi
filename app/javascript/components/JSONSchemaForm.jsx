@@ -75,6 +75,7 @@ const JSONSchemaForm = ({initialRoot, name}) => {
                 onAdd={addNode}
                 path={[]}
                 canBeDeleted={false}
+                canBeNothing={true}
             />
         </>
     )

@@ -43,6 +43,14 @@ const splitByComma = (str) => {
 
 const deserialize = (root) => {
     root = root.trim()
+
+    if (root.length === 0) {
+        return {
+            nodeType: "primitive",
+            value: "nothing"
+        }
+    }
+
     if (root[0] === "{") {
         const inside = trimEdgesAndWhitespace(root)
         const attributes = splitByComma(inside)

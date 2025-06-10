@@ -1,5 +1,8 @@
 const serialize = (root) => {
     if (root.nodeType === "primitive") {
+        if (root.value === "nothing") {
+            return ""
+        }
         return root.value
     }
 

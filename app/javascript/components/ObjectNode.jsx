@@ -2,14 +2,14 @@ import React, {useState} from 'react'
 import TypeSelect from "~/components/TypeSelect.jsx";
 import ObjectAttribute from "~/components/ObjectAttribute.jsx";
 
-const ObjectNode = ({onChange, onDelete, onAdd, attributes, path, canBeDeleted}) => {
+const ObjectNode = ({onChange, onDelete, onAdd, attributes, path, canBeDeleted, canBeNothing}) => {
     const [newName, setNewName] = useState("new")
 
     const addDisabled = attributes.some(({name}) => name === newName)
 
     return (
         <div className="object">
-            <TypeSelect value="object" onChange={onChange} onDelete={onDelete} path={path} canBeDeleted={canBeDeleted}/>
+            <TypeSelect value="object" onChange={onChange} onDelete={onDelete} path={path} canBeDeleted={canBeDeleted} canBeNothing={canBeNothing}/>
             {"{"}
 
             {attributes.length === 0 && <div style={{ backgroundColor: "red"}}>Add attrs</div>}
@@ -23,6 +23,7 @@ const ObjectNode = ({onChange, onDelete, onAdd, attributes, path, canBeDeleted})
                                      onAdd={onAdd}
                                      path={path.concat(name)}
                                      canBeDeleted={true}
+                                     canBeNothing={false}
                     />
                 ))
             }
