@@ -1,0 +1,7 @@
+<% if diff.empty? %>
+  -
+<% else %>
+  <% diff.each do |diff_line| %>
+    <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
+  <% end %>
+<% end %>

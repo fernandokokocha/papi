@@ -49,11 +49,13 @@
     function removeEndpoint(el) {
         const parent = el.parentElement
         const sibling = parent.previousElementSibling;
-        const root = parent.parentElement.parentElement.querySelector(".react-json-schema")
+        const roots = parent.parentElement.parentElement.querySelectorAll(".react-json-schema")
 
         parent.classList.add("removed")
         parent.innerText = sibling.innerText;
-        root.innerText = '';
+        Array.from(roots).forEach((root) => {
+            root.innerText = '';
+        })
     }
 
     function removeNewEndpoint(el) {

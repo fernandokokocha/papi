@@ -1,7 +1,7 @@
 class Diff::Lines
   attr_accessor :lines
 
-  delegate :length, :each, to: :lines
+  delegate :length, :each, :empty?, to: :lines
 
   def initialize(lines)
     @lines = lines

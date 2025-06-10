@@ -25,9 +25,7 @@
 
   <div class="endpoint-root-container">
     <div class="endpoint-root">
-      <% input_diff.each do |diff_line| %>
-        <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
-      <% end %>
+      <%= render "spec", diff: input_diff %>
     </div>
     <div class="endpoint-root">
       <div class="react-json-schema"
@@ -44,9 +42,7 @@
 
   <div class="endpoint-root-container">
     <div class="endpoint-root">
-      <% output_diff.each do |diff_line| %>
-        <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
-      <% end %>
+      <%= render "spec", diff: output_diff %>
     </div>
     <div class="endpoint-root">
       <div class="react-json-schema"

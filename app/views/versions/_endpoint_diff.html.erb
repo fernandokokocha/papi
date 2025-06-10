@@ -3,9 +3,6 @@
     <div class="endpoint-name">
       <%= endpoint.name %>
     </div>
-    <div class="endpoint-name">
-      <%= endpoint.name %>
-    </div>
   </div>
 
   <div class="endpoint-section-container">
@@ -15,14 +12,10 @@
 
   <div class="endpoint-root-container">
     <div class="endpoint-root">
-      <% input_diff.before.each do |diff_line| %>
-        <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
-      <% end %>
+      <%= render "spec", diff: input_diff.before %>
     </div>
     <div class="endpoint-root">
-      <% input_diff.after.each do |diff_line| %>
-        <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
-      <% end %>
+      <%= render "spec", diff: input_diff.after %>
     </div>
   </div>
 
@@ -33,14 +26,10 @@
 
   <div class="endpoint-root-container">
     <div class="endpoint-root">
-      <% output_diff.before.each do |diff_line| %>
-        <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
-      <% end %>
+      <%= render "spec", diff: output_diff.before %>
     </div>
     <div class="endpoint-root">
-      <% output_diff.after.each do |diff_line| %>
-        <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
-      <% end %>
+      <%= render "spec", diff: output_diff.after %>
     </div>
   </div>
 </div>
