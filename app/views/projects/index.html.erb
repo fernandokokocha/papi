@@ -1,15 +1,17 @@
 <div class="projects-view">
-  <div class="flex-container">
     <% @projects.each do |project| %>
       <div class="project-card">
         <header><%= project.name %></header>
-        <% project.versions.each do |version| %>
-          <div>
+        <div class="section">
+          <%= link_to "Create new version", new_project_version_path(project_id: project.id) %>
+        </div>
+        <div class="section">Recent versions:</div>
+        <% project.versions.order({ order: "DESC" }).each do |version| %>
+          <div class="version">
             <%= link_to version.name, project_version_path(id: version.id, project_id: project.id) %>
-            <span class="date"><%= version.created_at %></span>
+            <span class="date"><%= version.created_at.strftime("%Y-%m-%d") %></span>
           </div>
         <% end %>
       </div>
     <% end %>
-  </div>
 </div>

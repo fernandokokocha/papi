@@ -1,19 +1,31 @@
 .projects-view {
-    .flex-container {
-        display: flex;
-        flex-direction: row;
-    }
-
     .project-card {
         display: flex;
         flex-direction: column;
         font-size: 20px;
-        padding: 5px;
-        margin: 5px;
-        background: aquamarine;
+        padding: 10px;
+        margin: 10px 0;
+        background: beige;
+        border-radius: 5px;
 
-        .date {
-            font-size: 16px;
+        header {
+            font-size: 24px;
+            font-weight: 800;
+            padding: 5px 0;
+        }
+
+        .section {
+            font-size: 20px;
+            padding: 2px 0;
+            font-weight: 800;
+        }
+
+        .version {
+            padding-top: 2px;
+
+            .date {
+                font-size: 16px;
+            }
         }
     }
 }
