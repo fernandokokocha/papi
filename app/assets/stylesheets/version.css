@@ -207,22 +207,35 @@
 
         & .object {
             .object-attribute {
-                padding-left: 20px;
+                margin-left: 20px;
                 font-family: monospace;
 
             }
 
             .object-new-attribute {
-                padding-left: 20px;
+                margin-left: 20px;
                 font-family: monospace;
             }
         }
 
         & .array {
             .array-value {
-                padding-left: 20px;
+                margin-left: 20px;
                 font-family: monospace;
             }
+        }
+
+        .alert {
+            background: red;
+            margin: 2px;
+            padding: 2px;
+        }
+
+        .submit {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            margin: 10px;
         }
     }
 }

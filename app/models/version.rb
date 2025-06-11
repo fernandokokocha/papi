@@ -35,6 +35,19 @@ class Version < ApplicationRecord
     ret
   end
 
+  def existing_endpoints_for_frontend
+    existing_endpoints.map do |endpoint, previous_endpoint|
+      {
+        http_verb: endpoint.http_verb,
+        verb: endpoint.verb,
+        url: endpoint.url,
+        input: endpoint.input.serialize,
+        output: endpoint.output.serialize,
+        page_url: endpoint.page_url
+      }
+    end.to_json
+  end
+
   amoeba do
     enable
   end

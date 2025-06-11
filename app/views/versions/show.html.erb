@@ -9,7 +9,7 @@
   </div>
   <div class="main-container">
     <aside>
-      <div class="aside-section">Endpoints</div>
+      <div class="aside-section">EndpointList</div>
       <% @version.existing_endpoints.each do |endpoint, _| %>
         <div class="link-container">
           <a href="<%= "##{endpoint.page_url}" %>"><%= endpoint.name %></a>
