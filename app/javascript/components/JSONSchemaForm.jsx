@@ -4,9 +4,8 @@ import serialize from "~/helpers/serialize.js";
 import deserialize from "~/helpers/deserialize.js";
 import findByPath from "~/helpers/findByPath.js";
 
-const JSONSchemaForm = ({initialRoot, name}) => {
-    const [root, setRoot] = useState(initialRoot)
-    const [parsedRoot, setParsedRoot] = useState(deserialize(initialRoot))
+const JSONSchemaForm = ({root, name, update, id}) => {
+    const parsedRoot = deserialize(root)
 
     const removeNode = (e, path) => {
         e.preventDefault()
@@ -17,10 +16,9 @@ const JSONSchemaForm = ({initialRoot, name}) => {
         const parent = findByPath(newRoot, parentPath);
 
         parent.attributes = parent.attributes.filter(attr => attr.name !== lastElement)
-        setParsedRoot(newRoot)
-
         const newRootString = serialize(newRoot)
-        setRoot(newRootString)
+
+        update(id, newRootString)
     }
 
     const addNode = (e, path, name) => {
@@ -30,10 +28,9 @@ const JSONSchemaForm = ({initialRoot, name}) => {
         const current = findByPath(newRoot, path);
 
         current.attributes.push({name, value: {nodeType: "primitive", value: "string"}})
-        setParsedRoot(newRoot)
 
         const newRootString = serialize(newRoot)
-        setRoot(newRootString)
+        update(id, newRootString)
     }
 
     const changeType = (e, path) => {
@@ -56,10 +53,9 @@ const JSONSchemaForm = ({initialRoot, name}) => {
             current.value = e.target.value;
         }
 
-        setParsedRoot(newRoot)
 
         const newRootString = serialize(newRoot)
-        setRoot(newRootString)
+        update(id, newRootString)
     }
 
     return (

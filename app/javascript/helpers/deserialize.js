@@ -4,6 +4,7 @@ const trimEdgesAndWhitespace = (str) => {
 }
 
 const splitByComma = (str) => {
+    if (str.length === 0) return []
     const ret = []
     let deep = 0
     let tmp = ""

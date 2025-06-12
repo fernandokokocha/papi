@@ -4,10 +4,8 @@ import EndpointList from "~/components/EndpointList.jsx";
 
 document.addEventListener('turbo:load', () => {
     const container = document.getElementById('react-endpoints')
-    console.log({ container })
     if (!container) return;
     const dataset = container.dataset
-    console.log({ dataset })
     const root = createRoot(container)
     root.render(<EndpointList {...dataset}/>)
 })

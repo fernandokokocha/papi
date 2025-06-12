@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import JSONSchemaForm from "~/components/JSONSchemaForm.jsx";
 import {v4 as uuidv4} from 'uuid';
 
-const EndpointAdded = ({endpoint, remove, updateName}) => {
+const EndpointAdded = ({endpoint, remove, updateName, updateInput, updateOutput}) => {
     return (
         <div className="endpoint-container" key={endpoint.id}>
             <div className="endpoint-name-container">
@@ -39,7 +39,9 @@ const EndpointAdded = ({endpoint, remove, updateName}) => {
                 <div className="endpoint-root">
                     <JSONSchemaForm
                         name="version[endpoints_attributes][][original_input_string]"
-                        initialRoot={endpoint.input}
+                        update={updateInput}
+                        root={endpoint.input}
+                        id={endpoint.id}
                     />
                 </div>
             </div>
@@ -56,7 +58,9 @@ const EndpointAdded = ({endpoint, remove, updateName}) => {
                 <div className="endpoint-root">
                     <JSONSchemaForm
                         name="version[endpoints_attributes][][original_output_string]"
-                        initialRoot={endpoint.output}
+                        update={updateOutput}
+                        root={endpoint.output}
+                        id={endpoint.id}
                     />
                 </div>
             </div>

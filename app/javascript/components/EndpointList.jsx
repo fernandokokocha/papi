@@ -30,7 +30,7 @@ const EndpointList = ({serializedEndpoints}) => {
     const [anyChanges, setAnyChanges] = useState(false);
     const [newUrl, setNewUrl] = useState("/resource")
     const [newVerb, setNewVerb] = useState("verb_get")
-    const [addEndpointDisabled, setAddEndpointDisabled] = useState(isNewEndpointColliding(newVerb, newUrl, endpoints))
+    const [addEndpointDisabled, setAddEndpointDisabled] = useState(() => isNewEndpointColliding(newVerb, newUrl, endpoints))
 
     const validateNewEndpoint = (verb, url, e) => {
         setAddEndpointDisabled(isNewEndpointColliding(verb, url, e))
@@ -65,15 +65,15 @@ const EndpointList = ({serializedEndpoints}) => {
         setAnyChanges(newAnyChanges)
     }
 
-    const updateEndpoint = (id, newVerb, newUrl) => {
+    const updateEndpoint = (id, updatedVerb, updatedUrl) => {
         const newEndpoints = JSON.parse(JSON.stringify(endpoints))
         const endpointToUpdate = newEndpoints.find((endpoint) => (endpoint.id === id))
-        endpointToUpdate.http_verb = newVerb
-        endpointToUpdate.url = newUrl
+        endpointToUpdate.http_verb = updatedVerb
+        endpointToUpdate.url = updatedUrl
 
         validate(newEndpoints)
+        validateNewEndpoint(newVerb, newUrl, newEndpoints)
         setEndpoints(newEndpoints)
-        validateNewEndpoint(newVerb, newUrl, endpoints)
     }
 
     const removeEndpoint = (id) => {
@@ -86,8 +86,8 @@ const EndpointList = ({serializedEndpoints}) => {
         }
 
         validate(newEndpoints)
+        validateNewEndpoint(newVerb, newUrl, newEndpoints)
         setEndpoints(newEndpoints)
-        validateNewEndpoint(newVerb, newUrl, endpoints)
     }
 
     const addEndpoint = () => {
@@ -104,8 +104,8 @@ const EndpointList = ({serializedEndpoints}) => {
         })
 
         validate(newEndpoints)
+        validateNewEndpoint(newVerb, newUrl, newEndpoints)
         setEndpoints(newEndpoints)
-        validateNewEndpoint(newVerb, newUrl, endpoints)
     }
 
     const updateNewUrl = (e) => {
@@ -116,6 +116,26 @@ const EndpointList = ({serializedEndpoints}) => {
     const updateNewVerb = (e) => {
         setNewVerb(e.target.value)
         validateNewEndpoint(e.target.value, newUrl, endpoints)
+    }
+
+    const updateInput = (id, newInput) => {
+        const newEndpoints = JSON.parse(JSON.stringify(endpoints))
+        const endpointToUpdate = newEndpoints.find((endpoint) => (endpoint.id === id))
+        endpointToUpdate.input = newInput
+
+        validate(newEndpoints)
+        validateNewEndpoint(newVerb, newUrl, newEndpoints)
+        setEndpoints(newEndpoints)
+    }
+
+    const updateOutput = (id, newOutput) => {
+        const newEndpoints = JSON.parse(JSON.stringify(endpoints))
+        const endpointToUpdate = newEndpoints.find((endpoint) => (endpoint.id === id))
+        endpointToUpdate.output = newOutput
+
+        validate(newEndpoints)
+        validateNewEndpoint(newVerb, newUrl, newEndpoints)
+        setEndpoints(newEndpoints)
     }
 
     return (
@@ -131,6 +151,8 @@ const EndpointList = ({serializedEndpoints}) => {
                     endpoint={endpoint}
                     remove={removeEndpoint}
                     updateName={updateEndpoint}
+                    updateInput={updateInput}
+                    updateOutput={updateOutput}
                 />
             ))}
 
