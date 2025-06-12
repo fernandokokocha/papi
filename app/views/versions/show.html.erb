@@ -2,14 +2,14 @@
   <div class="title-container">
     <h1><%= @version.project.name %> <%= @version.name %></h1>
     <% if @next_version.present? %>
-      <%= link_to "See next - #{@next_version.name}", project_version_path(id: @next_version.id, project_id: @next_version.project.id) %>
+      <%= link_to "See next - #{@next_version.name}", project_version_path(name: @next_version.name, project_name: @next_version.project.name) %>
     <% else %>
-      <%= link_to "Create new version", new_project_version_path(project_id: @version.project.id) %>
+      <%= link_to "Create new version", new_project_version_path(project_name: @version.project.name) %>
     <% end %>
   </div>
   <div class="main-container">
     <aside>
-      <div class="aside-section">EndpointList</div>
+      <div class="aside-section">Endpoints</div>
       <% @version.existing_endpoints.each do |endpoint, _| %>
         <div class="link-container">
           <a href="<%= "##{endpoint.page_url}" %>"><%= endpoint.name %></a>
@@ -33,7 +33,7 @@
       <div class="version-name-container">
         <div class="version-name">
           <% if @previous_version.present? %>
-            <%= link_to @previous_version.name, project_version_path(id: @previous_version.id, project_id: @previous_version.project.id) %>
+            <%= link_to @previous_version.name, project_version_path(name: @previous_version.name, project_name: @previous_version.project.name) %>
           <% end %>
         </div>
         <div class="version-name"><%= @version.name %></div>

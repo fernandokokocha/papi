@@ -6,8 +6,8 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   root "projects#index"
-  resources :projects, only: [ :index, :show ] do
-    resources :versions, only: [ :index, :show, :new, :create ]
+  resources :projects, only: [ :index ], param: :name do
+    resources :versions, only: [ :index, :show, :new, :create ], param: :name
   end
   # resources :endpoints, only: [ :index, :show ]
 end

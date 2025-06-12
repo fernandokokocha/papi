@@ -1,12 +1,12 @@
 class VersionsController < ApplicationController
   def show
-    @version = Version.find(params[:id])
+    @version = Version.find_by(name: params[:name])
     @previous_version = @version.previous
     @next_version = @version.next
   end
 
   def new
-    @project = Project.find(params[:project_id])
+    @project = Project.find_by(name: params[:project_name])
     @latest_version = @project.latest_version
     @version = @latest_version.amoeba_dup
     @version.order = @latest_version.order + 1
@@ -31,7 +31,7 @@ class VersionsController < ApplicationController
     @version = Version.new(params[:version])
 
     if @version.save
-      redirect_to project_version_path(id: @version.id, project_id: @version.project.id)
+      redirect_to project_version_path(name: @version.name, project_name: @version.project.name)
     else
       puts @version.errors.full_messages
       render :new, status: :unprocessable_entity
