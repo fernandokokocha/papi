@@ -2,6 +2,19 @@ import React, {useState} from 'react'
 import {v4 as uuidv4} from 'uuid';
 import Endpoint from "~/components/Endpoint.jsx";
 
+const isNewEndpointColliding = (verb, url, e) => {
+    let newEndpointColliding = false
+    e.filter((endpoint) => (endpoint.type !== 'removed'))
+        .forEach((endpoint) => {
+            const collidingWithNewEndpoint = (endpoint.url === url && endpoint.http_verb === verb)
+            if (collidingWithNewEndpoint) {
+                newEndpointColliding = true
+            }
+        })
+
+    return newEndpointColliding;
+}
+
 const EndpointList = ({serializedEndpoints}) => {
     const parsed = JSON.parse(serializedEndpoints)
     parsed.forEach((endpointData) => {
@@ -16,9 +29,14 @@ const EndpointList = ({serializedEndpoints}) => {
     const [noCollisions, setNoCollisions] = useState(true);
     const [anyChanges, setAnyChanges] = useState(false);
     const [newUrl, setNewUrl] = useState("/resource")
-    const [newVerb, setNewVerb] = useState("http_get")
+    const [newVerb, setNewVerb] = useState("verb_get")
+    const [addEndpointDisabled, setAddEndpointDisabled] = useState(isNewEndpointColliding(newVerb, newUrl, endpoints))
 
-    const validateSubmit = (newEndpoints) => {
+    const validateNewEndpoint = (verb, url, e) => {
+        setAddEndpointDisabled(isNewEndpointColliding(verb, url, e))
+    }
+
+    const validate = (newEndpoints) => {
         let newNoCollisions = true;
         newEndpoints
             .filter((endpoint) => (endpoint.type !== 'removed'))
@@ -47,32 +65,34 @@ const EndpointList = ({serializedEndpoints}) => {
         setAnyChanges(newAnyChanges)
     }
 
-    const updateName = (id, newVerb, newUrl) => {
-        const newWitam = JSON.parse(JSON.stringify(endpoints))
-        const endpointToUpdate = newWitam.find((endpoint) => (endpoint.id === id))
+    const updateEndpoint = (id, newVerb, newUrl) => {
+        const newEndpoints = JSON.parse(JSON.stringify(endpoints))
+        const endpointToUpdate = newEndpoints.find((endpoint) => (endpoint.id === id))
         endpointToUpdate.http_verb = newVerb
         endpointToUpdate.url = newUrl
 
-        validateSubmit(newWitam)
-        setEndpoints(newWitam)
+        validate(newEndpoints)
+        setEndpoints(newEndpoints)
+        validateNewEndpoint(newVerb, newUrl, endpoints)
     }
 
-    const remove = (id) => {
-        let newWitam = JSON.parse(JSON.stringify(endpoints))
-        const endpointToRemove = newWitam.find((endpoint) => (endpoint.id === id))
+    const removeEndpoint = (id) => {
+        let newEndpoints = JSON.parse(JSON.stringify(endpoints))
+        const endpointToRemove = newEndpoints.find((endpoint) => (endpoint.id === id))
         if (endpointToRemove.type === 'old') {
             endpointToRemove.type = 'removed'
         } else if (endpointToRemove.type === 'new') {
-            newWitam = newWitam.filter((endpoint) => (endpoint.id !== id))
+            newEndpoints = newEndpoints.filter((endpoint) => (endpoint.id !== id))
         }
 
-        validateSubmit(newWitam)
-        setEndpoints(newWitam)
+        validate(newEndpoints)
+        setEndpoints(newEndpoints)
+        validateNewEndpoint(newVerb, newUrl, endpoints)
     }
 
-    const add = () => {
-        const newWitam = JSON.parse(JSON.stringify(endpoints))
-        newWitam.push({
+    const addEndpoint = () => {
+        const newEndpoints = JSON.parse(JSON.stringify(endpoints))
+        newEndpoints.push({
             id: uuidv4(),
             type: "new",
             http_verb: newVerb,
@@ -83,8 +103,19 @@ const EndpointList = ({serializedEndpoints}) => {
             page_url: `${newVerb}-${newUrl}`
         })
 
-        validateSubmit(newWitam)
-        setEndpoints(newWitam)
+        validate(newEndpoints)
+        setEndpoints(newEndpoints)
+        validateNewEndpoint(newVerb, newUrl, endpoints)
+    }
+
+    const updateNewUrl = (e) => {
+        setNewUrl(e.target.value)
+        validateNewEndpoint(newVerb, e.target.value, endpoints)
+    }
+
+    const updateNewVerb = (e) => {
+        setNewVerb(e.target.value)
+        validateNewEndpoint(e.target.value, newUrl, endpoints)
     }
 
     return (
@@ -96,24 +127,25 @@ const EndpointList = ({serializedEndpoints}) => {
             </div>
 
             {endpoints.map((endpoint) => (
-                <Endpoint endpoint={endpoint} remove={remove} updateName={updateName}/>
+                <Endpoint
+                    endpoint={endpoint}
+                    remove={removeEndpoint}
+                    updateName={updateEndpoint}
+                />
             ))}
 
             <div className="endpoint-container">
                 <div className="endpoint-name-container">
                     <div className="endpoint-name-placeholder"></div>
                     <div className="endpoint-name added">
-                        <select onChange={(e) => {
-                            setNewVerb(e.target.value)
-                        }}>
+                        <select onChange={updateNewVerb}>
                             {["verb_get", "verb_post", "verb_delete", "verb_put", "verb_patch"].map((verb) => (
                                 <option value={verb} selected={newVerb === verb}>{verb}</option>
                             ))}
                         </select>
-                        <input type="text" value={newUrl} onChange={(e) => {
-                            setNewUrl(e.target.value)
-                        }}/>
-                        <button type="button" onClick={add}>Add</button>
+                        <input type="text" value={newUrl} onChange={updateNewUrl}/>
+                        <button type="button" onClick={addEndpoint} disabled={addEndpointDisabled}>Add</button>
+                        {addEndpointDisabled && <div className="alert">This endpoint already exists</div>}
                     </div>
                 </div>
             </div>
