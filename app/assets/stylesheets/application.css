@@ -19,6 +19,17 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
+
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.topbar-session {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  gap: 10px;
 }
 
 .topbar-brand {

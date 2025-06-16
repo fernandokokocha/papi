@@ -42,6 +42,17 @@
     <header class="topbar">
       <div class="topbar-content">
         <%= link_to "Papi", root_path, class: "topbar-brand" %>
+
+        <% if Current.user %>
+          <div class="topbar-session">
+            <%= Current.user.email_address %>
+            <%= button_to "Log out", session_path, method: :delete %>
+          </div>
+        <% else %>
+          <div class="topbar-session">
+            <%= button_to "Login", new_session_path %>
+          </div>
+        <% end %>
       </div>
     </header>
     
