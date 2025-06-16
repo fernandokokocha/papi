@@ -13,9 +13,11 @@ const EndpointAdded = ({endpoint, remove, updateName, updateInput, updateOutput}
                         name="version[endpoints_attributes][][http_verb]"
                         onChange={(e) => updateName(endpoint.id, e.target.value, endpoint.url)}
                     >
-                        {["verb_get", "verb_post", "verb_delete", "verb_put", "verb_patch"].map((verb) => (
-                            <option value={verb} selected={endpoint.http_verb === verb}>{verb}</option>
-                        ))}
+                        <option value="verb_get" selected={endpoint.http_verb === "verb_get"}>GET</option>
+                        <option value="verb_post" selected={endpoint.http_verb === "verb_post"}>POST</option>
+                        <option value="verb_delete" selected={endpoint.http_verb === "verb_delete"}>DELETE</option>
+                        <option value="verb_put" selected={endpoint.http_verb === "verb_put"}>PUT</option>
+                        <option value="verb_patch" selected={endpoint.http_verb === "verb_patch"}>PATCH</option>
                     </select>
                     <input type="text"
                            value={endpoint.url}

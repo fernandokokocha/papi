@@ -161,9 +161,11 @@ const EndpointList = ({serializedEndpoints}) => {
                     <div className="endpoint-name-placeholder"></div>
                     <div className="endpoint-name added">
                         <select onChange={updateNewVerb}>
-                            {["verb_get", "verb_post", "verb_delete", "verb_put", "verb_patch"].map((verb) => (
-                                <option value={verb} selected={newVerb === verb}>{verb}</option>
-                            ))}
+                            <option value="verb_get" selected={newVerb === "verb_get"}>GET</option>
+                            <option value="verb_post" selected={newVerb === "verb_post"}>POST</option>
+                            <option value="verb_delete" selected={newVerb === "verb_delete"}>DELETE</option>
+                            <option value="verb_put" selected={newVerb === "verb_put"}>PUT</option>
+                            <option value="verb_patch" selected={newVerb === "verb_patch"}>PATCH</option>
                         </select>
                         <input type="text" value={newUrl} onChange={updateNewUrl}/>
                         <button type="button" onClick={addEndpoint} disabled={addEndpointDisabled}>Add</button>
