@@ -22,6 +22,8 @@ const EndpointList = ({serializedEndpoints}) => {
         endpointData.id = uuidv4()
         endpointData.original_url = endpointData.url
         endpointData.original_verb = endpointData.verb
+        endpointData.original_input = endpointData.input
+        endpointData.original_output = endpointData.output
         endpointData.collision = false
     })
 

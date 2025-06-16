@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 import JSONSchemaForm from "~/components/JSONSchemaForm.jsx";
 import {v4 as uuidv4} from 'uuid';
+import StaticJSONSchema from "@/components/StaticJSONSchema.jsx";
 
 const EndpointDiff = ({endpoint, remove, updateName, updateInput, updateOutput}) => {
     return (
@@ -37,7 +38,7 @@ const EndpointDiff = ({endpoint, remove, updateName, updateInput, updateOutput})
 
             <div className="endpoint-root-container">
                 <div className="endpoint-root">
-                    {/*< %= render "spec", diff: input_diff %>*/}
+                    <StaticJSONSchema root={endpoint.input} />
                 </div>
                 <div className="endpoint-root">
                     <JSONSchemaForm
@@ -56,7 +57,7 @@ const EndpointDiff = ({endpoint, remove, updateName, updateInput, updateOutput})
 
             <div className="endpoint-root-container">
                 <div className="endpoint-root">
-                    {/*<%= render "spec", diff: output_diff %>*/}
+                    <StaticJSONSchema root={endpoint.original_output} />
                 </div>
                 <div className="endpoint-root">
                     <JSONSchemaForm
