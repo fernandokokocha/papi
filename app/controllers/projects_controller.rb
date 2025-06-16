@@ -1,6 +1,7 @@
 class ProjectsController < ApplicationController
   def index
-    @projects = Project.all.sort_by(&:name)
+    @group = Current.user.group
+    @projects = Project.where(group: @group).sort_by(&:name)
   end
 
   def show

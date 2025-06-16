@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_16_143750) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_16_151230) do
   create_table "array_nodes", force: :cascade do |t|
     t.string "value_type", null: false
     t.integer "value_id", null: false
@@ -34,6 +34,12 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_16_143750) do
     t.index ["input_type", "input_id"], name: "index_endpoints_on_input"
     t.index ["output_type", "output_id"], name: "index_endpoints_on_output"
     t.index ["version_id"], name: "index_endpoints_on_version_id"
+  end
+
+  create_table "groups", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "nothing_nodes", force: :cascade do |t|
@@ -68,6 +74,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_16_143750) do
     t.string "name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "group_id", null: false
+    t.index ["group_id"], name: "index_projects_on_group_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -84,7 +92,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_16_143750) do
     t.string "password_digest", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "group_id", null: false
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
+    t.index ["group_id"], name: "index_users_on_group_id"
   end
 
   create_table "versions", force: :cascade do |t|
@@ -98,6 +108,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_16_143750) do
 
   add_foreign_key "endpoints", "versions"
   add_foreign_key "object_attributes", "object_nodes", column: "parent_id"
+  add_foreign_key "projects", "groups"
   add_foreign_key "sessions", "users"
+  add_foreign_key "users", "groups"
   add_foreign_key "versions", "projects"
 end

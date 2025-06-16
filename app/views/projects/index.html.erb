@@ -1,5 +1,5 @@
 <div class="projects-view">
-    <h1>Your projects</h1>
+    <h1><%= @group.name %></h1>
     <% @projects.each do |project| %>
       <div class="project-card">
         <header><%= project.name %></header>

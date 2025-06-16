@@ -1,2 +1,6 @@
 project1:
   name: projectX
+  group: g1
+project2:
+  name: youdontseeme
+  group: g2
