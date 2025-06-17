@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Diff::FromValues, type: :model do
+describe Diff::FromValues, type: :model do
   context "from primitive" do
     it "string -> string" do
       value1 = FactoryBot.create(:primitive_node, kind: "string")

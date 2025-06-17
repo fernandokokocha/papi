@@ -12,13 +12,11 @@ class ProjectsController < ApplicationController
 
   def create
     params.permit!
-    puts params[:project]
     @project = Project.new(params[:project])
 
     if @project.save
       redirect_to projects_path
     else
-      puts @project.errors.full_messages
       render :new, status: :unprocessable_entity
     end
   end

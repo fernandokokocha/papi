@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_16_151230) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_17_153756) do
   create_table "array_nodes", force: :cascade do |t|
     t.string "value_type", null: false
     t.integer "value_id", null: false
@@ -75,6 +75,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_16_151230) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "group_id", null: false
+    t.index ["group_id", "name"], name: "index_projects_on_group_id_and_name", unique: true
     t.index ["group_id"], name: "index_projects_on_group_id"
   end
 

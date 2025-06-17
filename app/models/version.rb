@@ -3,6 +3,8 @@ class Version < ApplicationRecord
   has_many :endpoints, dependent: :destroy
   accepts_nested_attributes_for :endpoints # , allow_destroy: true
 
+  validates :name, uniqueness: { scope: :project_id }
+
   def previous
     project.versions.find_by(order: order - 1)
   end

@@ -1,7 +1,5 @@
 FactoryBot.define do
   factory :group do
-    name { "MyString" }
-    project { nil }
-    user { nil }
+    name { "Test Group" }
   end
 end

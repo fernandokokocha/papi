@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe JSONSchemaParser, type: :model do
+describe JSONSchemaParser, type: :model do
   subject(:parser) { JSONSchemaParser.new }
 
   describe "#parse_value" do

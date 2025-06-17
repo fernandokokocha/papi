@@ -36,13 +36,13 @@ class VersionsController < ApplicationController
       endpoint_attr[:input_id] = input.id
       endpoint_attr[:input_type] = input.class.name
     end
+
     @version = Version.new(params[:version])
 
     if @version.save
       redirect_to project_version_path(name: @version.name, project_name: @version.project.name)
     else
-      puts @version.errors.full_messages
-      render :new, status: :unprocessable_entity
+      redirect_to new_project_version_path(project_name: @version.project.name)
     end
   end
 
