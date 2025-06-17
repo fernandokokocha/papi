@@ -145,7 +145,11 @@ const EndpointList = ({serializedEndpoints}) => {
             <div className="submit">
                 {!noCollisions && <div className="alert">Resolve collisions</div>}
                 {!anyChanges && <div className="alert">Make any changes</div>}
-                <input type="submit" name="commit" value="Create Version" disabled={!(noCollisions && anyChanges)}/>
+                <input type="submit"
+                       name="commit"
+                       value="Create Version"
+                       disabled={!(noCollisions && anyChanges)}
+                />
             </div>
 
             {endpoints.map((endpoint) => (
