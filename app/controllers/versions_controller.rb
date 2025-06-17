@@ -1,4 +1,6 @@
 class VersionsController < ApplicationController
+  include Pundit::Authorization
+
   def show
     @project = Project.find_by(name: params[:project_name])
     @version = Version.find_by(name: params[:name], project: @project)
