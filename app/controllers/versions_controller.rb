@@ -1,9 +1,8 @@
 class VersionsController < ApplicationController
-  include Pundit::Authorization
-
   def show
     @project = Project.find_by(name: params[:project_name])
     @version = Version.find_by(name: params[:name], project: @project)
+    authorize @version
     @previous_version = @version.previous
     @next_version = @version.next
   end
@@ -21,6 +20,7 @@ class VersionsController < ApplicationController
     @version.name = "v#{@version.order}"
     @version.created_at = Time.now
     @version.updated_at = Time.now
+    authorize @version
   end
 
   def create
@@ -38,6 +38,7 @@ class VersionsController < ApplicationController
     end
 
     @version = Version.new(params[:version])
+    authorize @version
 
     if @version.save
       redirect_to project_version_path(name: @version.name, project_name: @version.project.name)

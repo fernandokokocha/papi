@@ -1,6 +1,4 @@
 class ProjectsController < ApplicationController
-  include Pundit::Authorization
-
   def index
     @group = Current.user.group
     @projects = Project.where(group: @group).sort_by(&:name)
@@ -20,9 +18,5 @@ class ProjectsController < ApplicationController
     else
       render :new, status: :unprocessable_entity
     end
-  end
-
-  def pundit_user
-    Current.user
   end
 end
