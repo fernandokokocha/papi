@@ -104,6 +104,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_17_153756) do
     t.integer "project_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["project_id", "name"], name: "index_versions_on_project_id_and_name", unique: true
     t.index ["project_id"], name: "index_versions_on_project_id"
   end
 
