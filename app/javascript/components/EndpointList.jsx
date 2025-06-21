@@ -162,7 +162,7 @@ const EndpointList = ({serializedEndpoints}) => {
                 />
             ))}
 
-            <div className="endpoint-container">
+            <div className="endpoint-container added">
                 <div className="endpoint-name-container">
                     <div className="endpoint-name-placeholder"></div>
                     <div className="endpoint-name added">
