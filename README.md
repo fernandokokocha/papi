@@ -1,24 +1,17 @@
-# README
+# Papi - API spec done right
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Supported Ruby/Node versions
 
-Things you may want to cover:
+* Ruby 3.4.1
+* Node v23.11 (npm 10.9.2)
 
-* Ruby version
+## Deployment
 
-* System dependencies
+### Prerequisites
 
-* Configuration
+* lastpass CLI v1.6.1
+* Account for a given user + appropriate secrets stored there (see `.kamal/secrets`)
 
-* Database creation
+### Deployment command
 
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+`kamal deploy`
