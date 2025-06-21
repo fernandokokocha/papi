@@ -66,6 +66,7 @@
                 font-weight: 800;
                 padding: 5px;
                 text-transform: uppercase;
+                /*margin: 10px 0;*/
 
                 &.added {
                     background: lightgreen;
@@ -103,6 +104,12 @@
                         font-size: 14px;
                     }
                 }
+            }
+
+            .section {
+                font-size: 30px;
+                font-weight: 800;
+                margin: 10px 0;
             }
 
             .endpoint-container {
@@ -177,6 +184,63 @@
                     }
 
                     .endpoint-root-placeholder {
+                        flex-basis: 0;
+                        flex-grow: 1;
+                    }
+                }
+            }
+
+            .entity-container {
+                margin-bottom: 10px;
+                border: 1px solid black;
+
+                .entity-name-container {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: row;
+                    flex-grow: 1;
+                    justify-content: space-between;
+                    gap: 5px;
+                    position: sticky;
+                    top: 0px;
+
+                    .entity-name {
+                        flex-basis: 0;
+                        flex-grow: 1;
+                        background: lightskyblue;
+                        font-weight: 800;
+                        padding: 8px 0;
+
+                        &.removed {
+                            background: pink;
+                        }
+
+                        &.added {
+                            background: lightgreen;
+                        }
+                    }
+
+                    .entity-name-placeholder {
+                        flex-basis: 0;
+                        flex-grow: 1;
+                    }
+                }
+
+                .entity-root-container {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: row;
+                    flex-grow: 1;
+                    justify-content: space-between;
+                    gap: 5px;
+
+                    .entity-root {
+                        flex-basis: 0;
+                        flex-grow: 1;
+                        min-height: 20px;
+                    }
+
+                    .entity-root-placeholder {
                         flex-basis: 0;
                         flex-grow: 1;
                     }

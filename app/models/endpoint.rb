@@ -12,6 +12,8 @@ class Endpoint < ApplicationRecord
   belongs_to :input, polymorphic: true
   belongs_to :output, polymorphic: true
 
+  scope :sort_by_name, -> { order([ :url, :http_verb ]) }
+
   def verb
     VERB_TRANSLATIONS[http_verb.to_sym]
   end

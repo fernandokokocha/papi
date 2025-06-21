@@ -1,0 +1,16 @@
+<div class="entity-container" id="entity-<%= entity.name %>">
+  <div class="entity-name-container">
+    <div class="entity-name removed">
+      <%= entity.name %>
+    </div>
+    <div class="entity-name-placeholder"></div>
+  </div>
+
+  <div class="entity-root-container">
+    <div class="entity-root">
+      <%= render "spec", diff: diff %>
+    </div>
+  <div class="entity-root-placeholder">
+  </div>
+  </div>
+</div>

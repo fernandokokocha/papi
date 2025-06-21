@@ -1,7 +1,9 @@
 class Version < ApplicationRecord
   belongs_to :project
   has_many :endpoints, dependent: :destroy
+  has_many :entities, dependent: :destroy
   accepts_nested_attributes_for :endpoints # , allow_destroy: true
+  accepts_nested_attributes_for :entities # , allow_destroy: true
 
   validates :name, uniqueness: { scope: :project_id }
 
@@ -48,6 +50,14 @@ class Version < ApplicationRecord
         page_url: endpoint.page_url
       }
     end.to_json
+  end
+
+  def existing_entities_for_frontend
+    entities.map do |entity|
+      {
+        root: entity.root.serialize
+      }
+    end
   end
 
   amoeba do

@@ -5,6 +5,7 @@ FactoryBot.define do
     original_input_string { "{}" }
     original_output_string { "{}" }
     association :version
-    association :endpoint_root, factory: :object_node
+    association :input, factory: :object_node
+    association :output, factory: :object_node
   end
 end

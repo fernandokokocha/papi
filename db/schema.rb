@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_17_153756) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_21_112058) do
   create_table "array_nodes", force: :cascade do |t|
     t.string "value_type", null: false
     t.integer "value_id", null: false
@@ -34,6 +34,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_17_153756) do
     t.index ["input_type", "input_id"], name: "index_endpoints_on_input"
     t.index ["output_type", "output_id"], name: "index_endpoints_on_output"
     t.index ["version_id"], name: "index_endpoints_on_version_id"
+  end
+
+  create_table "entities", force: :cascade do |t|
+    t.string "name"
+    t.integer "version_id", null: false
+    t.string "root_type", null: false
+    t.integer "root_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["root_type", "root_id"], name: "index_entities_on_root"
+    t.index ["version_id", "name"], name: "index_entities_on_version_id_and_name", unique: true
+    t.index ["version_id"], name: "index_entities_on_version_id"
   end
 
   create_table "groups", force: :cascade do |t|
@@ -109,6 +121,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_17_153756) do
   end
 
   add_foreign_key "endpoints", "versions"
+  add_foreign_key "entities", "versions"
   add_foreign_key "object_attributes", "object_nodes", column: "parent_id"
   add_foreign_key "projects", "groups"
   add_foreign_key "sessions", "users"

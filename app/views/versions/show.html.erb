@@ -10,26 +10,13 @@
     <%= button_to "Create new version", new_project_version_path(project_name: @version.project.name), method: :get %>
   </div>
   <div class="main-container">
-    <aside>
-      <div class="aside-section">Endpoints</div>
-      <% @version.existing_endpoints.each do |endpoint, _| %>
-        <div class="link-container">
-          <a href="<%= "##{endpoint.page_url}" %>"><%= endpoint.name %></a>
-        </div>
-      <% end %>
-      <div class="aside-section added">New</div>
-      <% @version.added_endpoints.each do |endpoint| %>
-        <div class="link-container">
-          <a href="<%= "##{endpoint.page_url}" %>"><%= endpoint.name %></a>
-        </div>
-      <% end %>
-      <div class="aside-section removed">Removed</div>
-      <% @previous_version&.removed_endpoints&.each do |endpoint| %>
-        <div class="link-container">
-          <a href="<%= "##{endpoint.page_url}" %>"><%= endpoint.name %></a>
-        </div>
-      <% end %>
-    </aside>
+    <%= render "aside",
+               existing_endpoints: @existing_endpoints,
+               added_endpoints: @added_endpoints,
+               removed_endpoints: @removed_endpoints,
+               existing_entities: @existing_entities,
+               added_entities: @added_entities,
+               removed_entities: @removed_entities %>
 
     <div class="version-container">
       <div class="version-name-container">
@@ -41,22 +28,41 @@
         <div class="version-name"><%= @version.name %></div>
       </div>
 
-      <% @version.existing_endpoints.each do |endpoint, previous_endpoint| %>
+      <div class="section">Endpoints</div>
+
+      <% @existing_endpoints.each do |endpoint, previous_endpoint| %>
         <% input_diff = Diff::FromValues.new(previous_endpoint.input, endpoint.input) %>
         <% output_diff = Diff::FromValues.new(previous_endpoint.output, endpoint.output) %>
         <%= render "endpoint_diff", endpoint: endpoint, input_diff: input_diff, output_diff: output_diff %>
       <% end %>
 
-      <% @version.added_endpoints.each do |endpoint| %>
+      <% @added_endpoints.each do |endpoint| %>
         <% input_diff = endpoint.input.to_diff(:no_change) %>
         <% output_diff = endpoint.output.to_diff(:no_change) %>
         <%= render "endpoint_added", endpoint: endpoint, input_diff: input_diff, output_diff: output_diff %>
       <% end %>
 
-      <% @previous_version&.removed_endpoints&.each do |endpoint| %>
+      <% @removed_endpoints&.each do |endpoint| %>
         <% input_diff = endpoint.input.to_diff(:no_change) %>
         <% output_diff = endpoint.output.to_diff(:no_change) %>
         <%= render "endpoint_removed", endpoint: endpoint, input_diff: input_diff, output_diff: output_diff %>
+      <% end %>
+
+      <div class="section">Entities</div>
+
+      <% @existing_entities.each do |entity, previous_entity| %>
+        <% diff = Diff::FromValues.new(previous_entity.root, entity.root) %>
+        <%= render "entity_diff", entity: entity, diff: diff %>
+      <% end %>
+
+      <% @added_entities.each do |entity| %>
+        <% diff = entity.root.to_diff(:no_change) %>
+        <%= render "entity_added", entity: entity, diff: diff %>
+      <% end %>
+
+      <% @removed_entities.each do |entity| %>
+        <% diff = entity.root.to_diff(:no_change) %>
+        <%= render "entity_removed", entity: entity, diff: diff %>
       <% end %>
     </div>
   </div>

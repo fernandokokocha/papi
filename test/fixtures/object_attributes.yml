@@ -201,3 +201,63 @@ o43a1:
   order: 1
   name: is_confirmed
   value: p410 (PrimitiveNode)
+
+# object51
+o51a1:
+  parent: object51
+  order: 0
+  name: first_name
+  value: p500 (PrimitiveNode)
+o51a2:
+  parent: object51
+  order: 1
+  name: last_name
+  value: p501 (PrimitiveNode)
+
+# object52
+o52a1:
+  parent: object52
+  order: 0
+  name: id
+  value: p502 (PrimitiveNode)
+o52a2:
+  parent: object52
+  order: 1
+  name: option_set
+  value: p503 (PrimitiveNode)
+
+# object53
+o53a1:
+  parent: object53
+  order: 0
+  name: id
+  value: p509 (PrimitiveNode)
+
+# object61
+o61a1:
+  parent: object61
+  order: 0
+  name: first_name
+  value: p504 (PrimitiveNode)
+o61a2:
+  parent: object61
+  order: 1
+  name: last_name
+  value: p505 (PrimitiveNode)
+o61a3:
+  parent: object61
+  order: 2
+  name: id
+  value: p506 (PrimitiveNode)
+
+# object62
+o62a1:
+  parent: object62
+  order: 0
+  name: id
+  value: p507 (PrimitiveNode)
+o62a2:
+  parent: object62
+  order: 1
+  name: option_set
+  value: p508 (PrimitiveNode)
