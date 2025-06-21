@@ -10,61 +10,76 @@
 
 <aside>
   <% if show_endpoints %>
-    <div class="aside-section">Endpoints</div>
-    <% if show_existing_endpoints %>
-      <% existing_endpoints.each do |endpoint, _| %>
-        <div class="link-container">
-          <a href="<%= "#endpoint-#{endpoint.page_url}" %>"><%= endpoint.name %></a>
+    <div class="aside-section">
+      <div class="aside-header">Endpoints</div>
+      <% if show_existing_endpoints %>
+        <div class="aside-subsection">
+          <% existing_endpoints.each do |endpoint, _| %>
+            <div class="link-container">
+              <a href="<%= "#endpoint-#{endpoint.page_url}" %>"><%= endpoint.name %></a>
+            </div>
+          <% end %>
         </div>
       <% end %>
-    <% end %>
 
-    <% if show_added_endpoints %>
-      <div class="aside-section added">New endpoints</div>
-      <% added_endpoints.each do |endpoint| %>
-        <div class="link-container">
-          <a href="<%= "#endpoint-#{endpoint.page_url}" %>"><%= endpoint.name %></a>
+      <% if show_added_endpoints %>
+        <div class="aside-subsection">
+          <div class="aside-header">New endpoints</div>
+          <% added_endpoints.each do |endpoint| %>
+            <div class="link-container added">
+              <a href="<%= "#endpoint-#{endpoint.page_url}" %>"><%= endpoint.name %></a>
+            </div>
+          <% end %>
         </div>
       <% end %>
-    <% end %>
 
-    <% if show_removed_endpoints %>
-      <div class="aside-section removed">Removed endpoints</div>
-      <% removed_endpoints.each do |endpoint| %>
-        <div class="link-container">
-          <a href="<%= "#endpoint-#{endpoint.page_url}" %>"><%= endpoint.name %></a>
+      <% if show_removed_endpoints %>
+        <div class="aside-subsection">
+          <div class="aside-header">Removed endpoints</div>
+          <% removed_endpoints.each do |endpoint| %>
+            <div class="link-container removed">
+              <a href="<%= "#endpoint-#{endpoint.page_url}" %>"><%= endpoint.name %></a>
+            </div>
+          <% end %>
         </div>
       <% end %>
-    <% end %>
+    </div>
   <% end %>
 
   <% if show_entities %>
-    <div class="aside-section">Entities</div>
-
-    <% if show_existing_entities %>
-      <% existing_entities.each do |entity, _| %>
-        <div class="link-container">
-          <a href="<%= "#entity-#{entity.name}" %>"><%= entity.name %></a>
+    <div class="aside-section">
+      <div class="aside-header">Entities</div>
+      <% if show_existing_entities %>
+        <div class="aside-subsection">
+          <% existing_entities.each do |entity, _| %>
+            <div class="link-container">
+              <a href="<%= "#entity-#{entity.name}" %>"><%= entity.name %></a>
+            </div>
+          <% end %>
         </div>
       <% end %>
-    <% end %>
 
-    <% if show_added_entities %>
-      <div class="aside-section added">New</div>
-      <% added_entities.each do |entity| %>
-        <div class="link-container">
-          <a href="<%= "#entity-#{entity.name}" %>"><%= entity.name %></a>
+      <% if show_added_entities %>
+        <div class="aside-subsection">
+          <div class="aside-header">New entities</div>
+          <% added_entities.each do |entity| %>
+            <div class="link-container added">
+              <a href="<%= "#entity-#{entity.name}" %>"><%= entity.name %></a>
+            </div>
+          <% end %>
         </div>
       <% end %>
-    <% end %>
 
-    <% if show_removed_entities %>
-      <div class="aside-section removed">Removed</div>
-      <% removed_entities.each do |entity| %>
-        <div class="link-container">
-          <a href="<%= "#entity-#{entity.name}" %>"><%= entity.name %></a>
+      <% if show_removed_entities %>
+        <div class="aside-subsection">
+          <div class="aside-header">Removed entities</div>
+          <% removed_entities.each do |entity| %>
+            <div class="link-container removed">
+              <a href="<%= "#entity-#{entity.name}" %>"><%= entity.name %></a>
+            </div>
+          <% end %>
         </div>
       <% end %>
-    <% end %>
+    </div>
   <% end %>
 </aside>
