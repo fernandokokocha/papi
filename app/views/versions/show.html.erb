@@ -42,7 +42,7 @@
         <%= render "endpoint_added", endpoint: endpoint, input_diff: input_diff, output_diff: output_diff %>
       <% end %>
 
-      <% @removed_endpoints&.each do |endpoint| %>
+      <% @removed_endpoints.each do |endpoint| %>
         <% input_diff = endpoint.input.to_diff(:no_change) %>
         <% output_diff = endpoint.output.to_diff(:no_change) %>
         <%= render "endpoint_removed", endpoint: endpoint, input_diff: input_diff, output_diff: output_diff %>

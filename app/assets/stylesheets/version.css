@@ -40,7 +40,7 @@
     }
 
     span.custom {
-        background: magenta;
+        background: violet;
     }
 
     .removed {
@@ -301,5 +301,11 @@
             align-items: flex-end;
             margin: 10px;
         }
+    }
+
+    .expand-button {
+        padding: 0;
+        margin: 0 5px;
+        font-size: 10px;
     }
 }

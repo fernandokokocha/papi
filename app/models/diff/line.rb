@@ -11,6 +11,7 @@ class Diff::Line
   end
 
   def add_parent(name)
+    return if @whole_line.empty?
     @whole_line = name + ": " + @whole_line
     infer_type
   end
@@ -32,6 +33,10 @@ class Diff::Line
       @type = custom_name
       @class_name = "custom"
       @pre_type = @whole_line[0..-(custom_name.length + 1)]
+    elsif /^[a-zA-Z]+$/ =~ @whole_line
+      @type = @whole_line
+      @class_name = "custom"
+      @pre_type = ""
     else
       @type = nil
       @pre_type = @whole_line
