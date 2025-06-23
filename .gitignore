@@ -42,4 +42,9 @@ node_modules
 # https://vitejs.dev/guide/env-and-mode.html#env-files
 *.local
 
+.DS_Store
+._.DS_Store
+**/.DS_Store
+**/._.DS_Store
+
 /config/credentials/production.key

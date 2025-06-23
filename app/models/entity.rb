@@ -5,4 +5,8 @@ class Entity < ApplicationRecord
   validates :name, uniqueness: { scope: :version_id }
 
   scope :sort_by_name, -> { order([ :name ]) }
+
+  # def to_diff(change, indent = 0)
+  #   root.to_diff(change, indent)
+  # end
 end

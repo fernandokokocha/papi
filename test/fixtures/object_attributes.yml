@@ -178,6 +178,12 @@ o41a5:
   name: array2
   value: array44 (ArrayNode)
 
+o41a6:
+  parent: object41
+  order: 6
+  name: custom_type
+  value: e1v4 (Entity)
+
 o411a0:
   parent: object411
   order: 0
