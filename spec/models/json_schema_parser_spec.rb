@@ -6,13 +6,13 @@ describe JSONSchemaParser, type: :model do
   describe "#parse_value" do
     it "parse empty string" do
       actual = parser.parse_value("")
-      expected = NothingNode.new
+      expected = Node::Nothing.new
       expect(actual).to eq(expected)
     end
 
     it "parse {}" do
       actual = parser.parse_value("{}")
-      expected = ObjectNode.new
+      expected = Node::Object.new
       expect(actual).to eq(expected)
     end
 

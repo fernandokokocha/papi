@@ -2,7 +2,7 @@ class Diff::FromValues
   attr_accessor :before, :after
 
   def initialize(value1, value2, indent = 0)
-    class_to_call = "Diff::#{value1.class.name}To#{value2.class.name}".constantize
+    class_to_call = "Diff::#{value1.class.name.demodulize}To#{value2.class.name.demodulize}".constantize
     diff = class_to_call.new(value1, value2, indent)
 
     @before = diff.before

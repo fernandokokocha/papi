@@ -1,15 +1,15 @@
 class JSONSchemaParser
   def parse_value(raw_value)
-    return NothingNode.new if raw_value.empty?
+    return Node::Nothing.new if raw_value.empty?
 
     value = raw_value.gsub(/\s+/, "")
 
     if value.start_with? "string"
-      PrimitiveNode.new(kind: "string")
+      Node::Primitive.new(kind: "string")
     elsif value.start_with? "number"
-      PrimitiveNode.new(kind: "number")
+      Node::Primitive.new(kind: "number")
     elsif value.start_with? "boolean"
-      PrimitiveNode.new(kind: "boolean")
+      Node::Primitive.new(kind: "boolean")
     elsif value[0] == "{"
       parse_object(value)
     elsif value[0] == "["
@@ -20,7 +20,7 @@ class JSONSchemaParser
   end
 
   def parse_object(str)
-    root = ObjectNode.new
+    root = Node::Object.new
     attrs = split_by_comma(str[1...-1])
     attrs.map.with_index do |attr, i|
       value = parse_value(attr[1])
@@ -30,7 +30,7 @@ class JSONSchemaParser
   end
 
   def parse_array(str)
-    root = ArrayNode.new
+    root = Node::Array.new
     new_str = str[1...-1]
     inside = parse_value(new_str)
     root.value = inside
