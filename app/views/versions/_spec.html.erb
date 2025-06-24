@@ -2,6 +2,6 @@
   -
 <% else %>
   <% diff.each do |diff_line| %>
-    <div class="line <%= diff_line.change %>"><%= diff_line.line %></div>
+    <div class="line <%= diff_line.change %>"><%= render_type(diff_line) %></div>
   <% end %>
 <% end %>

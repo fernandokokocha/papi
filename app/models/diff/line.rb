@@ -48,14 +48,6 @@ class Diff::Line
     $1
   end
 
-  def line(tab = 2)
-    formatted_line = @whole_line
-    if @type
-      formatted_line = "#{@pre_type}<span class=\"#{@class_name}\">#{@type}</span>"
-    end
-    ((" " * (@indent * tab)) + formatted_line).html_safe
-  end
-
   def ==(other)
     self.class == other.class &&
       @whole_line == other.whole_line &&
