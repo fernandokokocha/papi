@@ -25,4 +25,8 @@ class PrimitiveNode < ApplicationRecord
   def ==(other)
     self.class == other.class && kind == other.kind
   end
+
+  def expand
+    self
+  end
 end

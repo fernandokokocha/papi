@@ -20,4 +20,9 @@ class ArrayNode < ApplicationRecord
   def ==(other)
     (self.class == other.class) && self.value == other.value
   end
+
+  def expand
+    value_expanded = value.expand
+    ArrayNode.new(value: value_expanded)
+  end
 end

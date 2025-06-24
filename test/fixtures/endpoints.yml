@@ -52,7 +52,7 @@ project1v3e3:
   http_verb: 0
   url: /array_endpoint
   version: project1v3
-  input: n7 (NothingNode)
+  input: object34 (ObjectNode)
   output: array32 (ArrayNode)
   original_input_string: ""
   original_output_string: ""
@@ -77,7 +77,7 @@ project1v4e3:
   http_verb: 0
   url: /array_endpoint
   version: project1v4
-  input: e2v4 (Entity)
+  input: en2 (EntityNode)
   output: array42 (ArrayNode)
   original_input_string: ""
   original_output_string: ""

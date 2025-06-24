@@ -1,4 +1,4 @@
-class Diff::EntityToArrayNode
+class Diff::EntityNodeToArrayNode
   attr_accessor :before, :after
 
   def initialize(value1, value2, indent = 0)

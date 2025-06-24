@@ -1,11 +1,9 @@
-class Diff::EntityToEntity
+class Diff::EntityNodeToNothingNode
   attr_accessor :before, :after
 
   def initialize(value1, value2, indent = 0)
-    before = value1.to_diff(:type_changed, indent)
-    after = value2.to_diff(:type_changed, indent)
-
-    before.level_with_blank_lines(after)
+    before = value1.to_diff(:removed, indent)
+    after = Diff::Lines.new([])
     after.level_with_blank_lines(before)
 
     @before = before

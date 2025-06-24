@@ -14,4 +14,8 @@ class NothingNode < ApplicationRecord
   def ==(other)
     self.class == other.class
   end
+
+  def expand
+    self
+  end
 end

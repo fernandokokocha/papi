@@ -28,10 +28,6 @@ class Endpoint < ApplicationRecord
     Diff.new.diff(previous_endpoint.endpoint_root, endpoint_root)
   end
 
-  def example_json
-    endpoint_root.to_example_json
-  end
-
   def page_url
     "#{verb}-#{url}"
   end

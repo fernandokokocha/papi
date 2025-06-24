@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_06_21_112058) do
+ActiveRecord::Schema[8.0].define(version: 2025_06_24_164443) do
   create_table "array_nodes", force: :cascade do |t|
     t.string "value_type", null: false
     t.integer "value_id", null: false
@@ -46,6 +46,13 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_21_112058) do
     t.index ["root_type", "root_id"], name: "index_entities_on_root"
     t.index ["version_id", "name"], name: "index_entities_on_version_id_and_name", unique: true
     t.index ["version_id"], name: "index_entities_on_version_id"
+  end
+
+  create_table "entity_nodes", force: :cascade do |t|
+    t.integer "entity_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["entity_id"], name: "index_entity_nodes_on_entity_id"
   end
 
   create_table "groups", force: :cascade do |t|
@@ -122,6 +129,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_21_112058) do
 
   add_foreign_key "endpoints", "versions"
   add_foreign_key "entities", "versions"
+  add_foreign_key "entity_nodes", "entities"
   add_foreign_key "object_attributes", "object_nodes", column: "parent_id"
   add_foreign_key "projects", "groups"
   add_foreign_key "sessions", "users"

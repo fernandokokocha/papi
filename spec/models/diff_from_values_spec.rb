@@ -110,6 +110,22 @@ describe Diff::FromValues, type: :model do
                                  ])
       expect(diff.after).to eq(expected)
     end
+
+    it "primitive -> entity" do
+      value1 = FactoryBot.create(:primitive_node, kind: "string")
+      entity = FactoryBot.create(:entity, name: "Resource")
+      value2 = FactoryBot.create(:entity_node, entity: entity)
+
+      diff = Diff::FromValues.new(value1, value2)
+      expected = Diff::Lines.new([
+                                   Diff::Line.new("string", :type_changed, 0)
+                                 ])
+      expect(diff.before).to eq(expected)
+      expected = Diff::Lines.new([
+                                   Diff::Line.new("Resource", :type_changed, 0)
+                                 ])
+      expect(diff.after).to eq(expected)
+    end
   end
 
   context "from object" do
@@ -206,6 +222,7 @@ describe Diff::FromValues, type: :model do
                                    Diff::Line.new("name: string", :removed, 1),
                                    Diff::Line.new("}", :no_change, 0)
                                  ])
+
       expect(diff.before).to eq(expected)
       expected = Diff::Lines.new([
                                    Diff::Line.new("{", :no_change, 0),
@@ -543,6 +560,56 @@ describe Diff::FromValues, type: :model do
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([])
       expect(diff.before).to eq(expected)
+      expect(diff.after).to eq(expected)
+    end
+
+    it "nothing -> entity" do
+      value1 = FactoryBot.create(:nothing_node)
+      entity = FactoryBot.create(:entity, name: "Resource")
+      value2 = FactoryBot.create(:entity_node, entity: entity)
+
+      diff = Diff::FromValues.new(value1, value2)
+      expected = Diff::Lines.new([
+                                   Diff::Line.new("", :blank, 0)
+                                 ])
+      expect(diff.before).to eq(expected)
+      expected = Diff::Lines.new([
+                                   Diff::Line.new("Resource", :added, 0)
+                                 ])
+      expect(diff.after).to eq(expected)
+    end
+  end
+
+  context "from entity" do
+    it "entity -> nothing" do
+      entity = FactoryBot.create(:entity, name: "Resource")
+      value1 = FactoryBot.create(:entity_node, entity: entity)
+      value2 = FactoryBot.create(:nothing_node)
+
+      diff = Diff::FromValues.new(value1, value2)
+      expected = Diff::Lines.new([
+                                   Diff::Line.new("Resource", :removed, 0)
+                                 ])
+      expect(diff.before).to eq(expected)
+      expected = Diff::Lines.new([
+                                   Diff::Line.new("", :blank, 0)
+                                 ])
+      expect(diff.after).to eq(expected)
+    end
+
+    it "entity -> primitive" do
+      entity = FactoryBot.create(:entity, name: "Resource")
+      value1 = FactoryBot.create(:entity_node, entity: entity)
+      value2 = FactoryBot.create(:primitive_node, kind: "string")
+
+      diff = Diff::FromValues.new(value1, value2)
+      expected = Diff::Lines.new([
+                                   Diff::Line.new("Resource", :type_changed, 0)
+                                 ])
+      expect(diff.before).to eq(expected)
+      expected = Diff::Lines.new([
+                                   Diff::Line.new("string", :type_changed, 0)
+                                 ])
       expect(diff.after).to eq(expected)
     end
   end

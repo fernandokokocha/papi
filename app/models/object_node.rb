@@ -33,4 +33,15 @@ class ObjectNode < ApplicationRecord
     end
     (self.class == other.class) && children_match
   end
+
+  def expand
+    object_expanded = ObjectNode.new
+    object_attributes.sort_by(&:order).each do |oa|
+      object_expanded.object_attributes.build(name: oa.name,
+                                              value: oa.value.expand,
+                                              order: oa.order,
+                                              parent: object_expanded)
+    end
+    object_expanded
+  end
 end

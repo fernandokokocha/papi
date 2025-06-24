@@ -6,7 +6,7 @@ class Diff::ObjectNodeToObjectNode
     after = Diff::Lines.new([ Diff::Line.new("{", :no_change, indent) ])
 
     value2.object_attributes.order(:order).each do |oa|
-      matching_attribute = value1.object_attributes.where(name: oa.name).limit(1)
+      matching_attribute = value1.object_attributes.select { |a| a.name == oa.name }
       if matching_attribute.empty?
         other = NothingNode.new
       else
@@ -20,11 +20,12 @@ class Diff::ObjectNodeToObjectNode
     end
 
     value1.object_attributes.order(:order).each do |oa|
-      matching_attribute = value2.object_attributes.where(name: oa.name).limit(1)
-      next if matching_attribute.present?
+      matching_attribute = value2.object_attributes.select { |a| a.name == oa.name }
+      next if matching_attribute.any?
 
       subdiff = Diff::FromValues.new(oa.value, NothingNode.new, indent + 1)
       subdiff.add_parent(oa.name)
+
       before.concat(subdiff.before)
       after.concat(subdiff.after)
     end

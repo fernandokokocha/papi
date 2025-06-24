@@ -45,6 +45,8 @@ p310:
   kind: 0
 p311:
   kind: 2
+p312:
+  kind: 1
 
 p400:
   kind: 0

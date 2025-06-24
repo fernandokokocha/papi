@@ -1,4 +1,4 @@
-class Diff::NothingNodeToEntity
+class Diff::NothingNodeToEntityNode
   attr_accessor :before, :after
 
   def initialize(value1, value2, indent = 0)
