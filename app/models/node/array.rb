@@ -27,4 +27,8 @@ class Node::Array < ApplicationRecord
     value_expanded = value.expand
     Node::Array.new(value: value_expanded)
   end
+
+  def expandable?
+    value.expandable?
+  end
 end

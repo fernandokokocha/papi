@@ -9,4 +9,8 @@ class Node::ObjectAttribute < ApplicationRecord
   def to_example_json
     '"' + name + '": ' + value.to_example_json
   end
+
+  def expandable?
+    true
+  end
 end

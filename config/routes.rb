@@ -9,7 +9,8 @@ Rails.application.routes.draw do
 
   root "projects#index"
   resources :projects, only: [ :index, :new, :create ], param: :name do
-    resources :versions, only: [ :index, :show, :new, :create ], param: :name
+    resources :versions, only: [ :index, :show, :new, :create ], param: :name do
+      resources :endpoints, only: [ :show ]
+    end
   end
-  # resources :endpoints, only: [ :index, :show ]
 end

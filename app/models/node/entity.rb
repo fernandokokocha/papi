@@ -10,4 +10,8 @@ class Node::Entity < ApplicationRecord
   def expand
     entity.root
   end
+
+  def expandable?
+    true
+  end
 end

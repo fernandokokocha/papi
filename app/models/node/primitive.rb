@@ -31,4 +31,8 @@ class Node::Primitive < ApplicationRecord
   def expand
     self
   end
+
+  def expandable?
+    false
+  end
 end

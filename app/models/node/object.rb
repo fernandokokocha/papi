@@ -46,4 +46,8 @@ class Node::Object < ApplicationRecord
     end
     object_expanded
   end
+
+  def expandable?
+    object_attributes.any? { |oa| oa.value.expandable? }
+  end
 end
