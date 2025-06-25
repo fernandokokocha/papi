@@ -1,8 +1,19 @@
+<% input = expanded ? endpoint.input.expand : endpoint.input %>
+<% output = expanded ? endpoint.output.expand : endpoint.output %>
+<% input_diff = input.to_diff(:no_change) %>
+<% output_diff = output.to_diff(:no_change) %>
 <div class="endpoint-container added" id="endpoint-<%= endpoint.page_url %>">
   <div class="endpoint-name-container">
     <div class="endpoint-name-placeholder"></div>
     <div class="endpoint-name added">
       <%= endpoint.name %>
+      <% if endpoint.input.expandable? || endpoint.output.expandable? %>
+        <% if expanded %>
+          <button type="button" data-action="endpoint#collapse">Collapse</button>
+        <% else %>
+          <button type="button" data-action="endpoint#expand">Expand</button>
+        <% end %>
+      <% end %>
     </div>
   </div>
 
@@ -15,7 +26,7 @@
     <div class="endpoint-root-placeholder">
     </div>
     <div class="endpoint-root">
-      <%= render "spec", diff: input_diff %>
+      <%= render "specs/json", diff: input_diff %>
     </div>
   </div>
 
@@ -28,7 +39,7 @@
     <div class="endpoint-root-placeholder">
     </div>
     <div class="endpoint-root">
-      <%= render "spec", diff: output_diff %>
+      <%= render "specs/json", diff: output_diff %>
     </div>
   </div>
 </div>

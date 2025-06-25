@@ -1,3 +1,9 @@
+<% input1 = expanded ? previous_endpoint.input.expand : previous_endpoint.input %>
+<% input2 = expanded ? endpoint.input.expand : endpoint.input %>
+<% output1 = expanded ? previous_endpoint.output.expand : previous_endpoint.output %>
+<% output2 = expanded ? endpoint.output.expand : endpoint.output %>
+<% input_diff = Diff::FromValues.new(input1, input2) %>
+<% output_diff = Diff::FromValues.new(output1, output2) %>
 <div class="endpoint-container" id="endpoint-<%= endpoint.page_url %>">
   <div class="endpoint-name-container">
     <div class="endpoint-name">
@@ -19,10 +25,10 @@
 
   <div class="endpoint-root-container">
     <div class="endpoint-root">
-      <%= render "versions/spec", diff: input_diff.before %>
+      <%= render "specs/json", diff: input_diff.before %>
     </div>
     <div class="endpoint-root">
-      <%= render "versions/spec", diff: input_diff.after %>
+      <%= render "specs/json", diff: input_diff.after %>
     </div>
   </div>
 
@@ -33,10 +39,10 @@
 
   <div class="endpoint-root-container">
     <div class="endpoint-root">
-      <%= render "versions/spec", diff: output_diff.before %>
+      <%= render "specs/json", diff: output_diff.before %>
     </div>
     <div class="endpoint-root">
-      <%= render "versions/spec", diff: output_diff.after %>
+      <%= render "specs/json", diff: output_diff.after %>
     </div>
   </div>
 </div>

@@ -31,27 +31,29 @@
       <div class="section">Endpoints</div>
 
       <% @existing_endpoints.each do |endpoint, previous_endpoint| %>
-        <% input_diff = Diff::FromValues.new(previous_endpoint.input, endpoint.input) %>
-        <% output_diff = Diff::FromValues.new(previous_endpoint.output, endpoint.output) %>
         <div
           data-controller="endpoint"
           data-endpoint-target="container"
           data-endpoint-url-value="<%= project_version_endpoint_path(project_name: endpoint.version.project.name, version_name: endpoint.version.name, id: endpoint.id) %>"
         >
-          <%= render "endpoint_diff", endpoint: endpoint, input_diff: input_diff, output_diff: output_diff, expanded: false %>
+          <%= render "endpoints/endpoint_diff", endpoint: endpoint, previous_endpoint: previous_endpoint, expanded: false %>
         </div>
       <% end %>
 
       <% @added_endpoints.each do |endpoint| %>
-        <% input_diff = endpoint.input.to_diff(:no_change) %>
-        <% output_diff = endpoint.output.to_diff(:no_change) %>
-        <%= render "endpoint_added", endpoint: endpoint, input_diff: input_diff, output_diff: output_diff, expanded: false %>
+        <div
+          data-controller="endpoint"
+          data-endpoint-target="container"
+          data-endpoint-url-value="<%= project_version_endpoint_path(project_name: endpoint.version.project.name, version_name: endpoint.version.name, id: endpoint.id) %>"
+        >
+          <%= render "endpoints/endpoint_added", endpoint: endpoint, expanded: false %>
+        </div>
       <% end %>
 
       <% @removed_endpoints.each do |endpoint| %>
         <% input_diff = endpoint.input.to_diff(:no_change) %>
         <% output_diff = endpoint.output.to_diff(:no_change) %>
-        <%= render "endpoint_removed", endpoint: endpoint, input_diff: input_diff, output_diff: output_diff, expanded: false %>
+        <%= render "endpoints/endpoint_removed", endpoint: endpoint, input_diff: input_diff, output_diff: output_diff, expanded: false %>
       <% end %>
 
       <div class="section">Entities</div>

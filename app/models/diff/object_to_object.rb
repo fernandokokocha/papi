@@ -5,7 +5,7 @@ class Diff::ObjectToObject
     before = Diff::Lines.new([ Diff::Line.new("{", :no_change, indent) ])
     after = Diff::Lines.new([ Diff::Line.new("{", :no_change, indent) ])
 
-    value2.object_attributes.order(:order).each do |oa|
+    value2.object_attributes.sort_by { |oa| oa.order }.each do |oa|
       matching_attribute = value1.object_attributes.select { |a| a.name == oa.name }
       if matching_attribute.empty?
         other = Node::Nothing.new
@@ -19,7 +19,7 @@ class Diff::ObjectToObject
       after.concat(subdiff.after)
     end
 
-    value1.object_attributes.order(:order).each do |oa|
+    value1.object_attributes.sort_by { |oa| oa.order }.each do |oa|
       matching_attribute = value2.object_attributes.select { |a| a.name == oa.name }
       next if matching_attribute.any?
 

@@ -18,7 +18,6 @@ export default class extends Controller {
         fetch(url, {headers: {"Turbo": "false"}})
             .then(response => response.text())
             .then(html => {
-                console.log(html);
                 this.containerTarget.innerHTML = html
             })
     }
