@@ -1,5 +1,5 @@
 import React from 'react'
-import TypeSelect from "~/components/TypeSelect.jsx";
+import TypeSelect from "@/components/json_schema/TypeSelect.jsx";
 
 const PrimitiveNode = ({value, onChange, onDelete, onAdd, path, canBeDeleted, canBeNothing}) => {
     return (

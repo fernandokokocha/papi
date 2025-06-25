@@ -35,26 +35,41 @@ class VersionsController < ApplicationController
 
   def create
     params.permit!
-    params[:version][:endpoints_attributes].map do |endpoint_attr|
-      output = JSONSchemaParser.new.parse_value(endpoint_attr[:original_output_string])
-      output.save
-      endpoint_attr[:output_id] = output.id
-      endpoint_attr[:output_type] = output.class.name
-
-      input = JSONSchemaParser.new.parse_value(endpoint_attr[:original_input_string])
-      input.save
-      endpoint_attr[:input_id] = input.id
-      endpoint_attr[:input_type] = input.class.name
+    params[:version][:entities_attributes].each do |entity_attr|
+      root = JSONSchemaParser.new.parse_value(entity_attr[:original_root])
+      root.save
+      entity_attr[:root_id] = root.id
+      entity_attr[:root_type] = root.class.name
     end
 
+    # first save, with entities bet without endpoints
+    endpoints_attrs = params[:version][:endpoints_attributes]
+    params[:version][:endpoints_attributes] = []
     @version = Version.new(params[:version])
     authorize @version
 
-    if @version.save
-      redirect_to project_version_path(name: @version.name, project_name: @version.project.name)
-    else
+    unless @version.save
       redirect_to new_project_version_path(project_name: @version.project.name)
+      return
     end
+
+    # inputs and outputs may refer to entities and Node::Entity has a reference to Entity.
+    # All in all this needs to be done separately
+    valid_entities = @version.entities
+    endpoints_attrs.each do |endpoint_attr|
+      output = JSONSchemaParser.new(valid_entities).parse_value(endpoint_attr[:original_output_string])
+      input = JSONSchemaParser.new(valid_entities).parse_value(endpoint_attr[:original_input_string])
+
+      Endpoint.create!(url: endpoint_attr[:url],
+                      http_verb: endpoint_attr[:http_verb],
+                      input: input,
+                      output: output,
+                      original_input_string: endpoint_attr[:original_input_string],
+                      original_output_string: endpoint_attr[:original_output_string],
+                      version: @version)
+    end
+
+    redirect_to project_version_path(name: @version.name, project_name: @version.project.name)
   end
 
   def index

@@ -1,4 +1,8 @@
 class JSONSchemaParser
+  def initialize(valid_entities = [])
+    @valid_entities = valid_entities
+  end
+
   def parse_value(raw_value)
     return Node::Nothing.new if raw_value.empty?
 
@@ -15,7 +19,7 @@ class JSONSchemaParser
     elsif value[0] == "["
       parse_array(value)
     else
-      raise RuntimeError, "Parsing unknown value type: #{value}"
+      parse_entity(value)
     end
   end
 
@@ -35,6 +39,14 @@ class JSONSchemaParser
     inside = parse_value(new_str)
     root.value = inside
     root
+  end
+
+  def parse_entity(value)
+    if (found = @valid_entities.select { |e| e.name == value })
+      Node::Entity.new(entity: found.first)
+    else
+      raise RuntimeError.new("Unknown value: #{value}")
+    end
   end
 
   def strip_name(str)

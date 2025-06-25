@@ -1,7 +1,6 @@
-import React, {useState} from 'react'
-import JSONSchemaForm from "~/components/JSONSchemaForm.jsx";
-import {v4 as uuidv4} from 'uuid';
-import StaticJSONSchema from "@/components/StaticJSONSchema.jsx";
+import React from 'react'
+import JSONSchemaForm from "@/components/json_schema/JSONSchemaForm.jsx";
+import StaticJSONSchema from "@/components/static_json_schema/StaticJSONSchema.jsx";
 
 const EndpointDiff = ({endpoint, remove, updateName, updateInput, updateOutput}) => {
     return (

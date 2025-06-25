@@ -2,20 +2,25 @@ e1v3:
   name: User
   version: project1v3
   root: object51 (Node::Object)
+  original_root: ""
 e2v3:
   name: Record
   version: project1v3
   root: object52 (Node::Object)
+  original_root: ""
 e3v3:
   name: Blah
   version: project1v3
   root: object53 (Node::Object)
+  original_root: ""
 
 e1v4:
   name: User
   version: project1v4
   root: object61 (Node::Object)
+  original_root: ""
 e2v4:
   name: Record
   version: project1v4
   root: object62 (Node::Object)
+  original_root: ""

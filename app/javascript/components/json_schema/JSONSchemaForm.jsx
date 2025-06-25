@@ -1,8 +1,8 @@
 import React, {useState} from 'react'
-import Value from "~/components/Value.jsx";
-import serialize from "~/helpers/serialize.js";
-import deserialize from "~/helpers/deserialize.js";
-import findByPath from "~/helpers/findByPath.js";
+import Value from "@/components/json_schema/Value.jsx";
+import serialize from "@/helpers/serialize.js";
+import deserialize from "@/helpers/deserialize.js";
+import findByPath from "@/helpers/findByPath.js";
 
 const JSONSchemaForm = ({root, name, update, id}) => {
     const parsedRoot = deserialize(root)

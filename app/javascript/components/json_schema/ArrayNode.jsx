@@ -1,6 +1,6 @@
 import React from 'react'
-import Value from "~/components/Value.jsx";
-import TypeSelect from "~/components/TypeSelect.jsx";
+import Value from "@/components/json_schema/Value.jsx";
+import TypeSelect from "@/components/json_schema/TypeSelect.jsx";
 
 const ArrayNode = ({value, onChange, onDelete, onAdd, path, canBeDeleted, canBeNothing}) => {
     return (

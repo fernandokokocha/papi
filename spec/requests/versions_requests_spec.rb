@@ -25,6 +25,11 @@ describe VersionsController, type: :request do
               original_output_string: "",
               original_input_string: ""
             }
+          ],
+          entities_attributes: [
+            { name: "User",
+              original_root: "{ name: string }"
+            }
           ]
         }
       }
@@ -46,6 +51,11 @@ describe VersionsController, type: :request do
               original_output_string: "",
               original_input_string: ""
             }
+          ],
+          entities_attributes: [
+            { name: "User",
+              original_root: "{ name: string }"
+            }
           ]
         }
       }
@@ -61,6 +71,11 @@ describe VersionsController, type: :request do
               http_verb: "verb_get",
               original_output_string: "",
               original_input_string: ""
+            }
+          ],
+          entities_attributes: [
+            { name: "User",
+              original_root: "{ name: string }"
             }
           ]
         }
@@ -83,6 +98,11 @@ describe VersionsController, type: :request do
               http_verb: "verb_get",
               original_output_string: "",
               original_input_string: ""
+            }
+          ],
+          entities_attributes: [
+            { name: "User",
+              original_root: "{ name: string }"
             }
           ]
         }

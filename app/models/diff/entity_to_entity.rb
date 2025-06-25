@@ -2,13 +2,15 @@ class Diff::EntityToEntity
   attr_accessor :before, :after
 
   def initialize(value1, value2, indent = 0)
-    before = value1.to_diff(:type_changed, indent)
-    after = value2.to_diff(:type_changed, indent)
+    if value1.entity.name == value2.entity.name
+      before = [ Diff::Line.new(value1.entity.name, :no_change, indent) ]
+      after = [ Diff::Line.new(value2.entity.name, :no_change, indent) ]
+    else
+      before = [ Diff::Line.new(value1.entity.name, :type_changed, indent) ]
+      after = [ Diff::Line.new(value2.entity.name, :type_changed, indent) ]
+    end
 
-    before.level_with_blank_lines(after)
-    after.level_with_blank_lines(before)
-
-    @before = before
-    @after = after
+    @before = Diff::Lines.new(before)
+    @after = Diff::Lines.new(after)
   end
 end

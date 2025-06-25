@@ -1,6 +1,5 @@
-import React, {useState} from 'react'
-import JSONSchemaForm from "~/components/JSONSchemaForm.jsx";
-import {v4 as uuidv4} from 'uuid';
+import React from 'react'
+import JSONSchemaForm from "@/components/json_schema/JSONSchemaForm.jsx";
 
 const EndpointRemoved = ({endpoint, remove, updateName, updateInput, updateOutput}) => {
     return (

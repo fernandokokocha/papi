@@ -1,5 +1,5 @@
 import React from 'react'
-import StaticObjectAttribute from "~/components/StaticObjectAttribute.jsx";
+import StaticObjectAttribute from "@/components/static_json_schema/StaticObjectAttribute.jsx";
 
 const StaticObjectNode = ({attributes}) => {
     return (

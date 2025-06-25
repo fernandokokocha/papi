@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
-import TypeSelect from "~/components/TypeSelect.jsx";
-import ObjectAttribute from "~/components/ObjectAttribute.jsx";
+import TypeSelect from "@/components/json_schema/TypeSelect.jsx";
+import ObjectAttribute from "@/components/json_schema/ObjectAttribute.jsx";
 
 const ObjectNode = ({onChange, onDelete, onAdd, attributes, path, canBeDeleted, canBeNothing}) => {
     const [newName, setNewName] = useState("new")

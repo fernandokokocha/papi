@@ -7,6 +7,10 @@ class Node::Entity < ApplicationRecord
     Diff::Lines.new([ Diff::Line.new(entity.name, change, indent) ])
   end
 
+  def serialize
+    entity.name
+  end
+
   def expand
     entity.root
   end

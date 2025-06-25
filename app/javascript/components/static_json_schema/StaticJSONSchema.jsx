@@ -1,6 +1,6 @@
 import React from 'react'
-import deserialize from "~/helpers/deserialize.js";
-import StaticValue from "@/components/StaticValue.jsx";
+import deserialize from "@/helpers/deserialize.js";
+import StaticValue from "@/components/static_json_schema/StaticValue.jsx";
 
 const StaticJSONSchema = ({root}) => {
     const parsedRoot = deserialize(root)

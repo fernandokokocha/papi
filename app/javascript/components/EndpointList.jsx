@@ -60,8 +60,7 @@ const EndpointList = ({serializedEndpoints}) => {
                 verb: endpoint.verb,
                 url: endpoint.url,
                 input: endpoint.input,
-                output: endpoint.output,
-                page_url: endpoint.page_url
+                output: endpoint.output
             })))
         const newAnyChanges = serialized !== serializedEndpoints
         setAnyChanges(newAnyChanges)
@@ -101,8 +100,7 @@ const EndpointList = ({serializedEndpoints}) => {
             verb: newVerb,
             url: newUrl,
             input: "",
-            output: "",
-            page_url: `${newVerb}-${newUrl}`
+            output: ""
         })
 
         validate(newEndpoints)
@@ -151,6 +149,8 @@ const EndpointList = ({serializedEndpoints}) => {
                        disabled={!(noCollisions && anyChanges)}
                 />
             </div>
+
+            <div className="section">Endpoints</div>
 
             {endpoints.map((endpoint) => (
                 <Endpoint

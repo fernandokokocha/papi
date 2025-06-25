@@ -1,7 +1,7 @@
 class Version < ApplicationRecord
   belongs_to :project
-  has_many :endpoints, dependent: :destroy
-  has_many :entities, dependent: :destroy
+  has_many :endpoints, -> { order([ :url, :http_verb ]) }, dependent: :destroy
+  has_many :entities, -> { order([ :name ]) }, dependent: :destroy
   accepts_nested_attributes_for :endpoints # , allow_destroy: true
   accepts_nested_attributes_for :entities # , allow_destroy: true
 
@@ -22,8 +22,7 @@ class Version < ApplicationRecord
         verb: endpoint.verb,
         url: endpoint.url,
         input: endpoint.input.serialize,
-        output: endpoint.output.serialize,
-        page_url: endpoint.page_url
+        output: endpoint.output.serialize
       }
     end.to_json
   end

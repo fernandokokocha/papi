@@ -1,5 +1,5 @@
 import React from 'react'
-import Value from "~/components/Value.jsx";
+import Value from "@/components/json_schema/Value.jsx";
 
 const ObjectAttribute = ({name, value, onChange, onDelete, onAdd, path, canBeDeleted, canBeNothing}) => {
     return (

@@ -41,6 +41,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_24_164443) do
     t.integer "version_id", null: false
     t.string "root_type", null: false
     t.integer "root_id", null: false
+    t.string "original_root"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["root_type", "root_id"], name: "index_entities_on_root"
