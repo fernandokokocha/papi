@@ -9,10 +9,13 @@ const Entity = ({entity, updateRoot}) => {
                 <div className="entity-name">
                     {entity.name}
                 </div>
-                <input type="hidden"
-                       name="version[entities_attributes][][name]"
-                       value={entity.name}
-                />
+                <div className="entity-name">
+                    {entity.name}
+                    <input type="hidden"
+                           name="version[entities_attributes][][name]"
+                           value={entity.name}
+                    />
+                </div>
             </div>
 
             <div className="entity-root-container">

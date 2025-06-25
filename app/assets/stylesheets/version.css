@@ -192,6 +192,8 @@
                         flex-grow: 1;
                         min-height: 20px;
                         background: white;
+                        display: flex;
+                        flex-direction: column;
                     }
 
                     .endpoint-root-placeholder {
@@ -241,6 +243,8 @@
                         flex-basis: 0;
                         flex-grow: 1;
                         min-height: 20px;
+                        display: flex;
+                        flex-direction: column;
                     }
 
                     .entity-root-placeholder {
@@ -253,6 +257,7 @@
             .line {
                 font-family: monospace;
                 white-space: pre;
+                flex: 1;
 
                 &.added {
                     background: #D1FFBD;
