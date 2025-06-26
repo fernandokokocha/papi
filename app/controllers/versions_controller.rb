@@ -35,6 +35,7 @@ class VersionsController < ApplicationController
 
   def create
     params.permit!
+    pp params[:version]
     params[:version][:entities_attributes].each do |entity_attr|
       root = JSONSchemaParser.new.parse_value(entity_attr[:original_root])
       root.save

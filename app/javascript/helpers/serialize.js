@@ -13,6 +13,10 @@ const serialize = (root) => {
     if (root.nodeType === "object") {
         return `{${root.attributes.map(a => `${a.name}: ${serialize(a.value)}`).join(", ")}}`
     }
+
+    if (root.nodeType === "custom") {
+        return root.value;
+    }
 }
 
 export default serialize

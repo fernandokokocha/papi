@@ -1,7 +1,7 @@
 import React from 'react'
 import JSONSchemaForm from "@/components/json_schema/JSONSchemaForm.jsx";
 
-const EndpointAdded = ({endpoint, remove, updateName, updateInput, updateOutput}) => {
+const EndpointAdded = ({endpoint, remove, updateName, updateInput, updateOutput, entities}) => {
     return (
         <div className="endpoint-container" key={endpoint.id}>
             <div className="endpoint-name-container">
@@ -43,6 +43,7 @@ const EndpointAdded = ({endpoint, remove, updateName, updateInput, updateOutput}
                         update={updateInput}
                         root={endpoint.input}
                         id={endpoint.id}
+                        entities={entities}
                     />
                 </div>
             </div>
@@ -62,6 +63,7 @@ const EndpointAdded = ({endpoint, remove, updateName, updateInput, updateOutput}
                         update={updateOutput}
                         root={endpoint.output}
                         id={endpoint.id}
+                        entities={entities}
                     />
                 </div>
             </div>

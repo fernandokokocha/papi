@@ -147,14 +147,12 @@
                         padding: 4px;
                         display: flex;
                         justify-content: space-between;
-                        gap: 5px;
                     }
 
                     .endpoint-name-placeholder {
                         flex-basis: 0;
                         flex-grow: 1;
                         padding: 4px;
-
                     }
                 }
 
@@ -223,6 +221,8 @@
                         background: lightskyblue;
                         font-weight: 800;
                         padding: 4px;
+                        display: flex;
+                        justify-content: space-between;
                     }
 
                     .entity-name-placeholder {

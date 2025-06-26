@@ -1,11 +1,11 @@
 import React from 'react'
 import TypeSelect from "@/components/json_schema/TypeSelect.jsx";
 
-const PrimitiveNode = ({value, onChange, onDelete, onAdd, path, canBeDeleted, canBeNothing}) => {
+const PrimitiveNode = ({value, onChange, onDelete, onAdd, path, canBeDeleted, canBeNothing, entities}) => {
     return (
         <span className="primitive">
             <TypeSelect value={value} onChange={onChange} onDelete={onDelete} onAdd={onAdd} path={path}
-                        canBeDeleted={canBeDeleted} canBeNothing={canBeNothing}/>
+                        canBeDeleted={canBeDeleted} canBeNothing={canBeNothing} entities={entities}/>
         </span>
     )
 }

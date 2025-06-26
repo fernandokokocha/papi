@@ -1,10 +1,9 @@
-import React, {useContext} from 'react'
-import EntitiesContext from "@/components/EntitiesContext.js";
+import React from 'react'
 
-const TypeSelect = ({value, onChange, onDelete, path, canBeDeleted, canBeNothing}) => {
+const TypeSelect = ({value, onChange, onDelete, path, canBeDeleted, canBeNothing, entities}) => {
     let types = ["string", "number", "boolean", "object", "array"]
     if (canBeNothing) types.unshift("nothing")
-    const custom_types = useContext(EntitiesContext);
+    const custom_types = entities.map((e) => e.name);
 
     return (
         <>

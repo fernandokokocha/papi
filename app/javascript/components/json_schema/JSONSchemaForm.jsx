@@ -4,39 +4,38 @@ import serialize from "@/helpers/serialize.js";
 import deserialize from "@/helpers/deserialize.js";
 import findByPath from "@/helpers/findByPath.js";
 
-const JSONSchemaForm = ({root, name, update, id}) => {
-    const parsedRoot = deserialize(root)
+const JSONSchemaForm = ({root, name, update, id, entities}) => {
+    const serializedRoot = serialize(root);
+    console.log("JSONSchemaForm", { root, serializedRoot })
 
     const removeNode = (e, path) => {
         e.preventDefault()
 
         const lastElement = path.slice(-1)[0]
         const parentPath = path.slice(0, -1)
-        let newRoot = JSON.parse(JSON.stringify(parsedRoot));
+        let newRoot = JSON.parse(JSON.stringify(root));
         const parent = findByPath(newRoot, parentPath);
 
         parent.attributes = parent.attributes.filter(attr => attr.name !== lastElement)
-        const newRootString = serialize(newRoot)
 
-        update(id, newRootString)
+        update(id, newRoot)
     }
 
     const addNode = (e, path, name) => {
         e.preventDefault()
 
-        let newRoot = JSON.parse(JSON.stringify(parsedRoot));
+        let newRoot = JSON.parse(JSON.stringify(root));
         const current = findByPath(newRoot, path);
 
         current.attributes.push({name, value: {nodeType: "primitive", value: "string"}})
 
-        const newRootString = serialize(newRoot)
-        update(id, newRootString)
+        update(id, newRoot)
     }
 
     const changeType = (e, path) => {
         e.preventDefault()
 
-        let newRoot = JSON.parse(JSON.stringify(parsedRoot));
+        let newRoot = JSON.parse(JSON.stringify(root));
         const current = findByPath(newRoot, path);
 
         if (e.target.value === "object") {
@@ -53,25 +52,24 @@ const JSONSchemaForm = ({root, name, update, id}) => {
             current.value = e.target.value;
         }
 
-
-        const newRootString = serialize(newRoot)
-        update(id, newRootString)
+        update(id, newRoot)
     }
 
     return (
         <>
             <input type="hidden"
                    name={name}
-                   value={root}>
+                   value={serializedRoot}>
             </input>
             <Value
-                root={parsedRoot}
+                root={root}
                 onChange={changeType}
                 onDelete={removeNode}
                 onAdd={addNode}
                 path={[]}
                 canBeDeleted={false}
                 canBeNothing={true}
+                entities={entities}
             />
         </>
     )

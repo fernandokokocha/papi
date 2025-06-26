@@ -1,5 +1,6 @@
 import React from 'react'
 import JSONSchemaForm from "@/components/json_schema/JSONSchemaForm.jsx";
+import StaticJSONSchema from "@/components/static_json_schema/StaticJSONSchema.jsx";
 
 const EndpointRemoved = ({endpoint, remove, updateName, updateInput, updateOutput}) => {
     return (
@@ -23,12 +24,7 @@ const EndpointRemoved = ({endpoint, remove, updateName, updateInput, updateOutpu
                     {/*< %= render "spec", diff: input_diff %>*/}
                 </div>
                 <div className="endpoint-root">
-                    <JSONSchemaForm
-                        name=""
-                        update={updateInput}
-                        root={endpoint.input}
-                        id={endpoint.id}
-                    />
+                    <StaticJSONSchema root={endpoint.original_input} />
                 </div>
             </div>
 
@@ -42,12 +38,7 @@ const EndpointRemoved = ({endpoint, remove, updateName, updateInput, updateOutpu
                     {/*<%= render "spec", diff: output_diff %>*/}
                 </div>
                 <div className="endpoint-root">
-                    <JSONSchemaForm
-                        name=""
-                        update={updateOutput}
-                        root={endpoint.output}
-                        id={endpoint.id}
-                    />
+                    <StaticJSONSchema root={endpoint.output} />
                 </div>
             </div>
         </div>

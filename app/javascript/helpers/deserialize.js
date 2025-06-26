@@ -69,8 +69,15 @@ const deserialize = (root) => {
         }
     }
 
+    if (["string", "boolean", "number"].includes(root)) {
+        return {
+            nodeType: "primitive",
+            value: root
+        }
+    }
+
     return {
-        nodeType: "primitive",
+        nodeType: "custom",
         value: root
     }
 }
