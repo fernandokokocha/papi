@@ -34,7 +34,6 @@ const Endpoint = ({endpoint, remove, updateName, updateInput, updateOutput, enti
         updateOutput={updateOutput}
         entities={entities}
     />)
-
 }
 
 export default Endpoint

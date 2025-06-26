@@ -17,21 +17,39 @@ const isNewEndpointColliding = (verb, url, e) => {
     return newEndpointColliding;
 }
 
-const updateNewEntityName = (root, oldName, newName) => {
-    console.log('updateNewEntityName', {oldName, newName})
-    if (root.nodeType === "custom" && root.value === oldName) {
-        root.value = newName
+const checkEntitiesReferences = (endpoints, entities) => {
+    entities.forEach((entity) => {
+        entity.is_referenced = findCustomNameInEndpoints(endpoints, entity.name)
+    })
+}
+
+const findCustomNameInEndpoints = (endpoints, name) => {
+    let found = false;
+    endpoints.forEach((e) => {
+        found = found || findCustomName(e.input, name)
+        found = found || findCustomName(e.output, name)
+    })
+    return found
+}
+
+const findCustomName = (root, name) => {
+    if (root.nodeType === "custom" && root.value === name) {
+        return true;
     }
 
     if (root.nodeType === 'object') {
+        let found = false;
         root.attributes.forEach((oa) => {
-            updateNewEntityName(oa.value, oldName, newName)
+            found = found || findCustomName(oa.value, name)
         })
+        return found
     }
 
     if (root.nodeType === 'array') {
-        updateNewEntityName(root.value, oldName, newName)
+        return findCustomName(root.value, name)
     }
+
+    return false;
 }
 
 const Form = ({serializedEndpoints, serializedEntities}) => {
@@ -135,6 +153,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         validate(newEndpoints)
         validateNewEndpoint(newVerb, newUrl, newEndpoints)
         setEndpoints(newEndpoints)
+        checkEntitiesReferences(newEndpoints, entities)
     }
 
     const updateOutput = (id, newOutput) => {
@@ -145,12 +164,25 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         validate(newEndpoints)
         validateNewEndpoint(newVerb, newUrl, newEndpoints)
         setEndpoints(newEndpoints)
+        checkEntitiesReferences(newEndpoints, entities)
     }
 
     const updateEntityRoot = (id, newRoot) => {
         const newEntities = JSON.parse(JSON.stringify(entities))
         const entityToUpdate = newEntities.find((entity) => (entity.id === id))
         entityToUpdate.root = newRoot
+        setEntities(newEntities)
+    }
+
+    const removeEntity = (id) => {
+        let newEntities = JSON.parse(JSON.stringify(entities))
+        const entityToRemove = newEntities.find((entity) => (entity.id === id))
+        if (entityToRemove.type === 'old') {
+            entityToRemove.type = 'removed'
+        } else if (entityToRemove.type === 'new') {
+            newEntities = newEntities.filter((entity) => (entity.id !== id))
+        }
+
         setEntities(newEntities)
     }
 
@@ -180,7 +212,9 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
             entityData.original_root = parsed_root
             entityData.original_name = entityData.name
             entityData.collision = false
+            entityData.is_referenced = true
         })
+        checkEntitiesReferences(parsed_endpoints, parsed_entities)
         setEntities(parsed_entities)
     }, [])
 
@@ -213,7 +247,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
             <EntityList
                 entities={entities}
                 updateRoot={updateEntityRoot}
-                updateName={updateEntityName}
+                removeEntity={removeEntity}
             />
         </>
     )

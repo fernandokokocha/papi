@@ -6,7 +6,6 @@ import findByPath from "@/helpers/findByPath.js";
 
 const JSONSchemaForm = ({root, name, update, id, entities}) => {
     const serializedRoot = serialize(root);
-    console.log("JSONSchemaForm", { root, serializedRoot })
 
     const removeNode = (e, path) => {
         e.preventDefault()
@@ -47,8 +46,11 @@ const JSONSchemaForm = ({root, name, update, id, entities}) => {
                 nodeType: "primitive",
                 value: "string"
             }
-        } else {
+        } else if (["array", "string", "boolean"].includes(e.target.value)) {
             current.nodeType = "primitive";
+            current.value = e.target.value;
+        } else {
+            current.nodeType = "custom";
             current.value = e.target.value;
         }
 

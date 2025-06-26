@@ -1,36 +1,34 @@
 import React from 'react'
-import StaticJSONSchema from "@/components/static_json_schema/StaticJSONSchema.jsx";
-import JSONSchemaForm from "@/components/json_schema/JSONSchemaForm.jsx";
+import EntityDiff from "@/components/EntityDiff.jsx";
+import EntityRemoved from "@/components/EntityRemoved.jsx";
 
-const Entity = ({entity, updateRoot, entities}) => {
-    return (
-        <div className="entity-container" key={entity.id}>
-            <div className="entity-name-container">
-                <div className="entity-name">
-                    {entity.original_name}
-                </div>
-                <div className="entity-name">
-                    {entity.name}
-                    <button type="button" onClick={() => {}}>x</button>
-                </div>
-            </div>
+const Entity = ({entity, updateRoot, removeEntity, entities}) => {
+    if (entity.type === 'removed') {
+        return (<EntityRemoved
+            entity={entity}
+            updateRoot={updateRoot}
+            removeEntity={removeEntity}
+            entities={entities}
+        />)
+    }
 
-            <div className="entity-root-container">
-                <div className="entity-root">
-                    <StaticJSONSchema root={entity.original_root}/>
-                </div>
-                <div className="entity-root">
-                    <JSONSchemaForm
-                        name="version[entities_attributes][][original_root]"
-                        update={updateRoot}
-                        root={entity.root}
-                        id={entity.id}
-                        entities={entities}
-                    />
-                </div>
-            </div>
-        </div>
-    )
+    // if (endpoint.type === 'new') {
+    //     return (<EndpointAdded
+    //         endpoint={endpoint}
+    //         remove={remove}
+    //         updateName={updateName}
+    //         updateInput={updateInput}
+    //         updateOutput={updateOutput}
+    //         entities={entities}
+    //     />)
+    // }
+
+    return (<EntityDiff
+        entity={entity}
+        updateRoot={updateRoot}
+        removeEntity={removeEntity}
+        entities={entities}
+    />)
 }
 
 export default Entity
