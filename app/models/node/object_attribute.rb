@@ -3,7 +3,7 @@ class Node::ObjectAttribute < ApplicationRecord
   belongs_to :value, polymorphic: true
 
   def serialize
-    name + ": " + value.serialize
+    name + ":" + value.serialize
   end
 
   def to_example_json

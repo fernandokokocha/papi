@@ -3,6 +3,7 @@ import EndpointList from "@/components/EndpointList.jsx";
 import EntityList from "@/components/EntityList.jsx";
 import {v4 as uuidv4} from "uuid";
 import deserialize from "@/helpers/deserialize.js";
+import serialize from "@/helpers/serialize.js";
 
 const isNewEndpointColliding = (verb, url, e) => {
     let newEndpointColliding = false
@@ -84,12 +85,12 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         setAddEntityDisabled(isNewEntityColliding(newEntity, entities))
     }
 
-    const validate = (newEndpoints) => {
+    const validate = (endpointsToSend, entitiesToSend) => {
         let newNoCollisions = true;
-        newEndpoints
+        endpointsToSend
             .filter((endpoint) => (endpoint.type !== 'removed'))
             .forEach((endpoint) => {
-                const colliding = newEndpoints.filter((otherEndpoint) => otherEndpoint.url === endpoint.url && otherEndpoint.http_verb === endpoint.http_verb)
+                const colliding = endpointsToSend.filter((otherEndpoint) => otherEndpoint.url === endpoint.url && otherEndpoint.http_verb === endpoint.http_verb)
                 if (colliding.length > 1) {
                     newNoCollisions = false;
                     endpoint.collision = true;
@@ -99,17 +100,37 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
             })
         setNoCollisions(newNoCollisions)
 
-        const serialized = JSON.stringify(newEndpoints
+        const serializedEndpointsToSend = JSON.stringify(endpointsToSend
             .filter((endpoint) => (endpoint.type !== 'removed'))
             .map((endpoint) => ({
                 http_verb: endpoint.http_verb,
                 verb: endpoint.verb,
                 url: endpoint.url,
-                input: endpoint.input,
-                output: endpoint.output
+                input: serialize(endpoint.input),
+                output: serialize(endpoint.output)
             })))
-        const newAnyChanges = serialized !== serializedEndpoints
-        setAnyChanges(newAnyChanges)
+
+        console.log({ serializedEndpointsToSend })
+        console.log({ serializedEndpoints })
+        if (serializedEndpointsToSend !== serializedEndpoints) {
+            setAnyChanges(true)
+            return
+        }
+
+        const serializedEntitiesToSend = JSON.stringify(entitiesToSend
+            .filter((entity) => (entity.type !== 'removed'))
+            .map((entity) => ({
+                name: entity.name,
+                root: serialize(entity.root)
+            })))
+        console.log({serializedEntitiesToSend})
+        console.log({serializedEntities})
+        if (serializedEntitiesToSend !== serializedEntities) {
+            setAnyChanges(true)
+            return
+        }
+
+        setAnyChanges(false)
     }
 
     const updateEndpoint = (id, updatedVerb, updatedUrl) => {
@@ -118,7 +139,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         endpointToUpdate.http_verb = updatedVerb
         endpointToUpdate.url = updatedUrl
 
-        validate(newEndpoints)
+        validate(newEndpoints, entities)
         validateNewEndpoint(newVerb, newUrl, newEndpoints)
         setEndpoints(newEndpoints)
     }
@@ -132,7 +153,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
             newEndpoints = newEndpoints.filter((endpoint) => (endpoint.id !== id))
         }
 
-        validate(newEndpoints)
+        validate(newEndpoints, entities)
         validateNewEndpoint(newVerb, newUrl, newEndpoints)
         setEndpoints(newEndpoints)
     }
@@ -149,7 +170,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
             output: ""
         })
 
-        validate(newEndpoints)
+        validate(newEndpoints, entities)
         validateNewEndpoint(newVerb, newUrl, newEndpoints)
         setEndpoints(newEndpoints)
     }
@@ -172,6 +193,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
             is_referenced: false
         })
         validateNewEntity(newEntity, newEntities)
+        validate(endpoints, newEntities)
         setEntities(newEntities)
     }
 
@@ -190,7 +212,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         const endpointToUpdate = newEndpoints.find((endpoint) => (endpoint.id === id))
         endpointToUpdate.input = newInput
 
-        validate(newEndpoints)
+        validate(newEndpoints, entities)
         validateNewEndpoint(newVerb, newUrl, newEndpoints)
         setEndpoints(newEndpoints)
         checkEntitiesReferences(newEndpoints, entities)
@@ -201,7 +223,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         const endpointToUpdate = newEndpoints.find((endpoint) => (endpoint.id === id))
         endpointToUpdate.output = newOutput
 
-        validate(newEndpoints)
+        validate(newEndpoints, entities)
         validateNewEndpoint(newVerb, newUrl, newEndpoints)
         setEndpoints(newEndpoints)
         checkEntitiesReferences(newEndpoints, entities)
@@ -211,6 +233,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         const newEntities = JSON.parse(JSON.stringify(entities))
         const entityToUpdate = newEntities.find((entity) => (entity.id === id))
         entityToUpdate.root = newRoot
+        validate(endpoints, newEntities)
         setEntities(newEntities)
     }
 
@@ -224,6 +247,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         }
 
         validateNewEntity(newEntity, newEntities)
+        validate(endpoints, newEntities)
         setEntities(newEntities)
     }
 

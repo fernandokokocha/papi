@@ -16,7 +16,7 @@ class Node::Array < ApplicationRecord
   end
 
   def serialize
-    "[ #{value.serialize} ]"
+    "[#{value.serialize}]"
   end
 
   def ==(other)
