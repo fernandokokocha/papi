@@ -17,6 +17,19 @@ const isNewEndpointColliding = (verb, url, e) => {
     return newEndpointColliding;
 }
 
+const isNewEntityColliding = (newEntity, entities) => {
+    let newEntityColliding = false
+    entities.filter((entity) => (entity.type !== 'removed'))
+        .forEach((entity) => {
+            const collidingWithNewEntity = (entity.name === newEntity)
+            if (collidingWithNewEntity) {
+                newEntityColliding = true
+            }
+        })
+
+    return newEntityColliding;
+}
+
 const checkEntitiesReferences = (endpoints, entities) => {
     entities.forEach((entity) => {
         entity.is_referenced = findCustomNameInEndpoints(endpoints, entity.name)
@@ -60,9 +73,15 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
     const [newUrl, setNewUrl] = useState("/resource")
     const [newVerb, setNewVerb] = useState("verb_get")
     const [addEndpointDisabled, setAddEndpointDisabled] = useState(() => isNewEndpointColliding(newVerb, newUrl, endpoints))
+    const [newEntity, setNewEntity] = useState("MyResource")
+    const [addEntityDisabled, setAddEntityDisabled] = useState(() => isNewEntityColliding(newEntity, entities))
 
     const validateNewEndpoint = (verb, url, e) => {
         setAddEndpointDisabled(isNewEndpointColliding(verb, url, e))
+    }
+
+    const validateNewEntity = (newEntity, entities) => {
+        setAddEntityDisabled(isNewEntityColliding(newEntity, entities))
     }
 
     const validate = (newEndpoints) => {
@@ -135,6 +154,27 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         setEndpoints(newEndpoints)
     }
 
+    const updateNewEntity = (e) => {
+        setNewEntity(e.target.value)
+        validateNewEntity(e.target.value, entities)
+    }
+
+    const addEntity = () => {
+        const newEntities = JSON.parse(JSON.stringify(entities))
+        newEntities.push({
+            type: "new",
+            id: uuidv4(),
+            root: deserialize(""),
+            original_root: deserialize(""),
+            name: newEntity,
+            original_name: newEntity,
+            collision: false,
+            is_referenced: false
+        })
+        validateNewEntity(newEntity, newEntities)
+        setEntities(newEntities)
+    }
+
     const updateNewUrl = (e) => {
         setNewUrl(e.target.value)
         validateNewEndpoint(newVerb, e.target.value, endpoints)
@@ -183,6 +223,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
             newEntities = newEntities.filter((entity) => (entity.id !== id))
         }
 
+        validateNewEntity(newEntity, newEntities)
         setEntities(newEntities)
     }
 
@@ -248,6 +289,10 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
                 entities={entities}
                 updateRoot={updateEntityRoot}
                 removeEntity={removeEntity}
+                newEntity={newEntity}
+                updateNewEntity={updateNewEntity}
+                addEntity={addEntity}
+                addEntityDisabled={addEntityDisabled}
             />
         </>
     )

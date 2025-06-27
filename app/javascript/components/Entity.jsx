@@ -1,6 +1,7 @@
 import React from 'react'
 import EntityDiff from "@/components/EntityDiff.jsx";
 import EntityRemoved from "@/components/EntityRemoved.jsx";
+import EntityAdded from "@/components/EntityAdded.jsx";
 
 const Entity = ({entity, updateRoot, removeEntity, entities}) => {
     if (entity.type === 'removed') {
@@ -12,16 +13,14 @@ const Entity = ({entity, updateRoot, removeEntity, entities}) => {
         />)
     }
 
-    // if (endpoint.type === 'new') {
-    //     return (<EndpointAdded
-    //         endpoint={endpoint}
-    //         remove={remove}
-    //         updateName={updateName}
-    //         updateInput={updateInput}
-    //         updateOutput={updateOutput}
-    //         entities={entities}
-    //     />)
-    // }
+    if (entity.type === 'new') {
+        return (<EntityAdded
+            entity={entity}
+            updateRoot={updateRoot}
+            removeEntity={removeEntity}
+            entities={[]}
+        />)
+    }
 
     return (<EntityDiff
         entity={entity}
