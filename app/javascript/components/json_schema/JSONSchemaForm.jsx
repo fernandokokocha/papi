@@ -58,7 +58,7 @@ const JSONSchemaForm = ({root, name, update, id, entities}) => {
     }
 
     return (
-        <>
+        <div className="json-schema">
             <input type="hidden"
                    name={name}
                    value={serializedRoot}>
@@ -73,7 +73,7 @@ const JSONSchemaForm = ({root, name, update, id, entities}) => {
                 canBeNothing={true}
                 entities={entities}
             />
-        </>
+        </div>
     )
 }
 

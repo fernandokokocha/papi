@@ -277,25 +277,26 @@
             }
         }
 
-        & .object {
-            .object-attribute {
-                margin-left: 20px;
-                font-family: monospace;
+        .json-schema {
+            font-family: monospace;
+            & .object {
+                .object-attribute {
+                    margin-left: 20px;
 
+                }
+
+                .object-new-attribute {
+                    margin-left: 20px;
+                }
             }
 
-            .object-new-attribute {
-                margin-left: 20px;
-                font-family: monospace;
+            & .array {
+                .array-value {
+                    margin-left: 20px;
+                }
             }
         }
 
-        & .array {
-            .array-value {
-                margin-left: 20px;
-                font-family: monospace;
-            }
-        }
 
         .alert {
             background: red;

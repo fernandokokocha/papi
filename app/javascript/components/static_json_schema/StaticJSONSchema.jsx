@@ -4,7 +4,9 @@ import StaticValue from "@/components/static_json_schema/StaticValue.jsx";
 
 const StaticJSONSchema = ({root}) => {
     return (
-        <StaticValue root={root}/>
+        <div className="json-schema">
+            <StaticValue root={root}/>
+        </div>
     )
 }
 

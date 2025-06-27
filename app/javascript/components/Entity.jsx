@@ -8,7 +8,7 @@ const Entity = ({entity, updateRoot, removeEntity, entities}) => {
             entity={entity}
             updateRoot={updateRoot}
             removeEntity={removeEntity}
-            entities={entities}
+            entities={[]}
         />)
     }
 
@@ -27,7 +27,7 @@ const Entity = ({entity, updateRoot, removeEntity, entities}) => {
         entity={entity}
         updateRoot={updateRoot}
         removeEntity={removeEntity}
-        entities={entities}
+        entities={[]}
     />)
 }
 
