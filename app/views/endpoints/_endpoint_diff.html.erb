@@ -4,6 +4,7 @@
 <% output2 = expanded ? endpoint.output.expand : endpoint.output %>
 <% input_diff = Diff::FromValues.new(input1, input2) %>
 <% output_diff = Diff::FromValues.new(output1, output2) %>
+<% notes_diff = DiffNotes::FromNotes.new(previous_endpoint.note, endpoint.note) %>
 <div class="endpoint-container" id="endpoint-<%= endpoint.page_url %>">
   <div class="endpoint-name-container">
     <div class="endpoint-name">
@@ -16,6 +17,16 @@
         <% end %>
       <% end %>
     </div>
+  </div>
+
+  <div class="endpoint-section-container">
+    <div class="endpoint-section">NOTE</div>
+    <div class="endpoint-section">NOTE</div>
+  </div>
+
+  <div class="endpoint-note-container">
+    <div class="endpoint-note"><%= render "specs/notes", diff: notes_diff.before %></div>
+    <div class="endpoint-note"><%= render "specs/notes", diff: notes_diff.after %></div>
   </div>
 
   <div class="endpoint-section-container">

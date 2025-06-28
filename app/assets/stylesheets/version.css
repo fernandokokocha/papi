@@ -199,6 +199,41 @@
                         flex-grow: 1;
                     }
                 }
+
+                .endpoint-note-container {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: row;
+                    flex-grow: 1;
+                    justify-content: space-between;
+                    gap: 5px;
+
+                    .endpoint-note {
+                        flex-basis: 0;
+                        flex-grow: 1;
+                        min-height: 20px;
+                        background: white;
+                        flex-direction: column;
+                        white-space: pre;
+
+                        .notes-container {
+                            display: flex;
+                            flex: 1;
+                            flex-direction: column;
+                            height: 100%;
+
+                            .note-line {
+                                height: 20px;
+                            }
+                        }
+                    }
+
+                    .endpoint-note-placeholder {
+                        flex-basis: 0;
+                        flex-grow: 1;
+                    }
+
+                }
             }
 
             .entity-container {
@@ -213,7 +248,7 @@
                     justify-content: space-between;
                     gap: 5px;
                     position: sticky;
-                    top: 0px;
+                    top: 0;
 
                     .entity-name {
                         flex-basis: 0;

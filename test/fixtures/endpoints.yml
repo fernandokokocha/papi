@@ -6,6 +6,7 @@ project1v1e1:
   output: object11 (Node::Object)
   original_input_string: ""
   original_output_string: ""
+  note: "Endpoint to get thing"
 project1v1e2:
   http_verb: 1
   url: /old_thing
@@ -23,6 +24,7 @@ project1v2e1:
   output: object21 (Node::Object)
   original_input_string: ""
   original_output_string: ""
+  note: "Endpoint to get thing. It returns some object."
 project1v2e2:
   http_verb: 0
   url: /new_thing
@@ -31,6 +33,7 @@ project1v2e2:
   output: n1 (Node::Nothing)
   original_input_string: ""
   original_output_string: ""
+  note: "Hey, that's a new endpoint."
 
 project1v3e1:
   http_verb: 0
@@ -40,6 +43,9 @@ project1v3e1:
   output: object31 (Node::Object)
   original_input_string: ""
   original_output_string: ""
+  note: "Endpoint to get thing. It returns some object.
+
+Oh, and I added a new line!"
 project1v3e2:
   http_verb: 0
   url: /new_thing
@@ -48,6 +54,7 @@ project1v3e2:
   output: array31 (Node::Array)
   original_input_string: ""
   original_output_string: ""
+  note: "I don't see the point to comment these :/"
 project1v3e3:
   http_verb: 0
   url: /array_endpoint
@@ -65,6 +72,9 @@ project1v4e1:
   output: object41 (Node::Object)
   original_input_string: ""
   original_output_string: ""
+  note: "Endpoint to get thing. It returns some object.
+
+Oh, and I added a new line!"
 project1v4e2:
   http_verb: 0
   url: /new_thing
@@ -73,6 +83,7 @@ project1v4e2:
   output: p402 (Node::Primitive)
   original_input_string: ""
   original_output_string: ""
+  note: "I don't see the point to comment these :/"
 project1v4e3:
   http_verb: 0
   url: /array_endpoint
@@ -81,3 +92,4 @@ project1v4e3:
   output: array42 (Node::Array)
   original_input_string: ""
   original_output_string: ""
+  note: "Self-explanatory. Hopefully."
