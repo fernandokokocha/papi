@@ -107,11 +107,10 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
                 verb: endpoint.verb,
                 url: endpoint.url,
                 input: serialize(endpoint.input),
-                output: serialize(endpoint.output)
+                output: serialize(endpoint.output),
+                note: endpoint.note
             })))
 
-        console.log({ serializedEndpointsToSend })
-        console.log({ serializedEndpoints })
         if (serializedEndpointsToSend !== serializedEndpoints) {
             setAnyChanges(true)
             return
@@ -123,8 +122,6 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
                 name: entity.name,
                 root: serialize(entity.root)
             })))
-        console.log({serializedEntitiesToSend})
-        console.log({serializedEntities})
         if (serializedEntitiesToSend !== serializedEntities) {
             setAnyChanges(true)
             return
@@ -133,15 +130,18 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         setAnyChanges(false)
     }
 
-    const updateEndpoint = (id, updatedVerb, updatedUrl) => {
-        const newEndpoints = JSON.parse(JSON.stringify(endpoints))
-        const endpointToUpdate = newEndpoints.find((endpoint) => (endpoint.id === id))
-        endpointToUpdate.http_verb = updatedVerb
-        endpointToUpdate.url = updatedUrl
+    const updateEndpoint = (id, newEndpoint) => {
+        const indexToUpdate = endpoints.findIndex((endpoint) => (endpoint.id === id))
+        const newEndpoints = [
+            ...endpoints.slice(0, indexToUpdate),
+            newEndpoint,
+            ...endpoints.slice(indexToUpdate + 1),
+        ]
 
         validate(newEndpoints, entities)
         validateNewEndpoint(newVerb, newUrl, newEndpoints)
         setEndpoints(newEndpoints)
+        checkEntitiesReferences(newEndpoints, entities)
     }
 
     const removeEndpoint = (id) => {
@@ -207,28 +207,6 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         validateNewEndpoint(e.target.value, newUrl, endpoints)
     }
 
-    const updateInput = (id, newInput) => {
-        const newEndpoints = JSON.parse(JSON.stringify(endpoints))
-        const endpointToUpdate = newEndpoints.find((endpoint) => (endpoint.id === id))
-        endpointToUpdate.input = newInput
-
-        validate(newEndpoints, entities)
-        validateNewEndpoint(newVerb, newUrl, newEndpoints)
-        setEndpoints(newEndpoints)
-        checkEntitiesReferences(newEndpoints, entities)
-    }
-
-    const updateOutput = (id, newOutput) => {
-        const newEndpoints = JSON.parse(JSON.stringify(endpoints))
-        const endpointToUpdate = newEndpoints.find((endpoint) => (endpoint.id === id))
-        endpointToUpdate.output = newOutput
-
-        validate(newEndpoints, entities)
-        validateNewEndpoint(newVerb, newUrl, newEndpoints)
-        setEndpoints(newEndpoints)
-        checkEntitiesReferences(newEndpoints, entities)
-    }
-
     const updateEntityRoot = (id, newRoot) => {
         const newEntities = JSON.parse(JSON.stringify(entities))
         const entityToUpdate = newEntities.find((entity) => (entity.id === id))
@@ -264,6 +242,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
             const parsed_output = deserialize(endpointData.output)
             endpointData.original_output = parsed_output
             endpointData.output = parsed_output
+            endpointData.original_note = endpointData.note
             endpointData.collision = false
         })
         setEndpoints(parsed_endpoints)
@@ -306,8 +285,6 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
                 newUrl={newUrl}
                 updateNewUrl={updateNewUrl}
                 addEndpointDisabled={addEndpointDisabled}
-                updateInput={updateInput}
-                updateOutput={updateOutput}
             />
             <EntityList
                 entities={entities}

@@ -22,7 +22,8 @@ class Version < ApplicationRecord
         verb: endpoint.verb,
         url: endpoint.url,
         input: endpoint.input.serialize,
-        output: endpoint.output.serialize
+        output: endpoint.output.serialize,
+        note: endpoint.note
       }
     end.to_json
   end

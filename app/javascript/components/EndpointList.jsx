@@ -13,8 +13,6 @@ const EndpointList = ({
                           newUrl,
                           updateNewUrl,
                           addEndpointDisabled,
-                          updateInput,
-                          updateOutput
                       }) => {
 
     return (
@@ -25,9 +23,7 @@ const EndpointList = ({
                 <Endpoint
                     endpoint={endpoint}
                     remove={removeEndpoint}
-                    updateName={updateEndpoint}
-                    updateInput={updateInput}
-                    updateOutput={updateOutput}
+                    updateEndpoint={updateEndpoint}
                     entities={entities}
                 />
             ))}

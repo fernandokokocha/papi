@@ -17,7 +17,7 @@ const JSONSchemaForm = ({root, name, update, id, entities}) => {
 
         parent.attributes = parent.attributes.filter(attr => attr.name !== lastElement)
 
-        update(id, newRoot)
+        update(newRoot)
     }
 
     const addNode = (e, path, name) => {
@@ -28,7 +28,7 @@ const JSONSchemaForm = ({root, name, update, id, entities}) => {
 
         current.attributes.push({name, value: {nodeType: "primitive", value: "string"}})
 
-        update(id, newRoot)
+        update(newRoot)
     }
 
     const changeType = (e, path) => {
@@ -54,7 +54,7 @@ const JSONSchemaForm = ({root, name, update, id, entities}) => {
             current.value = e.target.value;
         }
 
-        update(id, newRoot)
+        update(newRoot)
     }
 
     return (

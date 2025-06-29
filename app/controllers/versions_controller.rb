@@ -61,12 +61,13 @@ class VersionsController < ApplicationController
       input = JSONSchemaParser.new(valid_entities).parse_value(endpoint_attr[:original_input_string])
 
       Endpoint.create!(url: endpoint_attr[:url],
-                      http_verb: endpoint_attr[:http_verb],
-                      input: input,
-                      output: output,
-                      original_input_string: endpoint_attr[:original_input_string],
-                      original_output_string: endpoint_attr[:original_output_string],
-                      version: @version)
+                       http_verb: endpoint_attr[:http_verb],
+                       input: input,
+                       output: output,
+                       original_input_string: endpoint_attr[:original_input_string],
+                       original_output_string: endpoint_attr[:original_output_string],
+                       note: endpoint_attr[:note],
+                       version: @version)
     end
 
     redirect_to project_version_path(name: @version.name, project_name: @version.project.name)
