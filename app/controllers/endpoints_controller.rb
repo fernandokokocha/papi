@@ -5,7 +5,7 @@ class EndpointsController < ApplicationController
     @endpoint = Endpoint.find_by(id: params[:id], version: @version)
 
     authorize @endpoint
-    previous_endpoint = @version.previous&.endpoints.where(url: @endpoint.url, http_verb: @endpoint.http_verb).first
+    previous_endpoint = @version.previous.endpoints.where(url: @endpoint.url, http_verb: @endpoint.http_verb).first
     expanded = params[:expanded].nil? ? true : parse_expanded(params[:expanded])
 
     unless previous_endpoint

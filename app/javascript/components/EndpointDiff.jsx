@@ -1,6 +1,7 @@
 import React from 'react'
 import JSONSchemaForm from "@/components/json_schema/JSONSchemaForm.jsx";
 import StaticJSONSchema from "@/components/static_json_schema/StaticJSONSchema.jsx";
+import serialize from "@/helpers/serialize.js";
 
 const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
     const updateVerb = (newVerb) => {
@@ -111,6 +112,15 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
                 </div>
             </div>
 
+            <div className="endpoint-root-container">
+                <div className="endpoint-root">
+                    <div className="spec">{serialize(endpoint.original_input)}</div>
+                </div>
+                <div className="endpoint-root">
+                    <div className="spec">{serialize(endpoint.input)}</div>
+                </div>
+            </div>
+
             <div className="endpoint-section-container">
                 <div className="endpoint-section">OUTPUT</div>
                 <div className="endpoint-section">OUTPUT</div>
@@ -128,6 +138,15 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
                         id={endpoint.id}
                         entities={entities}
                     />
+                </div>
+            </div>
+
+            <div className="endpoint-root-container">
+                <div className="endpoint-root">
+                    <div className="spec">{serialize(endpoint.original_output)}</div>
+                </div>
+                <div className="endpoint-root">
+                    <div className="spec">{serialize(endpoint.output)}</div>
                 </div>
             </div>
         </div>

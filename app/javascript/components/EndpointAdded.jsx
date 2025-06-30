@@ -1,5 +1,6 @@
 import React from 'react'
 import JSONSchemaForm from "@/components/json_schema/JSONSchemaForm.jsx";
+import serialize from "@/helpers/serialize.js";
 
 const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
     const updateVerb = (newVerb) => {
@@ -93,9 +94,7 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
             </div>
 
             <div className="endpoint-root-container">
-                <div className="endpoint-root-placeholder">
-                    {/*< %= render "spec", diff: input_diff %>*/}
-                </div>
+                <div className="endpoint-root-placeholder"></div>
                 <div className="endpoint-root">
                     <JSONSchemaForm
                         name="version[endpoints_attributes][][original_input_string]"
@@ -107,15 +106,21 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
                 </div>
             </div>
 
+
+            <div className="endpoint-root-container">
+                <div className="endpoint-root-placeholder"></div>
+                <div className="endpoint-root">
+                    <div className="spec">{serialize(endpoint.input)}</div>
+                </div>
+            </div>
+
             <div className="endpoint-section-container">
                 <div className="endpoint-section-placeholder">OUTPUT</div>
                 <div className="endpoint-section">OUTPUT</div>
             </div>
 
             <div className="endpoint-root-container">
-                <div className="endpoint-root-placeholder">
-                    {/*<%= render "spec", diff: output_diff %>*/}
-                </div>
+                <div className="endpoint-root-placeholder"></div>
                 <div className="endpoint-root">
                     <JSONSchemaForm
                         name="version[endpoints_attributes][][original_output_string]"
@@ -124,6 +129,13 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
                         id={endpoint.id}
                         entities={entities}
                     />
+                </div>
+            </div>
+
+            <div className="endpoint-root-container">
+                <div className="endpoint-root-placeholder"></div>
+                <div className="endpoint-root">
+                    <div className="spec">{serialize(endpoint.output)}</div>
                 </div>
             </div>
         </div>

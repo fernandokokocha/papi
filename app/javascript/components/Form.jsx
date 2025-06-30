@@ -166,8 +166,8 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
             http_verb: newVerb,
             verb: newVerb,
             url: newUrl,
-            input: "",
-            output: ""
+            input: {nodeType: "primitive", value: "nothing"},
+            output: {nodeType: "primitive", value: "nothing"}
         })
 
         validate(newEndpoints, entities)
@@ -185,8 +185,8 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         newEntities.push({
             type: "new",
             id: uuidv4(),
-            root: deserialize(""),
-            original_root: deserialize(""),
+            root: {nodeType: "primitive", value: "nothing"},
+            original_root: {nodeType: "primitive", value: "nothing"},
             name: newEntity,
             original_name: newEntity,
             collision: false,
@@ -207,10 +207,14 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         validateNewEndpoint(e.target.value, newUrl, endpoints)
     }
 
-    const updateEntityRoot = (id, newRoot) => {
-        const newEntities = JSON.parse(JSON.stringify(entities))
-        const entityToUpdate = newEntities.find((entity) => (entity.id === id))
-        entityToUpdate.root = newRoot
+    const updateEntity = (id, newEntity) => {
+        const indexToUpdate = entities.findIndex((entity) => (entity.id === id))
+        const newEntities = [
+            ...entities.slice(0, indexToUpdate),
+            newEntity,
+            ...entities.slice(indexToUpdate + 1),
+        ]
+
         validate(endpoints, newEntities)
         setEntities(newEntities)
     }
@@ -288,7 +292,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
             />
             <EntityList
                 entities={entities}
-                updateRoot={updateEntityRoot}
+                updateEntity={updateEntity}
                 removeEntity={removeEntity}
                 newEntity={newEntity}
                 updateNewEntity={updateNewEntity}

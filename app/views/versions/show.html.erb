@@ -60,7 +60,7 @@
 
       <% @existing_entities.each do |entity, previous_entity| %>
         <% diff = Diff::FromValues.new(previous_entity.root, entity.root) %>
-        <%= render "entity_diff", entity: entity, diff: diff %>
+        <%= render "entity_diff", entity: entity, previous_entity: previous_entity, diff: diff %>
       <% end %>
 
       <% @added_entities.each do |entity| %>

@@ -7,8 +7,16 @@ class Version < ApplicationRecord
 
   validates :name, uniqueness: { scope: :project_id }
 
+  def self.null_version(project)
+    self.new(
+      project: project,
+      name: "",
+      order: -1
+    )
+  end
+
   def previous
-    project.versions.find_by(order: order - 1)
+    project.versions.find_by(order: order - 1) || Version.null_version(project)
   end
 
   def next

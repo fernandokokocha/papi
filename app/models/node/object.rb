@@ -25,7 +25,7 @@ class Node::Object < ApplicationRecord
   end
 
   def serialize
-    "{#{object_attributes.order(:order).map(&:serialize).join(",")}}"
+    "{#{object_attributes.sort_by(&:order).map(&:serialize).join(",")}}"
   end
 
   def ==(other)

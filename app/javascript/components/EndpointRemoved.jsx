@@ -1,5 +1,6 @@
 import React from 'react'
 import StaticJSONSchema from "@/components/static_json_schema/StaticJSONSchema.jsx";
+import serialize from "@/helpers/serialize.js";
 
 const EndpointRemoved = ({endpoint}) => {
     return (
@@ -36,6 +37,14 @@ const EndpointRemoved = ({endpoint}) => {
                 </div>
             </div>
 
+            <div className="endpoint-root-container">
+                <div className="endpoint-root">
+                    <div className="spec">{serialize(endpoint.original_input)}</div>
+                </div>
+                <div className="endpoint-root-placeholder">
+                </div>
+            </div>
+
             <div className="endpoint-section-container">
                 <div className="endpoint-section">OUTPUT</div>
                 <div className="endpoint-section">OUTPUT</div>
@@ -46,6 +55,14 @@ const EndpointRemoved = ({endpoint}) => {
                 </div>
                 <div className="endpoint-root">
                     <StaticJSONSchema root={endpoint.output}/>
+                </div>
+            </div>
+
+            <div className="endpoint-root-container">
+                <div className="endpoint-root">
+                    <div className="spec">{serialize(endpoint.original_output)}</div>
+                </div>
+                <div className="endpoint-root-placeholder">
                 </div>
             </div>
         </div>

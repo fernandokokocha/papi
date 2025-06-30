@@ -43,6 +43,15 @@
     </div>
   </div>
 
+  <div class="endpoint-root-container">
+    <div class="endpoint-root">
+      <div class="spec"><%= input1.serialize %></div>
+    </div>
+    <div class="endpoint-root">
+      <div class="spec"><%= input2.serialize %></div>
+    </div>
+  </div>
+
   <div class="endpoint-section-container">
     <div class="endpoint-section">OUTPUT</div>
     <div class="endpoint-section">OUTPUT</div>
@@ -54,6 +63,15 @@
     </div>
     <div class="endpoint-root">
       <%= render "specs/json", diff: output_diff.after %>
+    </div>
+  </div>
+
+  <div class="endpoint-root-container">
+    <div class="endpoint-root">
+      <div class="spec"><%= output1.serialize %></div>
+    </div>
+    <div class="endpoint-root">
+      <div class="spec"><%= output2.serialize %></div>
     </div>
   </div>
 </div>

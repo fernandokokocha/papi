@@ -3,11 +3,11 @@ import EntityDiff from "@/components/EntityDiff.jsx";
 import EntityRemoved from "@/components/EntityRemoved.jsx";
 import EntityAdded from "@/components/EntityAdded.jsx";
 
-const Entity = ({entity, updateRoot, removeEntity, entities}) => {
+const Entity = ({entity, updateEntity, removeEntity, entities}) => {
     if (entity.type === 'removed') {
         return (<EntityRemoved
             entity={entity}
-            updateRoot={updateRoot}
+            updateEntity={updateEntity}
             removeEntity={removeEntity}
             entities={[]}
         />)
@@ -16,7 +16,7 @@ const Entity = ({entity, updateRoot, removeEntity, entities}) => {
     if (entity.type === 'new') {
         return (<EntityAdded
             entity={entity}
-            updateRoot={updateRoot}
+            updateEntity={updateEntity}
             removeEntity={removeEntity}
             entities={[]}
         />)
@@ -24,7 +24,7 @@ const Entity = ({entity, updateRoot, removeEntity, entities}) => {
 
     return (<EntityDiff
         entity={entity}
-        updateRoot={updateRoot}
+        updateEntity={updateEntity}
         removeEntity={removeEntity}
         entities={[]}
     />)

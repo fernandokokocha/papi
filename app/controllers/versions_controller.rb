@@ -35,7 +35,7 @@ class VersionsController < ApplicationController
 
   def create
     params.permit!
-    params[:version][:entities_attributes].each do |entity_attr|
+    (params[:version][:entities_attributes] || []).each do |entity_attr|
       root = JSONSchemaParser.new.parse_value(entity_attr[:original_root])
       root.save
       entity_attr[:root_id] = root.id
@@ -56,7 +56,7 @@ class VersionsController < ApplicationController
     # inputs and outputs may refer to entities and Node::Entity has a reference to Entity.
     # All in all this needs to be done separately
     valid_entities = @version.entities
-    endpoints_attrs.each do |endpoint_attr|
+    (endpoints_attrs || []).each do |endpoint_attr|
       output = JSONSchemaParser.new(valid_entities).parse_value(endpoint_attr[:original_output_string])
       input = JSONSchemaParser.new(valid_entities).parse_value(endpoint_attr[:original_input_string])
 

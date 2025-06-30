@@ -65,7 +65,7 @@
         gap: 10px;
 
         aside {
-            width: 200px;
+            width: 300px;
             background: white;
             position: sticky;
             top: 10px;
@@ -168,7 +168,7 @@
                         flex-basis: 0;
                         flex-grow: 1;
                         background: lightblue;
-                        padding: 3px;
+                        padding: 3px 0;
                     }
 
                     .endpoint-section-placeholder {
@@ -184,11 +184,11 @@
                     flex-grow: 1;
                     justify-content: space-between;
                     gap: 5px;
+                    align-items: stretch;
 
                     .endpoint-root {
                         flex-basis: 0;
                         flex-grow: 1;
-                        min-height: 20px;
                         background: white;
                         display: flex;
                         flex-direction: column;
@@ -211,7 +211,6 @@
                     .endpoint-note {
                         flex-basis: 0;
                         flex-grow: 1;
-                        min-height: 20px;
                         background: white;
                         flex-direction: column;
                         white-space: pre;
@@ -277,7 +276,6 @@
                     .entity-root {
                         flex-basis: 0;
                         flex-grow: 1;
-                        min-height: 20px;
                         display: flex;
                         flex-direction: column;
                     }
@@ -312,8 +310,17 @@
             }
         }
 
+        .spec {
+            background: lightgray;
+            font-size: 10px;
+            text-wrap: wrap;
+            font-family: monospace;
+            height: 100%;
+        }
+
         .json-schema {
             font-family: monospace;
+
             & .object {
                 .object-attribute {
                     margin-left: 20px;

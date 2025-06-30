@@ -10,7 +10,13 @@
     <div class="entity-root">
       <%= render "specs/json", diff: diff %>
     </div>
-  <div class="entity-root-placeholder">
+    <div class="entity-root-placeholder"></div>
   </div>
+
+  <div class="entity-root-container">
+    <div class="entity-root">
+      <div class="spec"><%= entity.root.serialize %></div>
+    </div>
+    <div class="entity-root-placeholder"></div>
   </div>
 </div>

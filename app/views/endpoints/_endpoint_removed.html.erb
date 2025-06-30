@@ -24,6 +24,7 @@
   <div class="endpoint-root-container">
     <div class="endpoint-root">
       <%= render "specs/json", diff: input_diff %>
+      <div class="spec"><%= endpoint.input.serialize %></div>
     </div>
     <div class="endpoint-root-placeholder">
     </div>
@@ -37,6 +38,7 @@
   <div class="endpoint-root-container">
     <div class="endpoint-root">
       <%= render "specs/json", diff: output_diff %>
+      <div class="spec"><%= endpoint.output.serialize %></div>
     </div>
     <div class="endpoint-root-placeholder">
     </div>
