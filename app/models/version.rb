@@ -31,7 +31,8 @@ class Version < ApplicationRecord
         url: endpoint.url,
         input: endpoint.input.serialize,
         output: endpoint.output.serialize,
-        note: endpoint.note
+        note: endpoint.note,
+        auth: endpoint.auth
       }
     end.to_json
   end

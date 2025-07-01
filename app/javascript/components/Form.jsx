@@ -108,7 +108,8 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
                 url: endpoint.url,
                 input: serialize(endpoint.input),
                 output: serialize(endpoint.output),
-                note: endpoint.note
+                note: endpoint.note,
+                auth: endpoint.auth
             })))
 
         if (serializedEndpointsToSend !== serializedEndpoints) {
@@ -190,7 +191,8 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
             name: newEntity,
             original_name: newEntity,
             collision: false,
-            is_referenced: false
+            is_referenced: false,
+            auth: "no_auth"
         })
         validateNewEntity(newEntity, newEntities)
         validate(endpoints, newEntities)
@@ -235,19 +237,23 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
 
     useEffect(() => {
         const parsed_endpoints = JSON.parse(serializedEndpoints)
+        console.log({parsed_endpoints})
         parsed_endpoints.forEach((endpointData) => {
             endpointData.type = "old"
             endpointData.id = uuidv4()
+            endpointData.collision = false
+
             endpointData.original_url = endpointData.url
             endpointData.original_verb = endpointData.verb
             const parsed_input = deserialize(endpointData.input)
             endpointData.original_input = parsed_input
-            endpointData.input = parsed_input
             const parsed_output = deserialize(endpointData.output)
             endpointData.original_output = parsed_output
-            endpointData.output = parsed_output
             endpointData.original_note = endpointData.note
-            endpointData.collision = false
+            endpointData.original_auth = endpointData.auth
+
+            endpointData.input = parsed_input
+            endpointData.output = parsed_output
         })
         setEndpoints(parsed_endpoints)
 

@@ -30,6 +30,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_06_24_164443) do
     t.string "original_input_string", null: false
     t.string "original_output_string", null: false
     t.string "note"
+    t.integer "auth", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["input_type", "input_id"], name: "index_endpoints_on_input"

@@ -44,6 +44,14 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
         updateEndpoint(endpoint.id, newEndpoint)
     }
 
+    const updateAuth = (newAuth) => {
+        const newEndpoint = {
+            ...endpoint,
+            auth: newAuth
+        }
+        updateEndpoint(endpoint.id, newEndpoint)
+    }
+
     return (
         <div className="endpoint-container" key={endpoint.id}>
             <div className="endpoint-name-container">
@@ -89,6 +97,24 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
                         cols="50"
                         wrap="hard"
                     />
+                </div>
+            </div>
+
+            <div className="endpoint-section-container">
+                <div className="endpoint-section">AUTH</div>
+                <div className="endpoint-section">AUTH</div>
+            </div>
+
+            <div className="endpoint-note-container">
+                <div className="endpoint-note">{endpoint.original_auth === "no_auth" ? "No auth" : "Bearer"}</div>
+                <div className="endpoint-note">
+                    <select
+                        name="version[endpoints_attributes][][auth]"
+                        onChange={(e) => updateAuth(e.target.value)}
+                    >
+                        <option value="no_auth" selected={endpoint.auth === "no_auth"}>No auth</option>
+                        <option value="bearer" selected={endpoint.auth === "bearer"}>Bearer</option>
+                    </select>
                 </div>
             </div>
 

@@ -67,6 +67,7 @@ class VersionsController < ApplicationController
                        original_input_string: endpoint_attr[:original_input_string],
                        original_output_string: endpoint_attr[:original_output_string],
                        note: endpoint_attr[:note],
+                       auth: endpoint_attr[:auth],
                        version: @version)
     end
 

@@ -9,6 +9,7 @@ class CreateEndpoints < ActiveRecord::Migration[8.0]
       t.string :original_input_string, null: false
       t.string :original_output_string, null: false
       t.string :note, null: true
+      t.integer :auth, null: false
 
       t.timestamps
     end

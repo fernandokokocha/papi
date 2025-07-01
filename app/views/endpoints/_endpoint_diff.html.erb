@@ -5,6 +5,8 @@
 <% input_diff = Diff::FromValues.new(input1, input2) %>
 <% output_diff = Diff::FromValues.new(output1, output2) %>
 <% notes_diff = DiffNotes::FromNotes.new(previous_endpoint.note, endpoint.note) %>
+<% auth_diff = DiffNotes::FromNotes.new(previous_endpoint.auth.humanize, endpoint.auth.humanize) %>
+
 <div class="endpoint-container" id="endpoint-<%= endpoint.page_url %>">
   <div class="endpoint-name-container">
     <div class="endpoint-name">
@@ -27,6 +29,16 @@
   <div class="endpoint-note-container">
     <div class="endpoint-note"><%= render "specs/notes", diff: notes_diff.before %></div>
     <div class="endpoint-note"><%= render "specs/notes", diff: notes_diff.after %></div>
+  </div>
+
+  <div class="endpoint-section-container">
+    <div class="endpoint-section">AUTH</div>
+    <div class="endpoint-section">AUTH</div>
+  </div>
+
+  <div class="endpoint-auth-container">
+    <div class="endpoint-auth"><%= render "specs/notes", diff: auth_diff.before %></div>
+    <div class="endpoint-auth"><%= render "specs/notes", diff: auth_diff.after %></div>
   </div>
 
   <div class="endpoint-section-container">
