@@ -53,9 +53,14 @@ v3e3r1:
 v4e1r1:
   endpoint: project1v4e1
   code: "200"
+v4e1r2:
+  endpoint: project1v4e1
+  code: "401"
+  note: "Forbidden"
 v4e2r1:
   endpoint: project1v4e2
   code: "200"
+  note: "Success"
 v4e3r1:
   endpoint: project1v4e3
   code: "200"

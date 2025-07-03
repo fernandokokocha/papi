@@ -2,8 +2,8 @@ class Version < ApplicationRecord
   belongs_to :project
   has_many :endpoints, -> { order([ :url, :http_verb ]) }, dependent: :destroy
   has_many :entities, -> { order([ :name ]) }, dependent: :destroy
-  accepts_nested_attributes_for :endpoints # , allow_destroy: true
-  accepts_nested_attributes_for :entities # , allow_destroy: true
+  accepts_nested_attributes_for :endpoints
+  accepts_nested_attributes_for :entities
 
   validates :name, uniqueness: { scope: :project_id }
 
@@ -32,7 +32,8 @@ class Version < ApplicationRecord
         input: endpoint.input.serialize,
         output: endpoint.output.serialize,
         note: endpoint.note,
-        auth: endpoint.auth
+        auth: endpoint.auth,
+        responses: endpoint.responses.sort_by(&:code).map { |r| { code: r.code, note: r.note } }
       }
     end.to_json
   end

@@ -1,7 +1,9 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import JSONSchemaForm from "@/components/json_schema/JSONSchemaForm.jsx";
 import StaticJSONSchema from "@/components/static_json_schema/StaticJSONSchema.jsx";
 import serialize from "@/helpers/serialize.js";
+import {arrayDifference} from "@/helpers/arrayDiffrence.js";
+import {httpStatusCodes} from "@/helpers/values.js";
 
 const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
     const updateVerb = (newVerb) => {
@@ -51,6 +53,55 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
         }
         updateEndpoint(endpoint.id, newEndpoint)
     }
+
+    const addResponse = () => {
+        const newResponses = [...endpoint.responses, {code: newResponseCode, note: ""}]
+        const newEndpoint = {
+            ...endpoint,
+            responses: newResponses
+        }
+        updateEndpoint(endpoint.id, newEndpoint)
+    }
+
+    const removeResponse = (code) => {
+        const index = endpoint.responses.findIndex((r) => r.code === code)
+        const newResponses = [
+            ...endpoint.responses.slice(0, index),
+            ...endpoint.responses.slice(index + 1),
+
+        ]
+        const newEndpoint = {
+            ...endpoint,
+            responses: newResponses
+        }
+        updateEndpoint(endpoint.id, newEndpoint)
+    }
+
+    const updateResponseNote = (code, newNote) => {
+        const index = endpoint.responses.findIndex((r) => r.code === code)
+        const newResponses = [
+            ...endpoint.responses.slice(0, index),
+            {code, note: newNote},
+            ...endpoint.responses.slice(index + 1),
+        ]
+        const newEndpoint = {
+            ...endpoint,
+            responses: newResponses
+        }
+        updateEndpoint(endpoint.id, newEndpoint)
+    }
+
+    const [responsesToAdd, setResponsesToAdd] = useState([])
+    const [newResponseCode, setNewResponseCode] = useState(null)
+
+    useEffect(() => {
+        const newResponsesToAdd = arrayDifference(
+            httpStatusCodes,
+            endpoint.responses.map((r) => r.code)
+        )
+        setResponsesToAdd(newResponsesToAdd)
+        setNewResponseCode(newResponsesToAdd[0])
+    }, [endpoint])
 
     return (
         <div className="endpoint-container" key={endpoint.id}>
@@ -115,6 +166,50 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
                         <option value="no_auth" selected={endpoint.auth === "no_auth"}>No auth</option>
                         <option value="bearer" selected={endpoint.auth === "bearer"}>Bearer</option>
                     </select>
+                </div>
+            </div>
+
+            <div className="endpoint-section-container">
+                <div className="endpoint-section">RESPONSES</div>
+                <div className="endpoint-section">RESPONSES</div>
+            </div>
+
+            <div className="endpoint-responses-container">
+                <div className="endpoint-responses">
+                    <div>
+                        {endpoint.original_responses.map((r) => (
+                            <div>
+                                <span className="line">{r.code}</span>:
+                                <span className="">{r.note}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className="endpoint-responses">
+                    <div>
+                        {endpoint.responses.map((r) => (
+                            <div>
+                                <span className="line">{r.code}</span>:
+                                <input type="text"
+                                       value={r.note}
+                                       onChange={(e) => updateResponseNote(r.code, e.target.value)}/>
+                                <button type="button" onClick={(e) => removeResponse(r.code)}>x</button>
+                                <input
+                                    type="hidden"
+                                    name={`version[endpoints_attributes][][responses][${r.code}]`}
+                                    value={r.note}
+                                />
+                            </div>
+                        ))}
+                        <div>
+                            <select onChange={(e) => setNewResponseCode(e.target.value)}>
+                                {responsesToAdd.map((r) => (
+                                    <option value={r} selected={newResponseCode === r}>{r}</option>
+                                ))}
+                            </select>
+                            <button type="button" onClick={() => addResponse()}>Add response</button>
+                        </div>
+                    </div>
                 </div>
             </div>
 

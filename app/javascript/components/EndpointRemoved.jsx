@@ -37,6 +37,25 @@ const EndpointRemoved = ({endpoint}) => {
             </div>
 
             <div className="endpoint-section-container">
+                <div className="endpoint-section">RESPONSES</div>
+                <div className="endpoint-section-placeholder"></div>
+            </div>
+
+            <div className="endpoint-responses-container">
+                <div className="endpoint-responses">
+                    <div>
+                        {endpoint.original_responses.map((r) => (
+                            <div>
+                                <span className="line">{r.code}</span>:
+                                <span className="">{r.note}</span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                <div className="endpoint-responses-placeholder"></div>
+            </div>
+
+            <div className="endpoint-section-container">
                 <div className="endpoint-section">INPUT</div>
                 <div className="endpoint-section-placeholder"></div>
             </div>

@@ -23,8 +23,9 @@ class DiffResponses::FromResponses
     end
 
     responses1.sort_by(&:code).each do |response|
-      unless (matching_response = responses1.select { |r| r.code === response.code })
-        @before << DiffResponses::Line.removed(matching_response.code, matching_response.note)
+      matching_responses = responses2.select { |r| r.code === response.code }
+      if matching_responses.empty?
+        @before << DiffResponses::Line.removed(response.code, response.note)
         @after << DiffResponses::Line.blank
       end
     end

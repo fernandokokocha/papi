@@ -1,7 +1,7 @@
 class VersionsController < ApplicationController
   def show
-    @project = Project.find_by(name: params[:project_name])
-    @version = Version.find_by(name: params[:name], project: @project)
+    @project = Project.find_by!(name: params[:project_name])
+    @version = Version.find_by!(name: params[:name], project: @project)
     authorize @version
     @previous_version = @version.previous
     @next_version = @version.next
@@ -18,7 +18,7 @@ class VersionsController < ApplicationController
   end
 
   def new
-    @project = Project.find_by(name: params[:project_name])
+    @project = Project.find_by!(name: params[:project_name])
     @latest_version = @project.latest_version
     if @latest_version
       @version = @latest_version.amoeba_dup
@@ -57,7 +57,9 @@ class VersionsController < ApplicationController
     # All in all this needs to be done separately
     valid_entities = @version.entities
     (endpoints_attrs || []).each do |endpoint_attr|
+      puts " #### " + endpoint_attr[:original_output_string]
       output = JSONSchemaParser.new(valid_entities).parse_value(endpoint_attr[:original_output_string])
+      puts " #### " + endpoint_attr[:original_input_string]
       input = JSONSchemaParser.new(valid_entities).parse_value(endpoint_attr[:original_input_string])
 
       Endpoint.create!(url: endpoint_attr[:url],
@@ -68,13 +70,20 @@ class VersionsController < ApplicationController
                        original_output_string: endpoint_attr[:original_output_string],
                        note: endpoint_attr[:note],
                        auth: endpoint_attr[:auth],
-                       version: @version)
+                       version: @version,
+                       responses_attributes: format_responses(endpoint_attr[:responses])
+      )
     end
 
     redirect_to project_version_path(name: @version.name, project_name: @version.project.name)
   end
 
-  def index
-    @versions = Version.find_by(project: params[:project_id])
+  private
+
+  def format_responses(responses_hash)
+    return [] unless responses_hash
+    responses_hash.to_hash.entries.map do |key, value|
+      { code: key, note: value }
+    end
   end
 end

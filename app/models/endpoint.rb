@@ -16,6 +16,8 @@ class Endpoint < ApplicationRecord
 
   scope :sort_by_name, -> { order([ :url, :http_verb ]) }
 
+  accepts_nested_attributes_for :responses
+
   def verb
     VERB_TRANSLATIONS[http_verb.to_sym]
   end
@@ -32,5 +34,9 @@ class Endpoint < ApplicationRecord
 
   def page_url
     "#{verb}-#{url}"
+  end
+
+  amoeba do
+    enable
   end
 end
