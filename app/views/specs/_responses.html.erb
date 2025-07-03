@@ -1,0 +1,8 @@
+<div class="responses-container">
+  <% diff.each do |line| %>
+    <div>
+      <span class="line <%= line.code_change %>"><%= line.code %></span>:
+      <span class="<%= line.note_change %>"><%= line.note %></span>
+    </div>
+  <% end %>
+</div>

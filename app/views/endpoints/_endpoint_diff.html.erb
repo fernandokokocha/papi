@@ -4,8 +4,9 @@
 <% output2 = expanded ? endpoint.output.expand : endpoint.output %>
 <% input_diff = Diff::FromValues.new(input1, input2) %>
 <% output_diff = Diff::FromValues.new(output1, output2) %>
-<% notes_diff = DiffNotes::FromNotes.new(previous_endpoint.note, endpoint.note) %>
-<% auth_diff = DiffNotes::FromNotes.new(previous_endpoint.auth.humanize, endpoint.auth.humanize) %>
+<% notes_diff = DiffText::FromNotes.new(previous_endpoint.note, endpoint.note) %>
+<% auth_diff = DiffText::FromNotes.new(previous_endpoint.auth.humanize, endpoint.auth.humanize) %>
+<% responses_diff = DiffResponses::FromResponses.new(previous_endpoint.responses, endpoint.responses) %>
 
 <div class="endpoint-container" id="endpoint-<%= endpoint.page_url %>">
   <div class="endpoint-name-container">
@@ -27,8 +28,8 @@
   </div>
 
   <div class="endpoint-note-container">
-    <div class="endpoint-note"><%= render "specs/notes", diff: notes_diff.before %></div>
-    <div class="endpoint-note"><%= render "specs/notes", diff: notes_diff.after %></div>
+    <div class="endpoint-note"><%= render "specs/text", diff: notes_diff.before %></div>
+    <div class="endpoint-note"><%= render "specs/text", diff: notes_diff.after %></div>
   </div>
 
   <div class="endpoint-section-container">
@@ -37,8 +38,18 @@
   </div>
 
   <div class="endpoint-auth-container">
-    <div class="endpoint-auth"><%= render "specs/notes", diff: auth_diff.before %></div>
-    <div class="endpoint-auth"><%= render "specs/notes", diff: auth_diff.after %></div>
+    <div class="endpoint-auth"><%= render "specs/text", diff: auth_diff.before %></div>
+    <div class="endpoint-auth"><%= render "specs/text", diff: auth_diff.after %></div>
+  </div>
+
+  <div class="endpoint-section-container">
+    <div class="endpoint-section">RESPONSES</div>
+    <div class="endpoint-section">RESPONSES</div>
+  </div>
+
+  <div class="endpoint-responses-container">
+    <div class="endpoint-responses"><%= render "specs/responses", diff: responses_diff.before %></div>
+    <div class="endpoint-responses"><%= render "specs/responses", diff: responses_diff.after %></div>
   </div>
 
   <div class="endpoint-section-container">

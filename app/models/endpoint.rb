@@ -12,6 +12,7 @@ class Endpoint < ApplicationRecord
   belongs_to :version
   belongs_to :input, polymorphic: true
   belongs_to :output, polymorphic: true
+  has_many :responses
 
   scope :sort_by_name, -> { order([ :url, :http_verb ]) }
 

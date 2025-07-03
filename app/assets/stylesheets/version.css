@@ -251,6 +251,22 @@
                     flex-basis: 0;
                     flex-grow: 1;
                 }
+
+                .endpoint-responses-container {
+                    width: 100%;
+                    display: flex;
+                    flex-direction: row;
+                    flex-grow: 1;
+                    justify-content: space-between;
+                    gap: 5px;
+
+                    .endpoint-responses {
+                        flex-basis: 0;
+                        flex-grow: 1;
+                        background: white;
+                        flex-direction: column;
+                    }
+                }
             }
 
             .entity-container {

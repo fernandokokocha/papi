@@ -1,4 +1,4 @@
-class DiffNotes::FromNotes
+class DiffText::FromNotes
   attr_accessor :before, :after
 
   def initialize(note1, note2)
@@ -10,18 +10,18 @@ class DiffNotes::FromNotes
 
     lines2.each do |line|
       if lines1.include?(line)
-        @before << DiffNotes::Line.no_change(line)
-        @after << DiffNotes::Line.no_change(line)
+        @before << DiffText::Line.no_change(line)
+        @after << DiffText::Line.no_change(line)
       else
-        @before << DiffNotes::Line.blank
-        @after << DiffNotes::Line.added(line)
+        @before << DiffText::Line.blank
+        @after << DiffText::Line.added(line)
       end
     end
 
     lines1.each do |line|
       unless lines2.include?(line)
-        @before << DiffNotes::Line.removed(line)
-        @after << DiffNotes::Line.blank
+        @before << DiffText::Line.removed(line)
+        @after << DiffText::Line.blank
       end
     end
   end

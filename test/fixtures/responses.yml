@@ -1,0 +1,61 @@
+v1e1r1:
+  endpoint: project1v1e1
+  code: "200"
+  note: "No comment"
+v1e1r2:
+  endpoint: project1v1e1
+  code: "404"
+  note: "When not found"
+v1e2r1:
+  endpoint: project1v1e2
+  code: "200"
+v1e2r2:
+  endpoint: project1v1e2
+  code: "404"
+v1e2r3:
+  endpoint: project1v1e2
+  code: "412"
+  note: "I'm a teapot"
+
+v2e1r1:
+  endpoint: project1v2e1
+  code: "200"
+  note: "No comment"
+v2e1r2:
+  endpoint: project1v2e1
+  code: "404"
+  note: "When thing not found"
+v2e1r3:
+  endpoint: project1v2e1
+  code: "412"
+  note: "I'm a czajniczek"
+v2e2r1:
+  endpoint: project1v2e2
+  code: "200"
+v2e2r2:
+  endpoint: project1v2e2
+  code: "404"
+v2e2r3:
+  endpoint: project1v2e2
+  code: "412"
+  note: "I'm a teapot"
+
+v3e1r1:
+  endpoint: project1v3e1
+  code: "200"
+v3e2r1:
+  endpoint: project1v3e2
+  code: "200"
+v3e3r1:
+  endpoint: project1v3e3
+  code: "200"
+
+v4e1r1:
+  endpoint: project1v4e1
+  code: "200"
+v4e2r1:
+  endpoint: project1v4e2
+  code: "200"
+v4e3r1:
+  endpoint: project1v4e3
+  code: "200"

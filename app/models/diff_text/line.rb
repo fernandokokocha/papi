@@ -1,4 +1,4 @@
-class DiffNotes::Line
+class DiffText::Line
   attr_accessor :whole_line, :change
 
   def initialize(whole_line, change)
