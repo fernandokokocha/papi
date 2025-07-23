@@ -1,20 +1,31 @@
 <div class="projects-view">
-    <h1><%= @group.name %></h1>
-    <% @projects.each do |project| %>
-      <div class="project-card">
-        <header><%= project.name %></header>
-        <div class="section">
-          <%= link_to "Create new version", new_project_version_path(project_name: project.name) %>
+  <h1><%= @group.name %></h1>
+  <% @projects.each do |project| %>
+    <div class="project-card">
+      <header><%= project.name %></header>
+      <div class="project-body">
+        <div class="section">Versions:
+          <% project.versions.order({ order: "DESC" }).each do |version| %>
+            <div class="version">
+              <%= link_to version.name, project_version_path(name: version.name, project_name: project.name) %>
+              <span class="date"><%= version.created_at.strftime("%Y-%m-%d") %></span>
+            </div>
+          <% end %>
         </div>
-        <div class="section">Recent versions:</div>
-        <% project.versions.order({ order: "DESC" }).each do |version| %>
-          <div class="version">
-            <%= link_to version.name, project_version_path(name: version.name, project_name: project.name) %>
-            <span class="date"><%= version.created_at.strftime("%Y-%m-%d") %></span>
+        <div class="section">
+          <div>
+            Candidates:
           </div>
-        <% end %>
+          <% project.candidates.order({ order: "DESC" }).each do |candidate| %>
+            <div>
+              <%= link_to candidate.name, project_candidate_path(name: candidate.name, project_name: project.name) %>
+            </div>
+          <% end %>
+          <%= link_to "Create", new_project_candidate_path(project_name: project.name) %>
+        </div>
       </div>
-    <% end %>
+    </div>
+  <% end %>
   <div>
     <%= button_to "New project", new_project_path, method: :get %>
   </div>

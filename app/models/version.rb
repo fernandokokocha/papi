@@ -1,5 +1,6 @@
 class Version < ApplicationRecord
-  belongs_to :project
+  belongs_to :project, optional: true
+  belongs_to :candidate
   has_many :endpoints, -> { order([ :url, :http_verb ]) }, dependent: :destroy
   has_many :entities, -> { order([ :name ]) }, dependent: :destroy
   accepts_nested_attributes_for :endpoints

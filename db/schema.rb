@@ -10,13 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_02_152843) do
+ActiveRecord::Schema[8.0].define(version: 2025_07_23_162601) do
   create_table "array_nodes", force: :cascade do |t|
     t.string "value_type", null: false
     t.integer "value_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["value_type", "value_id"], name: "index_array_nodes_on_value"
+  end
+
+  create_table "candidates", force: :cascade do |t|
+    t.string "name"
+    t.integer "order"
+    t.integer "project_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["project_id"], name: "index_candidates_on_project_id"
   end
 
   create_table "endpoints", force: :cascade do |t|
@@ -133,13 +142,16 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_02_152843) do
   create_table "versions", force: :cascade do |t|
     t.string "name", null: false
     t.integer "order", null: false
-    t.integer "project_id", null: false
+    t.integer "project_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "candidate_id"
+    t.index ["candidate_id"], name: "index_versions_on_candidate_id"
     t.index ["project_id", "name"], name: "index_versions_on_project_id_and_name", unique: true
     t.index ["project_id"], name: "index_versions_on_project_id"
   end
 
+  add_foreign_key "candidates", "projects"
   add_foreign_key "endpoints", "versions"
   add_foreign_key "entities", "versions"
   add_foreign_key "entity_nodes", "entities"
@@ -148,5 +160,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_02_152843) do
   add_foreign_key "responses", "endpoints"
   add_foreign_key "sessions", "users"
   add_foreign_key "users", "groups"
+  add_foreign_key "versions", "candidates"
   add_foreign_key "versions", "projects"
 end

@@ -1,0 +1,41 @@
+<div class="version-view">
+  <div class="version-view">
+    <div class="title-container">
+      <h1>New version for <%= @version.project.name %></h1>
+    </div>
+  </div>
+
+  <%= form_with model: [@project, @candidate] do |f| %>
+    <%= f.hidden_field :project_id %>
+    <%= f.hidden_field :order %>
+    <%= f.hidden_field :name %>
+
+    <div class="main-container">
+      <div class="version-container">
+        <div class="version-name-container">
+          <div class="version-name">
+            <%= @latest_version.name %>
+            <div class="date"><%= @latest_version.created_at.strftime("%Y-%m-%d") %></div>
+          </div>
+          <div class="version-name">
+            <%= @version.name %>
+            <div class="date"><%= @version.created_at.strftime("%Y-%m-%d") %></div>
+          </div>
+        </div>
+
+        <%= hidden_field(:version, :order) %>
+        <%= hidden_field(:version, :name) %>
+
+        <div
+          id="react-form"
+          data-serialized-endpoints="<%= @version.existing_endpoints_for_frontend %>"
+          data-serialized-entities="<%= @version.existing_entities_for_frontend %>"
+        ></div>
+
+      </div>
+    </div>
+  <% end %>
+
+  <%= link_to "Back", projects_path %>
+</div>
+

@@ -14,17 +14,26 @@
             padding: 5px 0;
         }
 
-        .section {
-            font-size: 20px;
-            padding: 2px 0;
-            font-weight: 800;
-        }
+        .project-body {
+            display: flex;
+            flex-direction: row;
+            justify-content: flex-start;
+            gap: 10px;
+            align-items: flex-start;
 
-        .version {
-            padding-top: 2px;
+            .section {
+                font-size: 20px;
+                font-weight: 800;
+                border: 1px solid black;
+                padding: 10px;
+            }
 
-            .date {
-                font-size: 16px;
+            .version {
+                padding-top: 2px;
+
+                .date {
+                    font-size: 16px;
+                }
             }
         }
     }

@@ -1,16 +1,16 @@
 <div class="version-view">
   <div class="title-container">
-    <h1><%= @version.project.name %> <%= @version.name %></h1>
+    <h1><%= @project.name %> <%= @version.name %></h1>
     <% if @previous_version.present? %>
       <%= button_to "⬅️ #{@previous_version.name}", project_version_path(name: @previous_version.name, project_name: @previous_version.project.name), method: :get %>
     <% end %>
     <% if @next_version.present? %>
       <%= button_to "➡️ #{@next_version.name}", project_version_path(name: @next_version.name, project_name: @next_version.project.name), method: :get %>
     <% end %>
-    <%= button_to "Create new version", new_project_version_path(project_name: @version.project.name), method: :get %>
+    <%= button_to "Create new version", new_project_version_path(project_name: @project.name), method: :get %>
   </div>
   <div class="main-container">
-    <%= render "aside",
+    <%= render "versions/aside",
                existing_endpoints: @existing_endpoints,
                added_endpoints: @added_endpoints,
                removed_endpoints: @removed_endpoints,
@@ -34,7 +34,7 @@
         <div
           data-controller="endpoint"
           data-endpoint-target="container"
-          data-endpoint-url-value="<%= project_version_endpoint_path(project_name: endpoint.version.project.name, version_name: endpoint.version.name, id: endpoint.id) %>"
+          data-endpoint-url-value="<%= project_version_endpoint_path(project_name: @project.name, version_name: endpoint.version.name, id: endpoint.id) %>"
         >
           <%= render "endpoints/endpoint_diff", endpoint: endpoint, previous_endpoint: previous_endpoint, expanded: false %>
         </div>
@@ -60,17 +60,17 @@
 
       <% @existing_entities.each do |entity, previous_entity| %>
         <% diff = Diff::FromValues.new(previous_entity.root, entity.root) %>
-        <%= render "entity_diff", entity: entity, previous_entity: previous_entity, diff: diff %>
+        <%= render "versions/entity_diff", entity: entity, previous_entity: previous_entity, diff: diff %>
       <% end %>
 
       <% @added_entities.each do |entity| %>
         <% diff = entity.root.to_diff(:no_change) %>
-        <%= render "entity_added", entity: entity, diff: diff %>
+        <%= render "versions/entity_added", entity: entity, diff: diff %>
       <% end %>
 
       <% @removed_entities.each do |entity| %>
         <% diff = entity.root.to_diff(:no_change) %>
-        <%= render "entity_removed", entity: entity, diff: diff %>
+        <%= render "versions/entity_removed", entity: entity, diff: diff %>
       <% end %>
     </div>
   </div>
