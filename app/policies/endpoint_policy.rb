@@ -1,5 +1,5 @@
 class EndpointPolicy < ApplicationPolicy
   def show?
-    @user.group === @record.version.project.group
+    VersionPolicy.new(@user, @record.version).show?
   end
 end

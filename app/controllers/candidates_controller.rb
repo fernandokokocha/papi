@@ -43,8 +43,8 @@ class CandidatesController < ApplicationController
   def create
     params.permit!
 
-    candidate = Candidate.create!(params[:candidate])
-    authorize candidate
+    @candidate = Candidate.create!(params[:candidate])
+    authorize @candidate
 
     (params[:version][:entities_attributes] || []).each do |entity_attr|
       root = JSONSchemaParser.new.parse_value(entity_attr[:original_root])
@@ -56,12 +56,12 @@ class CandidatesController < ApplicationController
     # first save, with entities bet without endpoints
     endpoints_attrs = params[:version][:endpoints_attributes]
     params[:version][:endpoints_attributes] = []
-    params[:version][:candidate_id] = candidate.id
+    params[:version][:candidate_id] = @candidate.id
     @version = Version.new(params[:version])
 
     unless @version.save
       puts @version.errors.full_messages
-      redirect_to new_project_version_path(project_name: @version.project.name)
+      redirect_to new_project_candidate_path(project_name: @candidate.project.name)
       return
     end
 
@@ -85,7 +85,7 @@ class CandidatesController < ApplicationController
       )
     end
 
-    redirect_to project_candidate_path(name: @candidate.name, project_name: @version.project.name)
+    redirect_to project_candidate_path(name: @candidate.name, project_name: @candidate.project.name)
   end
 
   private

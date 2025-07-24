@@ -3,10 +3,6 @@ class Candidate < ApplicationRecord
   has_many :versions
 
   def latest_version
-    versions.order(order: :desc).first
-  end
-
-  amoeba do
-    enable
+    versions.order(order: :desc).first || Version.null_version(project)
   end
 end

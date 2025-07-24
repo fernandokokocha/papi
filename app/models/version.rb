@@ -17,6 +17,7 @@ class Version < ApplicationRecord
   end
 
   def previous
+    return Version.null_version(project) unless project
     project.versions.find_by(order: order - 1) || Version.null_version(project)
   end
 

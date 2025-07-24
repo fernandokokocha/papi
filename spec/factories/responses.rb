@@ -2,6 +2,6 @@ FactoryBot.define do
   factory :response do
     code { "MyString" }
     note { "MyString" }
-    endpoint { nil }
+    association :endpoint
   end
 end

@@ -7,7 +7,7 @@
     <% if @next_version.present? %>
       <%= button_to "➡️ #{@next_version.name}", project_version_path(name: @next_version.name, project_name: @next_version.project.name), method: :get %>
     <% end %>
-    <%= button_to "Create new version", new_project_version_path(project_name: @project.name), method: :get %>
+    <%= button_to "Create new candidate", new_project_candidate_path(project_name: @project.name), method: :get %>
   </div>
   <div class="main-container">
     <%= render "versions/aside",
@@ -34,7 +34,7 @@
         <div
           data-controller="endpoint"
           data-endpoint-target="container"
-          data-endpoint-url-value="<%= project_version_endpoint_path(project_name: @project.name, version_name: endpoint.version.name, id: endpoint.id) %>"
+          data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id) %>"
         >
           <%= render "endpoints/endpoint_diff", endpoint: endpoint, previous_endpoint: previous_endpoint, expanded: false %>
         </div>
@@ -44,7 +44,7 @@
         <div
           data-controller="endpoint"
           data-endpoint-target="container"
-          data-endpoint-url-value="<%= project_version_endpoint_path(project_name: endpoint.version.project.name, version_name: endpoint.version.name, id: endpoint.id) %>"
+          data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id) %>"
         >
           <%= render "endpoints/endpoint_added", endpoint: endpoint, expanded: false %>
         </div>

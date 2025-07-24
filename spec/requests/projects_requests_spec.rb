@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe ProjectsController, type: :request do
+describe "Projects requests", type: :request do
   let!(:group) { Group.create!(name: "Test group") }
   let!(:user) { User.create!(email_address: "test@example.com", password: "password", group: group) }
 

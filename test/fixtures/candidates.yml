@@ -1,0 +1,16 @@
+candidate1:
+  name: "rc1"
+  project: project1
+  order: 1
+candidate2:
+  name: "rc2"
+  project: project1
+  order: 2
+candidate3:
+  name: "rc3"
+  order: 3
+  project: project1
+candidate4:
+  name: "rc4"
+  order: 4
+  project: project1

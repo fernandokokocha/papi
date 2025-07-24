@@ -3,5 +3,6 @@ FactoryBot.define do
     name { "v1" }
     sequence(:order) { |n| n }
     association :project
+    association :candidate
   end
 end

@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :project do
     name { "Project Alpha" }
-    group
+    association :group
   end
 end

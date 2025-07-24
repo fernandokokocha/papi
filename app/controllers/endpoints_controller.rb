@@ -1,8 +1,8 @@
 class EndpointsController < ApplicationController
   def show
     @project = Project.find_by(name: params[:project_name])
-    @version = Version.find_by(name: params[:version_name], project: @project)
-    @endpoint = Endpoint.find_by(id: params[:id], version: @version)
+    @endpoint = Endpoint.find_by(id: params[:id])
+    @version = @endpoint.version
 
     authorize @endpoint
     previous_endpoint = @version.previous.endpoints.where(url: @endpoint.url, http_verb: @endpoint.http_verb).first
