@@ -23,6 +23,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_23_162601) do
     t.string "name"
     t.integer "order"
     t.integer "project_id", null: false
+    t.string "aasm_state", default: "open", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_candidates_on_project_id"

@@ -33,11 +33,27 @@ describe Candidate::Create do
 
   subject { Candidate::Create.new(valid_params) }
 
-  it "creates a candidate" do
-    expect { subject.call }.to change(Candidate, :count).by(1)
+  context "candidate" do
+    it "is created" do
+      expect { subject.call }.to change(Candidate, :count).by(1)
+    end
+
+    it "is open" do
+      subject.call
+      candidate = Candidate.last
+      expect(candidate).to be_open
+    end
+
+    it "has base version" do
+      subject.call
+      candidate = Candidate.last
+      expect(candidate.base_version).to exists
+    end
   end
 
-  it "creates a version" do
-    expect { subject.call }.to change(Version, :count).by(1)
+  context "version" do
+    it "is created" do
+      expect { subject.call }.to change(Version, :count).by(1)
+    end
   end
 end
