@@ -3,6 +3,9 @@ class Candidate < ApplicationRecord
 
   belongs_to :project
   has_many :versions
+  belongs_to :base_version, class_name: "Version", foreign_key: "base_version_id", optional: true
+
+  scope :open, -> { where(aasm_state: "open") }
 
   def latest_version
     versions.order(order: :desc).first || Version.null_version(project)

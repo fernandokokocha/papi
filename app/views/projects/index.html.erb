@@ -19,9 +19,15 @@
           <% project.candidates.order({ order: "DESC" }).each do |candidate| %>
             <div>
               <%= link_to candidate.name, project_candidate_path(name: candidate.name, project_name: project.name) %>
+              <%= candidate.aasm_state %>
+              <% if candidate.base_version %>
+                (base version <%= candidate.base_version.name %> )
+              <% end %>
             </div>
           <% end %>
-          <%= link_to "Create", new_project_candidate_path(project_name: project.name) %>
+          <% if project.can_create_candidate? %>
+            <%= link_to "Create", new_project_candidate_path(project_name: project.name) %>
+          <% end %>
         </div>
       </div>
     </div>

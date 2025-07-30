@@ -24,8 +24,10 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_23_162601) do
     t.integer "order"
     t.integer "project_id", null: false
     t.string "aasm_state", default: "open", null: false
+    t.integer "base_version_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["base_version_id"], name: "index_candidates_on_base_version_id"
     t.index ["project_id"], name: "index_candidates_on_project_id"
   end
 
@@ -153,6 +155,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_23_162601) do
   end
 
   add_foreign_key "candidates", "projects"
+  add_foreign_key "candidates", "versions", column: "base_version_id"
   add_foreign_key "endpoints", "versions"
   add_foreign_key "entities", "versions"
   add_foreign_key "entity_nodes", "entities"

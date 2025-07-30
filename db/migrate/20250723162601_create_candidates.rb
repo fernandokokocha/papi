@@ -5,6 +5,7 @@ class CreateCandidates < ActiveRecord::Migration[8.0]
       t.integer :order
       t.references :project, null: false, foreign_key: true
       t.string :aasm_state, null: false, default: "open"
+      t.references :base_version, null: true, foreign_key: { to_table: :versions }
 
       t.timestamps
     end

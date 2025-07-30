@@ -7,11 +7,16 @@ class Candidate::Create
 
   def call
     ActiveRecord::Base.transaction do
-      # STEP 1: Create candidate
+      # STEP 1: assign base version if there is any version in the project
+      project = Project.find(params[:candidate][:project_id])
+      base_version = project.latest_version
+      params[:candidate][:base_version_id] = base_version.id || nil
+
+      # STEP 2: Create candidate
       @candidate = Candidate.create!(params[:candidate])
       params[:version][:candidate_id] = @candidate.id
 
-      # STEP 2: Parse and save entities
+      # STEP 3: Parse and save entities
       (params[:version][:entities_attributes] || []).each do |entity_attr|
         root = JSONSchemaParser.new.parse_value(entity_attr[:original_root])
         root.save
@@ -19,15 +24,15 @@ class Candidate::Create
         entity_attr[:root_type] = root.class.name
       end
 
-      # STEP 3: Clear endpoint attributes and save them for later
+      # STEP 4: Clear endpoint attributes and save them for later
       endpoints_attrs = params[:version][:endpoints_attributes]
       params[:version][:endpoints_attributes] = []
 
-      # STEP 4: Try and save version without endpoints
+      # STEP 5: Try and save version without endpoints
       @version = Version.new(params[:version])
       raise ActiveRecord::RecordInvalid unless @version.save
 
-      # STEP 5: Save endpoints.
+      # STEP 6: Save endpoints.
       # It's a separate step because on this stage entities should be already in the database.
       # Inputs and outputs may refer to entity node and Node::Entity references Entity.
       parser = JSONSchemaParser.new(@version.entities)

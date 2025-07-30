@@ -33,26 +33,49 @@ describe Candidate::Create do
 
   subject { Candidate::Create.new(valid_params) }
 
-  context "candidate" do
-    it "is created" do
+  context "with no prior versions" do
+    it "creates candidate" do
       expect { subject.call }.to change(Candidate, :count).by(1)
     end
 
-    it "is open" do
+    it "candidate is open" do
       subject.call
       candidate = Candidate.last
       expect(candidate).to be_open
     end
 
-    it "has base version" do
+    it "candidate has no base version" do
       subject.call
       candidate = Candidate.last
-      expect(candidate.base_version).to exists
+      expect(candidate.base_version).to be_nil
+    end
+
+    it "creates version" do
+      expect { subject.call }.to change(Version, :count).by(1)
     end
   end
 
-  context "version" do
-    it "is created" do
+  context "with prior versions" do
+    let!(:version1) { FactoryBot.create(:version, project: project, name: "v1") }
+    let!(:version2) { FactoryBot.create(:version, project: project, name: "v2") }
+
+    it "creates candidate" do
+      expect { subject.call }.to change(Candidate, :count).by(1)
+    end
+
+    it "candidate is open" do
+      subject.call
+      candidate = Candidate.last
+      expect(candidate).to be_open
+    end
+
+    it "candidate has base version as the latest version" do
+      subject.call
+      candidate = Candidate.last
+      expect(candidate.base_version.id).to equal(version2.id)
+    end
+
+    it "creates version" do
       expect { subject.call }.to change(Version, :count).by(1)
     end
   end
