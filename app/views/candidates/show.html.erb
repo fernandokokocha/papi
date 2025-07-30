@@ -1,0 +1,13 @@
+<div class="version-view">
+  <div class="title-container">
+    <h1><%= @project.name %> - Candidate <%= @candidate.name %></h1>
+    <span><%= @candidate.aasm_state %></span>
+  </div>
+  <div class="subtitle">
+    <% if @candidate.open? %>
+      <button type="button">Merge</button>
+      <button type="button">Reject</button>
+    <% end %>
+  </div>
+  <%= render "versions/version" %>
+</div>

@@ -4,12 +4,10 @@ class CandidatesController < ApplicationController
     @candidate = Candidate.find_by!(name: params[:name], project: @project)
     authorize @candidate
     @version = @candidate.latest_version
-    @previous_version = @project.latest_version
+    @previous_version = @candidate.base_version || Version.null_version(@project)
 
     @categorized_endpoints = Version::CategorizeByName.new(@previous_version.endpoints, @version.endpoints).call
     @categorized_entities = Version::CategorizeByName.new(@previous_version.entities, @version.entities).call
-
-    render "versions/show"
   end
 
   def new
