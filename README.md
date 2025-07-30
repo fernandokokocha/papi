@@ -11,6 +11,11 @@ For convenience, early in the development, migrations can be updated in place. A
 
 ```
 rake db:migrate:reset
+```
+
+Occasionally, this requires setting up the test database:
+
+```
 bin/rails db:test:prepare
 ```
 
@@ -23,6 +28,12 @@ Because of circular dependency (`Version` belongs to `Candidate` but `Candidate`
 ```
 bin/rails db:fixtures:load
 bin/rails dev:fill_fixtures_dependencies
+```
+
+To quickly reset and populate dev database, use custom rake task (`lib/tasks/dev_setup.rake`):
+
+```
+bin/rails dev:setup
 ```
 
 ## Tests
