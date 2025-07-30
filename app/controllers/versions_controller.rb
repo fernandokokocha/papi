@@ -6,14 +6,7 @@ class VersionsController < ApplicationController
     @previous_version = @version.previous
     @next_version = @version.next
 
-    categorized_endpoints = CategorizeEndpoints.new(@previous_version, @version).call
-    @existing_endpoints = categorized_endpoints[:existing]
-    @added_endpoints = categorized_endpoints[:added]
-    @removed_endpoints = categorized_endpoints[:removed]
-
-    categorized_entities = CategorizeEntities.new(@previous_version, @version).call
-    @existing_entities = categorized_entities[:existing]
-    @added_entities = categorized_entities[:added]
-    @removed_entities = categorized_entities[:removed]
+    @categorized_endpoints = Version::CategorizeByName.new(@previous_version.endpoints, @version.endpoints).call
+    @categorized_entities = Version::CategorizeByName.new(@previous_version.entities, @version.entities).call
   end
 end

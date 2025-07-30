@@ -1,3 +1,10 @@
+<% existing_endpoints = @categorized_endpoints[:existing] %>
+<% added_endpoints = @categorized_endpoints[:added] %>
+<% removed_endpoints = @categorized_endpoints[:removed] %>
+<% existing_entities = @categorized_entities[:existing] %>
+<% added_entities = @categorized_entities[:added] %>
+<% removed_entities = @categorized_entities[:removed] %>
+
 <div class="version-view">
   <div class="title-container">
     <h1><%= @project.name %> <%= @version.name %></h1>
@@ -11,12 +18,12 @@
   </div>
   <div class="main-container">
     <%= render "versions/aside",
-               existing_endpoints: @existing_endpoints,
-               added_endpoints: @added_endpoints,
-               removed_endpoints: @removed_endpoints,
-               existing_entities: @existing_entities,
-               added_entities: @added_entities,
-               removed_entities: @removed_entities %>
+               existing_endpoints: existing_endpoints,
+               added_endpoints: added_endpoints,
+               removed_endpoints: removed_endpoints,
+               existing_entities: existing_entities,
+               added_entities: added_entities,
+               removed_entities: removed_entities %>
 
     <div class="version-container">
       <div class="version-name-container">
@@ -30,7 +37,7 @@
 
       <div class="section">Endpoints</div>
 
-      <% @existing_endpoints.each do |endpoint, previous_endpoint| %>
+      <% existing_endpoints.each do |endpoint, previous_endpoint| %>
         <div
           data-controller="endpoint"
           data-endpoint-target="container"
@@ -40,7 +47,7 @@
         </div>
       <% end %>
 
-      <% @added_endpoints.each do |endpoint| %>
+      <% added_endpoints.each do |endpoint| %>
         <div
           data-controller="endpoint"
           data-endpoint-target="container"
@@ -50,7 +57,7 @@
         </div>
       <% end %>
 
-      <% @removed_endpoints.each do |endpoint| %>
+      <% removed_endpoints.each do |endpoint| %>
         <% input_diff = endpoint.input.to_diff(:no_change) %>
         <% output_diff = endpoint.output.to_diff(:no_change) %>
         <%= render "endpoints/endpoint_removed", endpoint: endpoint, input_diff: input_diff, output_diff: output_diff, expanded: false %>
@@ -58,17 +65,17 @@
 
       <div class="section">Entities</div>
 
-      <% @existing_entities.each do |entity, previous_entity| %>
+      <% existing_entities.each do |entity, previous_entity| %>
         <% diff = Diff::FromValues.new(previous_entity.root, entity.root) %>
         <%= render "versions/entity_diff", entity: entity, previous_entity: previous_entity, diff: diff %>
       <% end %>
 
-      <% @added_entities.each do |entity| %>
+      <% added_entities.each do |entity| %>
         <% diff = entity.root.to_diff(:no_change) %>
         <%= render "versions/entity_added", entity: entity, diff: diff %>
       <% end %>
 
-      <% @removed_entities.each do |entity| %>
+      <% removed_entities.each do |entity| %>
         <% diff = entity.root.to_diff(:no_change) %>
         <%= render "versions/entity_removed", entity: entity, diff: diff %>
       <% end %>
