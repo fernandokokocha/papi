@@ -3,19 +3,23 @@
 one:
   email_address: one@example.com
   password_digest: <%= password_digest %>
+  role: 1
   group: g1
 
 two:
   email_address: two@example.com
   password_digest: <%= password_digest %>
+  role: 0
   group: g1
 
 three:
   email_address: three@example.com
   password_digest: <%= password_digest %>
+  role: 1
   group: g2
 
 four:
   email_address: four@example.com
   password_digest: <%= password_digest %>
+  role: 1
   group: g3

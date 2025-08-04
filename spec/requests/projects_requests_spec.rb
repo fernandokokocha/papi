@@ -1,11 +1,11 @@
 require "rails_helper"
 
 describe "Projects requests", type: :request do
-  let!(:group) { Group.create!(name: "Test group") }
-  let!(:user) { User.create!(email_address: "test@example.com", password: "password", group: group) }
+  let(:group) { FactoryBot.create :group, name: "Test group" }
+  let(:user) { FactoryBot.create :user, email_address: "test@example.com", password: "password", group: group, role: 0 }
 
-  let!(:another_group) { Group.create!(name: "Test group 2") }
-  let!(:another_user) { User.create!(email_address: "test2@example.com", password: "password", group: another_group) }
+  let(:another_group) { FactoryBot.create :group, name: "Test group 2" }
+  let(:another_user) { FactoryBot.create :user, email_address: "test3@example.com", password: "password", group: another_group }
 
   describe "#create" do
     it "creates a project with valid params" do

@@ -1,13 +1,15 @@
 require "rails_helper"
 
 describe "Candidates requests", type: :request do
-  let!(:group) { Group.create!(name: "Test group") }
-  let!(:user) { User.create!(email_address: "test@example.com", password: "password", group: group) }
-  let!(:project) { Project.create!(name: "project", group: group) }
+  let(:group) { FactoryBot.create :group, name: "Test group" }
+  let(:user) { FactoryBot.create :user, email_address: "test@example.com", password: "password", group: group, role: 0 }
+  let(:project) { FactoryBot.create :project, name: "project", group: group }
 
-  let!(:another_group) { Group.create!(name: "Test group 2") }
-  let!(:another_user) { User.create!(email_address: "test2@example.com", password: "password", group: another_group) }
-  let!(:another_project) { Project.create!(name: "project", group: another_group) }
+  let(:another_group) { FactoryBot.create :group, name: "Test group 2" }
+  let(:another_user) { FactoryBot.create :user, email_address: "test2@example.com", password: "password", group: another_group }
+  let(:another_project) { FactoryBot.create :project, name: "project 2", group: another_group }
+
+  let(:admin) { FactoryBot.create :user, email_address: "test3@example.com", password: "password", group: group, role: 1 }
 
   let(:valid_params) {
     {

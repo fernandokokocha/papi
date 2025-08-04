@@ -39,7 +39,6 @@ class CandidatesController < ApplicationController
 
     redirect_to project_candidate_path(name: service.candidate.name, project_name: service.candidate.project.name)
   rescue ActiveRecord::RecordInvalid => e
-    # puts service.candidate.errors.full_messages
     redirect_to new_project_candidate_path(project_name: candidate.project.name)
   end
 end

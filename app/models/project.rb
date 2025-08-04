@@ -24,4 +24,13 @@ class Project < ApplicationRecord
   def can_create_candidate?
     candidates.open.empty?
   end
+
+  def next_version_order
+    max_version = versions.maximum(:order) || 0
+    max_version + 1
+  end
+
+  def next_version_name
+    "v#{next_version_order}"
+  end
 end

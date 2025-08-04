@@ -3,11 +3,9 @@
     <h1><%= @project.name %> - Candidate <%= @candidate.name %></h1>
     <span><%= @candidate.aasm_state %></span>
   </div>
-  <div class="subtitle">
-    <% if @candidate.open? %>
-      <button type="button">Merge</button>
-      <button type="button">Reject</button>
-    <% end %>
-  </div>
+  <% if @candidate.open? %>
+    <%= button_to "Merge", project_candidate_merge_path(@project.name, @candidate.name) %>
+    <%= button_to "Reject", project_candidate_rejection_path(@project.name, @candidate.name) %>
+  <% end %>
   <%= render "versions/version" %>
 </div>

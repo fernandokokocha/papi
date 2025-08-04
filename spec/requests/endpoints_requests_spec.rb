@@ -46,12 +46,12 @@ describe "Endpoints requests", type: :request do
       expect(response.status).to eq(200)
     end
 
-    # it "does not accept users from the project group" do
-    #   sign_in(another_user)
-    #   get project_candidate_path(project.name, candidate.name)
-    #   expect(response.status).to eq(302)
-    #   expect(response).to redirect_to('/')
-    #   expect(flash[:alert]).to eq('You are not authorized to perform this action.')
-    # end
+    it "does not accept users from outside the project group" do
+      sign_in(another_user)
+      get project_candidate_path(project.name, candidate.name)
+      expect(response.status).to eq(302)
+      expect(response).to redirect_to('/')
+      expect(flash[:alert]).to eq('You are not authorized to perform this action.')
+    end
   end
 end
