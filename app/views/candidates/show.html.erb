@@ -6,6 +6,7 @@
   <% if @candidate.open? %>
     <%= button_to "Merge", project_candidate_merge_path(@project.name, @candidate.name) %>
     <%= button_to "Reject", project_candidate_rejection_path(@project.name, @candidate.name) %>
+    <%= button_to "Edit", edit_project_candidate_path(@project.name, @candidate.name), method: :get %>
   <% end %>
   <%= render "versions/version" %>
 </div>

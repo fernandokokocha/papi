@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
   root "projects#index"
   resources :projects, only: [ :index, :new, :create ], param: :name do
-    resources :candidates, only: [ :new, :create, :show ], param: :name do
+    resources :candidates, only: [ :new, :create, :show, :edit, :update ], param: :name do
       resource :merge, only: [ :create ]
       resource :rejection, only: [ :create ]
     end

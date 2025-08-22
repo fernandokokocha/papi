@@ -1,6 +1,7 @@
 class MergesController < ApplicationController
   def create
-    @candidate = Candidate.find_by(name: params[:candidate_name])
+    @project = Project.find_by(name: params[:project_name])
+    @candidate = Candidate.find_by(name: params[:candidate_name], project: @project)
     authorize @candidate, :merge?
     service = Candidate::Merge.new(@candidate)
     service.call

@@ -91,4 +91,24 @@ describe "Candidates requests", type: :request do
       expect(flash[:alert]).to eq('You are not authorized to perform this action.')
     end
   end
+
+  describe "#update" do
+    it "updates a candidate with valid params" do
+      sign_in(user)
+      post project_candidates_path(project.name), params: valid_params
+
+      put project_candidates_path(project.name), params: {}
+      expect(response.status).to eq(302)
+      expect(response).to redirect_to(project_candidate_path(project.name, "rc1"))
+    end
+
+    # it "does not create a version if user outside group" do
+    #   sign_in(another_user)
+    #   post project_candidates_path(project.name), params: valid_params
+    #   expect(Version.count).to eq(0)
+    #   expect(response.status).to eq(302)
+    #   expect(response).to redirect_to('/')
+    #   expect(flash[:alert]).to eq('You are not authorized to perform this action.')
+    # end
+  end
 end

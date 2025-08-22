@@ -7,7 +7,8 @@ class Candidate::Create
 
   def call
     ActiveRecord::Base.transaction do
-      # STEP 1: assign base version if there is any version in the project
+      # STEP 1: assign candidate data
+      # (base version only if there is any version in the project)
       project = Project.find(params[:candidate][:project_id])
       base_version = project.latest_version
       params[:candidate][:base_version_id] = base_version.id || nil
