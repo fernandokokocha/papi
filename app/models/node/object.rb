@@ -1,7 +1,9 @@
-class Node::Object < ApplicationRecord
-  self.table_name = "object_nodes"
+class Node::Object
+  attr_accessor :object_attributes
 
-  has_many :object_attributes, foreign_key: :parent_id, dependent: :destroy
+  def initialize(object_attributes: [])
+    @object_attributes = object_attributes
+  end
 
   def to_example_json
     attrs = object_attributes.order(:order).map do |oa|
@@ -14,7 +16,7 @@ class Node::Object < ApplicationRecord
   def to_diff(change, indent = 0)
     ret = Diff::Lines.new([ Diff::Line.new("{", change, indent) ])
 
-    object_attributes.sort_by(&:order).each do |oa|
+    object_attributes.each do |oa|
       attribute_lines = oa.value.to_diff(change, indent + 1)
       attribute_lines.add_parent(oa.name)
       ret.concat(attribute_lines)
@@ -25,26 +27,20 @@ class Node::Object < ApplicationRecord
   end
 
   def serialize
-    "{#{object_attributes.sort_by(&:order).map(&:serialize).join(",")}}"
+    "{#{object_attributes.map(&:serialize).join(",")}}"
   end
 
   def ==(other)
-    children_match = object_attributes.all? do |attr|
-      found = other.object_attributes.where(name: attr.name).first
-      found && found.value == attr.value
+    children_match = object_attributes.zip(other.object_attributes).all? do |attr1, attr2|
+      attr1 == attr2
     end
     (self.class == other.class) && children_match
   end
 
   def expand
-    object_expanded = Node::Object.new
-    object_attributes.sort_by(&:order).each do |oa|
-      object_expanded.object_attributes.build(name: oa.name,
-                                              value: oa.value.expand,
-                                              order: oa.order,
-                                              parent: object_expanded)
-    end
-    object_expanded
+    object_expanded = Node::Object.new(
+      object_attributes: object_attributes.map { |oa| Node::ObjectAttribute.new(name: oa.name, value: oa.value) }
+    )
   end
 
   def expandable?

@@ -1,7 +1,9 @@
-class Node::Entity < ApplicationRecord
-  self.table_name = "entity_nodes"
+class Node::Entity
+  attr_accessor :entity
 
-  belongs_to :entity
+  def initialize(entity: nil)
+    @entity = entity
+  end
 
   def to_diff(change, indent = 0)
     Diff::Lines.new([ Diff::Line.new(entity.name, change, indent) ])
@@ -17,5 +19,9 @@ class Node::Entity < ApplicationRecord
 
   def expandable?
     true
+  end
+
+  def ==(other)
+    (self.class == other.class) && (self.entity == other.entity)
   end
 end

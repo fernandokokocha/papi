@@ -2,40 +2,32 @@ project1v1e1:
   http_verb: 0
   url: /thing
   version: project1v1
-  input: n2 (Node::Nothing)
-  output: object11 (Node::Object)
-  original_input_string: ""
-  original_output_string: ""
+  original_input_string: "[string]"
+  original_output_string: "{a:string}"
   note: "Endpoint to get thing"
   auth: 0
 project1v1e2:
   http_verb: 1
   url: /old_thing
   version: project1v1
-  input: n3 (Node::Nothing)
-  output: object12 (Node::Object)
-  original_input_string: ""
-  original_output_string: ""
+  original_input_string: "[string]"
+  original_output_string: "{a:string}"
   auth: 1
 
 project1v2e1:
   http_verb: 0
   url: /thing
   version: project1v2
-  input: n3 (Node::Nothing)
-  output: object21 (Node::Object)
-  original_input_string: ""
-  original_output_string: ""
+  original_input_string: "string"
+  original_output_string: "{a:string, b:string}"
   note: "Endpoint to get thing. It returns some object."
   auth: 0
 project1v2e2:
   http_verb: 0
   url: /new_thing
   version: project1v2
-  input: n4 (Node::Nothing)
-  output: n1 (Node::Nothing)
-  original_input_string: ""
-  original_output_string: ""
+  original_input_string: "[string]"
+  original_output_string: "{a:string}"
   note: "Hey, that's a new endpoint."
   auth: 1
 
@@ -43,10 +35,8 @@ project1v3e1:
   http_verb: 0
   url: /thing
   version: project1v3
-  input: n5 (Node::Nothing)
-  output: object31 (Node::Object)
-  original_input_string: ""
-  original_output_string: ""
+  original_input_string: "[string]"
+  original_output_string: "{a:string}"
   note: "Endpoint to get thing. It returns some object.
 
 Oh, and I added a new line!"
@@ -55,30 +45,24 @@ project1v3e2:
   http_verb: 0
   url: /new_thing
   version: project1v3
-  input: n6 (Node::Nothing)
-  output: array31 (Node::Array)
-  original_input_string: ""
-  original_output_string: ""
+  original_input_string: "[string]"
+  original_output_string: "{a:string}"
   note: "I don't see the point to comment these :/"
   auth: 1
 project1v3e3:
   http_verb: 0
   url: /array_endpoint
   version: project1v3
-  input: object34 (Node::Object)
-  output: array32 (Node::Array)
-  original_input_string: ""
-  original_output_string: ""
+  original_input_string: "[string]"
+  original_output_string: "{a:string}"
   auth: 0
 
 project1v4e1:
   http_verb: 0
   url: /thing
   version: project1v4
-  input: n8 (Node::Nothing)
-  output: object41 (Node::Object)
-  original_input_string: ""
-  original_output_string: ""
+  original_input_string: "[string]"
+  original_output_string: "{a:string}"
   note: "Endpoint to get thing. It returns some object.
 
 Oh, and I added a new line!"
@@ -87,19 +71,15 @@ project1v4e2:
   http_verb: 0
   url: /new_thing
   version: project1v4
-  input: n9 (Node::Nothing)
-  output: p402 (Node::Primitive)
-  original_input_string: ""
-  original_output_string: ""
+  original_input_string: "[string]"
+  original_output_string: "{a:string}"
   note: "I don't see the point to comment these :/"
   auth: 0
 project1v4e3:
   http_verb: 0
   url: /array_endpoint
   version: project1v4
-  input: en2 (Node::Entity)
-  output: array42 (Node::Array)
-  original_input_string: ""
-  original_output_string: ""
+  original_input_string: "[string]"
+  original_output_string: "{a:string}"
   note: "Self-explanatory. Hopefully."
   auth: 1

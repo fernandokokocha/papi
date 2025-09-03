@@ -1,7 +1,9 @@
-class Node::Primitive < ApplicationRecord
-  self.table_name = "primitive_nodes"
+class Node::Primitive
+  attr_accessor :kind
 
-  enum :kind, [ :string, :number, :boolean ]
+  def initialize(kind: "string")
+    @kind = kind
+  end
 
   def to_diff(change, indent = 0)
     Diff::Lines.new([

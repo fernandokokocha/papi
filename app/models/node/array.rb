@@ -1,7 +1,9 @@
-class Node::Array < ApplicationRecord
-  self.table_name = "array_nodes"
+class Node::Array
+  attr_accessor :value
 
-  belongs_to :value, polymorphic: true
+  def initialize(value: nil)
+    @value = value
+  end
 
   def to_example_json
     inside = %W[#{value.to_example_json} #{value.to_example_json} #{value.to_example_json}]

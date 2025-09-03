@@ -28,7 +28,7 @@ class JSONSchemaParser
     attrs = split_by_comma(str[1...-1])
     attrs.map.with_index do |attr, i|
       value = parse_value(attr[1])
-      root.object_attributes.build(name: attr[0], value: value, order: i, parent: root)
+      root.object_attributes << Node::ObjectAttribute.new(name: attr[0], value: value)
     end
     root
   end
