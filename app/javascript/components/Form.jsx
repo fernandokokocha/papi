@@ -240,7 +240,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         const parsed_endpoints = JSON.parse(serializedEndpoints)
         parsed_endpoints.forEach((endpointData) => {
             endpointData.type = "old"
-            endpointData.id = uuidv4()
+            endpointData.id = endpointData.id
             endpointData.collision = false
 
             endpointData.original_url = endpointData.url

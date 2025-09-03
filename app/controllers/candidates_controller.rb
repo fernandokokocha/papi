@@ -54,6 +54,7 @@ class CandidatesController < ApplicationController
   end
 
   def update
+    params.permit!
     @project = Project.find_by!(name: params[:project_name])
     @candidate = Candidate.find_by!(name: params[:name], project: @project)
     authorize @candidate

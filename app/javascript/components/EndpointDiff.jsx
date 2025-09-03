@@ -126,6 +126,7 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
                                onChange={(e) => updateUrl(e.target.value)}
                                name="version[endpoints_attributes][][url]"
                         />
+                        {/*<input type="hidden" value={endpoint.id} name="version[endpoints_attributes][][id]" />*/}
                     </div>
                     <button type="button" onClick={(e) => remove(endpoint.id)}>x</button>
                     {endpoint.collision && <div className="alert">Colliding endpoint</div>}

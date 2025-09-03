@@ -10,7 +10,7 @@ class Endpoint < ApplicationRecord
   enum :http_verb, [ :verb_get, :verb_post, :verb_put, :verb_patch, :verb_delete ]
   enum :auth, [ :no_auth, :bearer ]
   belongs_to :version
-  has_many :responses
+  has_many :responses, dependent: :delete_all
 
   scope :sort_by_name, -> { order([ :url, :http_verb ]) }
 

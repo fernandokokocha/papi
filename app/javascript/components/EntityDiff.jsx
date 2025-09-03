@@ -24,6 +24,7 @@ const EntityDiff = ({entity, updateEntity, removeEntity, entities}) => {
                            name="version[entities_attributes][][name]"
                            value={entity.name}
                     />
+                    {/*<input type="hidden" value={entity.id} name="version[entities_attributes][][id]" />*/}
                     <button type="button" onClick={(e) => removeEntity(entity.id)} disabled={entity.is_referenced}>x
                     </button>
                 </div>

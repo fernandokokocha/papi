@@ -28,6 +28,7 @@ class Version < ApplicationRecord
   def existing_endpoints_for_frontend
     endpoints.map do |endpoint|
       {
+        id: endpoint.id,
         http_verb: endpoint.http_verb,
         verb: endpoint.verb,
         url: endpoint.url,
@@ -43,6 +44,7 @@ class Version < ApplicationRecord
   def existing_entities_for_frontend
     entities.map do |entity|
       {
+        id: entity.id,
         name: entity.name,
         root: entity.root.serialize
       }

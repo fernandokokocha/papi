@@ -98,7 +98,7 @@ describe "Candidates requests", type: :request do
       post project_candidates_path(project.name), params: valid_params
       candidate_name = Candidate.last.name
 
-      patch project_candidate_path(project_name: project.name, name: candidate_name), params: {}
+      patch project_candidate_path(project_name: project.name, name: candidate_name), params: valid_params
       expect(response.status).to eq(302)
       expect(flash[:alert]).to be_nil
       expect(response).to redirect_to(project_candidate_path(project.name, "rc1"))
