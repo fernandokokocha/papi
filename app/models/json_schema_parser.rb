@@ -42,11 +42,10 @@ class JSONSchemaParser
   end
 
   def parse_entity(value)
-    if (found = @valid_entities.select { |e| e.name == value })
-      Node::Entity.new(entity: found.first)
-    else
-      raise RuntimeError.new("Unknown value: #{value}")
-    end
+    valid_entity = @valid_entities.select { |e| e.name == value }.first
+    raise RuntimeError.new("Unknown value: #{value}") if valid_entity.nil?
+
+    Node::Entity.new(entity: valid_entity)
   end
 
   def strip_name(str)

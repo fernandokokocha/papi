@@ -1,4 +1,5 @@
 require "rails_helper"
+require "ostruct"
 
 describe JSONSchemaParser, type: :model do
   subject(:parser) { JSONSchemaParser.new }
@@ -119,6 +120,27 @@ describe JSONSchemaParser, type: :model do
       expected = Node::Primitive.new(kind: "boolean")
 
       expect(actual).to eq(expected)
+    end
+
+    it "parse entity" do
+      expect { parser.parse_value("User") }.to raise_error(RuntimeError, "Unknown value: User")
+    end
+
+    describe "with some valid entities" do
+      let(:user_entity) { OpenStruct.new({ name: "User" }) }
+      let(:valid_entities) { [ user_entity ] }
+      subject(:parser) { JSONSchemaParser.new(valid_entities) }
+
+      it "can parse entity" do
+        actual = parser.parse_value(user_entity.name)
+        expected = Node::Entity.new(entity: user_entity)
+
+        expect(actual).to eq(expected)
+      end
+
+      it "can raise if invalid name" do
+        expect { parser.parse_value("Invalid") }.to raise_error(RuntimeError, "Unknown value: Invalid")
+      end
     end
   end
 end
