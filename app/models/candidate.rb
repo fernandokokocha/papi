@@ -11,6 +11,10 @@ class Candidate < ApplicationRecord
     versions.order(order: :desc).first || Version.null_version(project)
   end
 
+  def to_param
+    name
+  end
+
   aasm column: "aasm_state" do
     state :open, initial: true
     state :merged

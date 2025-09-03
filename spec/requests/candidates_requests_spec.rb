@@ -94,11 +94,13 @@ describe "Candidates requests", type: :request do
 
   describe "#update" do
     it "updates a candidate with valid params" do
-      sign_in(user)
+      sign_in(admin)
       post project_candidates_path(project.name), params: valid_params
+      candidate_name = Candidate.last.name
 
-      put project_candidates_path(project.name), params: {}
+      patch project_candidate_path(project_name: project.name, name: candidate_name), params: {}
       expect(response.status).to eq(302)
+      expect(flash[:alert]).to be_nil
       expect(response).to redirect_to(project_candidate_path(project.name, "rc1"))
     end
 

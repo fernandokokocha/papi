@@ -33,4 +33,8 @@ class Project < ApplicationRecord
   def next_version_name
     "v#{next_version_order}"
   end
+
+  def to_param
+    name
+  end
 end

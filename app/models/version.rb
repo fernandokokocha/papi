@@ -49,6 +49,10 @@ class Version < ApplicationRecord
     end.to_json
   end
 
+  def to_param
+    name
+  end
+
   amoeba do
     enable
   end

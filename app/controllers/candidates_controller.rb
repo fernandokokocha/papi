@@ -54,13 +54,11 @@ class CandidatesController < ApplicationController
   end
 
   def update
-    # Note we find project and candidate by id, unlike in #edit action as we should.
-    # This is because form_with model helper (used in version/_form partial) wrongly only sends ids
-    # and the params threat it as names (as per routes.rb)
-    @project = Project.find(params[:project_name])
-    @candidate = Candidate.find_by!(params[:name], project: @project)
+    @project = Project.find_by!(name: params[:project_name])
+    @candidate = Candidate.find_by!(name: params[:name], project: @project)
     authorize @candidate
 
     Candidate::Update.new(@candidate, params).call
+    redirect_to project_candidate_path(name: @candidate.name, project_name: @project.name)
   end
 end
