@@ -3,7 +3,6 @@ class CreateEntities < ActiveRecord::Migration[8.0]
     create_table :entities do |t|
       t.string :name
       t.references :version, null: false, foreign_key: true
-      t.references :root, polymorphic: true, index: true, null: false
       t.string :original_root
 
       t.timestamps

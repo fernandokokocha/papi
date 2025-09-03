@@ -1,6 +1,10 @@
-class Node::ObjectAttribute < ApplicationRecord
-  belongs_to :parent, class_name: "Node::Object"
-  belongs_to :value, polymorphic: true
+class Node::ObjectAttribute
+  attr_accessor :name, :value
+
+  def initialize(name: "", value: nil)
+    @name = name
+    @value = value
+  end
 
   def serialize
     name + ":" + value.serialize
@@ -12,5 +16,9 @@ class Node::ObjectAttribute < ApplicationRecord
 
   def expandable?
     true
+  end
+
+  def ==(other)
+    (self.class == other.class) && (self.name == other.name) && (self.value == other.value)
   end
 end

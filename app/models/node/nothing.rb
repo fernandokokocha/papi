@@ -1,6 +1,4 @@
-class Node::Nothing < ApplicationRecord
-  self.table_name = "nothing_nodes"
-
+class Node::Nothing
   def to_diff(change, indent = 0)
     Diff::Lines.new([])
   end

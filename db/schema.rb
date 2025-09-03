@@ -11,14 +11,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema[8.0].define(version: 2025_07_23_162601) do
-  create_table "array_nodes", force: :cascade do |t|
-    t.string "value_type", null: false
-    t.integer "value_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["value_type", "value_id"], name: "index_array_nodes_on_value"
-  end
-
   create_table "candidates", force: :cascade do |t|
     t.string "name"
     t.integer "order"
@@ -35,71 +27,27 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_23_162601) do
     t.integer "http_verb", null: false
     t.string "url", null: false
     t.integer "version_id", null: false
-    t.string "input_type", null: false
-    t.integer "input_id", null: false
-    t.string "output_type", null: false
-    t.integer "output_id", null: false
     t.string "original_input_string", null: false
     t.string "original_output_string", null: false
     t.string "note"
     t.integer "auth", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["input_type", "input_id"], name: "index_endpoints_on_input"
-    t.index ["output_type", "output_id"], name: "index_endpoints_on_output"
     t.index ["version_id"], name: "index_endpoints_on_version_id"
   end
 
   create_table "entities", force: :cascade do |t|
     t.string "name"
     t.integer "version_id", null: false
-    t.string "root_type", null: false
-    t.integer "root_id", null: false
     t.string "original_root"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["root_type", "root_id"], name: "index_entities_on_root"
     t.index ["version_id", "name"], name: "index_entities_on_version_id_and_name", unique: true
     t.index ["version_id"], name: "index_entities_on_version_id"
   end
 
-  create_table "entity_nodes", force: :cascade do |t|
-    t.integer "entity_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["entity_id"], name: "index_entity_nodes_on_entity_id"
-  end
-
   create_table "groups", force: :cascade do |t|
     t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "nothing_nodes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "object_attributes", force: :cascade do |t|
-    t.string "name", null: false
-    t.integer "order", null: false
-    t.string "value_type", null: false
-    t.integer "value_id", null: false
-    t.integer "parent_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["parent_id"], name: "index_object_attributes_on_parent_id"
-    t.index ["value_type", "value_id"], name: "index_object_attributes_on_value"
-  end
-
-  create_table "object_nodes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  create_table "primitive_nodes", force: :cascade do |t|
-    t.integer "kind", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -159,8 +107,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_23_162601) do
   add_foreign_key "candidates", "versions", column: "base_version_id"
   add_foreign_key "endpoints", "versions"
   add_foreign_key "entities", "versions"
-  add_foreign_key "entity_nodes", "entities"
-  add_foreign_key "object_attributes", "object_nodes", column: "parent_id"
   add_foreign_key "projects", "groups"
   add_foreign_key "responses", "endpoints"
   add_foreign_key "sessions", "users"

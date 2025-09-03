@@ -3,8 +3,8 @@ require "rails_helper"
 describe Diff::FromValues, type: :model do
   context "from primitive" do
     it "string -> string" do
-      value1 = FactoryBot.create(:primitive_node, kind: "string")
-      value2 = FactoryBot.create(:primitive_node, kind: "string")
+      value1 = Node::Primitive.new(kind: "string")
+      value2 = Node::Primitive.new(kind: "string")
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
@@ -18,8 +18,8 @@ describe Diff::FromValues, type: :model do
     end
 
     it "string -> number" do
-      value1 = FactoryBot.create(:primitive_node, kind: "string")
-      value2 = FactoryBot.create(:primitive_node, kind: "number")
+      value1 = Node::Primitive.new(kind: "string")
+      value2 = Node::Primitive.new(kind: "number")
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
@@ -33,9 +33,9 @@ describe Diff::FromValues, type: :model do
     end
 
     it "string -> object" do
-      value1 = FactoryBot.create(:primitive_node, kind: "string")
-      value2 = FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name")
+      value1 = Node::Primitive.new(kind: "string")
+      value2 = Node::Object.new(object_attributes: [
+        Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "string"))
       ])
 
       diff = Diff::FromValues.new(value1, value2)
@@ -54,9 +54,9 @@ describe Diff::FromValues, type: :model do
     end
 
     it "string -> object with parent" do
-      value1 = FactoryBot.create(:primitive_node, kind: "string")
-      value2 = FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name")
+      value1 = Node::Primitive.new(kind: "string")
+      value2 = Node::Object.new(object_attributes: [
+        Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "string"))
       ])
 
       diff = Diff::FromValues.new(value1, value2)
@@ -78,8 +78,8 @@ describe Diff::FromValues, type: :model do
     end
 
     it "string -> array" do
-      value1 = FactoryBot.create(:primitive_node, kind: "string")
-      value2 = FactoryBot.create(:array_node, value: FactoryBot.create(:primitive_node, kind: "number"))
+      value1 = Node::Primitive.new(kind: "string")
+      value2 = Node::Array.new(value: Node::Primitive.new(kind: "number"))
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
@@ -97,8 +97,8 @@ describe Diff::FromValues, type: :model do
     end
 
     it "primitive -> nothing" do
-      value1 = FactoryBot.create(:primitive_node, kind: "string")
-      value2 = FactoryBot.create(:nothing_node)
+      value1 = Node::Primitive.new(kind: "string")
+      value2 = Node::Nothing.new
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
@@ -112,9 +112,9 @@ describe Diff::FromValues, type: :model do
     end
 
     it "primitive -> entity" do
-      value1 = FactoryBot.create(:primitive_node, kind: "string")
-      entity = FactoryBot.create(:entity, name: "Resource")
-      value2 = FactoryBot.create(:entity_node, entity: entity)
+      value1 = Node::Primitive.new(kind: "string")
+      entity = Entity.new(name: "Resource")
+      value2 = Node::Entity.new(entity: entity)
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
@@ -130,10 +130,10 @@ describe Diff::FromValues, type: :model do
 
   context "from object" do
     it "object -> string" do
-      value1 = FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name")
+      value1 = Node::Object.new(object_attributes: [
+        Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "string"))
       ])
-      value2 = FactoryBot.create(:primitive_node, kind: "string")
+      value2 = Node::Primitive.new(kind: "string")
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
@@ -151,8 +151,8 @@ describe Diff::FromValues, type: :model do
     end
 
     it "empty object -> empty object" do
-      value1 = FactoryBot.create(:object_node)
-      value2 = FactoryBot.create(:object_node)
+      value1 = Node::Object.new
+      value2 = Node::Object.new
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
@@ -164,9 +164,9 @@ describe Diff::FromValues, type: :model do
     end
 
     it "empty object -> object with one attr" do
-      value1 = FactoryBot.create(:object_node)
-      value2 = FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name")
+      value1 = Node::Object.new
+      value2 = Node::Object.new(object_attributes: [
+        Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "string"))
       ])
 
       diff = Diff::FromValues.new(value1, value2)
@@ -185,10 +185,10 @@ describe Diff::FromValues, type: :model do
     end
 
     it "object with one attr -> empty object" do
-      value1 = FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name")
+      value1 = Node::Object.new(object_attributes: [
+        Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "string"))
       ])
-      value2 = FactoryBot.create(:object_node)
+      value2 = Node::Object.new
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
@@ -207,12 +207,12 @@ describe Diff::FromValues, type: :model do
     end
 
     it "object with one attr -> object with different attr" do
-      value1 = FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name")
+      value1 = Node::Object.new(object_attributes: [
+        Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "string"))
       ])
 
-      value2 = FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "city")
+      value2 = Node::Object.new(object_attributes: [
+        Node::ObjectAttribute.new(name: "city", value: Node::Primitive.new(kind: "string"))
       ])
 
       diff = Diff::FromValues.new(value1, value2)
@@ -234,12 +234,12 @@ describe Diff::FromValues, type: :model do
     end
 
     it "object with one attr -> object with two attrs" do
-      value1 = FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name")
+      value1 = Node::Object.new(object_attributes: [
+        Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "string"))
       ])
-      value2 = FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name"),
-        FactoryBot.create(:object_attribute, name: "city")
+      value2 = Node::Object.new(object_attributes: [
+        Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "string")),
+        Node::ObjectAttribute.new(name: "city", value: Node::Primitive.new(kind: "string"))
       ])
 
       diff = Diff::FromValues.new(value1, value2)
@@ -260,12 +260,12 @@ describe Diff::FromValues, type: :model do
     end
 
     it "object with one attr -> object with changed attr" do
-      value1 = FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name")
+      value1 = Node::Object.new(object_attributes: [
+        Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "string"))
       ])
 
-      value2 = FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name", value: FactoryBot.create(:primitive_node, kind: "number"))
+      value2 = Node::Object.new(object_attributes: [
+        Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "number"))
       ])
 
       diff = Diff::FromValues.new(value1, value2)
@@ -284,21 +284,20 @@ describe Diff::FromValues, type: :model do
     end
 
     it "nested object added one attr" do
-      value1 = FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name"),
-        FactoryBot.create(:object_attribute, name: "child", value:
-          FactoryBot.create(:object_node, object_attributes: [
-            FactoryBot.create(:object_attribute, name: "name")
+      value1 = Node::Object.new(object_attributes: [
+        Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "string")),
+        Node::ObjectAttribute.new(name: "child", value:
+          Node::Object.new(object_attributes: [
+            Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "string"))
           ]))
       ])
 
-      value2 = FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name"),
-        FactoryBot.create(:object_attribute, name: "child", value:
-          FactoryBot.create(:object_node, object_attributes: [
-            FactoryBot.create(:object_attribute, name: "name"),
-            FactoryBot.create(:object_attribute, name: "age", value:
-              FactoryBot.create(:primitive_node, kind: "number"))
+      value2 = Node::Object.new(object_attributes: [
+        Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "string")),
+        Node::ObjectAttribute.new(name: "child", value:
+          Node::Object.new(object_attributes: [
+            Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "string")),
+            Node::ObjectAttribute.new(name: "age", value: Node::Primitive.new(kind: "number"))
           ]))
       ])
 
@@ -329,10 +328,10 @@ describe Diff::FromValues, type: :model do
     end
 
     it "object -> array" do
-      value1 = FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name")
+      value1 = Node::Object.new(object_attributes: [
+        Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "string"))
       ])
-      value2 = FactoryBot.create(:array_node, value: FactoryBot.create(:primitive_node, kind: "string"))
+      value2 = Node::Array.new(value: Node::Primitive.new(kind: "string"))
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
@@ -350,10 +349,10 @@ describe Diff::FromValues, type: :model do
     end
 
     it "object -> nothing" do
-      value1 = FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name")
+      value1 = Node::Object.new(object_attributes: [
+        Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "string"))
       ])
-      value2 = FactoryBot.create(:nothing_node)
+      value2 = Node::Nothing.new
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
@@ -373,8 +372,8 @@ describe Diff::FromValues, type: :model do
 
   context "from array" do
     it "array of strings -> same thing" do
-      value1 = FactoryBot.create(:array_node, value: FactoryBot.create(:primitive_node, kind: "string"))
-      value2 = FactoryBot.create(:array_node, value: FactoryBot.create(:primitive_node, kind: "string"))
+      value1 = Node::Array.new(value: Node::Primitive.new(kind: "string"))
+      value2 = Node::Array.new(value: Node::Primitive.new(kind: "string"))
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
@@ -392,8 +391,8 @@ describe Diff::FromValues, type: :model do
     end
 
     it "array of strings -> array of numbers" do
-      value1 = FactoryBot.create(:array_node, value: FactoryBot.create(:primitive_node, kind: "string"))
-      value2 = FactoryBot.create(:array_node, value: FactoryBot.create(:primitive_node, kind: "number"))
+      value1 = Node::Array.new(value: Node::Primitive.new(kind: "string"))
+      value2 = Node::Array.new(value: Node::Primitive.new(kind: "number"))
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
@@ -411,10 +410,10 @@ describe Diff::FromValues, type: :model do
     end
 
     it "array of strings -> array of object" do
-      value1 = FactoryBot.create(:array_node, value: FactoryBot.create(:primitive_node, kind: "string"))
-      value2 = FactoryBot.create(:array_node, value:
-        FactoryBot.create(:object_node, object_attributes: [
-          FactoryBot.create(:object_attribute, name: "name")
+      value1 = Node::Array.new(value: Node::Primitive.new(kind: "string"))
+      value2 = Node::Array.new(value:
+        Node::Object.new(object_attributes: [
+          Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "string"))
         ]
         ))
 
@@ -438,9 +437,9 @@ describe Diff::FromValues, type: :model do
     end
 
     it "array -> object" do
-      value1 = FactoryBot.create(:array_node, value: FactoryBot.create(:primitive_node, kind: "string"))
-      value2 = FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name")
+      value1 = Node::Array.new(value: Node::Primitive.new(kind: "string"))
+      value2 = Node::Object.new(object_attributes: [
+        Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "string"))
       ])
 
       diff = Diff::FromValues.new(value1, value2)
@@ -459,8 +458,8 @@ describe Diff::FromValues, type: :model do
     end
 
     it "array -> string" do
-      value1 = FactoryBot.create(:array_node, value: FactoryBot.create(:primitive_node, kind: "number"))
-      value2 = FactoryBot.create(:primitive_node, kind: "string")
+      value1 = Node::Array.new(value: Node::Primitive.new(kind: "number"))
+      value2 = Node::Primitive.new(kind: "string")
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
@@ -478,8 +477,8 @@ describe Diff::FromValues, type: :model do
     end
 
     it "array -> nothing" do
-      value1 = FactoryBot.create(:array_node, value: FactoryBot.create(:primitive_node, kind: "string"))
-      value2 = FactoryBot.create(:nothing_node)
+      value1 = Node::Array.new(value: Node::Primitive.new(kind: "string"))
+      value2 = Node::Nothing.new
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
@@ -499,8 +498,8 @@ describe Diff::FromValues, type: :model do
 
   context "from nothing" do
     it "nothing -> primitive" do
-      value1 = FactoryBot.create(:nothing_node)
-      value2 = FactoryBot.create(:primitive_node, kind: "string")
+      value1 = Node::Nothing.new
+      value2 = Node::Primitive.new(kind: "string")
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
@@ -514,9 +513,9 @@ describe Diff::FromValues, type: :model do
     end
 
     it "nothing -> object" do
-      value1 = FactoryBot.create(:nothing_node)
-      value2 = FactoryBot.create(:object_node, object_attributes: [
-        FactoryBot.create(:object_attribute, name: "name")
+      value1 = Node::Nothing.new
+      value2 = Node::Object.new(object_attributes: [
+        Node::ObjectAttribute.new(name: "name", value: Node::Primitive.new(kind: "string"))
       ])
 
       diff = Diff::FromValues.new(value1, value2)
@@ -535,8 +534,8 @@ describe Diff::FromValues, type: :model do
     end
 
     it "nothing -> array" do
-      value1 = FactoryBot.create(:nothing_node)
-      value2 = FactoryBot.create(:array_node, value: FactoryBot.create(:primitive_node, kind: "string"))
+      value1 = Node::Nothing.new
+      value2 = Node::Array.new(value: Node::Primitive.new(kind: "string"))
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
@@ -554,8 +553,8 @@ describe Diff::FromValues, type: :model do
     end
 
     it "nothing -> nothing" do
-      value1 = FactoryBot.create(:nothing_node)
-      value2 = FactoryBot.create(:nothing_node)
+      value1 = Node::Nothing.new
+      value2 = Node::Nothing.new
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([])
@@ -564,9 +563,9 @@ describe Diff::FromValues, type: :model do
     end
 
     it "nothing -> entity" do
-      value1 = FactoryBot.create(:nothing_node)
-      entity = FactoryBot.create(:entity, name: "Resource")
-      value2 = FactoryBot.create(:entity_node, entity: entity)
+      value1 = Node::Nothing.new
+      entity = Entity.new(name: "Resource")
+      value2 = Node::Entity.new(entity: entity)
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
@@ -582,9 +581,9 @@ describe Diff::FromValues, type: :model do
 
   context "from entity" do
     it "entity -> nothing" do
-      entity = FactoryBot.create(:entity, name: "Resource")
-      value1 = FactoryBot.create(:entity_node, entity: entity)
-      value2 = FactoryBot.create(:nothing_node)
+      entity = Entity.new(name: "Resource")
+      value1 = Node::Entity.new(entity: entity)
+      value2 = Node::Nothing.new
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
@@ -598,9 +597,9 @@ describe Diff::FromValues, type: :model do
     end
 
     it "entity -> primitive" do
-      entity = FactoryBot.create(:entity, name: "Resource")
-      value1 = FactoryBot.create(:entity_node, entity: entity)
-      value2 = FactoryBot.create(:primitive_node, kind: "string")
+      entity = Entity.new(name: "Resource")
+      value1 = Node::Entity.new(entity: entity)
+      value2 = Node::Primitive.new(kind: "string")
 
       diff = Diff::FromValues.new(value1, value2)
       expected = Diff::Lines.new([
