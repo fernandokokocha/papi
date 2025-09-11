@@ -38,6 +38,24 @@ class Endpoint < ApplicationRecord
     parser.parse_value(original_output_string)
   end
 
+  def self.from_version_request(request, version)
+    method = request.method
+    http_verb = "verb_#{method.downcase}"
+
+    prefix = %r{^/projects/[^/]+/versions/[^/]+}
+    url = request.path.sub(prefix, "")
+    Endpoint.where(http_verb: http_verb, url: url, version: version)
+  end
+
+  def self.from_candidate_request(request, version)
+    method = request.method
+    http_verb = "verb_#{method.downcase}"
+
+    prefix = %r{^/projects/[^/]+/candidates/[^/]+}
+    url = request.path.sub(prefix, "")
+    Endpoint.where(http_verb: http_verb, url: url, version: version)
+  end
+
   amoeba do
     enable
   end

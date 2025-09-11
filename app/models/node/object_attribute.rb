@@ -15,7 +15,7 @@ class Node::ObjectAttribute
   end
 
   def expandable?
-    true
+    value.expandable?
   end
 
   def ==(other)

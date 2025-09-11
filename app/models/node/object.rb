@@ -6,7 +6,7 @@ class Node::Object
   end
 
   def to_example_json
-    attrs = object_attributes.order(:order).map do |oa|
+    attrs = object_attributes.map do |oa|
       oa.to_example_json
     end
 
@@ -38,8 +38,8 @@ class Node::Object
   end
 
   def expand
-    object_expanded = Node::Object.new(
-      object_attributes: object_attributes.map { |oa| Node::ObjectAttribute.new(name: oa.name, value: oa.value) }
+    Node::Object.new(
+      object_attributes: object_attributes.map { |oa| Node::ObjectAttribute.new(name: oa.name, value: oa.value.expand) }
     )
   end
 

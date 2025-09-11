@@ -24,4 +24,8 @@ class Node::Entity
   def ==(other)
     (self.class == other.class) && (self.entity == other.entity)
   end
+
+  def to_example_json
+    entity.root.to_example_json
+  end
 end
