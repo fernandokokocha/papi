@@ -2,12 +2,12 @@
   <div class="title-container">
     <h1><%= @project.name %> <%= @version.name %></h1>
     <% if @previous_version.present? %>
-      <%= button_to "⬅️ #{@previous_version.name}", project_version_path(name: @previous_version.name, project_name: @previous_version.project.name), method: :get %>
+      <%= button_to "⬅️ #{@previous_version.name}", project_version_path(name: @previous_version.name, project_name: @previous_version.project.name), method: :get, class: "btn btn-outline" %>
     <% end %>
     <% if @next_version.present? %>
-      <%= button_to "➡️ #{@next_version.name}", project_version_path(name: @next_version.name, project_name: @next_version.project.name), method: :get %>
+      <%= button_to "➡️ #{@next_version.name}", project_version_path(name: @next_version.name, project_name: @next_version.project.name), method: :get, class: "btn btn-outline" %>
     <% end %>
-    <%= button_to "Create new candidate", new_project_candidate_path(project_name: @project.name), method: :get %>
+    <%= button_to "Create new candidate", new_project_candidate_path(project_name: @project.name), method: :get, class: "btn btn-primary" %>
   </div>
   <%= render "versions/version" %>
 </div>

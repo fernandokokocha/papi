@@ -44,11 +44,11 @@
         <% if Current.user %>
           <div class="topbar-session">
             <%= Current.user.email_address %>
-            <%= button_to "Log out", session_path, method: :delete %>
+            <%= button_to "Log out", session_path, method: :delete, class: "btn btn-primary" %>
           </div>
         <% else %>
           <div class="topbar-session">
-            <%= button_to "Login", new_session_path %>
+            <%= button_to "Login", new_session_path, class: "btn btn-primary" %>
           </div>
         <% end %>
       </div>

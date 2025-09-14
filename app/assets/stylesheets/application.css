@@ -12,7 +12,7 @@
 .topbar {
   background-color: #f8f9fa;
   border-bottom: 1px solid #dee2e6;
-  padding: 0.75rem 0;
+  padding: 0.5rem 0;
 }
 
 .topbar-content {
@@ -23,18 +23,22 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
 }
 
 .topbar-session {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  gap: 10px;
+  align-items: center;
+  gap: 15px;
+  font-size: 1.1rem;
+  font-weight: 500;
 }
 
 .topbar-brand {
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1.75rem;
+  font-weight: 700;
   text-decoration: none;
   color: #212529;
 }
@@ -46,4 +50,60 @@
 .main-content {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
+  text-align: center;
+
+  &.btn-primary {
+    background: #212529;
+    color: white;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(33, 37, 41, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &.btn-secondary {
+    background: #6c757d;
+    color: white;
+
+    &:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(108, 117, 125, 0.3);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+
+  &.btn-outline {
+    background: transparent;
+    color: #212529;
+    border: 2px solid #212529;
+
+    &:hover {
+      background: #212529;
+      color: white;
+      transform: translateY(-2px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
 }
