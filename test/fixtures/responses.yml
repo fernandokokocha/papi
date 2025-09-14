@@ -1,4 +1,18 @@
 v1e1r1:
   endpoint: project1v1e1
   code: "200"
-  note: "No comment"
+v1e1r2:
+  endpoint: project1v1e1
+  code: "403"
+v1e2r1:
+  endpoint: project1v1e2
+  code: "201"
+v1e2r2:
+  endpoint: project1v1e2
+  code: "403"
+v1e3r1:
+  endpoint: project1v1e3
+  code: "200"
+v1e3r2:
+  endpoint: project1v1e3
+  code: "403"
