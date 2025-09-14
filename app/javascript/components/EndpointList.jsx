@@ -10,8 +10,8 @@ const EndpointList = ({
                           addEndpoint,
                           updateNewVerb,
                           newVerb,
-                          newUrl,
-                          updateNewUrl,
+                          newPath,
+                          updateNewPath,
                           addEndpointDisabled,
                       }) => {
 
@@ -41,7 +41,7 @@ const EndpointList = ({
                                 <option value="verb_put" selected={newVerb === "verb_put"}>PUT</option>
                                 <option value="verb_patch" selected={newVerb === "verb_patch"}>PATCH</option>
                             </select>
-                            <input type="text" value={newUrl} onChange={updateNewUrl}/>
+                            <input type="text" value={newPath} onChange={updateNewPath}/>
                         </div>
                         <button type="button" onClick={addEndpoint} disabled={addEndpointDisabled}>Add</button>
                         {addEndpointDisabled && <div className="alert">This endpoint already exists</div>}

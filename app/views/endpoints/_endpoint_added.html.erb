@@ -1,7 +1,7 @@
-<% input = expanded ? endpoint.input.expand : endpoint.input %>
-<% output = expanded ? endpoint.output.expand : endpoint.output %>
-<% input_diff = input.to_diff(:no_change) %>
+<% output = expanded ? endpoint.parsed_output.expand : endpoint.parsed_output %>
+<% output_error = expanded ? endpoint.parsed_output_error.expand : endpoint.parsed_output_error %>
 <% output_diff = output.to_diff(:no_change) %>
+<% output_error_diff = output_error.to_diff(:no_change) %>
 <% responses_diff = DiffResponses::FromResponses.new([], endpoint.responses) %>
 
 <div class="endpoint-container added" id="endpoint-<%= endpoint.page_url %>">
@@ -9,7 +9,7 @@
     <div class="endpoint-name-placeholder"></div>
     <div class="endpoint-name added">
       <%= endpoint.name %>
-      <% if endpoint.input.expandable? || endpoint.output.expandable? %>
+      <% if endpoint.parsed_output.expandable? || endpoint.parsed_output_error.expandable? %>
         <% if expanded %>
           <button type="button" data-action="endpoint#collapse">Collapse</button>
         <% else %>
@@ -31,36 +31,12 @@
 
   <div class="endpoint-section-container">
     <div class="endpoint-section-placeholder"></div>
-    <div class="endpoint-section">AUTH</div>
-  </div>
-
-  <div class="endpoint-auth-container">
-    <div class="endpoint-auth-placeholder"></div>
-    <div class="endpoint-auth"><%= endpoint.auth.humanize %></div>
-  </div>
-
-  <div class="endpoint-section-container">
-    <div class="endpoint-section-placeholder"></div>
     <div class="endpoint-section">RESPONSES</div>
   </div>
 
   <div class="endpoint-responses-container">
     <div class="endpoint-responses"><%= render "specs/responses", diff: responses_diff.before %></div>
     <div class="endpoint-responses"><%= render "specs/responses", diff: responses_diff.after %></div>
-  </div>
-
-  <div class="endpoint-section-container">
-    <div class="endpoint-section-placeholder"></div>
-    <div class="endpoint-section">INPUT</div>
-  </div>
-
-  <div class="endpoint-root-container">
-    <div class="endpoint-root-placeholder">
-    </div>
-    <div class="endpoint-root">
-      <%= render "specs/json", diff: input_diff %>
-      <div class="spec"><%= input.serialize %></div>
-    </div>
   </div>
 
   <div class="endpoint-section-container">
@@ -73,7 +49,19 @@
     </div>
     <div class="endpoint-root">
       <%= render "specs/json", diff: output_diff %>
-      <div class="spec"><%= output.serialize %></div>
+    </div>
+  </div>
+
+  <div class="endpoint-section-container">
+    <div class="endpoint-section-placeholder"></div>
+    <div class="endpoint-section">OUTPUT FOR ERRORS</div>
+  </div>
+
+  <div class="endpoint-root-container">
+    <div class="endpoint-root-placeholder">
+    </div>
+    <div class="endpoint-root">
+      <%= render "specs/json", diff: output_error_diff %>
     </div>
   </div>
 </div>

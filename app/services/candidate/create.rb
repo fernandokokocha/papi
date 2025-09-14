@@ -20,12 +20,11 @@ class Candidate::Create
       # STEP 3: Map endpoints params - responses should be properly formatted
       params[:version][:endpoints_attributes] = params[:version][:endpoints_attributes].map do |endpoint_attr|
         {
-          url: endpoint_attr[:url],
+          path: endpoint_attr[:path],
           http_verb: endpoint_attr[:http_verb],
-          original_input_string: endpoint_attr[:original_input_string],
-          original_output_string: endpoint_attr[:original_output_string],
+          output: endpoint_attr[:output],
+          output_error: endpoint_attr[:output_error],
           note: endpoint_attr[:note],
-          auth: endpoint_attr[:auth],
           version: @version,
           responses_attributes: format_responses(endpoint_attr[:responses])
         }

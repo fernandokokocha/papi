@@ -5,11 +5,11 @@ import {v4 as uuidv4} from "uuid";
 import deserialize from "@/helpers/deserialize.js";
 import serialize from "@/helpers/serialize.js";
 
-const isNewEndpointColliding = (verb, url, e) => {
+const isNewEndpointColliding = (verb, path, e) => {
     let newEndpointColliding = false
     e.filter((endpoint) => (endpoint.type !== 'removed'))
         .forEach((endpoint) => {
-            const collidingWithNewEndpoint = (endpoint.url === url && endpoint.http_verb === verb)
+            const collidingWithNewEndpoint = (endpoint.path === path && endpoint.http_verb === verb)
             if (collidingWithNewEndpoint) {
                 newEndpointColliding = true
             }
@@ -40,8 +40,8 @@ const checkEntitiesReferences = (endpoints, entities) => {
 const findCustomNameInEndpoints = (endpoints, name) => {
     let found = false;
     endpoints.forEach((e) => {
-        found = found || findCustomName(e.input, name)
         found = found || findCustomName(e.output, name)
+        found = found || findCustomName(e.output_error, name)
     })
     return found
 }
@@ -71,14 +71,14 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
     const [endpoints, setEndpoints] = useState([]);
     const [noCollisions, setNoCollisions] = useState(true);
     const [anyChanges, setAnyChanges] = useState(false);
-    const [newUrl, setNewUrl] = useState("/resource")
+    const [newPath, setNewPath] = useState("/resource")
     const [newVerb, setNewVerb] = useState("verb_get")
-    const [addEndpointDisabled, setAddEndpointDisabled] = useState(() => isNewEndpointColliding(newVerb, newUrl, endpoints))
+    const [addEndpointDisabled, setAddEndpointDisabled] = useState(() => isNewEndpointColliding(newVerb, newPath, endpoints))
     const [newEntity, setNewEntity] = useState("MyResource")
     const [addEntityDisabled, setAddEntityDisabled] = useState(() => isNewEntityColliding(newEntity, entities))
 
-    const validateNewEndpoint = (verb, url, e) => {
-        setAddEndpointDisabled(isNewEndpointColliding(verb, url, e))
+    const validateNewEndpoint = (verb, path, e) => {
+        setAddEndpointDisabled(isNewEndpointColliding(verb, path, e))
     }
 
     const validateNewEntity = (newEntity, entities) => {
@@ -90,7 +90,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         endpointsToSend
             .filter((endpoint) => (endpoint.type !== 'removed'))
             .forEach((endpoint) => {
-                const colliding = endpointsToSend.filter((otherEndpoint) => otherEndpoint.url === endpoint.url && otherEndpoint.http_verb === endpoint.http_verb)
+                const colliding = endpointsToSend.filter((otherEndpoint) => otherEndpoint.path === endpoint.path && otherEndpoint.http_verb === endpoint.http_verb)
                 if (colliding.length > 1) {
                     newNoCollisions = false;
                     endpoint.collision = true;
@@ -105,11 +105,10 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
             .map((endpoint) => ({
                 http_verb: endpoint.http_verb,
                 verb: endpoint.verb,
-                url: endpoint.url,
-                input: serialize(endpoint.input),
+                path: endpoint.path,
                 output: serialize(endpoint.output),
+                output_error: serialize(endpoint.output_error),
                 note: endpoint.note,
-                auth: endpoint.auth
             })))
 
         if (serializedEndpointsToSend !== serializedEndpoints) {
@@ -140,7 +139,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         ]
 
         validate(newEndpoints, entities)
-        validateNewEndpoint(newVerb, newUrl, newEndpoints)
+        validateNewEndpoint(newVerb, newPath, newEndpoints)
         setEndpoints(newEndpoints)
         checkEntitiesReferences(newEndpoints, entities)
     }
@@ -155,7 +154,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         }
 
         validate(newEndpoints, entities)
-        validateNewEndpoint(newVerb, newUrl, newEndpoints)
+        validateNewEndpoint(newVerb, newPath, newEndpoints)
         setEndpoints(newEndpoints)
     }
 
@@ -166,14 +165,14 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
             type: "new",
             http_verb: newVerb,
             verb: newVerb,
-            url: newUrl,
-            input: {nodeType: "primitive", value: "nothing"},
+            path: newPath,
             output: {nodeType: "primitive", value: "nothing"},
+            output_error: {nodeType: "primitive", value: "nothing"},
             responses: []
         })
 
         validate(newEndpoints, entities)
-        validateNewEndpoint(newVerb, newUrl, newEndpoints)
+        validateNewEndpoint(newVerb, newPath, newEndpoints)
         setEndpoints(newEndpoints)
     }
 
@@ -188,9 +187,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
             type: "new",
             id: uuidv4(),
             root: {nodeType: "primitive", value: "nothing"},
-            original_root: {nodeType: "primitive", value: "nothing"},
             name: newEntity,
-            original_name: newEntity,
             collision: false,
             is_referenced: false,
             auth: "no_auth"
@@ -200,14 +197,14 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         setEntities(newEntities)
     }
 
-    const updateNewUrl = (e) => {
-        setNewUrl(e.target.value)
+    const updateNewPath = (e) => {
+        setNewPath(e.target.value)
         validateNewEndpoint(newVerb, e.target.value, endpoints)
     }
 
     const updateNewVerb = (e) => {
         setNewVerb(e.target.value)
-        validateNewEndpoint(e.target.value, newUrl, endpoints)
+        validateNewEndpoint(e.target.value, newPath, endpoints)
     }
 
     const updateEntity = (id, newEntity) => {
@@ -237,39 +234,49 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
     }
 
     useEffect(() => {
+        console.log({ serializedEndpoints })
         const parsed_endpoints = JSON.parse(serializedEndpoints)
+
         parsed_endpoints.forEach((endpointData) => {
             endpointData.type = "old"
-            endpointData.id = endpointData.id
+            endpointData.id = uuidv4()
             endpointData.collision = false
 
-            endpointData.original_url = endpointData.url
+            endpointData.original_path = endpointData.path
             endpointData.original_verb = endpointData.verb
-            const parsed_input = deserialize(endpointData.input)
-            endpointData.original_input = parsed_input
-            endpointData.input = parsed_input
+
             const parsed_output = deserialize(endpointData.output)
             endpointData.original_output = parsed_output
             endpointData.output = parsed_output
 
+            const parsed_output_error = deserialize(endpointData.output_error)
+            endpointData.original_output_error = parsed_output_error
+            endpointData.output_error = parsed_output_error
+
             endpointData.original_note = endpointData.note
-            endpointData.original_auth = endpointData.auth
             endpointData.original_responses = endpointData.responses
         })
+        console.log({parsed_endpoints})
         setEndpoints(parsed_endpoints)
 
+        console.log({ serializedEntities })
+
         const parsed_entities = JSON.parse(serializedEntities)
+
         parsed_entities.forEach((entityData) => {
             entityData.type = "old"
             entityData.id = uuidv4()
+
             const parsed_root = deserialize(entityData.root)
-            entityData.root = parsed_root
             entityData.original_root = parsed_root
+            entityData.root = parsed_root
+
             entityData.original_name = entityData.name
             entityData.collision = false
             entityData.is_referenced = true
         })
         checkEntitiesReferences(parsed_endpoints, parsed_entities)
+        console.log({parsed_entities})
         setEntities(parsed_entities)
     }, [])
 
@@ -293,8 +300,8 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
                 addEndpoint={addEndpoint}
                 updateNewVerb={updateNewVerb}
                 newVerb={newVerb}
-                newUrl={newUrl}
-                updateNewUrl={updateNewUrl}
+                newPath={newPath}
+                updateNewPath={updateNewPath}
                 addEndpointDisabled={addEndpointDisabled}
             />
             <EntityList

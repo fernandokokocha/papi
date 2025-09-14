@@ -31,20 +31,12 @@ const EntityAdded = ({entity, updateEntity, removeEntity, entities}) => {
                 </div>
                 <div className="entity-root">
                     <JSONSchemaForm
-                        name="version[entities_attributes][][original_root]"
+                        name="version[entities_attributes][][root]"
                         update={updateRoot}
                         root={entity.root}
                         id={entity.id}
                         entities={[]}
                     />
-                </div>
-            </div>
-
-
-            <div className="entity-root-container">
-                <div className="entity-root-placeholder"></div>
-                <div className="entity-root">
-                    <div className="spec">{serialize(entity.root)}</div>
                 </div>
             </div>
         </div>

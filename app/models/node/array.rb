@@ -1,7 +1,7 @@
 class Node::Array
   attr_accessor :value
 
-  def initialize(value: nil)
+  def initialize(value: Node::Nothing.new)
     @value = value
   end
 

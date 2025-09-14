@@ -1,9 +1,9 @@
 FactoryBot.define do
   factory :endpoint do
     http_verb { "verb_get" }
-    url { "http://example.com/resource" }
-    original_input_string { "{}" }
-    original_output_string { "{}" }
+    path { "/resource" }
+    output { "" }
+    output_error { "" }
     association :version
   end
 end

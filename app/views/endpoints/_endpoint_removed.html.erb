@@ -1,4 +1,7 @@
+<% output_diff = endpoint.parsed_output.to_diff(:no_change) %>
+<% output_error_diff = endpoint.parsed_output_error.to_diff(:no_change) %>
 <% responses_diff = DiffResponses::FromResponses.new(endpoint.responses, []) %>
+
 <div class="endpoint-container removed" id="endpoint-<%= endpoint.page_url %>">
   <div class="endpoint-name-container">
     <div class="endpoint-name removed">
@@ -18,16 +21,6 @@
   </div>
 
   <div class="endpoint-section-container">
-    <div class="endpoint-section">AUTH</div>
-    <div class="endpoint-section-placeholder"></div>
-  </div>
-
-  <div class="endpoint-auth-container">
-    <div class="endpoint-auth"><%= endpoint.auth.humanize %></div>
-    <div class="endpoint-auth-placeholder"></div>
-  </div>
-
-  <div class="endpoint-section-container">
     <div class="endpoint-section">RESPONSES</div>
     <div class="endpoint-section-placeholder"></div>
   </div>
@@ -38,20 +31,6 @@
   </div>
 
   <div class="endpoint-section-container">
-    <div class="endpoint-section">INPUT</div>
-    <div class="endpoint-section-placeholder"></div>
-  </div>
-
-  <div class="endpoint-root-container">
-    <div class="endpoint-root">
-      <%= render "specs/json", diff: input_diff %>
-      <div class="spec"><%= endpoint.input.serialize %></div>
-    </div>
-    <div class="endpoint-root-placeholder">
-    </div>
-  </div>
-
-  <div class="endpoint-section-container">
     <div class="endpoint-section">OUTPUT</div>
     <div class="endpoint-section-placeholder"></div>
   </div>
@@ -59,7 +38,19 @@
   <div class="endpoint-root-container">
     <div class="endpoint-root">
       <%= render "specs/json", diff: output_diff %>
-      <div class="spec"><%= endpoint.output.serialize %></div>
+    </div>
+    <div class="endpoint-root-placeholder">
+    </div>
+  </div>
+
+  <div class="endpoint-section-container">
+    <div class="endpoint-section">OUTPUT FOR ERRORS</div>
+    <div class="endpoint-section-placeholder"></div>
+  </div>
+
+  <div class="endpoint-root-container">
+    <div class="endpoint-root">
+      <%= render "specs/json", diff: output_error_diff %>
     </div>
     <div class="endpoint-root-placeholder">
     </div>

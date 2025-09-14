@@ -25,12 +25,11 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_23_162601) do
 
   create_table "endpoints", force: :cascade do |t|
     t.integer "http_verb", null: false
-    t.string "url", null: false
+    t.string "path", null: false
     t.integer "version_id", null: false
-    t.string "original_input_string", null: false
-    t.string "original_output_string", null: false
+    t.string "output", null: false
+    t.string "output_error", null: false
     t.string "note"
-    t.integer "auth", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["version_id"], name: "index_endpoints_on_version_id"
@@ -39,7 +38,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_23_162601) do
   create_table "entities", force: :cascade do |t|
     t.string "name"
     t.integer "version_id", null: false
-    t.string "original_root"
+    t.string "root"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["version_id", "name"], name: "index_entities_on_version_id_and_name", unique: true

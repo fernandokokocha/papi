@@ -3,18 +3,3 @@ candidate1:
   project: project1
   order: 1
   aasm_state: "merged"
-candidate2:
-  name: "rc2"
-  project: project1
-  order: 2
-  aasm_state: "merged"
-candidate3:
-  name: "rc3"
-  order: 3
-  project: project1
-  aasm_state: "merged"
-candidate4:
-  name: "rc4"
-  order: 4
-  project: project1
-  aasm_state: "merged"

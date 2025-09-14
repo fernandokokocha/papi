@@ -17,9 +17,3 @@ three:
   password_digest: <%= password_digest %>
   role: 1
   group: g2
-
-four:
-  email_address: four@example.com
-  password_digest: <%= password_digest %>
-  role: 1
-  group: g3

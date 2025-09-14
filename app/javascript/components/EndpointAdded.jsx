@@ -13,18 +13,10 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
         updateEndpoint(endpoint.id, newEndpoint)
     }
 
-    const updateUrl = (newUrl) => {
+    const updateUrl = (newPath) => {
         const newEndpoint = {
             ...endpoint,
-            url: newUrl
-        }
-        updateEndpoint(endpoint.id, newEndpoint)
-    }
-
-    const updateInput = (newInput) => {
-        const newEndpoint = {
-            ...endpoint,
-            input: newInput
+            url: newPath
         }
         updateEndpoint(endpoint.id, newEndpoint)
     }
@@ -37,18 +29,18 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
         updateEndpoint(endpoint.id, newEndpoint)
     }
 
-    const updateNote = (newNote) => {
+    const updateOutputError = (newOutputError) => {
         const newEndpoint = {
             ...endpoint,
-            note: newNote
+            output_error: newOutputError
         }
         updateEndpoint(endpoint.id, newEndpoint)
     }
 
-    const updateAuth = (newAuth) => {
+    const updateNote = (newNote) => {
         const newEndpoint = {
             ...endpoint,
-            auth: newAuth
+            note: newNote
         }
         updateEndpoint(endpoint.id, newEndpoint)
     }
@@ -119,9 +111,9 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
                         <option value="verb_patch" selected={endpoint.http_verb === "verb_patch"}>PATCH</option>
                     </select>
                     <input type="text"
-                           value={endpoint.url}
+                           value={endpoint.path}
                            onChange={(e) => updateUrl(e.target.value)}
-                           name="version[endpoints_attributes][][url]"
+                           name="version[endpoints_attributes][][path]"
                     />
                     <button type="button" onClick={(e) => remove(endpoint.id)}>x</button>
                     {endpoint.collision && <div className="alert">Colliding endpoint</div>}
@@ -144,24 +136,6 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
                         cols="50"
                         wrap="hard"
                     />
-                </div>
-            </div>
-
-            <div className="endpoint-section-container">
-                <div className="endpoint-section-placeholder"></div>
-                <div className="endpoint-section">AUTH</div>
-            </div>
-
-            <div className="endpoint-note-container">
-                <div className="endpoint-note-placeholder"></div>
-                <div className="endpoint-note">
-                    <select
-                        name="version[endpoints_attributes][][auth]"
-                        onChange={(e) => updateAuth(e.target.value)}
-                    >
-                        <option value="no_auth" selected={endpoint.auth === "no_auth"}>No auth</option>
-                        <option value="bearer" selected={endpoint.auth === "bearer"}>Bearer</option>
-                    </select>
                 </div>
             </div>
 
@@ -201,33 +175,6 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
                 </div>
             </div>
 
-
-            <div className="endpoint-section-container">
-                <div className="endpoint-section-placeholder"></div>
-                <div className="endpoint-section">INPUT</div>
-            </div>
-
-            <div className="endpoint-root-container">
-                <div className="endpoint-root-placeholder"></div>
-                <div className="endpoint-root">
-                    <JSONSchemaForm
-                        name="version[endpoints_attributes][][original_input_string]"
-                        update={updateInput}
-                        root={endpoint.input}
-                        id={endpoint.id}
-                        entities={entities}
-                    />
-                </div>
-            </div>
-
-
-            <div className="endpoint-root-container">
-                <div className="endpoint-root-placeholder"></div>
-                <div className="endpoint-root">
-                    <div className="spec">{serialize(endpoint.input)}</div>
-                </div>
-            </div>
-
             <div className="endpoint-section-container">
                 <div className="endpoint-section-placeholder"></div>
                 <div className="endpoint-section">OUTPUT</div>
@@ -237,7 +184,7 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
                 <div className="endpoint-root-placeholder"></div>
                 <div className="endpoint-root">
                     <JSONSchemaForm
-                        name="version[endpoints_attributes][][original_output_string]"
+                        name="version[endpoints_attributes][][output]"
                         update={updateOutput}
                         root={endpoint.output}
                         id={endpoint.id}
@@ -246,10 +193,21 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
                 </div>
             </div>
 
+            <div className="endpoint-section-container">
+                <div className="endpoint-section-placeholder"></div>
+                <div className="endpoint-section">OUTPUT FOR ERRORS</div>
+            </div>
+
             <div className="endpoint-root-container">
                 <div className="endpoint-root-placeholder"></div>
                 <div className="endpoint-root">
-                    <div className="spec">{serialize(endpoint.output)}</div>
+                    <JSONSchemaForm
+                        name="version[endpoints_attributes][][output_error]"
+                        update={updateOutputError}
+                        root={endpoint.output_error}
+                        id={endpoint.id}
+                        entities={entities}
+                    />
                 </div>
             </div>
         </div>

@@ -1,18 +1,17 @@
-<% input1 = expanded ? previous_endpoint.input.expand : previous_endpoint.input %>
-<% input2 = expanded ? endpoint.input.expand : endpoint.input %>
-<% output1 = expanded ? previous_endpoint.output.expand : previous_endpoint.output %>
-<% output2 = expanded ? endpoint.output.expand : endpoint.output %>
-<% input_diff = Diff::FromValues.new(input1, input2) %>
+<% output1 = expanded ? previous_endpoint.parsed_output.expand : previous_endpoint.parsed_output %>
+<% output2 = expanded ? endpoint.parsed_output.expand : endpoint.parsed_output %>
+<% output_error1 = expanded ? previous_endpoint.parsed_output_error.expand : previous_endpoint.parsed_output_error %>
+<% output_error2 = expanded ? endpoint.parsed_output_error.expand : endpoint.parsed_output_error %>
 <% output_diff = Diff::FromValues.new(output1, output2) %>
+<% output_error_diff = Diff::FromValues.new(output_error1, output_error2) %>
 <% notes_diff = DiffText::FromNotes.new(previous_endpoint.note, endpoint.note) %>
-<% auth_diff = DiffText::FromNotes.new(previous_endpoint.auth.humanize, endpoint.auth.humanize) %>
 <% responses_diff = DiffResponses::FromResponses.new(previous_endpoint.responses, endpoint.responses) %>
 
 <div class="endpoint-container" id="endpoint-<%= endpoint.page_url %>">
   <div class="endpoint-name-container">
     <div class="endpoint-name">
       <%= endpoint.name %>
-      <% if endpoint.input.expandable? || endpoint.output.expandable? %>
+      <% if endpoint.parsed_output.expandable? || endpoint.parsed_output_error.expandable? %>
         <% if expanded %>
           <button type="button" data-action="endpoint#collapse">Collapse</button>
         <% else %>
@@ -33,16 +32,6 @@
   </div>
 
   <div class="endpoint-section-container">
-    <div class="endpoint-section">AUTH</div>
-    <div class="endpoint-section">AUTH</div>
-  </div>
-
-  <div class="endpoint-auth-container">
-    <div class="endpoint-auth"><%= render "specs/text", diff: auth_diff.before %></div>
-    <div class="endpoint-auth"><%= render "specs/text", diff: auth_diff.after %></div>
-  </div>
-
-  <div class="endpoint-section-container">
     <div class="endpoint-section">RESPONSES</div>
     <div class="endpoint-section">RESPONSES</div>
   </div>
@@ -50,29 +39,6 @@
   <div class="endpoint-responses-container">
     <div class="endpoint-responses"><%= render "specs/responses", diff: responses_diff.before %></div>
     <div class="endpoint-responses"><%= render "specs/responses", diff: responses_diff.after %></div>
-  </div>
-
-  <div class="endpoint-section-container">
-    <div class="endpoint-section">INPUT</div>
-    <div class="endpoint-section">INPUT</div>
-  </div>
-
-  <div class="endpoint-root-container">
-    <div class="endpoint-root">
-      <%= render "specs/json", diff: input_diff.before %>
-    </div>
-    <div class="endpoint-root">
-      <%= render "specs/json", diff: input_diff.after %>
-    </div>
-  </div>
-
-  <div class="endpoint-root-container">
-    <div class="endpoint-root">
-      <div class="spec"><%= input1.serialize %></div>
-    </div>
-    <div class="endpoint-root">
-      <div class="spec"><%= input2.serialize %></div>
-    </div>
   </div>
 
   <div class="endpoint-section-container">
@@ -89,12 +55,18 @@
     </div>
   </div>
 
+
+  <div class="endpoint-section-container">
+    <div class="endpoint-section">OUTPUT FOR ERRORS</div>
+    <div class="endpoint-section">OUTPUT FOR ERRORS</div>
+  </div>
+
   <div class="endpoint-root-container">
     <div class="endpoint-root">
-      <div class="spec"><%= output1.serialize %></div>
+      <%= render "specs/json", diff: output_error_diff.before %>
     </div>
     <div class="endpoint-root">
-      <div class="spec"><%= output2.serialize %></div>
+      <%= render "specs/json", diff: output_error_diff.after %>
     </div>
   </div>
 </div>

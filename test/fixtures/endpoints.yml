@@ -1,85 +1,14 @@
 project1v1e1:
   http_verb: 0
-  url: /thing
+  path: /user
   version: project1v1
-  original_input_string: "[string]"
-  original_output_string: "{a:string}"
-  note: "Endpoint to get thing"
-  auth: 0
+  output: "[User]"
+  output_error: "Error"
+  note: "Get users"
 project1v1e2:
   http_verb: 1
-  url: /old_thing
+  path: /user
   version: project1v1
-  original_input_string: "[string]"
-  original_output_string: "{a:string}"
-  auth: 1
+  output: "User"
+  output_error: "Error"
 
-project1v2e1:
-  http_verb: 0
-  url: /thing
-  version: project1v2
-  original_input_string: "string"
-  original_output_string: "{a:string, b:string}"
-  note: "Endpoint to get thing. It returns some object."
-  auth: 0
-project1v2e2:
-  http_verb: 0
-  url: /new_thing
-  version: project1v2
-  original_input_string: "[string]"
-  original_output_string: "{a:string}"
-  note: "Hey, that's a new endpoint."
-  auth: 1
-
-project1v3e1:
-  http_verb: 0
-  url: /thing
-  version: project1v3
-  original_input_string: "[string]"
-  original_output_string: "{a:string}"
-  note: "Endpoint to get thing. It returns some object.
-
-Oh, and I added a new line!"
-  auth: 0
-project1v3e2:
-  http_verb: 0
-  url: /new_thing
-  version: project1v3
-  original_input_string: "[string]"
-  original_output_string: "{a:string}"
-  note: "I don't see the point to comment these :/"
-  auth: 1
-project1v3e3:
-  http_verb: 0
-  url: /array_endpoint
-  version: project1v3
-  original_input_string: "[string]"
-  original_output_string: "{a:string}"
-  auth: 0
-
-project1v4e1:
-  http_verb: 0
-  url: /thing
-  version: project1v4
-  original_input_string: "[string]"
-  original_output_string: "{a:string}"
-  note: "Endpoint to get thing. It returns some object.
-
-Oh, and I added a new line!"
-  auth: 1
-project1v4e2:
-  http_verb: 0
-  url: /new_thing
-  version: project1v4
-  original_input_string: "[string]"
-  original_output_string: "{a:string}"
-  note: "I don't see the point to comment these :/"
-  auth: 0
-project1v4e3:
-  http_verb: 0
-  url: /array_endpoint
-  version: project1v4
-  original_input_string: "[string]"
-  original_output_string: "{a:string}"
-  note: "Self-explanatory. Hopefully."
-  auth: 1

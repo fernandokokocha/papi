@@ -8,12 +8,12 @@ Rails.application.routes.draw do
 
   resources :projects, only: [ :index, :new, :create ], param: :name do
     resources :candidates, only: [ :new, :create, :show, :edit, :update ], param: :name do
-      match "*", to: "test_server#candidate", via: :all, constraints: CandidateTestServerConstraint.new
+      match "*", via: :all, to: "test_server#candidate", constraints: CandidateTestServerConstraint.new
       resource :merge, only: [ :create ]
       resource :rejection, only: [ :create ]
     end
     resources :versions, only: [ :show ], param: :name do
-      match "*", to: "test_server#version", via: :all, constraints: VersionTestServerConstraint.new
+      match "*", via: :all, to: "test_server#version", constraints: VersionTestServerConstraint.new
     end
     resources :endpoints, only: [ :show ]
   end

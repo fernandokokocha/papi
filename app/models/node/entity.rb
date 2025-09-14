@@ -1,7 +1,7 @@
 class Node::Entity
   attr_accessor :entity
 
-  def initialize(entity: nil)
+  def initialize(entity: Node::Nothing.new)
     @entity = entity
   end
 
@@ -14,7 +14,7 @@ class Node::Entity
   end
 
   def expand
-    entity.root
+    entity.parsed_root
   end
 
   def expandable?
@@ -26,6 +26,6 @@ class Node::Entity
   end
 
   def to_example_json
-    entity.root.to_example_json
+    entity.parsed_root.to_example_json
   end
 end

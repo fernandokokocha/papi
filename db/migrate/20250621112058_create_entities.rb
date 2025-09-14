@@ -3,7 +3,7 @@ class CreateEntities < ActiveRecord::Migration[8.0]
     create_table :entities do |t|
       t.string :name
       t.references :version, null: false, foreign_key: true
-      t.string :original_root
+      t.string :root
 
       t.timestamps
     end

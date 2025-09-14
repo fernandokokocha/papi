@@ -1,7 +1,7 @@
 class Node::ObjectAttribute
   attr_accessor :name, :value
 
-  def initialize(name: "", value: nil)
+  def initialize(name: "", value: Node::Nothing.new)
     @name = name
     @value = value
   end

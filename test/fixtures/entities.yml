@@ -1,21 +1,8 @@
-e1v3:
+e1v1:
   name: User
-  version: project1v3
-  original_root: "{name: string}"
-e2v3:
-  name: Record
-  version: project1v3
-  original_root: "{id:string,quantity:number}"
-e3v3:
-  name: Blah
-  version: project1v3
-  original_root: "[string]"
-
-e1v4:
-  name: User
-  version: project1v4
-  original_root: "{name: string}"
-e2v4:
-  name: Record
-  version: project1v4
-  original_root: "{id:string,quantity:number,quality:number}"
+  version: project1v1
+  root: "{id:string, first_name:string, last_name:string, role:number}"
+e2v1:
+  name: Error
+  version: project1v1
+  root: "{code:number, message:string}"

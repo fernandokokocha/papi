@@ -5,7 +5,7 @@ const StaticArrayNode = ({value}) => {
     return (
         <div className="array">
             [
-            <div class="array-value">
+            <div className="array-value">
                 <StaticValue root={value}/>
             </div>
             ]

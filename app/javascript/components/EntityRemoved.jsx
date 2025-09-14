@@ -12,14 +12,6 @@ const EntityRemoved = ({entity, updateRoot, removeEntity, entities}) => {
                     {entity.original_name}
                 </div>
             </div>
-
-            <div className="entity-root-container">
-                <div className="entity-root">
-                </div>
-                <div className="entity-root">
-                    <StaticJSONSchema root={entity.root}/>
-                </div>
-            </div>
         </div>
     )
 }

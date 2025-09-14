@@ -10,16 +10,16 @@ def valid_params(project, candidate_name = "rc1", version_name = "rc1")
       name: version_name,
       order: 1,
       endpoints_attributes: [
-        { url: "/",
+        { path: "/",
           http_verb: "verb_get",
-          original_output_string: "",
-          original_input_string: "",
+          output: "",
+          output_error: "",
           auth: "bearer"
         }
       ],
       entities_attributes: [
         { name: "User",
-          original_root: "{ name: string }"
+          root: "{ name: string }"
         }
       ]
     }

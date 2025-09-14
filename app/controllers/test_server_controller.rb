@@ -7,7 +7,7 @@ class TestServerController < ApplicationController
     version = Version.find_by!(project: project, name: request.params[:version_name])
     # authorize
     endpoint = Endpoint.from_version_request(request, version).first
-    output = endpoint.output.to_example_json
+    output = endpoint.parsed_output.to_example_json
 
     render json: output
   end
@@ -18,7 +18,7 @@ class TestServerController < ApplicationController
     # authorize
     version = candidate.latest_version
     endpoint = Endpoint.from_candidate_request(request, version).first
-    output = endpoint.output.to_example_json
+    output = endpoint.parsed_output.to_example_json
 
     render json: output
   end

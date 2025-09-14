@@ -1,7 +1,7 @@
 class Version < ApplicationRecord
   belongs_to :project, optional: true
   belongs_to :candidate
-  has_many :endpoints, -> { order([ :url, :http_verb ]) }, dependent: :destroy
+  has_many :endpoints, -> { order([ :path, :http_verb ]) }, dependent: :destroy
   has_many :entities, -> { order([ :name ]) }, dependent: :destroy
   accepts_nested_attributes_for :endpoints
   accepts_nested_attributes_for :entities
@@ -28,14 +28,12 @@ class Version < ApplicationRecord
   def existing_endpoints_for_frontend
     endpoints.map do |endpoint|
       {
-        id: endpoint.id,
         http_verb: endpoint.http_verb,
         verb: endpoint.verb,
-        url: endpoint.url,
-        input: endpoint.input.serialize,
-        output: endpoint.output.serialize,
+        path: endpoint.path,
+        output: endpoint.output,
+        output_error: endpoint.output_error,
         note: endpoint.note,
-        auth: endpoint.auth,
         responses: endpoint.responses.sort_by(&:code).map { |r| { code: r.code, note: r.note } }
       }
     end.to_json
@@ -46,7 +44,7 @@ class Version < ApplicationRecord
       {
         id: entity.id,
         name: entity.name,
-        root: entity.root.serialize
+        root: entity.root
       }
     end.to_json
   end

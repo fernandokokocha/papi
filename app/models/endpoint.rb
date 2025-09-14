@@ -8,11 +8,10 @@ class Endpoint < ApplicationRecord
   }
 
   enum :http_verb, [ :verb_get, :verb_post, :verb_put, :verb_patch, :verb_delete ]
-  enum :auth, [ :no_auth, :bearer ]
   belongs_to :version
   has_many :responses, dependent: :delete_all
 
-  scope :sort_by_name, -> { order([ :url, :http_verb ]) }
+  scope :sort_by_name, -> { order([ :path, :http_verb ]) }
 
   accepts_nested_attributes_for :responses
 
@@ -21,21 +20,21 @@ class Endpoint < ApplicationRecord
   end
 
   def name
-    "#{verb} #{url}"
+    "#{verb} #{path}"
   end
 
   def page_url
-    "#{verb}-#{url}"
+    "#{verb}-#{path}"
   end
 
-  def input
+  def parsed_output
     parser = JSONSchemaParser.new(version.entities)
-    parser.parse_value(original_input_string)
+    parser.parse_value(output)
   end
 
-  def output
+  def parsed_output_error
     parser = JSONSchemaParser.new(version.entities)
-    parser.parse_value(original_output_string)
+    parser.parse_value(output_error)
   end
 
   def self.from_version_request(request, version)
@@ -43,8 +42,8 @@ class Endpoint < ApplicationRecord
     http_verb = "verb_#{method.downcase}"
 
     prefix = %r{^/projects/[^/]+/versions/[^/]+}
-    url = request.path.sub(prefix, "")
-    Endpoint.where(http_verb: http_verb, url: url, version: version)
+    path = request.path.sub(prefix, "")
+    Endpoint.where(http_verb: http_verb, path: path, version: version)
   end
 
   def self.from_candidate_request(request, version)
@@ -52,8 +51,8 @@ class Endpoint < ApplicationRecord
     http_verb = "verb_#{method.downcase}"
 
     prefix = %r{^/projects/[^/]+/candidates/[^/]+}
-    url = request.path.sub(prefix, "")
-    Endpoint.where(http_verb: http_verb, url: url, version: version)
+    path = request.path.sub(prefix, "")
+    Endpoint.where(http_verb: http_verb, path: path, version: version)
   end
 
   amoeba do

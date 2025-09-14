@@ -32,25 +32,16 @@ const EntityDiff = ({entity, updateEntity, removeEntity, entities}) => {
 
             <div className="entity-root-container">
                 <div className="entity-root">
-                    <StaticJSONSchema root={entity.original_root}/>
+                    <StaticJSONSchema root={entity.root}/>
                 </div>
                 <div className="entity-root">
                     <JSONSchemaForm
-                        name="version[entities_attributes][][original_root]"
+                        name="version[entities_attributes][][root]"
                         update={updateRoot}
                         root={entity.root}
                         id={entity.id}
                         entities={entities}
                     />
-                </div>
-            </div>
-
-            <div className="entity-root-container">
-                <div className="entity-root">
-                    <div className="spec">{serialize(entity.original_root)}</div>
-                </div>
-                <div className="entity-root">
-                    <div className="spec">{serialize(entity.root)}</div>
                 </div>
             </div>
         </div>

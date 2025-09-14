@@ -16,7 +16,7 @@ const ArrayNode = ({value, onChange, onDelete, onAdd, path, canBeDeleted, canBeN
                 entities={entities}
             />
             [
-            <div class="array-value">
+            <div className="array-value">
                 <Value
                     root={value}
                     onChange={onChange}

@@ -47,25 +47,23 @@
     <% end %>
 
     <% removed_endpoints.each do |endpoint| %>
-      <% input_diff = endpoint.input.to_diff(:no_change) %>
-      <% output_diff = endpoint.output.to_diff(:no_change) %>
-      <%= render "endpoints/endpoint_removed", endpoint: endpoint, input_diff: input_diff, output_diff: output_diff, expanded: false %>
+      <%= render "endpoints/endpoint_removed", endpoint: endpoint, expanded: false %>
     <% end %>
 
     <div class="section">Entities</div>
 
     <% existing_entities.each do |entity, previous_entity| %>
-      <% diff = Diff::FromValues.new(previous_entity.root, entity.root) %>
+      <% diff = Diff::FromValues.new(previous_entity.parsed_root, entity.parsed_root) %>
       <%= render "versions/entity_diff", entity: entity, previous_entity: previous_entity, diff: diff %>
     <% end %>
 
     <% added_entities.each do |entity| %>
-      <% diff = entity.root.to_diff(:no_change) %>
+      <% diff = entity.parsed_root.to_diff(:no_change) %>
       <%= render "versions/entity_added", entity: entity, diff: diff %>
     <% end %>
 
     <% removed_entities.each do |entity| %>
-      <% diff = entity.root.to_diff(:no_change) %>
+      <% diff = entity.parsed_root.to_diff(:no_change) %>
       <%= render "versions/entity_removed", entity: entity, diff: diff %>
     <% end %>
   </div>

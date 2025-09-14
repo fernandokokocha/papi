@@ -29,7 +29,7 @@ const ObjectNode = ({onChange, onDelete, onAdd, attributes, path, canBeDeleted, 
                 ))
             }
 
-            <div class="object-new-attribute">
+            <div className="object-new-attribute">
                 <input value={newName} onChange={(e) => {
                     setNewName(e.target.value)
                 }}></input>

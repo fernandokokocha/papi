@@ -19,16 +19,16 @@ describe "Endpoints requests", type: :request do
         name: "v1",
         order: 1,
         endpoints_attributes: [
-          { url: "/",
+          { path: "/",
             http_verb: "verb_get",
-            original_output_string: "",
-            original_input_string: "",
+            output: "",
+            output_error: "",
             auth: "bearer"
           }
         ],
         entities_attributes: [
           { name: "User",
-            original_root: "{ name: string }"
+            root: "{ name: string }"
           }
         ]
       }
