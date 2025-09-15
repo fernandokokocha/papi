@@ -12,6 +12,9 @@ class Diff::ArrayToArray
     before.add_line(Diff::Line.new("]", :no_change, indent))
     after.add_line(Diff::Line.new("]", :no_change, indent))
 
+    before.level_with_blank_lines(after)
+    after.level_with_blank_lines(before)
+
     @before = before
     @after = after
   end

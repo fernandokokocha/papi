@@ -29,6 +29,9 @@ v2e2r1:
 v2e2r2:
   endpoint: project1v2e2
   code: "403"
+v2e2r3:
+  endpoint: project1v2e2
+  code: "401"
 v2e3r1:
   endpoint: project1v2e3
   code: "200"

@@ -42,7 +42,6 @@ class Version < ApplicationRecord
   def existing_entities_for_frontend
     entities.map do |entity|
       {
-        id: entity.id,
         name: entity.name,
         root: entity.root
       }
