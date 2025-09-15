@@ -4,64 +4,56 @@
 <% output_error_diff = output_error.to_diff(:no_change) %>
 <% responses_diff = DiffResponses::FromResponses.new([], endpoint.responses) %>
 
-<div class="endpoint-container added" id="endpoint-<%= endpoint.page_url %>">
-  <div class="endpoint-name-container">
-    <div class="endpoint-name-placeholder"></div>
-    <div class="endpoint-name added">
-      <%= endpoint.name %>
-      <% if endpoint.parsed_output.expandable? || endpoint.parsed_output_error.expandable? %>
-        <% if expanded %>
-          <button type="button" data-action="endpoint#collapse" class="expand-button">Collapse</button>
-        <% else %>
-          <button type="button" data-action="endpoint#expand" class="expand-button">Expand</button>
+<div class="grid">
+  <div class="left"></div>
+  <div class="endpoint-container added" id="endpoint-<%= endpoint.page_url %>">
+    <div class="endpoint-name-container">
+      <div class="endpoint-name added">
+        <%= endpoint.name %>
+        <% if endpoint.parsed_output.expandable? || endpoint.parsed_output_error.expandable? %>
+          <% if expanded %>
+            <button type="button" data-action="endpoint#collapse" class="expand-button">Collapse</button>
+          <% else %>
+            <button type="button" data-action="endpoint#expand" class="expand-button">Expand</button>
+          <% end %>
         <% end %>
-      <% end %>
+      </div>
     </div>
-  </div>
 
-  <div class="endpoint-section-container">
-    <div class="endpoint-section-placeholder"></div>
-    <div class="endpoint-section">NOTE</div>
-  </div>
-
-  <div class="endpoint-note-container">
-    <div class="endpoint-note-placeholder"></div>
-    <div class="endpoint-note"><%= endpoint.note %></div>
-  </div>
-
-  <div class="endpoint-section-container">
-    <div class="endpoint-section-placeholder"></div>
-    <div class="endpoint-section">RESPONSES</div>
-  </div>
-
-  <div class="endpoint-responses-container">
-    <div class="endpoint-responses"><%= render "specs/responses", diff: responses_diff.before %></div>
-    <div class="endpoint-responses"><%= render "specs/responses", diff: responses_diff.after %></div>
-  </div>
-
-  <div class="endpoint-section-container">
-    <div class="endpoint-section-placeholder"></div>
-    <div class="endpoint-section">OUTPUT</div>
-  </div>
-
-  <div class="endpoint-root-container">
-    <div class="endpoint-root-placeholder">
+    <div class="endpoint-section-container">
+      <div class="endpoint-section">NOTE</div>
     </div>
-    <div class="endpoint-root">
-      <%= render "specs/json", diff: output_diff %>
-    </div>
-  </div>
 
-  <div class="endpoint-section-container">
-    <div class="endpoint-section-placeholder"></div>
-    <div class="endpoint-section">OUTPUT FOR ERRORS</div>
-  </div>
-
-  <div class="endpoint-root-container">
-    <div class="endpoint-root-placeholder">
+    <div class="endpoint-note-container">
+      <div class="endpoint-note"><%= endpoint.note %></div>
     </div>
-    <div class="endpoint-root">
-      <%= render "specs/json", diff: output_error_diff %>
+
+    <div class="endpoint-section-container">
+      <div class="endpoint-section">RESPONSES</div>
+    </div>
+
+    <div class="endpoint-responses-container">
+      <div class="endpoint-responses"><%= render "specs/responses", diff: responses_diff.after %></div>
+    </div>
+
+    <div class="endpoint-section-container">
+      <div class="endpoint-section">OUTPUT</div>
+    </div>
+
+    <div class="endpoint-root-container">
+      <div class="endpoint-root">
+        <%= render "specs/json", diff: output_diff %>
+      </div>
+    </div>
+
+    <div class="endpoint-section-container">
+      <div class="endpoint-section">OUTPUT FOR ERRORS</div>
+    </div>
+
+    <div class="endpoint-root-container">
+      <div class="endpoint-root">
+        <%= render "specs/json", diff: output_error_diff %>
+      </div>
     </div>
   </div>
 </div>

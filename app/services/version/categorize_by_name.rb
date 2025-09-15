@@ -25,6 +25,6 @@ class Version::CategorizeByName
       e.annotation = "removed"
     end
 
-    (@collection + not_present_in_present).sort_by { |e| e.name }
+    (@collection + not_present_in_present).sort_by { |e| e.sort_name }
   end
 end

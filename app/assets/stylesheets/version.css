@@ -168,6 +168,7 @@
                         padding: 4px;
                         display: flex;
                         justify-content: space-between;
+                        align-items: center;
                     }
 
                     .endpoint-name-placeholder {
@@ -417,5 +418,12 @@
     .expand-button {
         padding: 2px;
         font-size: 14px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+        gap: 10px;
     }
 }

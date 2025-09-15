@@ -12,4 +12,8 @@ class Entity < ApplicationRecord
     parser = JSONSchemaParser.new
     parser.parse_value(root)
   end
+
+  def sort_name
+    name
+  end
 end

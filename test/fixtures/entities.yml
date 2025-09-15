@@ -10,6 +10,10 @@ e3v1:
   name: Error
   version: project1v1
   root: "{code:number, message:string}"
+e4v1:
+  name: Record
+  version: project1v1
+  root: "{id:number, quantity:number, is_available: boolean, name:string}"
 
 e1v2:
   name: NotUsed
@@ -23,3 +27,7 @@ e3v2:
   name: Error
   version: project1v2
   root: "{code:number, message:string}"
+e4v2:
+  name: Record
+  version: project1v2
+  root: "{id:number, quantity:number, is_available: boolean, name:string}"

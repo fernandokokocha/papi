@@ -17,6 +17,12 @@ project1v1e3:
   version: project1v1
   output: "boolean"
   output_error: "Error"
+project1v1e4:
+  http_verb: 0
+  path: /record
+  version: project1v1
+  output: "Record"
+  output_error: "Error"
 
 project1v2e1:
   http_verb: 0

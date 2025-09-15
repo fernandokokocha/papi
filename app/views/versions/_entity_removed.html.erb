@@ -1,15 +1,18 @@
-<div class="entity-container removed" id="entity-<%= entity.name %>">
-  <div class="entity-name-container">
-    <div class="entity-name removed">
-      <%= entity.name %>
+<div class="grid">
+  <div class="entity-container removed" id="entity-<%= entity.name %>">
+    <div class="entity-name-container">
+      <div class="entity-name removed">
+        <%= entity.name %>
+      </div>
+      <div class="entity-name-placeholder"></div>
     </div>
-    <div class="entity-name-placeholder"></div>
-  </div>
 
-  <div class="entity-root-container">
-    <div class="entity-root">
-      <%= render "specs/json", diff: diff %>
+    <div class="entity-root-container">
+      <div class="entity-root">
+        <%= render "specs/json", diff: diff %>
+      </div>
+      <div class="entity-root-placeholder"></div>
     </div>
-    <div class="entity-root-placeholder"></div>
   </div>
+  <div class="right"></div>
 </div>

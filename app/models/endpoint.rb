@@ -26,6 +26,10 @@ class Endpoint < ApplicationRecord
     "#{verb} #{path}"
   end
 
+  def sort_name
+    "#{path} #{http_verb} "
+  end
+
   def page_url
     "#{verb}-#{path}"
   end
