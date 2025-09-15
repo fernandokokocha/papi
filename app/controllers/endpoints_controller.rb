@@ -5,7 +5,7 @@ class EndpointsController < ApplicationController
     @version = @endpoint.version
 
     authorize @endpoint
-    previous_endpoint = @version.previous.endpoints.where(path: @endpoint.path, http_verb: @endpoint.http_verb).first
+    previous_endpoint = previous_version.endpoints.where(path: @endpoint.path, http_verb: @endpoint.http_verb).first
     expanded = params[:expanded].nil? ? true : parse_expanded(params[:expanded])
 
     unless previous_endpoint
@@ -24,5 +24,10 @@ class EndpointsController < ApplicationController
 
   def parse_expanded(expanded)
     expanded != "false"
+  end
+
+  def previous_version
+    return @version.candidate.base_version unless @version.project
+    @version.previous
   end
 end
