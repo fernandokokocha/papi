@@ -1,149 +1,149 @@
 .projects-view {
-  max-width: 600px;
-  margin: 2rem auto;
+    max-width: 600px;
+    margin: 2rem auto;
 
-  h1 {
-    margin: 0 0 2rem 0;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #2d3748;
-    text-align: center;
-    border-bottom: 2px solid #e2e8f0;
-    padding-bottom: 1rem;
-  }
-
-  .flash-message {
-    padding: 1rem;
-    margin-bottom: 1.5rem;
-    border-radius: 6px;
-    font-size: 0.9rem;
-
-    &.flash-alert {
-      background-color: #fed7d7;
-      color: #c53030;
-      border: 1px solid #feb2b2;
-
-      strong {
-        font-weight: 600;
-      }
-
-      ul {
-        margin: 0.75rem 0 0 0;
-        padding-left: 1.5rem;
-
-        li {
-          margin-bottom: 0.25rem;
-        }
-      }
-    }
-  }
-
-  form {
-    background: white;
-    padding: 2rem;
-
-    .form-group {
-      margin-bottom: 1.5rem;
-
-      .form-label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 600;
+    h1 {
+        margin: 0 0 2rem 0;
+        font-size: 2rem;
+        font-weight: 700;
         color: #2d3748;
-        font-size: 0.9rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-      }
+        text-align: center;
+        border-bottom: 2px solid #e2e8f0;
+        padding-bottom: 1rem;
+    }
 
-      .form-input {
-        width: 100%;
-        padding: 0.75rem 1rem;
-        border: 2px solid #e2e8f0;
+    .flash-message {
+        padding: 1rem;
+        margin-bottom: 1.5rem;
         border-radius: 6px;
-        font-size: 1rem;
-        background-color: #f7fafc;
-        transition: border-color 0.2s ease, background-color 0.2s ease;
-        box-sizing: border-box;
+        font-size: 0.9rem;
 
-        &:focus {
-          outline: none;
-          border-color: #4a5568;
-          background-color: white;
-          box-shadow: 0 0 0 3px rgba(74, 85, 104, 0.1);
-        }
+        &.flash-alert {
+            background-color: #fed7d7;
+            color: #c53030;
+            border: 1px solid #feb2b2;
 
-        &::placeholder {
-          color: #a0aec0;
-        }
+            strong {
+                font-weight: 600;
+            }
 
-        &[readonly] {
-          background-color: #edf2f7;
-          color: #4a5568;
-          cursor: not-allowed;
+            ul {
+                margin: 0.75rem 0 0 0;
+                padding-left: 1.5rem;
+
+                li {
+                    margin-bottom: 0.25rem;
+                }
+            }
         }
-      }
     }
 
-    > div:last-child {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      justify-content: flex-start;
-      margin-top: 2rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid #e2e8f0;
+    form {
+        background: white;
+        padding: 2rem;
 
-      a {
-        color: #4a5568;
-        text-decoration: none;
-        font-weight: 500;
-        padding: 0.75rem 1.5rem;
-        transition: color 0.2s ease;
+        .form-group {
+            margin-bottom: 1.5rem;
 
-        &:hover {
-          color: #2d3748;
-          text-decoration: underline;
+            .form-label {
+                display: block;
+                margin-bottom: 0.5rem;
+                font-weight: 600;
+                color: #2d3748;
+                font-size: 0.9rem;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+            }
+
+            .form-input {
+                width: 100%;
+                padding: 0.75rem 1rem;
+                border: 2px solid #e2e8f0;
+                border-radius: 6px;
+                font-size: 1rem;
+                background-color: #f7fafc;
+                transition: border-color 0.2s ease, background-color 0.2s ease;
+                box-sizing: border-box;
+
+                &:focus {
+                    outline: none;
+                    border-color: #4a5568;
+                    background-color: white;
+                    box-shadow: 0 0 0 3px rgba(74, 85, 104, 0.1);
+                }
+
+                &::placeholder {
+                    color: #a0aec0;
+                }
+
+                &[readonly] {
+                    background-color: #edf2f7;
+                    color: #4a5568;
+                    cursor: not-allowed;
+                }
+            }
         }
-      }
+
+        > div:last-child {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            justify-content: flex-start;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e2e8f0;
+
+            a {
+                color: #4a5568;
+                text-decoration: none;
+                font-weight: 500;
+                padding: 0.75rem 1.5rem;
+                transition: color 0.2s ease;
+
+                &:hover {
+                    color: #2d3748;
+                    text-decoration: underline;
+                }
+            }
+        }
     }
-  }
 
-  .project-card {
-    display: flex;
-    flex-direction: column;
-    border: 1px solid black;
-    font-size: 20px;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-
-    header {
-      font-size: 24px;
-      font-weight: 800;
-      padding: 5px 0;
-    }
-
-    .project-body {
-      display: flex;
-      flex-direction: row;
-      justify-content: center;
-      gap: 10px;
-      align-items: flex-start;
-
-      .section {
+    .project-card {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid black;
         font-size: 20px;
-        font-weight: 800;
         padding: 10px;
-        width: 100%;
-      }
+        margin: 10px 0;
+        border-radius: 5px;
 
-      .version {
-        padding-top: 2px;
-
-        .date {
-          font-size: 16px;
+        header {
+            font-size: 24px;
+            font-weight: 800;
+            padding: 5px 0;
         }
-      }
+
+        .project-body {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            gap: 10px;
+            align-items: flex-start;
+
+            .section {
+                font-size: 20px;
+                font-weight: 800;
+                padding: 10px;
+                width: 100%;
+            }
+
+            .version {
+                padding-top: 2px;
+            }
+
+            .date {
+                font-size: 16px;
+            }
+        }
     }
-  }
 }

@@ -4,7 +4,7 @@
     <div class="project-card">
       <header><%= project.name %></header>
       <div class="project-body">
-        <div class="section">Versions:
+        <div class="section">Versions
           <% project.versions.order({ order: "DESC" }).each do |version| %>
             <div class="version">
               <%= link_to version.name, project_version_path(name: version.name, project_name: project.name) %>
@@ -14,15 +14,12 @@
         </div>
         <div class="section">
           <div>
-            Candidates:
+            Candidates
           </div>
           <% project.candidates.order({ order: "DESC" }).each do |candidate| %>
             <div>
               <%= link_to candidate.name, project_candidate_path(name: candidate.name, project_name: project.name) %>
-              <%= candidate.aasm_state %>
-              <% if candidate.base_version %>
-                (base version <%= candidate.base_version.name %> )
-              <% end %>
+              <span class="date"><%= candidate.aasm_state %></span>
             </div>
           <% end %>
           <% if project.can_create_candidate? %>

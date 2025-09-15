@@ -234,7 +234,6 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
     }
 
     useEffect(() => {
-        console.log({ serializedEndpoints })
         const parsed_endpoints = JSON.parse(serializedEndpoints)
 
         parsed_endpoints.forEach((endpointData) => {
@@ -256,13 +255,9 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
             endpointData.original_note = endpointData.note
             endpointData.original_responses = endpointData.responses
         })
-        console.log({parsed_endpoints})
         setEndpoints(parsed_endpoints)
 
-        console.log({ serializedEntities })
-
         const parsed_entities = JSON.parse(serializedEntities)
-
         parsed_entities.forEach((entityData) => {
             entityData.type = "old"
             entityData.id = uuidv4()
@@ -276,7 +271,6 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
             entityData.is_referenced = true
         })
         checkEntitiesReferences(parsed_endpoints, parsed_entities)
-        console.log({parsed_entities})
         setEntities(parsed_entities)
     }, [])
 

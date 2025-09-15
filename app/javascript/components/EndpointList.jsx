@@ -1,7 +1,6 @@
 import React from 'react'
 import Endpoint from "~/components/Endpoint.jsx";
 
-
 const EndpointList = ({
                           endpoints,
                           entities,

@@ -13,10 +13,10 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
         updateEndpoint(endpoint.id, newEndpoint)
     }
 
-    const updateUrl = (newPath) => {
+    const updatePath = (newPath) => {
         const newEndpoint = {
             ...endpoint,
-            url: newPath
+            path: newPath
         }
         updateEndpoint(endpoint.id, newEndpoint)
     }
@@ -112,7 +112,7 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
                     </select>
                     <input type="text"
                            value={endpoint.path}
-                           onChange={(e) => updateUrl(e.target.value)}
+                           onChange={(e) => updatePath(e.target.value)}
                            name="version[endpoints_attributes][][path]"
                     />
                     <button type="button" onClick={(e) => remove(endpoint.id)}>x</button>
