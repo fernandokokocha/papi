@@ -1,83 +1,21 @@
-<% show_existing_endpoints = existing_endpoints.any? %>
-<% show_added_endpoints = added_endpoints.any? %>
-<% show_removed_endpoints = removed_endpoints.any? %>
-<% show_endpoints = show_existing_endpoints || show_added_endpoints || show_removed_endpoints %>
-
-<% show_existing_entities = existing_entities.any? %>
-<% show_added_entities = added_entities.any? %>
-<% show_removed_entities = removed_entities.any? %>
-<% show_entities = show_existing_entities || show_added_entities || show_removed_entities %>
-
 <aside>
-  <% if show_endpoints %>
+  <% if @categorized_endpoints.any? %>
     <div class="aside-section">
       <div class="aside-header">Endpoints</div>
-      <% if show_existing_endpoints %>
-        <div class="aside-subsection">
-          <% existing_endpoints.each do |endpoint, _| %>
-            <div class="link-container">
-              <a href="<%= "#endpoint-#{endpoint.page_url}" %>"><%= endpoint.name %></a>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
-
-      <% if show_added_endpoints %>
-        <div class="aside-subsection">
-          <div class="aside-header">New endpoints</div>
-          <% added_endpoints.each do |endpoint| %>
-            <div class="link-container added">
-              <a href="<%= "#endpoint-#{endpoint.page_url}" %>"><%= endpoint.name %></a>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
-
-      <% if show_removed_endpoints %>
-        <div class="aside-subsection">
-          <div class="aside-header">Removed endpoints</div>
-          <% removed_endpoints.each do |endpoint| %>
-            <div class="link-container removed">
-              <a href="<%= "#endpoint-#{endpoint.page_url}" %>"><%= endpoint.name %></a>
-            </div>
-          <% end %>
+      <% @categorized_endpoints.each do |endpoint| %>
+        <div class="link-container <%= endpoint.annotation %>">
+          <a href="<%= "#endpoint-#{endpoint.page_url}" %>"><%= endpoint.name %></a>
         </div>
       <% end %>
     </div>
   <% end %>
 
-  <% if show_entities %>
+  <% if @categorized_entities.any? %>
     <div class="aside-section">
       <div class="aside-header">Entities</div>
-      <% if show_existing_entities %>
-        <div class="aside-subsection">
-          <% existing_entities.each do |entity, _| %>
-            <div class="link-container">
-              <a href="<%= "#entity-#{entity.name}" %>"><%= entity.name %></a>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
-
-      <% if show_added_entities %>
-        <div class="aside-subsection">
-          <div class="aside-header">New entities</div>
-          <% added_entities.each do |entity| %>
-            <div class="link-container added">
-              <a href="<%= "#entity-#{entity.name}" %>"><%= entity.name %></a>
-            </div>
-          <% end %>
-        </div>
-      <% end %>
-
-      <% if show_removed_entities %>
-        <div class="aside-subsection">
-          <div class="aside-header">Removed entities</div>
-          <% removed_entities.each do |entity| %>
-            <div class="link-container removed">
-              <a href="<%= "#entity-#{entity.name}" %>"><%= entity.name %></a>
-            </div>
-          <% end %>
+      <% @categorized_entities.each do |entity| %>
+        <div class="link-container <%= entity.annotation %>">
+          <a href="<%= "#entity-#{entity.name}" %>"><%= entity.name %></a>
         </div>
       <% end %>
     </div>

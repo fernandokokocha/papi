@@ -1,48 +1,30 @@
 class Version::CategorizeByName
   def initialize(previous_collection, collection)
-    @previous_collection = previous_collection.sort_by_name
-    @collection = collection.sort_by_name
+    @previous_collection = previous_collection
+    @collection = collection
   end
 
   def call
-    unless @collection
-      return {
-        existing: [],
-        added: [],
-        removed: []
-      }
-    end
-
-    unless @previous_collection
-      return {
-        existing: [],
-        added: @collection,
-        removed: []
-      }
-    end
-
-    ret = {
-      existing: [],
-      added: [],
-      removed: []
-    }
-
     @collection.each do |e|
       found = @previous_collection.find { |ne| ne.name == e.name }
       if found
-        ret[:existing].push([ e, found ])
+        e.annotation = "existing"
+        e.previous = found
       else
-        ret[:added].push(e)
+        e.annotation = "added"
+        e.previous = nil
       end
     end
 
-    @previous_collection.each do |e|
+    not_present_in_present = @previous_collection.select do |e|
       found = @collection.find { |ne| ne.name == e.name }
-      unless found
-        ret[:removed].push(e)
-      end
+      not found
     end
 
-    ret
+    not_present_in_present.each do |e|
+      e.annotation = "removed"
+    end
+
+    (@collection + not_present_in_present).sort_by { |e| e.name }
   end
 end

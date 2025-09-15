@@ -1,12 +1,16 @@
 <div class="version-view">
   <div class="title-container">
-    <h1><%= @project.name %> - Candidate <%= @candidate.name %></h1>
-    <span><%= @candidate.aasm_state %></span>
+    <div class="title">
+      <h1><%= @project.name %> - Candidate <%= @candidate.name %></h1>
+      <span class="state-badge state-<%= @candidate.aasm_state %>"><%= @candidate.aasm_state.capitalize %></span>
+    </div>
+    <% if @candidate.open? %>
+      <div class="options">
+        <%= button_to "Merge", project_candidate_merge_path(@project.name, @candidate.name), class: "btn btn-merge" %>
+        <%= button_to "Reject", project_candidate_rejection_path(@project.name, @candidate.name), class: "btn btn-reject" %>
+        <%= button_to "Edit", edit_project_candidate_path(@project.name, @candidate.name), method: :get, class: "btn btn-primary" %>
+      </div>
+    <% end %>
   </div>
-  <% if @candidate.open? %>
-    <%= button_to "Merge", project_candidate_merge_path(@project.name, @candidate.name), class: "btn btn-primary" %>
-    <%= button_to "Reject", project_candidate_rejection_path(@project.name, @candidate.name), class: "btn btn-secondary" %>
-    <%= button_to "Edit", edit_project_candidate_path(@project.name, @candidate.name), method: :get, class: "btn btn-outline" %>
-  <% end %>
   <%= render "versions/version" %>
 </div>

@@ -1,4 +1,7 @@
 class Endpoint < ApplicationRecord
+  attr_accessor :annotation
+  attr_accessor :previous
+
   VERB_TRANSLATIONS = {
     verb_get: "GET",
     verb_post: "POST",

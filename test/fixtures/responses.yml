@@ -16,3 +16,22 @@ v1e3r1:
 v1e3r2:
   endpoint: project1v1e3
   code: "403"
+
+v2e1r1:
+  endpoint: project1v2e1
+  code: "200"
+v2e1r2:
+  endpoint: project1v2e1
+  code: "403"
+v2e2r1:
+  endpoint: project1v2e2
+  code: "201"
+v2e2r2:
+  endpoint: project1v2e2
+  code: "403"
+v2e3r1:
+  endpoint: project1v2e3
+  code: "200"
+v2e3r2:
+  endpoint: project1v2e3
+  code: "403"

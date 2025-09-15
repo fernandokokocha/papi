@@ -78,4 +78,52 @@
     color: #212529;
     border: 2px solid #212529;
   }
+
+  &.btn-merge {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #10b981;
+    font-weight: 600;
+  }
+
+  &.btn-reject {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #ef4444;
+    font-weight: 600;
+  }
+}
+
+.state-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &.state-open {
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #f59e0b;
+  }
+
+  &.state-merged {
+    background-color: #d1fae5;
+    color: #065f46;
+    border: 1px solid #10b981;
+  }
+
+  &.state-rejected {
+    background-color: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #ef4444;
+  }
+
+  &.state-badge-small {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.7rem;
+    border-radius: 12px;
+  }
 }

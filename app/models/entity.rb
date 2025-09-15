@@ -1,4 +1,7 @@
 class Entity < ApplicationRecord
+  attr_accessor :annotation
+  attr_accessor :previous
+
   belongs_to :version
 
   validates :name, uniqueness: { scope: :version_id }

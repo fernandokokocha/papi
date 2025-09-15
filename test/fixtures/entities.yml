@@ -18,7 +18,7 @@ e1v2:
 e2v2:
   name: User
   version: project1v2
-  root: "{id:string, first_name:string, last_name:string, role:{id: number, description: string}}"
+  root: "{id:string, first_name:string, last_name:string, role:number}"
 e3v2:
   name: Error
   version: project1v2

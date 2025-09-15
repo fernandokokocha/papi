@@ -19,7 +19,7 @@
           <% project.candidates.order({ order: "DESC" }).each do |candidate| %>
             <div>
               <%= link_to candidate.name, project_candidate_path(name: candidate.name, project_name: project.name) %>
-              <span class="date"><%= candidate.aasm_state %></span>
+              <span class="state-badge state-badge-small state-<%= candidate.aasm_state %>"><%= candidate.aasm_state.capitalize %></span>
             </div>
           <% end %>
           <% if project.can_create_candidate? %>
