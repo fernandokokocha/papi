@@ -12,8 +12,6 @@ const ObjectNode = ({onChange, onDelete, onAdd, attributes, path, canBeDeleted, 
             <TypeSelect value="object" onChange={onChange} onDelete={onDelete} path={path} canBeDeleted={canBeDeleted} canBeNothing={canBeNothing} entities={entities}/>
             {"{"}
 
-            {attributes.length === 0 && <div className="alert object-attribute" style={{ backgroundColor: "red"}}>Add attrs</div>}
-
             {
                 attributes.map(({name, value}) => (
                     <ObjectAttribute name={name}

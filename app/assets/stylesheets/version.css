@@ -147,8 +147,12 @@
             }
 
             .endpoint-container {
-                margin-bottom: 10px;
+                margin: 1px 1px 10px 1px;
                 border: 1px solid black;
+
+                &:target {
+                    border: 2px solid red;
+                }
 
                 .endpoint-name-container {
                     width: 100%;
@@ -297,8 +301,12 @@
             }
 
             .entity-container {
-                margin-bottom: 10px;
+                margin: 1px 1px 10px 1px;
                 border: 1px solid black;
+
+                &:target {
+                    border: 2px solid red;
+                }
 
                 .entity-name-container {
                     width: 100%;
@@ -402,9 +410,22 @@
 
 
         .alert {
-            background: red;
-            margin: 2px;
-            padding: 2px;
+            background-color: #fee2e2;
+            color: #b91c1c;
+            border: 1px solid #ef4444;
+            border-radius: 6px;
+            padding: 0.75rem 1rem;
+            margin: 0.5rem 0;
+            font-size: 0.875rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+
+            &:before {
+                content: "⚠️";
+                margin-right: 0.5rem;
+                font-size: 1rem;
+            }
         }
 
         .submit {

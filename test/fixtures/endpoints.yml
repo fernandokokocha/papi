@@ -11,18 +11,21 @@ project1v1e2:
   version: project1v1
   output: "User"
   output_error: "Error"
+  note: "Create user"
 project1v1e3:
   http_verb: 4
   path: /user
   version: project1v1
   output: "boolean"
   output_error: "Error"
+  note: "Delete user"
 project1v1e4:
   http_verb: 0
   path: /record
   version: project1v1
   output: "Record"
   output_error: "Error"
+  note: "???"
 
 project1v2e1:
   http_verb: 0
@@ -37,9 +40,11 @@ project1v2e2:
   version: project1v2
   output: "User"
   output_error: "Error"
+  note: "Create user\nSend User in body"
 project1v2e3:
   http_verb: 4
   path: /user
   version: project1v2
   output: "boolean"
   output_error: "Error"
+  note: "Delete user"

@@ -274,6 +274,14 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         setEntities(parsed_entities)
     }, [])
 
+    const disabled = !(noCollisions && anyChanges);
+    let className = "btn "
+    if (disabled) {
+        className += "btn-secondary"
+    } else {
+        className += "btn-primary"
+    }
+
     return (
         <>
             <div className="submit">
@@ -282,7 +290,8 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
                 <input type="submit"
                        name="commit"
                        value="Create Version"
-                       disabled={!(noCollisions && anyChanges)}
+                       className={className}
+                       disabled={disabled}
                 />
             </div>
             <EndpointList
