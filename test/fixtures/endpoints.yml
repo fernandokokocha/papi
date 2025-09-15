@@ -17,3 +17,23 @@ project1v1e3:
   version: project1v1
   output: "boolean"
   output_error: "Error"
+
+project1v2e1:
+  http_verb: 0
+  path: /user
+  version: project1v2
+  output: "[User]"
+  output_error: "Error"
+  note: "Get users"
+project1v2e2:
+  http_verb: 1
+  path: /user
+  version: project1v2
+  output: "User"
+  output_error: "Error"
+project1v2e3:
+  http_verb: 4
+  path: /user
+  version: project1v2
+  output: "boolean"
+  output_error: "Error"

@@ -40,10 +40,7 @@
 
   form {
     background: white;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
     padding: 2rem;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
     .form-group {
       margin-bottom: 1.5rem;
@@ -114,10 +111,10 @@
   .project-card {
     display: flex;
     flex-direction: column;
+    border: 1px solid black;
     font-size: 20px;
     padding: 10px;
     margin: 10px 0;
-    background: beige;
     border-radius: 5px;
 
     header {
@@ -129,15 +126,15 @@
     .project-body {
       display: flex;
       flex-direction: row;
-      justify-content: flex-start;
+      justify-content: center;
       gap: 10px;
       align-items: flex-start;
 
       .section {
         font-size: 20px;
         font-weight: 800;
-        border: 1px solid black;
         padding: 10px;
+        width: 100%;
       }
 
       .version {

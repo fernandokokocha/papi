@@ -10,3 +10,16 @@ e3v1:
   name: Error
   version: project1v1
   root: "{code:number, message:string}"
+
+e1v2:
+  name: NotUsed
+  version: project1v2
+  root: "{id:number}"
+e2v2:
+  name: User
+  version: project1v2
+  root: "{id:string, first_name:string, last_name:string, role:{id: number, description: string}}"
+e3v2:
+  name: Error
+  version: project1v2
+  root: "{code:number, message:string}"

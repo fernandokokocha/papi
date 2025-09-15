@@ -58,52 +58,24 @@
   border-radius: 8px;
   font-size: 16px;
   cursor: pointer;
-  transition: all 0.2s ease;
-  text-decoration: none;
   display: inline-block;
   text-align: center;
+  height: 45px;
+  min-width: 100px;
 
   &.btn-primary {
     background: #212529;
     color: white;
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(33, 37, 41, 0.3);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
   }
 
   &.btn-secondary {
     background: #6c757d;
     color: white;
-
-    &:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 20px rgba(108, 117, 125, 0.3);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
   }
 
   &.btn-outline {
     background: transparent;
     color: #212529;
     border: 2px solid #212529;
-
-    &:hover {
-      background: #212529;
-      color: white;
-      transform: translateY(-2px);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
   }
 }
