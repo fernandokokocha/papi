@@ -36,7 +36,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Nav button: `bg-sky-500 hover:bg-sky-400 text-white`
 
 ### Page
-- Background: `white`
+- Background: `bg-gray-50` (page), `bg-white` (panels/cards)
 - Layout border: `border-gray-200`
 - Primary text: `text-gray-900`
 - Secondary text: `text-gray-500`
