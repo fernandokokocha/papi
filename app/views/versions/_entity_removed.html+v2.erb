@@ -1,0 +1,11 @@
+<div class="grid grid-cols-2 gap-2">
+  <div>
+    <div class="border border-red-200 rounded-lg overflow-hidden">
+      <div class="bg-gray-900 text-white px-4 py-2 text-sm font-mono line-through opacity-60">
+        <%= entity.name %>
+      </div>
+      <div class="pl-2 py-2 bg-red-50 border-b border-red-200"><%= render "specs/json", diff: diff %></div>
+    </div>
+  </div>
+  <div></div>
+</div>

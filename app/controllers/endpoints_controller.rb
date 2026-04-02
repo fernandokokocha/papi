@@ -9,15 +9,15 @@ class EndpointsController < ApplicationController
     expanded = params[:expanded].nil? ? true : parse_expanded(params[:expanded])
 
     unless previous_endpoint
-      render partial: "endpoints/endpoint_added",
-             layout: false,
-             locals: { endpoint: @endpoint, expanded: expanded }
+      respond_to do |format|
+        format.html { render partial: "endpoints/endpoint_added", layout: false, locals: { endpoint: @endpoint, expanded: expanded } }
+      end
       return
     end
 
-    render partial: "endpoints/endpoint_diff",
-           layout: false,
-           locals: { endpoint: @endpoint, previous_endpoint: previous_endpoint, expanded: expanded }
+    respond_to do |format|
+      format.html { render partial: "endpoints/endpoint_diff", layout: false, locals: { endpoint: @endpoint, previous_endpoint: previous_endpoint, expanded: expanded } }
+    end
   end
 
   private

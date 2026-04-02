@@ -7,7 +7,7 @@ class DiffText::Line
   end
 
   def self.blank
-    self.new("", :no_change)
+    self.new("", :blank)
   end
 
   def self.no_change(line)

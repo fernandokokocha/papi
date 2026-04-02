@@ -18,5 +18,7 @@ Rails.application.routes.draw do
     resources :endpoints, only: [ :show ]
   end
 
+  get "design-preview" => "design_preview#show"
+
   root "projects#index"
 end

@@ -13,8 +13,8 @@ export default class extends Controller {
     }
 
     makeCall(expanded) {
-        const expanded_part = expanded ? "?expanded=true" : "?expanded=false"
-        const url = this.urlValue + expanded_part
+        const separator = this.urlValue.includes('?') ? '&' : '?'
+        const url = this.urlValue + separator + 'expanded=' + expanded
         fetch(url, {headers: {"Turbo": "false"}})
             .then(response => response.text())
             .then(html => {

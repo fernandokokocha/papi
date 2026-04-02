@@ -1,0 +1,104 @@
+<div class="grid grid-cols-2 gap-6 mb-6">
+
+  <!-- Left: page elements -->
+  <div class="bg-white rounded p-6 flex flex-col gap-5 border border-gray-200">
+    <div>
+      <p class="text-gray-900 font-semibold text-lg">Project: My API</p>
+      <p class="text-gray-500 text-sm mt-1">Last updated 2026-01-10</p>
+    </div>
+
+    <!-- Badges -->
+    <div>
+      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">State badges</p>
+      <div class="flex gap-2 flex-wrap">
+        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200">Open</span>
+        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Merged</span>
+        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-red-50 text-red-700 border border-red-200">Rejected</span>
+      </div>
+    </div>
+
+    <!-- Input -->
+    <div>
+      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Input</p>
+      <label class="block text-sm font-medium text-gray-700 mb-1">Email address</label>
+      <input type="text" placeholder="you@example.com"
+             class="w-full border border-gray-300 rounded px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500">
+    </div>
+
+    <!-- Code/mono -->
+    <div>
+      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Monospace / code</p>
+      <div class="bg-gray-100 text-gray-800 font-mono text-xs rounded p-3">GET /api/users → 200 OK</div>
+    </div>
+  </div>
+
+  <!-- Right: button variants -->
+  <div class="bg-white rounded p-6 flex flex-col gap-6 border border-gray-200">
+
+    <div>
+      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Primary</p>
+      <div class="flex gap-2 flex-wrap">
+        <button class="bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded font-medium">Save</button>
+        <button class="bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded font-medium">Create project</button>
+        <button class="bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded font-medium">Submit</button>
+      </div>
+    </div>
+
+    <div>
+      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Secondary — A · sky outline</p>
+      <div class="flex gap-2 flex-wrap">
+        <button class="bg-white text-sky-700 border border-sky-300 text-sm px-4 py-2 rounded font-medium">Edit</button>
+        <button class="bg-white text-sky-700 border border-sky-300 text-sm px-4 py-2 rounded font-medium">View details</button>
+        <button class="bg-white text-sky-700 border border-sky-300 text-sm px-4 py-2 rounded font-medium">Cancel</button>
+      </div>
+    </div>
+
+    <div>
+      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Secondary — B · gray fill</p>
+      <div class="flex gap-2 flex-wrap">
+        <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm px-4 py-2 rounded font-medium">Edit</button>
+        <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm px-4 py-2 rounded font-medium">View details</button>
+        <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm px-4 py-2 rounded font-medium">Cancel</button>
+      </div>
+    </div>
+
+    <div>
+      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Secondary — C · gray outline</p>
+      <div class="flex gap-2 flex-wrap">
+        <button class="bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-sm px-4 py-2 rounded font-medium">Edit</button>
+        <button class="bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-sm px-4 py-2 rounded font-medium">View details</button>
+        <button class="bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-sm px-4 py-2 rounded font-medium">Cancel</button>
+      </div>
+    </div>
+
+    <div>
+      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Merge &amp; Reject — filled, badge-matched</p>
+      <div class="flex gap-2 flex-wrap">
+        <button class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-4 py-2 rounded font-medium">Merge</button>
+        <button class="bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2 rounded font-medium">Reject</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="bg-white rounded p-6 flex flex-col gap-5 border border-gray-200">
+  <p class="text-gray-900 font-semibold text-lg">Endpoints</p>
+  <div class="flex flex-col gap-2">
+    <%= render "endpoints/endpoint_diff", endpoint: @diff_endpoints[1], previous_endpoint: @diff_endpoints[0] %>
+    <%= render "endpoints/endpoint_new", endpoint: @new_endpoint %>
+    <%= render "endpoints/endpoint_removed", endpoint: @removed_endpoint %>
+  </div>
+</div>
+
+<div class="bg-white rounded mt-4 p-6 flex flex-col gap-5 border border-gray-200">
+  <p class="text-gray-900 font-semibold text-lg">Entities</p>
+  <div class="flex flex-col gap-2">
+    <% diff = Diff::FromValues.new(@diff_entities[0].parsed_root, @diff_entities[1].parsed_root) %>
+    <%= render "versions/entity_diff", entity: @diff_entities[1], previous_entity: @diff_entities[0], diff: diff %>
+    <% diff = @new_entity.parsed_root.to_diff(:no_change) %>
+    <%= render "versions/entity_added", entity: @new_entity, diff: diff %>
+    <% diff = @removed_entity.parsed_root.to_diff(:no_change) %>
+    <%= render "versions/entity_removed", entity: @removed_entity, diff: diff %>
+  </div>
+</div>
