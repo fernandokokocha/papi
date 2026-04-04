@@ -85,7 +85,7 @@
 <div class="bg-white rounded p-6 flex flex-col gap-5 border border-gray-200">
   <p class="text-gray-900 font-semibold text-lg">Endpoints</p>
   <div class="flex flex-col gap-2">
-    <%= render "endpoints/endpoint_diff", endpoint: @diff_endpoints[1], previous_endpoint: @diff_endpoints[0] %>
+    <%= render "endpoints/endpoint_diff", endpoint: @diff_endpoints[1], previous_endpoint: @diff_endpoints[0], expanded: false %>
     <%= render "endpoints/endpoint_new", endpoint: @new_endpoint %>
     <%= render "endpoints/endpoint_removed", endpoint: @removed_endpoint %>
   </div>

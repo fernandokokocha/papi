@@ -1,56 +1,114 @@
+/* ── Spec display — shared between old and v2 design ── */
+
+.line {
+    font-family: monospace;
+    white-space: pre;
+    height: 15px;
+    line-height: 15px;
+
+    &.added {
+        background: #D1FFBD;
+    }
+
+    &.removed {
+        background: lightpink;
+    }
+
+    &.type_changed {
+        background: sandybrown;
+    }
+
+    &.no_change {
+        background: white;
+    }
+}
+
+.notes-container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    height: 100%;
+
+    .note-line {
+        height: 20px;
+
+        &.added {
+            background: lightgreen;
+        }
+
+        &.removed {
+            background: pink;
+        }
+    }
+}
+
+span.string {
+    background: red;
+}
+
+span.number {
+    background: lawngreen;
+}
+
+span.boolean {
+    background: cornflowerblue;
+}
+
+span.object {
+    background: sandybrown;
+}
+
+span.array {
+    background: yellow;
+}
+
+span.custom {
+    background: violet;
+}
+
+select:has(option[value="string"]:checked) {
+    background: red;
+}
+
+select:has(option[value="number"]:checked) {
+    background: lawngreen;
+}
+
+select:has(option[value="boolean"]:checked) {
+    background: cornflowerblue;
+}
+
+select:has(option[value="object"]:checked) {
+    background: sandybrown;
+}
+
+select:has(option[value="array"]:checked) {
+    background: yellow;
+}
+
+.json-schema {
+    font-family: monospace;
+
+    & .object {
+        .object-attribute {
+            margin-left: 20px;
+        }
+
+        .object-new-attribute {
+            margin-left: 20px;
+        }
+    }
+
+    & .array {
+        .array-value {
+            margin-left: 20px;
+        }
+    }
+}
+
+/* ── Old (non-v2) version page layout ── */
+
 .version-view {
-    select:has(option[value="string"]:checked) {
-        background: red;
-    }
-
-    select:has(option[value="number"]:checked) {
-        background: lawngreen;
-    }
-
-    select:has(option[value="boolean"]:checked) {
-        background: cornflowerblue;
-    }
-
-    select:has(option[value="object"]:checked) {
-        background: sandybrown;
-    }
-
-    select:has(option[value="array"]:checked) {
-        background: yellow;
-    }
-
-    span.string {
-        background: red;
-    }
-
-    span.number {
-        background: lawngreen;
-    }
-
-    span.boolean {
-        background: cornflowerblue;
-    }
-
-    span.object {
-        background: sandybrown;
-    }
-
-    span.array {
-        background: yellow;
-    }
-
-    span.custom {
-        background: violet;
-    }
-
-    .removed {
-        background: pink !important;
-    }
-
-    .added {
-        background: lightgreen !important;;
-    }
-
     .title-container {
         display: flex;
         flex-direction: row;
@@ -240,17 +298,6 @@
                         background: white;
                         flex-direction: column;
                         white-space: pre;
-
-                        .notes-container {
-                            display: flex;
-                            flex: 1;
-                            flex-direction: column;
-                            height: 100%;
-
-                            .note-line {
-                                height: 20px;
-                            }
-                        }
                     }
                 }
 
@@ -355,29 +402,6 @@
                     }
                 }
             }
-
-            .line {
-                font-family: monospace;
-                white-space: pre;
-                height: 15px;
-                line-height: 15px;
-
-                &.added {
-                    background: #D1FFBD;
-                }
-
-                &.removed {
-                    background: lightpink;
-                }
-
-                &.type_changed {
-                    background: sandybrown;
-                }
-
-                &.no_change {
-                    background: white;
-                }
-            }
         }
 
         .spec {
@@ -387,28 +411,6 @@
             font-family: monospace;
             height: 100%;
         }
-
-        .json-schema {
-            font-family: monospace;
-
-            & .object {
-                .object-attribute {
-                    margin-left: 20px;
-
-                }
-
-                .object-new-attribute {
-                    margin-left: 20px;
-                }
-            }
-
-            & .array {
-                .array-value {
-                    margin-left: 20px;
-                }
-            }
-        }
-
 
         .alert {
             background-color: #fee2e2;

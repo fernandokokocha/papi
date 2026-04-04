@@ -1,2 +1,72 @@
 @import "tailwindcss";
 
+/* ── Spec display styles (shared between old and v2 design) ── */
+
+.line {
+    font-family: monospace;
+    white-space: pre;
+    height: 15px;
+    line-height: 15px;
+}
+
+.line.added {
+    background: #D1FFBD;
+}
+
+.line.removed {
+    background: lightpink;
+}
+
+.line.type_changed {
+    background: sandybrown;
+}
+
+.line.no_change {
+    background: white;
+}
+
+.notes-container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    height: 100%;
+}
+
+.note-line {
+    height: 20px;
+}
+
+.note-line.added {
+    background: lightgreen;
+}
+
+.note-line.removed {
+    background: pink;
+}
+
+span.string  { background: red; }
+span.number  { background: lawngreen; }
+span.boolean { background: cornflowerblue; }
+span.object  { background: sandybrown; }
+span.array   { background: yellow; }
+span.custom  { background: violet; }
+
+select:has(option[value="string"]:checked)  { background: red; }
+select:has(option[value="number"]:checked)  { background: lawngreen; }
+select:has(option[value="boolean"]:checked) { background: cornflowerblue; }
+select:has(option[value="object"]:checked)  { background: sandybrown; }
+select:has(option[value="array"]:checked)   { background: yellow; }
+
+.json-schema {
+    font-family: monospace;
+}
+
+.json-schema .object .object-attribute,
+.json-schema .object .object-new-attribute {
+    margin-left: 20px;
+}
+
+.json-schema .array .array-value {
+    margin-left: 20px;
+}
+
