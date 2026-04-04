@@ -1,15 +1,23 @@
 import React from 'react'
-import StaticJSONSchema from "@/components/static_json_schema/StaticJSONSchema.jsx";
 
-const EntityRemoved = ({entity, updateRoot, removeEntity, entities}) => {
+const EntityRemoved = ({entity}) => {
     return (
-        <div className="entity-container" key={entity.id}>
-            <div className="entity-name-container">
-                <div className="entity-name">
-                    {entity.original_name}
+        <div className="grid grid-cols-2 gap-2" key={entity.id}>
+            <div>
+                <div className="border border-gray-200 rounded-lg overflow-hidden">
+                    <div className="bg-violet-800 text-white px-4 py-2 text-sm font-mono">
+                        {entity.original_name}
+                    </div>
                 </div>
-                <div className="entity-name removed">
-                    {entity.original_name}
+            </div>
+            <div>
+                <div className="border border-red-200 rounded-lg overflow-hidden">
+                    <div className="bg-red-600 text-white px-4 py-2 text-sm font-mono line-through opacity-70">
+                        {entity.original_name}
+                    </div>
+                    <div className="px-3 py-4 bg-red-50 text-sm text-red-600 text-center">
+                        Removed
+                    </div>
                 </div>
             </div>
         </div>

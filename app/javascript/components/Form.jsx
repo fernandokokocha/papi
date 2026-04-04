@@ -272,27 +272,27 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         })
         checkEntitiesReferences(parsed_endpoints, parsed_entities)
         setEntities(parsed_entities)
+
+        validateNewEndpoint(newVerb, newPath, parsed_endpoints)
+        validateNewEntity(newEntity, parsed_entities)
     }, [])
 
     const disabled = !(noCollisions && anyChanges);
-    let className = "btn "
-    if (disabled) {
-        className += "btn-secondary"
-    } else {
-        className += "btn-primary"
-    }
+    const submitClass = disabled
+        ? "bg-gray-100 text-gray-400 text-sm font-medium px-4 py-2 rounded cursor-not-allowed"
+        : "bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium px-4 py-2 rounded cursor-pointer"
 
     return (
         <>
-            <div className="submit">
-                {!noCollisions && <div className="alert">Resolve collisions</div>}
-                {!anyChanges && <div className="alert">Make any changes</div>}
+            <div className="flex items-center gap-3 mb-6">
                 <input type="submit"
                        name="commit"
                        value="Create Version"
-                       className={className}
+                       className={submitClass}
                        disabled={disabled}
                 />
+                {!noCollisions && <span className="text-sm text-red-600">Resolve collisions before submitting</span>}
+                {noCollisions && !anyChanges && <span className="text-sm text-gray-400">Make any changes to enable submit</span>}
             </div>
             <EndpointList
                 serializedEndpoints={serializedEndpoints}

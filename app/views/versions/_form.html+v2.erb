@@ -1,0 +1,27 @@
+<%= form_with model: [@project, @candidate] do |f| %>
+  <%= f.hidden_field :project_id %>
+  <%= f.hidden_field :order %>
+  <%= f.hidden_field :name %>
+  <%= hidden_field(:version, :order) %>
+  <%= hidden_field(:version, :name) %>
+
+  <%# Version column headers %>
+  <div class="grid grid-cols-2 gap-2 mb-6">
+    <div class="bg-white border border-gray-200 rounded-lg p-4">
+      <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Base Version</div>
+      <div class="text-lg font-semibold text-gray-900"><%= @candidate.base_version.name %></div>
+      <div class="text-sm text-gray-500"><%= @candidate.base_version.created_at.strftime("%Y-%m-%d") %></div>
+    </div>
+    <div class="bg-white border border-gray-200 rounded-lg p-4">
+      <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">New Version</div>
+      <div class="text-lg font-semibold text-gray-900"><%= @version.name %></div>
+      <div class="text-sm text-gray-500"><%= @version.created_at.strftime("%Y-%m-%d") %></div>
+    </div>
+  </div>
+
+  <div
+    id="react-form"
+    data-serialized-endpoints="<%= @version.existing_endpoints_for_frontend %>"
+    data-serialized-entities="<%= @version.existing_entities_for_frontend %>"
+  ></div>
+<% end %>
