@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@source "../../views/**/*.html+v2.erb";
+
 /* ── Spec display styles (shared between old and v2 design) ── */
 
 .line {
