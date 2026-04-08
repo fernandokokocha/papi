@@ -3,8 +3,8 @@
 <% responses_diff = DiffResponses::FromResponses.new(endpoint.responses, []) %>
 <div class="grid grid-cols-2 gap-2">
   <div>
-    <div class="border border-red-200 rounded-lg overflow-hidden">
-      <div class="bg-gray-900 text-white px-4 py-3 text-sm font-mono line-through opacity-60">
+    <div class="border border-red-200 rounded-lg">
+      <div class="sticky top-0 z-10 rounded-t-lg bg-gray-900 text-white px-4 py-3 text-sm font-mono line-through opacity-60">
         <%= endpoint.name %>
       </div>
       <div class="bg-red-50 border-t border-red-200 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Note</div>
