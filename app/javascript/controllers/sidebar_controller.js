@@ -27,13 +27,13 @@ export default class extends Controller {
   }
 
   toggle() {
-    const collapsed = !this.asideTarget.classList.contains("hidden")
+    const collapsed = !this.asideTarget.classList.contains("sidebar-collapsed")
     localStorage.setItem(this.constructor.storageKey, collapsed ? "1" : "0")
     this.apply(collapsed)
   }
 
   apply(collapsed) {
-    this.asideTarget.classList.toggle("hidden", collapsed)
+    this.asideTarget.classList.toggle("sidebar-collapsed", collapsed)
     this.showButtonTarget.classList.toggle("hidden", !collapsed)
   }
 }

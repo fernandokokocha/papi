@@ -2,6 +2,17 @@
 
 @source "../../views/**/*.html+v2.erb";
 
+/* Sidebar collapse animation: transitions max-width/opacity/margin smoothly. */
+.sidebar-collapsed {
+  max-width: 0 !important;
+  margin-right: 0 !important;
+  pointer-events: none;
+}
+.sidebar-collapsed > * {
+  opacity: 0;
+  transition: opacity 200ms ease-out;
+}
+
 /* ── Spec display styles (shared between old and v2 design) ── */
 
 .line {
