@@ -8,19 +8,17 @@
   </div>
 
   <aside data-sidebar-target="aside"
-         class="w-64 shrink-0 self-start sticky top-6 max-h-screen overflow-y-auto mr-6 bg-white border border-gray-200 rounded-lg p-4">
-    <div class="flex items-center justify-between mb-2">
-      <div class="text-xs font-semibold uppercase tracking-wide text-gray-500">Quick access</div>
-      <button type="button"
-              data-action="sidebar#toggle"
-              class="text-gray-400 hover:text-sky-700 text-sm leading-none px-1"
-              title="Hide">«</button>
-    </div>
+         class="relative w-fit max-w-64 shrink-0 self-start sticky top-6 mr-6">
+    <button type="button"
+            data-action="sidebar#toggle"
+            class="absolute -left-10 top-0 bg-white border border-gray-200 hover:bg-gray-50 text-gray-500 hover:text-sky-700 rounded-lg p-2 shadow-sm"
+            title="Hide quick access">«</button>
+    <div class="max-h-screen overflow-y-auto bg-white border border-gray-200 rounded-lg p-4">
     <% if @categorized_endpoints.any? %>
       <div>
-        <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">Endpoints</div>
+        <div class="text-xs font-bold uppercase tracking-wide text-gray-700 mb-2">Endpoints</div>
         <% @categorized_endpoints.each do |endpoint| %>
-          <% tint = { "added" => "text-emerald-700", "removed" => "text-red-700" }[endpoint.annotation] || "text-gray-700" %>
+          <% tint = { "added" => "bg-emerald-50 text-emerald-700 font-semibold", "removed" => "bg-red-50 text-red-700 font-semibold line-through" }[endpoint.annotation] || "text-gray-700" %>
           <a href="<%= "#endpoint-#{endpoint.page_url}" %>"
              class="block px-2 py-1 rounded text-sm <%= tint %> hover:bg-gray-50 hover:text-sky-700 truncate">
             <%= endpoint.name %>
@@ -31,9 +29,9 @@
 
     <% if @categorized_entities.any? %>
       <div class="<%= "mt-4 pt-4 border-t border-gray-200" if @categorized_endpoints.any? %>">
-        <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">Entities</div>
+        <div class="text-xs font-bold uppercase tracking-wide text-gray-700 mb-2">Entities</div>
         <% @categorized_entities.each do |entity| %>
-          <% tint = { "added" => "text-emerald-700", "removed" => "text-red-700" }[entity.annotation] || "text-gray-700" %>
+          <% tint = { "added" => "bg-emerald-50 text-emerald-700 font-semibold", "removed" => "bg-red-50 text-red-700 font-semibold line-through" }[entity.annotation] || "text-gray-700" %>
           <a href="<%= "#entity-#{entity.name}" %>"
              class="block px-2 py-1 rounded text-sm <%= tint %> hover:bg-gray-50 hover:text-sky-700 truncate">
             <%= entity.name %>
@@ -41,6 +39,7 @@
         <% end %>
       </div>
     <% end %>
+    </div>
   </aside>
 
   <div class="flex-1 min-w-0">
