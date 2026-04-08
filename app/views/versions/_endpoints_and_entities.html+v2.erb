@@ -1,5 +1,19 @@
-<div class="flex gap-6 items-start">
-  <aside class="w-64 shrink-0 self-start sticky top-6 max-h-screen overflow-y-auto bg-white border border-gray-200 rounded-lg p-4">
+<div class="flex gap-6 items-start" data-controller="sidebar">
+  <button type="button"
+          data-sidebar-target="showButton"
+          data-action="sidebar#toggle"
+          class="hidden sticky top-6 self-start bg-white border border-gray-200 hover:bg-gray-50 text-gray-500 hover:text-sky-700 rounded-lg p-2 shadow-sm"
+          title="Show quick access">»</button>
+
+  <aside data-sidebar-target="aside"
+         class="w-64 shrink-0 self-start sticky top-6 max-h-screen overflow-y-auto bg-white border border-gray-200 rounded-lg p-4">
+    <div class="flex items-center justify-between mb-2">
+      <div class="text-xs font-semibold uppercase tracking-wide text-gray-500">Quick access</div>
+      <button type="button"
+              data-action="sidebar#toggle"
+              class="text-gray-400 hover:text-sky-700 text-sm leading-none px-1"
+              title="Hide">«</button>
+    </div>
     <% if @categorized_endpoints.any? %>
       <div>
         <div class="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">Endpoints</div>
