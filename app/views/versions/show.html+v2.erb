@@ -22,22 +22,22 @@
   </div>
 </div>
 
-<%# Version column headers %>
-<div class="grid grid-cols-2 gap-2 mb-6">
-  <div class="bg-white border border-gray-200 rounded-lg p-4">
-    <% if @previous_version.present? && @previous_version.order > -1 %>
-      <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Previous</div>
-      <div class="text-lg font-semibold text-gray-900"><%= @previous_version.name %></div>
-      <div class="text-sm text-gray-500"><%= @previous_version.created_at.strftime("%Y-%m-%d") %></div>
-    <% else %>
-      <div class="text-sm text-gray-400 italic">No previous version</div>
-    <% end %>
+<%= render "versions/endpoints_and_entities" do %>
+  <%# Version column headers %>
+  <div class="grid grid-cols-2 gap-2 mb-6">
+    <div class="bg-white border border-gray-200 rounded-lg p-4">
+      <% if @previous_version.present? && @previous_version.order > -1 %>
+        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Previous</div>
+        <div class="text-lg font-semibold text-gray-900"><%= @previous_version.name %></div>
+        <div class="text-sm text-gray-500"><%= @previous_version.created_at.strftime("%Y-%m-%d") %></div>
+      <% else %>
+        <div class="text-sm text-gray-400 italic">No previous version</div>
+      <% end %>
+    </div>
+    <div class="bg-white border border-gray-200 rounded-lg p-4">
+      <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Current</div>
+      <div class="text-lg font-semibold text-gray-900"><%= @version.name %></div>
+      <div class="text-sm text-gray-500"><%= @version.created_at.strftime("%Y-%m-%d") %></div>
+    </div>
   </div>
-  <div class="bg-white border border-gray-200 rounded-lg p-4">
-    <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Current</div>
-    <div class="text-lg font-semibold text-gray-900"><%= @version.name %></div>
-    <div class="text-sm text-gray-500"><%= @version.created_at.strftime("%Y-%m-%d") %></div>
-  </div>
-</div>
-
-<%= render "versions/endpoints_and_entities" %>
+<% end %>

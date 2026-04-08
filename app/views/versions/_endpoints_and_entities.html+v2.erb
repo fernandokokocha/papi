@@ -1,12 +1,14 @@
-<div class="flex gap-6 items-start" data-controller="sidebar">
-  <button type="button"
-          data-sidebar-target="showButton"
-          data-action="sidebar#toggle"
-          class="hidden sticky top-6 self-start bg-white border border-gray-200 hover:bg-gray-50 text-gray-500 hover:text-sky-700 rounded-lg p-2 shadow-sm"
-          title="Show quick access">»</button>
+<div class="flex items-start" data-controller="sidebar">
+  <div data-sidebar-target="showButton"
+       class="hidden sticky top-6 self-start w-0 shrink-0">
+    <button type="button"
+            data-action="sidebar#toggle"
+            class="absolute -left-10 top-0 bg-white border border-gray-200 hover:bg-gray-50 text-gray-500 hover:text-sky-700 rounded-lg p-2 shadow-sm"
+            title="Show quick access">»</button>
+  </div>
 
   <aside data-sidebar-target="aside"
-         class="w-64 shrink-0 self-start sticky top-6 max-h-screen overflow-y-auto bg-white border border-gray-200 rounded-lg p-4">
+         class="w-64 shrink-0 self-start sticky top-6 max-h-screen overflow-y-auto mr-6 bg-white border border-gray-200 rounded-lg p-4">
     <div class="flex items-center justify-between mb-2">
       <div class="text-xs font-semibold uppercase tracking-wide text-gray-500">Quick access</div>
       <button type="button"
@@ -42,6 +44,10 @@
   </aside>
 
   <div class="flex-1 min-w-0">
+    <% if block_given? %>
+      <%= yield %>
+    <% end %>
+
     <%# Endpoints %>
     <% if @categorized_endpoints.any? %>
       <div class="text-xl font-semibold text-black uppercase tracking-wide mb-3">Endpoints</div>
