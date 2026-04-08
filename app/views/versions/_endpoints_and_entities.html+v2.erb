@@ -60,9 +60,17 @@
                 <%= render "endpoints/endpoint_diff", endpoint: endpoint, previous_endpoint: endpoint.previous, expanded: false %>
               </div>
             <% elsif endpoint.annotation == "added" %>
-              <%= render "endpoints/endpoint_new", endpoint: endpoint %>
+              <div data-controller="endpoint"
+                   data-endpoint-target="container"
+                   data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, design: 'v2', kind: 'new') %>">
+                <%= render "endpoints/endpoint_new", endpoint: endpoint, expanded: false %>
+              </div>
             <% elsif endpoint.annotation == "removed" %>
-              <%= render "endpoints/endpoint_removed", endpoint: endpoint %>
+              <div data-controller="endpoint"
+                   data-endpoint-target="container"
+                   data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, design: 'v2', kind: 'removed') %>">
+                <%= render "endpoints/endpoint_removed", endpoint: endpoint, expanded: false %>
+              </div>
             <% end %>
           </div>
         <% end %>
