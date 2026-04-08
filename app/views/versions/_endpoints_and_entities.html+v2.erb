@@ -52,7 +52,7 @@
       <div class="text-xl font-semibold text-black uppercase tracking-wide mb-3">Endpoints</div>
       <div class="flex flex-col gap-6">
         <% @categorized_endpoints.each do |endpoint| %>
-          <div id="endpoint-<%= endpoint.page_url %>" class="scroll-mt-6 rounded-xl target:bg-amber-100 target:ring-4 target:ring-amber-400 target:p-3">
+          <div id="endpoint-<%= endpoint.page_url %>" class="scroll-mt-6 rounded-xl target:bg-amber-100 target:ring-4 target:ring-amber-500">
             <% if endpoint.annotation == "existing" %>
               <div data-controller="endpoint"
                    data-endpoint-target="container"
@@ -74,7 +74,7 @@
       <div class="text-xl font-semibold text-black uppercase tracking-wide mb-3 mt-8">Entities</div>
       <div class="flex flex-col gap-6">
         <% @categorized_entities.each do |entity| %>
-          <div id="entity-<%= entity.name %>" class="scroll-mt-6 rounded-xl target:bg-amber-100 target:ring-4 target:ring-amber-400 target:p-3">
+          <div id="entity-<%= entity.name %>" class="scroll-mt-6 rounded-xl target:bg-amber-100 target:ring-4 target:ring-amber-500">
             <% if entity.annotation == "existing" %>
               <% diff = Diff::FromValues.new(entity.previous.parsed_root, entity.parsed_root) %>
               <%= render "versions/entity_diff", entity: entity, previous_entity: entity.previous, diff: diff %>

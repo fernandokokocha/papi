@@ -8,6 +8,22 @@ export default class extends Controller {
 
   connect() {
     this.apply(localStorage.getItem(this.constructor.storageKey) === "1")
+    this.onDocClick = this.handleDocClick.bind(this)
+    document.addEventListener("click", this.onDocClick)
+  }
+
+  disconnect() {
+    document.removeEventListener("click", this.onDocClick)
+  }
+
+  handleDocClick(event) {
+    if (!location.hash) return
+    const el = event.target.closest('a[href^="#"], [id^="endpoint-"], [id^="entity-"]')
+    if (el) return
+    history.replaceState(null, "", location.pathname + location.search)
+    // Force :target re-evaluation by briefly navigating to a non-matching hash.
+    location.hash = "_"
+    history.replaceState(null, "", location.pathname + location.search)
   }
 
   toggle() {
