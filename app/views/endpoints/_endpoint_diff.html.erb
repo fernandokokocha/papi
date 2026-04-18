@@ -6,11 +6,14 @@
 <% output_error_diff = Diff::FromValues.new(output_error1, output_error2) %>
 <% notes_diff = DiffText::FromNotes.new(previous_endpoint.note, endpoint.note) %>
 <% responses_diff = DiffResponses::FromResponses.new(previous_endpoint.responses, endpoint.responses) %>
+<% changed = endpoint.differs_from?(previous_endpoint) %>
+<% border_class = changed ? "border-amber-200" : "border-gray-200" %>
+<% header_class = changed ? "bg-amber-600" : "bg-sky-900" %>
 
 <div class="grid grid-cols-2 gap-2">
   <div>
-    <div class="border border-gray-200 rounded-lg">
-      <div class="sticky top-0 z-10 rounded-t-lg bg-sky-900 text-white px-4 py-3 text-sm font-mono">
+    <div class="border <%= border_class %> rounded-lg">
+      <div class="sticky top-0 z-10 rounded-t-lg <%= header_class %> text-white px-4 py-3 text-sm font-mono">
         <%= previous_endpoint.name %>
       </div>
       <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Note</div>
@@ -24,8 +27,8 @@
     </div>
   </div>
   <div>
-    <div class="border border-gray-200 rounded-lg">
-      <div class="sticky top-0 z-10 rounded-t-lg bg-sky-900 text-white px-4 py-3 text-sm font-mono flex items-center justify-between"
+    <div class="border <%= border_class %> rounded-lg">
+      <div class="sticky top-0 z-10 rounded-t-lg <%= header_class %> text-white px-4 py-3 text-sm font-mono flex items-center justify-between"
            data-controller="clipboard"
            data-clipboard-verb-value="<%= endpoint.verb %>"
            data-clipboard-path-value="<%= endpoint.path %>">

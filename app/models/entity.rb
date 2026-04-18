@@ -16,4 +16,8 @@ class Entity < ApplicationRecord
   def sort_name
     name
   end
+
+  def differs_from?(previous)
+    Diff::FromValues.new(previous.parsed_root, parsed_root).any_changes?
+  end
 end

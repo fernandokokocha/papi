@@ -62,7 +62,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_23_162601) do
 
   create_table "responses", force: :cascade do |t|
     t.string "code", null: false
-    t.string "note"
+    t.string "note", default: "", null: false
     t.integer "endpoint_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

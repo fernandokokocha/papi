@@ -1,15 +1,19 @@
+<% changed = entity.differs_from?(previous_entity) %>
+<% border_class = changed ? "border-amber-200" : "border-gray-200" %>
+<% header_class = changed ? "bg-amber-600" : "bg-violet-800" %>
+
 <div class="grid grid-cols-2 gap-2">
   <div>
-    <div class="border border-gray-200 rounded-lg">
-      <div class="sticky top-0 z-10 rounded-t-lg bg-violet-800 text-white px-4 py-2 text-sm font-mono">
+    <div class="border <%= border_class %> rounded-lg">
+      <div class="sticky top-0 z-10 rounded-t-lg <%= header_class %> text-white px-4 py-2 text-sm font-mono">
         <%= previous_entity.name %>
       </div>
       <div class="pl-2 py-2 bg-white border-b border-gray-200"><%= render "specs/json", diff: diff.before %></div>
     </div>
   </div>
   <div>
-    <div class="border border-gray-200 rounded-lg">
-      <div class="sticky top-0 z-10 rounded-t-lg bg-violet-800 text-white px-4 py-2 text-sm font-mono">
+    <div class="border <%= border_class %> rounded-lg">
+      <div class="sticky top-0 z-10 rounded-t-lg <%= header_class %> text-white px-4 py-2 text-sm font-mono">
         <%= entity.name %>
       </div>
       <div class="pl-2 py-2 bg-white border-b border-gray-200"><%= render "specs/json", diff: diff.after %></div>

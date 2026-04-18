@@ -25,4 +25,8 @@ class DiffText::FromNotes
       end
     end
   end
+
+  def any_changes?
+    (@before + @after).any? { |line| line.change != :no_change && line.change != :blank }
+  end
 end

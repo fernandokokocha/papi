@@ -85,15 +85,18 @@
 <div class="bg-white rounded p-6 flex flex-col gap-5 border border-gray-200">
   <p class="text-gray-900 font-semibold text-lg">Endpoints</p>
   <div class="flex flex-col gap-2">
+    <%= render "endpoints/endpoint_diff", endpoint: @unchanged_endpoints[1], previous_endpoint: @unchanged_endpoints[0], expanded: false %>
     <%= render "endpoints/endpoint_diff", endpoint: @diff_endpoints[1], previous_endpoint: @diff_endpoints[0], expanded: false %>
-    <%= render "endpoints/endpoint_new", endpoint: @new_endpoint %>
-    <%= render "endpoints/endpoint_removed", endpoint: @removed_endpoint %>
+    <%= render "endpoints/endpoint_new", endpoint: @new_endpoint, expanded: false %>
+    <%= render "endpoints/endpoint_removed", endpoint: @removed_endpoint, expanded: false %>
   </div>
 </div>
 
 <div class="bg-white rounded mt-4 p-6 flex flex-col gap-5 border border-gray-200">
   <p class="text-gray-900 font-semibold text-lg">Entities</p>
   <div class="flex flex-col gap-2">
+    <% diff = Diff::FromValues.new(@unchanged_entities[0].parsed_root, @unchanged_entities[1].parsed_root) %>
+    <%= render "versions/entity_diff", entity: @unchanged_entities[1], previous_entity: @unchanged_entities[0], diff: diff %>
     <% diff = Diff::FromValues.new(@diff_entities[0].parsed_root, @diff_entities[1].parsed_root) %>
     <%= render "versions/entity_diff", entity: @diff_entities[1], previous_entity: @diff_entities[0], diff: diff %>
     <% diff = @new_entity.parsed_root.to_diff(:no_change) %>

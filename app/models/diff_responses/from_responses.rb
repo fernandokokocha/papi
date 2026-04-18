@@ -30,4 +30,10 @@ class DiffResponses::FromResponses
       end
     end
   end
+
+  def any_changes?
+    (@before + @after).any? do |line|
+      (line.code_change != :no_change) || (line.note_change != :no_change)
+    end
+  end
 end

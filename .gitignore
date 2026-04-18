@@ -48,3 +48,5 @@ node_modules
 **/._.DS_Store
 
 /config/credentials/production.key
+
+/.superpowers

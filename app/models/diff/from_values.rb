@@ -17,6 +17,10 @@ class Diff::FromValues
     @after.level_with_blank_lines(@before)
   end
 
+  def any_changes?
+    @before.any_changes? || @after.any_changes?
+  end
+
   def print
     puts "BEFORE:"
     @before.print

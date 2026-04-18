@@ -8,8 +8,8 @@ class Version::CategorizeByName
     @collection.each do |e|
       found = @previous_collection.find { |ne| ne.name == e.name }
       if found
-        e.annotation = "existing"
         e.previous = found
+        e.annotation = e.differs_from?(found) ? "changed" : "unchanged"
       else
         e.annotation = "added"
         e.previous = nil
