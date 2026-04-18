@@ -56,19 +56,19 @@
             <% if endpoint.annotation == "existing" %>
               <div data-controller="endpoint"
                    data-endpoint-target="container"
-                   data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, design: 'v2') %>">
+                   data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id) %>">
                 <%= render "endpoints/endpoint_diff", endpoint: endpoint, previous_endpoint: endpoint.previous, expanded: false %>
               </div>
             <% elsif endpoint.annotation == "added" %>
               <div data-controller="endpoint"
                    data-endpoint-target="container"
-                   data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, design: 'v2', kind: 'new') %>">
+                   data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, kind: 'new') %>">
                 <%= render "endpoints/endpoint_new", endpoint: endpoint, expanded: false %>
               </div>
             <% elsif endpoint.annotation == "removed" %>
               <div data-controller="endpoint"
                    data-endpoint-target="container"
-                   data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, design: 'v2', kind: 'removed') %>">
+                   data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, kind: 'removed') %>">
                 <%= render "endpoints/endpoint_removed", endpoint: endpoint, expanded: false %>
               </div>
             <% end %>

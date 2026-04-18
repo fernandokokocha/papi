@@ -24,7 +24,7 @@ class EndpointsController < ApplicationController
 
     unless previous_endpoint
       respond_to do |format|
-        format.html { render partial: "endpoints/endpoint_added", layout: false, locals: { endpoint: @endpoint, expanded: expanded } }
+        format.html { render partial: "endpoints/endpoint_new", layout: false, locals: { endpoint: @endpoint, expanded: expanded } }
       end
       return
     end

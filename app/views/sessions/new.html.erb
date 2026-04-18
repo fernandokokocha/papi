@@ -1,30 +1,36 @@
-<div class="login-container">
-  <div class="login-card">
-    <h2 class="login-title">Sign in</h2>
-    
+<div class="flex justify-center py-16">
+  <div class="w-full max-w-sm bg-sky-100 border border-gray-900 rounded-lg p-8">
+    <h1 class="text-2xl font-semibold text-gray-900 text-center mb-8">Sign in</h1>
+
     <% if flash[:alert] %>
-      <div class="flash-message flash-alert"><%= flash[:alert] %></div>
+      <div class="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-700 rounded text-sm"><%= flash[:alert] %></div>
     <% end %>
     <% if flash[:notice] %>
-      <div class="flash-message flash-notice"><%= flash[:notice] %></div>
+      <div class="mb-4 px-4 py-3 bg-emerald-50 border border-emerald-200 text-emerald-700 rounded text-sm"><%= flash[:notice] %></div>
     <% end %>
 
-    <%= form_with url: session_path, class: "login-form" do |form| %>
-      <div class="form-group">
-        <%= form.label :email_address, "Email Address", class: "form-label" %>
-        <%= form.email_field :email_address, required: true, autofocus: true, autocomplete: "username", placeholder: "Enter your email address", value: params[:email_address], class: "form-input" %>
+    <%= form_with url: session_path do |form| %>
+      <div class="mb-5">
+        <%= form.label :email_address, "Email address", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= form.email_field :email_address,
+              required: true, autofocus: true, autocomplete: "username",
+              placeholder: "you@example.com", value: params[:email_address],
+              class: "w-full bg-white border border-gray-300 rounded px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500" %>
       </div>
-      
-      <div class="form-group">
-        <%= form.label :password, "Password", class: "form-label" %>
-        <%= form.password_field :password, required: true, autocomplete: "current-password", placeholder: "Enter your password", maxlength: 72, class: "form-input" %>
+
+      <div class="mb-6">
+        <%= form.label :password, "Password", class: "block text-sm font-medium text-gray-700 mb-1" %>
+        <%= form.password_field :password,
+              required: true, autocomplete: "current-password",
+              placeholder: "••••••••", maxlength: 72,
+              class: "w-full bg-white border border-gray-300 rounded px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500" %>
       </div>
-      
-      <%= form.submit "Sign in", class: "btn btn-primary" %>
+
+      <%= form.submit "Sign in", class: "w-full bg-sky-600 hover:bg-sky-700 text-white font-medium py-2 px-4 rounded text-sm cursor-pointer" %>
     <% end %>
 
-    <div class="login-footer">
-      <%= link_to "Forgot password?", new_password_path, class: "forgot-password-link" %>
+    <div class="mt-6 pt-6 border-t border-gray-200 text-center">
+      <%= link_to "Forgot password?", new_password_path, class: "text-sm text-gray-700 hover:text-gray-900" %>
     </div>
   </div>
 </div>

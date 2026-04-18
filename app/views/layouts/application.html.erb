@@ -1,60 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title><%= content_for(:title) || "Papi" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
     <%= yield :head %>
 
-    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
-    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
-
     <link rel="icon" href="/icon.png" type="image/png">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/icon.png">
 
-    <%# Includes all stylesheet files in app/assets/stylesheets %>
-    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
     <%= javascript_importmap_tags %>
 
     <%= vite_client_tag %>
     <%= vite_javascript_tag "form.jsx" %>
-
-    <!--
-      If using a TypeScript entrypoint file:
-        vite_typescript_tag 'application'
-
-      If using a .jsx or .tsx entrypoint, add the extension:
-        vite_javascript_tag 'application.jsx'
-
-      Visit the guide for more information: https://vite-ruby.netlify.app/guide/rails
-    -->
-
   </head>
 
-  <body>
-    <header class="topbar">
-      <div class="topbar-content">
-        <%= link_to "Papi", root_path, class: "topbar-brand" %>
+  <body class="min-h-screen bg-gray-50 text-gray-900">
+    <header class="bg-sky-900">
+      <div class="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
+        <%= link_to "Papi", root_path, class: "text-xl font-bold text-white hover:text-sky-200 no-underline" %>
 
         <% if Current.user %>
-          <div class="topbar-session">
-            <%= Current.user.email_address %>
-            <%= button_to "Log out", session_path, method: :delete, class: "btn btn-primary" %>
+          <div class="flex items-center gap-4">
+            <span class="text-white text-sm"><%= Current.user.email_address %></span>
+            <%= button_to "Log out", session_path, method: :delete, class: "bg-sky-500 hover:bg-sky-400 text-white text-sm px-3 py-1.5 rounded cursor-pointer" %>
           </div>
         <% else %>
-          <div class="topbar-session">
-            <%= button_to "Login", new_session_path, class: "btn btn-primary" %>
-          </div>
+          <%= button_to "Log in", new_session_path, method: :get, class: "bg-sky-500 hover:bg-sky-400 text-white text-sm px-3 py-1.5 rounded cursor-pointer" %>
         <% end %>
       </div>
     </header>
-    
-    <main class="main-content">
+
+    <main class="max-w-7xl mx-auto px-6 py-6">
       <%= yield %>
     </main>
   </body>

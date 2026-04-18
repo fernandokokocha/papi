@@ -1,11 +1,6 @@
 class DesignPreviewController < ApplicationController
   allow_unauthenticated_access
 
-  before_action do
-    @use_tailwind = true
-    request.variant = :v2
-  end
-
   def show
     @diff_endpoints = diff_endpoints
     @new_endpoint = new_endpoint

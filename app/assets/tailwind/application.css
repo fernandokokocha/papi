@@ -1,7 +1,5 @@
 @import "tailwindcss";
 
-@source "../../views/**/*.html+v2.erb";
-
 /* Sidebar collapse animation: transitions max-width/opacity/margin smoothly. */
 .sidebar-collapsed {
   max-width: 0 !important;

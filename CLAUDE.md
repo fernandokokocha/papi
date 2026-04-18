@@ -27,7 +27,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Keep controllers thin with RESTful actions
 - Use JavaScript for interactive UI components via Stimulus
 
-## New Design — White & Sky palette (Tailwind CSS v4)
+## Design — White & Sky palette (Tailwind CSS v4)
 
 ### Nav
 - Background: `bg-sky-900`

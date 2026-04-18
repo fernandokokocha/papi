@@ -1,54 +1,36 @@
-<div class="endpoint-container" id="endpoint-<%= endpoint.page_url %>">
-  <div class="endpoint-name-container">
-    <div class="endpoint-name">
-      <%= endpoint.name %>
-    </div>
-    <div class="endpoint-name">
-      <select value="<%= endpoint.http_verb %>" name="version[endpoints_attributes][][http_verb]">
-        <option value="verb_get">GET</option>
-        <option value="verb_post">POST</option>
-        <option value="verb_delete">DELETE</option>
-        <option value="verb_put">PUT</option>
-        <option value="verb_patch">PATCH</option>
-      </select>
-      <input type="text"
-             value="<%= endpoint.path %>"
-             name="version[endpoints_attributes][][url]"/>
-      <button type="button" onClick="removeEndpoint(this)" class="btn btn-secondary">x</button>
-    </div>
-  </div>
-
-  <div class="endpoint-section-container">
-    <div class="endpoint-section">INPUT</div>
-    <div class="endpoint-section">INPUT</div>
-  </div>
-
-  <div class="endpoint-root-container">
-    <div class="endpoint-root">
-      <%= render "specs/json", diff: input_diff %>
-    </div>
-    <div class="endpoint-root">
-      <div class="react-json-schema"
-           data-initial-root="<%= endpoint.input.serialize %>"
-           data-name="version[endpoints_attributes][][original_input_string]"
-      ></div>
-    </div>
-  </div>
-
-  <div class="endpoint-section-container">
-    <div class="endpoint-section">OUTPUT</div>
-    <div class="endpoint-section">OUTPUT</div>
-  </div>
-
-  <div class="endpoint-root-container">
-    <div class="endpoint-root">
-      <%= render "specs/json", diff: output_diff %>
-    </div>
-    <div class="endpoint-root">
-      <div class="react-json-schema"
-           data-initial-root="<%= endpoint.output.serialize %>"
-           data-name="version[endpoints_attributes][][original_output_string]"
-      ></div>
+<% output = expanded ? endpoint.parsed_output.expand : endpoint.parsed_output %>
+<% output_error = expanded ? endpoint.parsed_output_error.expand : endpoint.parsed_output_error %>
+<% output_diff = output.to_diff(:no_change) %>
+<% output_error_diff = output_error.to_diff(:no_change) %>
+<% responses_diff = DiffResponses::FromResponses.new([], endpoint.responses) %>
+<div class="grid grid-cols-2 gap-2">
+  <div></div>
+  <div>
+    <div class="border border-emerald-200 rounded-lg">
+      <div class="sticky top-0 z-10 rounded-t-lg bg-emerald-700 text-white px-4 py-3 text-sm font-mono flex items-center justify-between"
+           data-controller="clipboard"
+           data-clipboard-verb-value="<%= endpoint.verb %>"
+           data-clipboard-path-value="<%= endpoint.path %>">
+        <span><%= endpoint.name %></span>
+        <div class="flex items-center gap-2 ml-4">
+          <button type="button" data-action="clipboard#copy" class="text-xs bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 px-2.5 py-0.5 rounded cursor-pointer leading-none">Copy cURL</button>
+          <% if endpoint.parsed_output.expandable? || endpoint.parsed_output_error.expandable? %>
+            <% if expanded %>
+              <button type="button" data-action="endpoint#collapse" class="text-xs bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 px-2.5 py-0.5 rounded cursor-pointer leading-none">Collapse</button>
+            <% else %>
+              <button type="button" data-action="endpoint#expand" class="text-xs bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 px-2.5 py-0.5 rounded cursor-pointer leading-none">Expand</button>
+            <% end %>
+          <% end %>
+        </div>
+      </div>
+      <div class="bg-emerald-50 border-t border-emerald-200 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Note</div>
+      <div class="px-3 py-2 bg-emerald-50 border-b border-emerald-200 text-sm text-gray-700"><%= endpoint.note %></div>
+      <div class="bg-emerald-50 border-t border-emerald-200 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Responses</div>
+      <div class="pl-2 py-2 bg-emerald-50 border-b border-emerald-200"><%= render "specs/responses", diff: responses_diff.after %></div>
+      <div class="bg-emerald-50 border-t border-emerald-200 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Output</div>
+      <div class="pl-2 py-2 bg-emerald-50 border-b border-emerald-200"><%= render "specs/json", diff: output_diff %></div>
+      <div class="bg-emerald-50 border-t border-emerald-200 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Output for Errors</div>
+      <div class="pl-2 py-2 bg-emerald-50 border-b border-emerald-200"><%= render "specs/json", diff: output_error_diff %></div>
     </div>
   </div>
 </div>
