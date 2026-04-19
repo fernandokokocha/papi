@@ -8,3 +8,13 @@ candidate2:
   project: project1
   order: 2
   aasm_state: "merged"
+candidate3:
+  name: "rc3"
+  project: project1
+  order: 3
+  aasm_state: "merged"
+candidate4:
+  name: "rc4"
+  project: project1
+  order: 4
+  aasm_state: "merged"

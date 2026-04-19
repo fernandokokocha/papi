@@ -1,33 +1,66 @@
-e1v1:
-  name: NotUsed
-  version: project1v1
-  root: "{id:number}"
-e2v1:
-  name: User
-  version: project1v1
-  root: "{id:string, first_name:string, last_name:string, role:number}"
-e3v1:
-  name: Error
-  version: project1v1
-  root: "{code:number, message:string}"
-e4v1:
-  name: Record
-  version: project1v1
-  root: "{id:number, quantity:number, is_available: boolean, name:string}"
+# Entity bodies contain only primitives — entities cannot reference other entities.
+# Pagination / composite shapes live inline on endpoint outputs.
 
-e1v2:
-  name: NotUsed
-  version: project1v2
-  root: "{id:number}"
-e2v2:
+# v1 — initial entities
+p1v1_error:
+  name: Error
+  version: project1v1
+  root: "{code:number, message:string}"
+p1v1_user:
   name: User
-  version: project1v2
-  root: "{id:string, first_name:string, last_name:string, role:number}"
-e3v2:
+  version: project1v1
+  root: "{id:number, email:string, name:string}"
+p1v1_session:
+  name: Session
+  version: project1v1
+  root: "{token:string, user_id:number, expires_at:string}"
+
+# v2 — identical to v1 (the change in v2 is on endpoints, not entities)
+p1v2_error:
   name: Error
   version: project1v2
   root: "{code:number, message:string}"
-e4v2:
-  name: Record
+p1v2_user:
+  name: User
   version: project1v2
-  root: "{id:number, quantity:number, is_available: boolean, name:string}"
+  root: "{id:number, email:string, name:string}"
+p1v2_session:
+  name: Session
+  version: project1v2
+  root: "{token:string, user_id:number, expires_at:string}"
+
+# v3 — everything from v2 unchanged; Task added
+p1v3_error:
+  name: Error
+  version: project1v3
+  root: "{code:number, message:string}"
+p1v3_user:
+  name: User
+  version: project1v3
+  root: "{id:number, email:string, name:string}"
+p1v3_session:
+  name: Session
+  version: project1v3
+  root: "{token:string, user_id:number, expires_at:string}"
+p1v3_task:
+  name: Task
+  version: project1v3
+  root: "{id:number, title:string, done:boolean, created_by_id:number}"
+
+# v4 — User gains avatar_url (CHANGED); Task swaps done→status and created_by_id→assignee_id (CHANGED)
+p1v4_error:
+  name: Error
+  version: project1v4
+  root: "{code:number, message:string}"
+p1v4_user:
+  name: User
+  version: project1v4
+  root: "{id:number, email:string, name:string, avatar_url:string}"
+p1v4_session:
+  name: Session
+  version: project1v4
+  root: "{token:string, user_id:number, expires_at:string}"
+p1v4_task:
+  name: Task
+  version: project1v4
+  root: "{id:number, title:string, status:string, assignee_id:number}"

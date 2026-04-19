@@ -1,50 +1,234 @@
-project1v1e1:
+# http_verb: 0=GET, 1=POST, 2=PUT, 3=PATCH, 4=DELETE
+
+# ===== v1: initial User API =====
+p1v1_users_list:
   http_verb: 0
-  path: /user
+  path: /users
   version: project1v1
   output: "[User]"
   output_error: "Error"
-  note: "Get users"
-project1v1e2:
+  note: "List all users"
+p1v1_users_create:
   http_verb: 1
-  path: /user
+  path: /users
   version: project1v1
   output: "User"
   output_error: "Error"
-  note: "Create user"
-project1v1e3:
+  note: "Create a new user"
+p1v1_users_get:
+  http_verb: 0
+  path: /users/:id
+  version: project1v1
+  output: "User"
+  output_error: "Error"
+  note: "Get a single user by id"
+p1v1_users_delete:
   http_verb: 4
-  path: /user
+  path: /users/:id
   version: project1v1
   output: "boolean"
   output_error: "Error"
-  note: "Delete user"
-project1v1e4:
-  http_verb: 0
-  path: /record
+  note: "Delete a user"
+p1v1_sessions_create:
+  http_verb: 1
+  path: /sessions
   version: project1v1
-  output: "Record"
+  output: "Session"
   output_error: "Error"
-  note: "???"
+  note: "Log in with email and password"
 
-project1v2e1:
+# ===== v2: pagination + editing + logout =====
+p1v2_users_list:
   http_verb: 0
-  path: /user
+  path: /users
   version: project1v2
-  output: "{ count: number, records: [User]}"
+  output: "{total:number, items:[User]}"
   output_error: "Error"
-  note: "Get users"
-project1v2e2:
+  note: "List users with pagination"
+p1v2_users_create:
   http_verb: 1
-  path: /user
+  path: /users
   version: project1v2
   output: "User"
   output_error: "Error"
-  note: "Create user"
-project1v2e3:
+  note: "Create a new user"
+p1v2_users_get:
+  http_verb: 0
+  path: /users/:id
+  version: project1v2
+  output: "User"
+  output_error: "Error"
+  note: "Get a single user by id"
+p1v2_users_update:
+  http_verb: 3
+  path: /users/:id
+  version: project1v2
+  output: "User"
+  output_error: "Error"
+  note: "Update user fields"
+p1v2_users_delete:
   http_verb: 4
-  path: /user
+  path: /users/:id
   version: project1v2
   output: "boolean"
   output_error: "Error"
-  note: "Delete user"
+  note: "Delete a user"
+p1v2_sessions_create:
+  http_verb: 1
+  path: /sessions
+  version: project1v2
+  output: "Session"
+  output_error: "Error"
+  note: "Log in with email and password"
+p1v2_sessions_delete:
+  http_verb: 4
+  path: /sessions
+  version: project1v2
+  output: "boolean"
+  output_error: "Error"
+  note: "Log out the current session"
+
+# ===== v3: purely additive — Tasks feature =====
+p1v3_users_list:
+  http_verb: 0
+  path: /users
+  version: project1v3
+  output: "{total:number, items:[User]}"
+  output_error: "Error"
+  note: "List users with pagination"
+p1v3_users_create:
+  http_verb: 1
+  path: /users
+  version: project1v3
+  output: "User"
+  output_error: "Error"
+  note: "Create a new user"
+p1v3_users_get:
+  http_verb: 0
+  path: /users/:id
+  version: project1v3
+  output: "User"
+  output_error: "Error"
+  note: "Get a single user by id"
+p1v3_users_update:
+  http_verb: 3
+  path: /users/:id
+  version: project1v3
+  output: "User"
+  output_error: "Error"
+  note: "Update user fields"
+p1v3_users_delete:
+  http_verb: 4
+  path: /users/:id
+  version: project1v3
+  output: "boolean"
+  output_error: "Error"
+  note: "Delete a user"
+p1v3_sessions_create:
+  http_verb: 1
+  path: /sessions
+  version: project1v3
+  output: "Session"
+  output_error: "Error"
+  note: "Log in with email and password"
+p1v3_sessions_delete:
+  http_verb: 4
+  path: /sessions
+  version: project1v3
+  output: "boolean"
+  output_error: "Error"
+  note: "Log out the current session"
+p1v3_tasks_list:
+  http_verb: 0
+  path: /tasks
+  version: project1v3
+  output: "{total:number, items:[Task]}"
+  output_error: "Error"
+  note: "List tasks with pagination"
+p1v3_tasks_create:
+  http_verb: 1
+  path: /tasks
+  version: project1v3
+  output: "Task"
+  output_error: "Error"
+  note: "Create a new task"
+p1v3_tasks_get:
+  http_verb: 0
+  path: /tasks/:id
+  version: project1v3
+  output: "Task"
+  output_error: "Error"
+  note: "Get a single task by id"
+
+# ===== v4: entity refactors + removal + completion endpoint =====
+# DELETE /users/:id is removed. User & Task entities change, cascading "changed" into many endpoints.
+p1v4_users_list:
+  http_verb: 0
+  path: /users
+  version: project1v4
+  output: "{total:number, items:[User]}"
+  output_error: "Error"
+  note: "List users with pagination"
+p1v4_users_create:
+  http_verb: 1
+  path: /users
+  version: project1v4
+  output: "User"
+  output_error: "Error"
+  note: "Create a new user"
+p1v4_users_get:
+  http_verb: 0
+  path: /users/:id
+  version: project1v4
+  output: "User"
+  output_error: "Error"
+  note: "Get a single user by id"
+p1v4_users_update:
+  http_verb: 3
+  path: /users/:id
+  version: project1v4
+  output: "User"
+  output_error: "Error"
+  note: "Update user fields"
+p1v4_sessions_create:
+  http_verb: 1
+  path: /sessions
+  version: project1v4
+  output: "Session"
+  output_error: "Error"
+  note: "Log in with email and password"
+p1v4_sessions_delete:
+  http_verb: 4
+  path: /sessions
+  version: project1v4
+  output: "boolean"
+  output_error: "Error"
+  note: "Log out the current session"
+p1v4_tasks_list:
+  http_verb: 0
+  path: /tasks
+  version: project1v4
+  output: "{total:number, items:[Task]}"
+  output_error: "Error"
+  note: "List tasks with pagination"
+p1v4_tasks_create:
+  http_verb: 1
+  path: /tasks
+  version: project1v4
+  output: "Task"
+  output_error: "Error"
+  note: "Create a new task"
+p1v4_tasks_get:
+  http_verb: 0
+  path: /tasks/:id
+  version: project1v4
+  output: "Task"
+  output_error: "Error"
+  note: "Get a single task by id"
+p1v4_tasks_complete:
+  http_verb: 1
+  path: /tasks/:id/complete
+  version: project1v4
+  output: "Task"
+  output_error: "Error"
+  note: "Mark a task as complete"

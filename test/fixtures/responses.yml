@@ -1,40 +1,93 @@
-v1e1r1:
-  endpoint: project1v1e1
-  code: "200"
-v1e1r2:
-  endpoint: project1v1e1
-  code: "403"
-v1e2r1:
-  endpoint: project1v1e2
-  code: "201"
-v1e2r2:
-  endpoint: project1v1e2
-  code: "403"
-v1e3r1:
-  endpoint: project1v1e3
-  code: "200"
-v1e3r2:
-  endpoint: project1v1e3
-  code: "403"
+# ===== v1 =====
+p1v1_users_list_200: { endpoint: p1v1_users_list, code: "200" }
+p1v1_users_list_403: { endpoint: p1v1_users_list, code: "403" }
+p1v1_users_create_201: { endpoint: p1v1_users_create, code: "201" }
+p1v1_users_create_400: { endpoint: p1v1_users_create, code: "400" }
+p1v1_users_create_403: { endpoint: p1v1_users_create, code: "403" }
+p1v1_users_get_200: { endpoint: p1v1_users_get, code: "200" }
+p1v1_users_get_403: { endpoint: p1v1_users_get, code: "403" }
+p1v1_users_get_404: { endpoint: p1v1_users_get, code: "404" }
+p1v1_users_delete_200: { endpoint: p1v1_users_delete, code: "200" }
+p1v1_users_delete_403: { endpoint: p1v1_users_delete, code: "403" }
+p1v1_users_delete_404: { endpoint: p1v1_users_delete, code: "404" }
+p1v1_sessions_create_201: { endpoint: p1v1_sessions_create, code: "201" }
+p1v1_sessions_create_401: { endpoint: p1v1_sessions_create, code: "401" }
 
-v2e1r1:
-  endpoint: project1v2e1
-  code: "200"
-v2e1r2:
-  endpoint: project1v2e1
-  code: "403"
-v2e2r1:
-  endpoint: project1v2e2
-  code: "201"
-v2e2r2:
-  endpoint: project1v2e2
-  code: "403"
-v2e2r3:
-  endpoint: project1v2e2
-  code: "401"
-v2e3r1:
-  endpoint: project1v2e3
-  code: "200"
-v2e3r2:
-  endpoint: project1v2e3
-  code: "403"
+# ===== v2 =====
+p1v2_users_list_200: { endpoint: p1v2_users_list, code: "200" }
+p1v2_users_list_403: { endpoint: p1v2_users_list, code: "403" }
+p1v2_users_create_201: { endpoint: p1v2_users_create, code: "201" }
+p1v2_users_create_400: { endpoint: p1v2_users_create, code: "400" }
+p1v2_users_create_403: { endpoint: p1v2_users_create, code: "403" }
+p1v2_users_get_200: { endpoint: p1v2_users_get, code: "200" }
+p1v2_users_get_403: { endpoint: p1v2_users_get, code: "403" }
+p1v2_users_get_404: { endpoint: p1v2_users_get, code: "404" }
+p1v2_users_update_200: { endpoint: p1v2_users_update, code: "200" }
+p1v2_users_update_400: { endpoint: p1v2_users_update, code: "400" }
+p1v2_users_update_403: { endpoint: p1v2_users_update, code: "403" }
+p1v2_users_update_404: { endpoint: p1v2_users_update, code: "404" }
+p1v2_users_delete_200: { endpoint: p1v2_users_delete, code: "200" }
+p1v2_users_delete_403: { endpoint: p1v2_users_delete, code: "403" }
+p1v2_users_delete_404: { endpoint: p1v2_users_delete, code: "404" }
+p1v2_sessions_create_201: { endpoint: p1v2_sessions_create, code: "201" }
+p1v2_sessions_create_401: { endpoint: p1v2_sessions_create, code: "401" }
+p1v2_sessions_delete_200: { endpoint: p1v2_sessions_delete, code: "200" }
+p1v2_sessions_delete_401: { endpoint: p1v2_sessions_delete, code: "401" }
+
+# ===== v3 =====
+p1v3_users_list_200: { endpoint: p1v3_users_list, code: "200" }
+p1v3_users_list_403: { endpoint: p1v3_users_list, code: "403" }
+p1v3_users_create_201: { endpoint: p1v3_users_create, code: "201" }
+p1v3_users_create_400: { endpoint: p1v3_users_create, code: "400" }
+p1v3_users_create_403: { endpoint: p1v3_users_create, code: "403" }
+p1v3_users_get_200: { endpoint: p1v3_users_get, code: "200" }
+p1v3_users_get_403: { endpoint: p1v3_users_get, code: "403" }
+p1v3_users_get_404: { endpoint: p1v3_users_get, code: "404" }
+p1v3_users_update_200: { endpoint: p1v3_users_update, code: "200" }
+p1v3_users_update_400: { endpoint: p1v3_users_update, code: "400" }
+p1v3_users_update_403: { endpoint: p1v3_users_update, code: "403" }
+p1v3_users_update_404: { endpoint: p1v3_users_update, code: "404" }
+p1v3_users_delete_200: { endpoint: p1v3_users_delete, code: "200" }
+p1v3_users_delete_403: { endpoint: p1v3_users_delete, code: "403" }
+p1v3_users_delete_404: { endpoint: p1v3_users_delete, code: "404" }
+p1v3_sessions_create_201: { endpoint: p1v3_sessions_create, code: "201" }
+p1v3_sessions_create_401: { endpoint: p1v3_sessions_create, code: "401" }
+p1v3_sessions_delete_200: { endpoint: p1v3_sessions_delete, code: "200" }
+p1v3_sessions_delete_401: { endpoint: p1v3_sessions_delete, code: "401" }
+p1v3_tasks_list_200: { endpoint: p1v3_tasks_list, code: "200" }
+p1v3_tasks_list_403: { endpoint: p1v3_tasks_list, code: "403" }
+p1v3_tasks_create_201: { endpoint: p1v3_tasks_create, code: "201" }
+p1v3_tasks_create_400: { endpoint: p1v3_tasks_create, code: "400" }
+p1v3_tasks_create_403: { endpoint: p1v3_tasks_create, code: "403" }
+p1v3_tasks_get_200: { endpoint: p1v3_tasks_get, code: "200" }
+p1v3_tasks_get_403: { endpoint: p1v3_tasks_get, code: "403" }
+p1v3_tasks_get_404: { endpoint: p1v3_tasks_get, code: "404" }
+
+# ===== v4 =====
+p1v4_users_list_200: { endpoint: p1v4_users_list, code: "200" }
+p1v4_users_list_403: { endpoint: p1v4_users_list, code: "403" }
+p1v4_users_create_201: { endpoint: p1v4_users_create, code: "201" }
+p1v4_users_create_400: { endpoint: p1v4_users_create, code: "400" }
+p1v4_users_create_403: { endpoint: p1v4_users_create, code: "403" }
+p1v4_users_get_200: { endpoint: p1v4_users_get, code: "200" }
+p1v4_users_get_403: { endpoint: p1v4_users_get, code: "403" }
+p1v4_users_get_404: { endpoint: p1v4_users_get, code: "404" }
+p1v4_users_update_200: { endpoint: p1v4_users_update, code: "200" }
+p1v4_users_update_400: { endpoint: p1v4_users_update, code: "400" }
+p1v4_users_update_403: { endpoint: p1v4_users_update, code: "403" }
+p1v4_users_update_404: { endpoint: p1v4_users_update, code: "404" }
+p1v4_sessions_create_201: { endpoint: p1v4_sessions_create, code: "201" }
+p1v4_sessions_create_401: { endpoint: p1v4_sessions_create, code: "401" }
+p1v4_sessions_delete_200: { endpoint: p1v4_sessions_delete, code: "200" }
+p1v4_sessions_delete_401: { endpoint: p1v4_sessions_delete, code: "401" }
+p1v4_tasks_list_200: { endpoint: p1v4_tasks_list, code: "200" }
+p1v4_tasks_list_403: { endpoint: p1v4_tasks_list, code: "403" }
+p1v4_tasks_create_201: { endpoint: p1v4_tasks_create, code: "201" }
+p1v4_tasks_create_400: { endpoint: p1v4_tasks_create, code: "400" }
+p1v4_tasks_create_403: { endpoint: p1v4_tasks_create, code: "403" }
+p1v4_tasks_get_200: { endpoint: p1v4_tasks_get, code: "200" }
+p1v4_tasks_get_403: { endpoint: p1v4_tasks_get, code: "403" }
+p1v4_tasks_get_404: { endpoint: p1v4_tasks_get, code: "404" }
+p1v4_tasks_complete_200: { endpoint: p1v4_tasks_complete, code: "200" }
+p1v4_tasks_complete_403: { endpoint: p1v4_tasks_complete, code: "403" }
+p1v4_tasks_complete_404: { endpoint: p1v4_tasks_complete, code: "404" }
