@@ -8,7 +8,7 @@
   </div>
 
   <aside data-sidebar-target="aside"
-         class="relative w-fit max-w-64 shrink-0 self-start sticky top-6 mr-6 transition-all duration-200 ease-out">
+         class="relative w-56 shrink-0 self-start sticky top-6 mr-6 transition-all duration-200 ease-out">
     <button type="button"
             data-action="sidebar#toggle"
             class="absolute -left-10 top-0 bg-white border border-gray-200 hover:bg-gray-50 text-gray-500 hover:text-sky-700 rounded-lg p-2 shadow-sm"
@@ -20,6 +20,8 @@
         <% @categorized_endpoints.each do |endpoint| %>
           <% tint = { "added" => "bg-emerald-50 text-emerald-700 font-semibold", "removed" => "bg-red-50 text-red-700 font-semibold line-through", "changed" => "bg-amber-50 text-amber-700 font-semibold" }[endpoint.annotation] || "text-gray-700" %>
           <a href="<%= "#endpoint-#{endpoint.page_url}" %>"
+             title="<%= endpoint.name %>"
+             data-sidebar-target="link"
              class="block px-2 py-1 rounded text-sm <%= tint %> hover:bg-gray-50 hover:text-sky-700 truncate">
             <%= endpoint.name %>
           </a>
@@ -33,6 +35,8 @@
         <% @categorized_entities.each do |entity| %>
           <% tint = { "added" => "bg-emerald-50 text-emerald-700 font-semibold", "removed" => "bg-red-50 text-red-700 font-semibold line-through", "changed" => "bg-amber-50 text-amber-700 font-semibold" }[entity.annotation] || "text-gray-700" %>
           <a href="<%= "#entity-#{entity.name}" %>"
+             title="<%= entity.name %>"
+             data-sidebar-target="link"
              class="block px-2 py-1 rounded text-sm <%= tint %> hover:bg-gray-50 hover:text-sky-700 truncate">
             <%= entity.name %>
           </a>

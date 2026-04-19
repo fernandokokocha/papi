@@ -3,17 +3,28 @@ import { Controller } from "@hotwired/stimulus"
 // Toggles the quick-access sidebar on version/candidate pages.
 // Persists collapsed state in localStorage so it survives navigations.
 export default class extends Controller {
-  static targets = ["aside", "showButton"]
+  static targets = ["aside", "showButton", "link"]
   static storageKey = "papi.sidebar.collapsed"
 
   connect() {
     this.apply(localStorage.getItem(this.constructor.storageKey) === "1")
     this.onDocClick = this.handleDocClick.bind(this)
+    this.onHashChange = this.updateActiveLink.bind(this)
     document.addEventListener("click", this.onDocClick)
+    window.addEventListener("hashchange", this.onHashChange)
+    this.updateActiveLink()
   }
 
   disconnect() {
     document.removeEventListener("click", this.onDocClick)
+    window.removeEventListener("hashchange", this.onHashChange)
+  }
+
+  updateActiveLink() {
+    const hash = location.hash
+    this.linkTargets.forEach((link) => {
+      link.classList.toggle("sidebar-link-active", hash !== "" && link.getAttribute("href") === hash)
+    })
   }
 
   handleDocClick(event) {
