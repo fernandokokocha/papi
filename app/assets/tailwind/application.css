@@ -12,13 +12,13 @@
 }
 
 /* Sidebar link highlight when its target card is selected — mirrors the
-   amber :target styling applied to the card itself. Uses !important so it
+   fuchsia :target styling applied to the card itself. Uses !important so it
    overrides the per-annotation tint classes (e.g. bg-amber-50 for changed). */
 .sidebar-link-active {
-  background-color: var(--color-amber-100) !important;
-  color: var(--color-amber-700) !important;
+  background-color: var(--color-fuchsia-100) !important;
+  color: var(--color-fuchsia-700) !important;
   font-weight: 600 !important;
-  box-shadow: inset 0 0 0 2px var(--color-amber-500);
+  box-shadow: inset 0 0 0 2px var(--color-fuchsia-500);
 }
 
 /* ── Spec display styles (shared between old and v2 design) ── */

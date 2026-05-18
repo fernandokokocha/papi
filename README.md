@@ -5,6 +5,14 @@
 * Ruby 3.4.1
 * Node v23.11 (npm 10.9.2)
 
+## Start the dev server
+
+Use `bin/dev` — **not** `bin/rails server`. `bin/dev` runs Rails, the Tailwind watcher, and Vite together (see `Procfile.dev`). Without it, Tailwind won't recompile when you change views and newly-used utility classes will silently render as no-ops.
+
+```
+bin/dev
+```
+
 ## Reset DB
 
 For convenience, early in the development, migrations can be updated in place. After it's done, all the database should be wiped and recreated via migrations like this:
