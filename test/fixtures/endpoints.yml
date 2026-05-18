@@ -17,18 +17,18 @@ p1v1_users_create:
   note: "Create a new user"
 p1v1_users_get:
   http_verb: 0
-  path: /users/:id
+  path: /users/me
   version: project1v1
   output: "User"
   output_error: "Error"
-  note: "Get a single user by id"
+  note: "Get the current user"
 p1v1_users_delete:
   http_verb: 4
-  path: /users/:id
+  path: /users/me
   version: project1v1
   output: "boolean"
   output_error: "Error"
-  note: "Delete a user"
+  note: "Delete the current user"
 p1v1_sessions_create:
   http_verb: 1
   path: /sessions
@@ -54,25 +54,25 @@ p1v2_users_create:
   note: "Create a new user"
 p1v2_users_get:
   http_verb: 0
-  path: /users/:id
+  path: /users/me
   version: project1v2
   output: "User"
   output_error: "Error"
-  note: "Get a single user by id"
+  note: "Get the current user"
 p1v2_users_update:
   http_verb: 3
-  path: /users/:id
+  path: /users/me
   version: project1v2
   output: "User"
   output_error: "Error"
-  note: "Update user fields"
+  note: "Update the current user's fields"
 p1v2_users_delete:
   http_verb: 4
-  path: /users/:id
+  path: /users/me
   version: project1v2
   output: "boolean"
   output_error: "Error"
-  note: "Delete a user"
+  note: "Delete the current user"
 p1v2_sessions_create:
   http_verb: 1
   path: /sessions
@@ -105,25 +105,25 @@ p1v3_users_create:
   note: "Create a new user"
 p1v3_users_get:
   http_verb: 0
-  path: /users/:id
+  path: /users/me
   version: project1v3
   output: "User"
   output_error: "Error"
-  note: "Get a single user by id"
+  note: "Get the current user"
 p1v3_users_update:
   http_verb: 3
-  path: /users/:id
+  path: /users/me
   version: project1v3
   output: "User"
   output_error: "Error"
-  note: "Update user fields"
+  note: "Update the current user's fields"
 p1v3_users_delete:
   http_verb: 4
-  path: /users/:id
+  path: /users/me
   version: project1v3
   output: "boolean"
   output_error: "Error"
-  note: "Delete a user"
+  note: "Delete the current user"
 p1v3_sessions_create:
   http_verb: 1
   path: /sessions
@@ -154,14 +154,14 @@ p1v3_tasks_create:
   note: "Create a new task"
 p1v3_tasks_get:
   http_verb: 0
-  path: /tasks/:id
+  path: /tasks/next
   version: project1v3
   output: "Task"
   output_error: "Error"
-  note: "Get a single task by id"
+  note: "Get the next pending task"
 
 # ===== v4: entity refactors + removal + completion endpoint =====
-# DELETE /users/:id is removed. User & Task entities change, cascading "changed" into many endpoints.
+# DELETE /users/me is removed. User & Task entities change, cascading "changed" into many endpoints.
 p1v4_users_list:
   http_verb: 0
   path: /users
@@ -178,18 +178,18 @@ p1v4_users_create:
   note: "Create a new user"
 p1v4_users_get:
   http_verb: 0
-  path: /users/:id
+  path: /users/me
   version: project1v4
   output: "User"
   output_error: "Error"
-  note: "Get a single user by id"
+  note: "Get the current user"
 p1v4_users_update:
   http_verb: 3
-  path: /users/:id
+  path: /users/me
   version: project1v4
   output: "User"
   output_error: "Error"
-  note: "Update user fields"
+  note: "Update the current user's fields"
 p1v4_sessions_create:
   http_verb: 1
   path: /sessions
@@ -220,15 +220,15 @@ p1v4_tasks_create:
   note: "Create a new task"
 p1v4_tasks_get:
   http_verb: 0
-  path: /tasks/:id
+  path: /tasks/next
   version: project1v4
   output: "Task"
   output_error: "Error"
-  note: "Get a single task by id"
+  note: "Get the next pending task"
 p1v4_tasks_complete:
   http_verb: 1
-  path: /tasks/:id/complete
+  path: /tasks/complete-next
   version: project1v4
   output: "Task"
   output_error: "Error"
-  note: "Mark a task as complete"
+  note: "Mark the next pending task as complete"
