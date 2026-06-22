@@ -3,13 +3,11 @@ import EndpointRemoved from "~/components/EndpointRemoved.jsx";
 import EndpointDiff from "~/components/EndpointDiff.jsx";
 import EndpointAdded from "~/components/EndpointAdded.jsx";
 
-const Endpoint = ({endpoint, remove, updateEndpoint, entities}) => {
+const Endpoint = ({endpoint, remove, restore, updateEndpoint, entities}) => {
     if (endpoint.type === 'removed') {
         return (<EndpointRemoved
             endpoint={endpoint}
-            remove={remove}
-            updateEndpoint={updateEndpoint}
-            entities={entities}
+            restore={restore}
         />)
     }
 

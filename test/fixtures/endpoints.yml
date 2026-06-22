@@ -42,7 +42,7 @@ p1v2_users_list:
   http_verb: 0
   path: /users
   version: project1v2
-  output: "{total:number, items:[User]}"
+  output: "{total:number,items:[User]}"
   output_error: "Error"
   note: "List users with pagination"
 p1v2_users_create:
@@ -93,7 +93,7 @@ p1v3_users_list:
   http_verb: 0
   path: /users
   version: project1v3
-  output: "{total:number, items:[User]}"
+  output: "{total:number,items:[User]}"
   output_error: "Error"
   note: "List users with pagination"
 p1v3_users_create:
@@ -142,7 +142,7 @@ p1v3_tasks_list:
   http_verb: 0
   path: /tasks
   version: project1v3
-  output: "{total:number, items:[Task]}"
+  output: "{total:number,items:[Task]}"
   output_error: "Error"
   note: "List tasks with pagination"
 p1v3_tasks_create:
@@ -166,7 +166,7 @@ p1v4_users_list:
   http_verb: 0
   path: /users
   version: project1v4
-  output: "{total:number, items:[User]}"
+  output: "{total:number,items:[User]}"
   output_error: "Error"
   note: "List users with pagination"
 p1v4_users_create:
@@ -208,7 +208,7 @@ p1v4_tasks_list:
   http_verb: 0
   path: /tasks
   version: project1v4
-  output: "{total:number, items:[Task]}"
+  output: "{total:number,items:[Task]}"
   output_error: "Error"
   note: "List tasks with pagination"
 p1v4_tasks_create:

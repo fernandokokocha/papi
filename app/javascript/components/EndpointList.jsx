@@ -5,6 +5,7 @@ const EndpointList = ({
                           endpoints,
                           entities,
                           removeEndpoint,
+                          restoreEndpoint,
                           updateEndpoint,
                           addEndpoint,
                           updateNewVerb,
@@ -24,6 +25,7 @@ const EndpointList = ({
                         key={endpoint.id}
                         endpoint={endpoint}
                         remove={removeEndpoint}
+                        restore={restoreEndpoint}
                         updateEndpoint={updateEndpoint}
                         entities={entities}
                     />

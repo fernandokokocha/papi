@@ -109,6 +109,9 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
                 output: serialize(endpoint.output),
                 output_error: serialize(endpoint.output_error),
                 note: endpoint.note,
+                responses: [...endpoint.responses]
+                    .sort((a, b) => Number(a.code) - Number(b.code))
+                    .map((r) => ({code: r.code, note: r.note})),
             })))
 
         if (serializedEndpointsToSend !== serializedEndpoints) {
@@ -156,6 +159,25 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         validate(newEndpoints, entities)
         validateNewEndpoint(newVerb, newPath, newEndpoints)
         setEndpoints(newEndpoints)
+    }
+
+    const restoreEndpoint = (id) => {
+        const newEndpoints = JSON.parse(JSON.stringify(endpoints))
+        const endpointToRestore = newEndpoints.find((endpoint) => (endpoint.id === id))
+        endpointToRestore.type = 'old'
+        endpointToRestore.http_verb = endpointToRestore.original_http_verb
+        endpointToRestore.verb = endpointToRestore.original_verb
+        endpointToRestore.path = endpointToRestore.original_path
+        endpointToRestore.output = endpointToRestore.original_output
+        endpointToRestore.output_error = endpointToRestore.original_output_error
+        endpointToRestore.note = endpointToRestore.original_note
+        endpointToRestore.responses = endpointToRestore.original_responses
+        endpointToRestore.collision = false
+
+        validate(newEndpoints, entities)
+        validateNewEndpoint(newVerb, newPath, newEndpoints)
+        setEndpoints(newEndpoints)
+        checkEntitiesReferences(newEndpoints, entities)
     }
 
     const addEndpoint = () => {
@@ -243,6 +265,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
 
             endpointData.original_path = endpointData.path
             endpointData.original_verb = endpointData.verb
+            endpointData.original_http_verb = endpointData.http_verb
 
             const parsed_output = deserialize(endpointData.output)
             endpointData.original_output = parsed_output
@@ -299,6 +322,7 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
                 entities={entities}
                 endpoints={endpoints}
                 removeEndpoint={removeEndpoint}
+                restoreEndpoint={restoreEndpoint}
                 updateEndpoint={updateEndpoint}
                 addEndpoint={addEndpoint}
                 updateNewVerb={updateNewVerb}

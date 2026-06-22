@@ -5,7 +5,7 @@ const sectionHeader = "bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs 
 const contentRow = "px-3 py-2 bg-white border-b border-gray-200 text-sm text-gray-700"
 const contentRowPl = "pl-2 py-2 bg-white border-b border-gray-200"
 
-const EndpointRemoved = ({endpoint}) => {
+const EndpointRemoved = ({endpoint, restore}) => {
     return (
         <div className="grid grid-cols-2 gap-2" key={endpoint.id}>
             {/* Left — original read-only */}
@@ -37,8 +37,15 @@ const EndpointRemoved = ({endpoint}) => {
             {/* Right — removed indicator */}
             <div>
                 <div className="border border-red-200 rounded-lg overflow-hidden">
-                    <div className="bg-red-600 text-white px-4 py-3 text-sm font-mono line-through opacity-70">
-                        {`${endpoint.original_verb} ${endpoint.original_path}`}
+                    <div className="bg-red-600 text-white px-4 py-3 text-sm font-mono flex items-center gap-2">
+                        <span className="line-through opacity-70">{`${endpoint.original_verb} ${endpoint.original_path}`}</span>
+                        <button
+                            type="button"
+                            onClick={() => restore(endpoint.id)}
+                            className="text-xs bg-white/10 hover:bg-white/25 text-white px-2 py-0.5 rounded ml-auto shrink-0"
+                        >
+                            Bring back
+                        </button>
                     </div>
                     <div className="px-3 py-4 bg-red-50 text-sm text-red-600 text-center">
                         Removed
