@@ -1,24 +1,52 @@
 @import "tailwindcss";
 
-/* Sidebar collapse animation: transitions max-width/opacity/margin smoothly. */
-.sidebar-collapsed {
-  max-width: 0 !important;
-  margin-right: 0 !important;
-  pointer-events: none;
-}
-.sidebar-collapsed > * {
-  opacity: 0;
-  transition: opacity 200ms ease-out;
+/* Let the current-card band (.anchor-active) bleed past the centered container
+   to the window's right edge without spawning a horizontal scrollbar. `clip`
+   (not `hidden`) keeps the sticky card/sidebar headers working. */
+body {
+  overflow-x: clip;
 }
 
-/* Sidebar link highlight when its target card is selected — mirrors the
-   fuchsia :target styling applied to the card itself. Uses !important so it
-   overrides the per-annotation tint classes (e.g. bg-amber-50 for changed). */
+/* Sidebar collapse animation: folds horizontally (width 14rem → 0) and clips
+   its content, rather than fading — so it never reveals the card behind it. */
+.sidebar-collapsed {
+  width: 0 !important;
+  margin-right: 0 !important;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Current-card highlight (scroll-spy). The active endpoint/entity card gets a
+   soft sky band. Margin cancels padding so it bleeds outward — the card never
+   changes width or height as the band tracks the viewport (no reflow/jitter). */
+.anchor-active {
+  background-color: var(--color-sky-200);
+  /* Bleeds to both window edges (clipped by body overflow-x: clip). */
+  margin: -1rem -100vw;
+  padding: 1rem 100vw;
+  border-radius: 0.75rem;
+  transition: background-color 300ms ease;
+}
+
+/* Flash fired only when a card is reached via a sidebar-link click: a brighter
+   pulse that settles back to the resting band. */
+.anchor-flash {
+  animation: anchor-flash 1s ease-out;
+}
+@keyframes anchor-flash {
+  0%   { background-color: var(--color-sky-400); }
+  100% { background-color: var(--color-sky-200); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .anchor-flash { animation: none; }
+}
+
+/* Sidebar link for the current card. Soft sky pill; keeps the link's own
+   annotation color (added/removed/changed) so it doesn't fight those hues.
+   !important overrides the per-annotation tint backgrounds. */
 .sidebar-link-active {
-  background-color: var(--color-fuchsia-100) !important;
-  color: var(--color-fuchsia-700) !important;
+  background-color: var(--color-sky-100) !important;
   font-weight: 600 !important;
-  box-shadow: inset 0 0 0 2px var(--color-fuchsia-500);
 }
 
 /* ── Spec display styles (shared between old and v2 design) ── */

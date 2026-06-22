@@ -8,12 +8,19 @@
   </div>
 
   <aside data-sidebar-target="aside"
-         class="relative w-56 shrink-0 self-start sticky top-6 mr-6 transition-all duration-200 ease-out">
+         class="relative z-10 w-56 shrink-0 self-start sticky top-6 mr-6 transition-all duration-200 ease-out">
     <button type="button"
             data-action="sidebar#toggle"
             class="absolute -left-10 top-0 bg-white border border-gray-200 hover:bg-gray-50 text-gray-500 hover:text-sky-700 rounded-lg p-2 shadow-sm"
             title="Hide quick access">«</button>
     <div class="max-h-screen overflow-x-hidden overflow-y-auto bg-white border border-gray-200 rounded-lg p-4">
+    <label class="flex items-center gap-2 mb-3 pb-3 border-b border-gray-200 text-sm text-gray-700 cursor-pointer select-none">
+      <input type="checkbox"
+             data-sidebar-target="anchorToggle"
+             data-action="sidebar#toggleAnchor"
+             class="accent-sky-600 cursor-pointer">
+      <span>Highlight on scroll</span>
+    </label>
     <% if @categorized_endpoints.any? %>
       <div>
         <div class="text-xs font-bold uppercase tracking-wide text-gray-700 mb-2">Endpoints</div>
@@ -53,10 +60,10 @@
 
     <%# Endpoints %>
     <% if @categorized_endpoints.any? %>
-      <div class="text-xl font-semibold text-black uppercase tracking-wide mb-3">Endpoints</div>
-      <div class="flex flex-col gap-6">
+      <div class="text-xl font-semibold text-black uppercase tracking-wide mb-6">Endpoints</div>
+      <div class="flex flex-col gap-10">
         <% @categorized_endpoints.each do |endpoint| %>
-          <div id="endpoint-<%= endpoint.page_url %>" class="scroll-mt-6 rounded-xl target:bg-fuchsia-100 target:ring-4 target:ring-fuchsia-500">
+          <div id="endpoint-<%= endpoint.page_url %>" data-sidebar-target="card" class="scroll-mt-6 rounded-xl">
             <% if endpoint.annotation == "unchanged" || endpoint.annotation == "changed" %>
               <div data-controller="endpoint"
                    data-endpoint-target="container"
@@ -83,10 +90,10 @@
 
     <%# Entities %>
     <% if @categorized_entities.any? %>
-      <div class="text-xl font-semibold text-black uppercase tracking-wide mb-3 mt-8">Entities</div>
-      <div class="flex flex-col gap-6">
+      <div class="text-xl font-semibold text-black uppercase tracking-wide mb-6 mt-8">Entities</div>
+      <div class="flex flex-col gap-10">
         <% @categorized_entities.each do |entity| %>
-          <div id="entity-<%= entity.name %>" class="scroll-mt-6 rounded-xl target:bg-fuchsia-100 target:ring-4 target:ring-fuchsia-500">
+          <div id="entity-<%= entity.name %>" data-sidebar-target="card" class="scroll-mt-6 rounded-xl">
             <% if entity.annotation == "unchanged" || entity.annotation == "changed" %>
               <% diff = Diff::FromValues.new(entity.previous.parsed_root, entity.parsed_root) %>
               <%= render "versions/entity_diff", entity: entity, previous_entity: entity.previous, diff: diff %>

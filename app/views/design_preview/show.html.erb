@@ -106,18 +106,50 @@
   </div>
 </div>
 
-<%# Anchor / selected highlight — fuchsia. Applied to the card targeted by #endpoint-… / #entity-… and to its sidebar link. %>
+<%# Anchor / current card — scroll-spy band (sky) + flash-on-click. Replaces the old :target box. %>
 <div class="bg-white rounded mt-4 p-6 border border-gray-200">
-  <p class="text-gray-900 font-semibold text-lg mb-5">Anchor / selected highlight</p>
-  <div class="grid grid-cols-[14rem_1fr] gap-4 items-center">
-    <div class="bg-white border border-gray-200 rounded p-2 w-56">
-      <a class="block px-2 py-1 rounded text-sm font-semibold truncate bg-fuchsia-100 text-fuchsia-700" style="box-shadow: inset 0 0 0 2px var(--color-fuchsia-500);">GET /api/users/:id</a>
+  <p class="text-gray-900 font-semibold text-lg mb-1">Anchor / current card</p>
+  <p class="text-gray-500 text-sm mb-5">Scroll-spy marks the card at the top of the viewport. The band tracks continuously; the flash fires only on a sidebar-link click.</p>
+
+  <div class="grid grid-cols-[14rem_1fr] gap-6 items-start">
+    <%# Sidebar link active state %>
+    <div>
+      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Sidebar link — active</p>
+      <div class="bg-white border border-gray-200 rounded p-2 w-56">
+        <a class="block px-2 py-1 rounded text-sm truncate text-amber-700 font-semibold sidebar-link-active">GET /api/users/:id</a>
+        <a class="block px-2 py-1 rounded text-sm truncate text-gray-700">POST /api/users</a>
+      </div>
+      <p class="text-xs text-gray-400 mt-2">Sky pill, keeps the annotation color.</p>
     </div>
-    <div class="rounded-xl bg-fuchsia-100 ring-4 ring-fuchsia-500 p-4">
-      <div class="bg-white rounded-lg border border-gray-200 px-4 py-3 flex items-center gap-3">
-        <span class="text-xs font-mono bg-gray-100 text-gray-800 px-2 py-1 rounded">GET</span>
-        <span class="text-sm text-gray-900 font-mono">/api/users/:id</span>
-        <span class="ml-auto text-xs font-semibold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">changed</span>
+
+    <%# Card states — faithful two-column before/after layout %>
+    <% mock_card = capture do %>
+      <div class="grid grid-cols-2 gap-2">
+        <% 2.times do %>
+          <div class="border border-gray-200 rounded-lg overflow-hidden">
+            <div class="bg-sky-900 text-white px-4 py-3 text-sm font-mono">GET /api/users/:id</div>
+            <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Note</div>
+            <div class="px-3 py-2 bg-white text-sm text-gray-700">Fetch a user by id</div>
+            <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Output</div>
+            <div class="px-3 py-2 bg-white text-sm font-mono text-gray-700">{ id, name, email }</div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <div class="flex flex-col gap-8">
+      <div>
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Card — resting band (scroll-spy), shown mid-stack</p>
+        <div class="flex flex-col gap-10">
+          <div><%= mock_card %></div>
+          <div class="rounded-xl anchor-active"><%= mock_card %></div>
+          <div><%= mock_card %></div>
+        </div>
+      </div>
+
+      <div>
+        <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Card — flash on click <span class="normal-case font-normal">(reload to replay)</span></p>
+        <div class="rounded-xl anchor-active anchor-flash"><%= mock_card %></div>
       </div>
     </div>
   </div>
