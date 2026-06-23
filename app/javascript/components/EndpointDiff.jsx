@@ -63,36 +63,33 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
     }, [endpoint])
 
     return (
-        <div className="grid grid-cols-2 gap-2" key={endpoint.id}>
+        <div className="endpoint-diff" key={endpoint.id}>
             {/* Left — original read-only */}
-            <div>
-                <div className="border border-gray-200 rounded-lg overflow-hidden">
-                    <div className="bg-sky-900 text-white px-4 py-3 text-sm font-mono">
-                        {`${endpoint.original_verb} ${endpoint.original_path}`}
-                    </div>
-                    <div className={sectionHeader}>Note</div>
-                    <div className={contentRow}>{endpoint.original_note || <span className="text-gray-400 italic">—</span>}</div>
-                    <div className={sectionHeader}>Responses</div>
-                    <div className={contentRowPl}>
-                        {endpoint.original_responses.length === 0
-                            ? <span className="text-xs text-gray-400 italic">—</span>
-                            : endpoint.original_responses.map((r) => (
-                                <div key={r.code} className="text-sm text-gray-700">
-                                    <span className="font-mono text-gray-500">{r.code}</span>{r.note ? `: ${r.note}` : ""}
-                                </div>
-                            ))
-                        }
-                    </div>
-                    <div className={sectionHeader}>Output</div>
-                    <div className={contentRowPl}><StaticJSONSchema root={endpoint.original_output}/></div>
-                    <div className={sectionHeader}>Output for Errors</div>
-                    <div className={contentRowPl}><StaticJSONSchema root={endpoint.original_output_error}/></div>
+            <div className="endpoint-diff-card border border-gray-200 rounded-lg overflow-hidden">
+                <div className="bg-sky-900 text-white px-4 py-3 text-sm font-mono flex items-center">
+                    {`${endpoint.original_verb} ${endpoint.original_path}`}
                 </div>
+                <div className={sectionHeader}>Note</div>
+                <div className={contentRow}>{endpoint.original_note || <span className="text-gray-400 italic">—</span>}</div>
+                <div className={sectionHeader}>Responses</div>
+                <div className={contentRowPl}>
+                    {endpoint.original_responses.length === 0
+                        ? <span className="text-xs text-gray-400 italic">—</span>
+                        : endpoint.original_responses.map((r) => (
+                            <div key={r.code} className="text-sm text-gray-700">
+                                <span className="font-mono text-gray-500">{r.code}</span>{r.note ? `: ${r.note}` : ""}
+                            </div>
+                        ))
+                    }
+                </div>
+                <div className={sectionHeader}>Output</div>
+                <div className={contentRowPl}><StaticJSONSchema root={endpoint.original_output}/></div>
+                <div className={sectionHeader}>Output for Errors</div>
+                <div className={contentRowPl}><StaticJSONSchema root={endpoint.original_output_error}/></div>
             </div>
 
             {/* Right — editable */}
-            <div>
-                <div className="border border-gray-200 rounded-lg overflow-hidden">
+            <div className="endpoint-diff-card border border-gray-200 rounded-lg overflow-hidden">
                     <div className="bg-sky-900 text-white px-4 py-3 text-sm font-mono flex items-center gap-2">
                         <select
                             name="version[endpoints_attributes][][http_verb]"
@@ -192,7 +189,6 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
                             entities={entities}
                         />
                     </div>
-                </div>
             </div>
         </div>
     )

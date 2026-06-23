@@ -119,3 +119,25 @@ select:has(option[value="array"]:checked)   { background: yellow; }
     margin-left: 20px;
 }
 
+/* ── Endpoint diff cards (candidate form) ──────────────────────────────
+   Two side-by-side cards whose sections line up row-by-row. A shared CSS
+   subgrid gives both columns one set of row tracks, so every gray label
+   row stays a constant (content) height while only the white body rows
+   stretch to match the taller column. Each card has 9 stacked rows:
+   header + four (label, body) section pairs. */
+.endpoint-diff {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 0.5rem;
+  grid-template-rows: repeat(9, auto);
+}
+
+.endpoint-diff-card {
+  display: grid;
+  grid-template-rows: subgrid;
+  grid-row: 1 / span 9;
+}
+
+.endpoint-diff-card:first-child { grid-column: 1; }
+.endpoint-diff-card:last-child  { grid-column: 2; }
+
