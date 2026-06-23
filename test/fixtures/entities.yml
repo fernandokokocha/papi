@@ -64,3 +64,77 @@ p1v4_task:
   name: Task
   version: project1v4
   root: "{id:number,title:string,status:string,assignee_id:number}"
+
+# ===== bulk fixtures: extra entities backing the extra endpoints =====
+# Identical in v3 and v4 (so they render as "unchanged" in v4's diff). Primitives
+# only — entities cannot reference other entities.
+p1v3_project:
+  name: Project
+  version: project1v3
+  root: "{id:number,name:string,owner_id:number,archived:boolean}"
+p1v3_comment:
+  name: Comment
+  version: project1v3
+  root: "{id:number,body:string,author_id:number,task_id:number}"
+p1v3_notification:
+  name: Notification
+  version: project1v3
+  root: "{id:number,kind:string,read:boolean,user_id:number}"
+p1v3_webhook:
+  name: Webhook
+  version: project1v3
+  root: "{id:number,url:string,event:string,active:boolean}"
+p1v3_team:
+  name: Team
+  version: project1v3
+  root: "{id:number,name:string,owner_id:number}"
+p1v3_label:
+  name: Label
+  version: project1v3
+  root: "{id:number,name:string,color:string}"
+p1v3_attachment:
+  name: Attachment
+  version: project1v3
+  root: "{id:number,filename:string,size:number,url:string}"
+p1v3_invite:
+  name: Invite
+  version: project1v3
+  root: "{id:number,email:string,token:string,accepted:boolean}"
+p1v4_project:
+  name: Project
+  version: project1v4
+  root: "{id:number,name:string,owner_id:number,archived:boolean}"
+p1v4_comment:
+  name: Comment
+  version: project1v4
+  root: "{id:number,body:string,author_id:number,task_id:number}"
+p1v4_notification:
+  name: Notification
+  version: project1v4
+  root: "{id:number,kind:string,read:boolean,user_id:number}"
+p1v4_webhook:
+  name: Webhook
+  version: project1v4
+  root: "{id:number,url:string,event:string,active:boolean}"
+p1v4_team:
+  name: Team
+  version: project1v4
+  root: "{id:number,name:string,owner_id:number}"
+p1v4_label:
+  name: Label
+  version: project1v4
+  root: "{id:number,name:string,color:string}"
+p1v4_attachment:
+  name: Attachment
+  version: project1v4
+  root: "{id:number,filename:string,size:number,url:string}"
+p1v4_invite:
+  name: Invite
+  version: project1v4
+  root: "{id:number,email:string,token:string,accepted:boolean}"
+
+# v4-only entity (renders as "added")
+p1v4_audit_log:
+  name: AuditLog
+  version: project1v4
+  root: "{id:number,action:string,actor_id:number,created_at:string}"

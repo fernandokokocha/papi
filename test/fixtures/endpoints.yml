@@ -232,3 +232,329 @@ p1v4_tasks_complete:
   output: "Task"
   output_error: "Error"
   note: "Mark the next pending task as complete"
+
+# ===== bulk fixtures: extra resources so the sidebar overflows the viewport =====
+# Each resource below exists identically in v3 and v4 (so it renders as "unchanged"
+# in v4's diff), giving a long sidebar with a realistic mix of badges.
+
+# --- projects ---
+p1v3_projects_list:
+  http_verb: 0
+  path: /projects
+  version: project1v3
+  output: "{total:number,items:[Project]}"
+  output_error: "Error"
+  note: "List projects with pagination"
+p1v3_projects_create:
+  http_verb: 1
+  path: /projects
+  version: project1v3
+  output: "Project"
+  output_error: "Error"
+  note: "Create a new project"
+p1v3_projects_active:
+  http_verb: 0
+  path: /projects/active
+  version: project1v3
+  output: "Project"
+  output_error: "Error"
+  note: "Get the active project"
+p1v4_projects_list:
+  http_verb: 0
+  path: /projects
+  version: project1v4
+  output: "{total:number,items:[Project]}"
+  output_error: "Error"
+  note: "List projects with pagination"
+p1v4_projects_create:
+  http_verb: 1
+  path: /projects
+  version: project1v4
+  output: "Project"
+  output_error: "Error"
+  note: "Create a new project"
+p1v4_projects_active:
+  http_verb: 0
+  path: /projects/active
+  version: project1v4
+  output: "Project"
+  output_error: "Error"
+  note: "Get the active project"
+
+# --- comments ---
+p1v3_comments_list:
+  http_verb: 0
+  path: /comments
+  version: project1v3
+  output: "{total:number,items:[Comment]}"
+  output_error: "Error"
+  note: "List comments with pagination"
+p1v3_comments_create:
+  http_verb: 1
+  path: /comments
+  version: project1v3
+  output: "Comment"
+  output_error: "Error"
+  note: "Create a new comment"
+p1v3_comments_delete:
+  http_verb: 4
+  path: /comments/last
+  version: project1v3
+  output: "boolean"
+  output_error: "Error"
+  note: "Delete the most recent comment"
+p1v4_comments_list:
+  http_verb: 0
+  path: /comments
+  version: project1v4
+  output: "{total:number,items:[Comment]}"
+  output_error: "Error"
+  note: "List comments with pagination"
+p1v4_comments_create:
+  http_verb: 1
+  path: /comments
+  version: project1v4
+  output: "Comment"
+  output_error: "Error"
+  note: "Create a new comment"
+p1v4_comments_delete:
+  http_verb: 4
+  path: /comments/last
+  version: project1v4
+  output: "boolean"
+  output_error: "Error"
+  note: "Delete the most recent comment"
+
+# --- notifications ---
+p1v3_notifications_list:
+  http_verb: 0
+  path: /notifications
+  version: project1v3
+  output: "{total:number,items:[Notification]}"
+  output_error: "Error"
+  note: "List notifications with pagination"
+p1v3_notifications_read_all:
+  http_verb: 1
+  path: /notifications/read-all
+  version: project1v3
+  output: "boolean"
+  output_error: "Error"
+  note: "Mark all notifications as read"
+p1v4_notifications_list:
+  http_verb: 0
+  path: /notifications
+  version: project1v4
+  output: "{total:number,items:[Notification]}"
+  output_error: "Error"
+  note: "List notifications with pagination"
+p1v4_notifications_read_all:
+  http_verb: 1
+  path: /notifications/read-all
+  version: project1v4
+  output: "boolean"
+  output_error: "Error"
+  note: "Mark all notifications as read"
+
+# --- webhooks ---
+p1v3_webhooks_list:
+  http_verb: 0
+  path: /webhooks
+  version: project1v3
+  output: "[Webhook]"
+  output_error: "Error"
+  note: "List all webhooks"
+p1v3_webhooks_create:
+  http_verb: 1
+  path: /webhooks
+  version: project1v3
+  output: "Webhook"
+  output_error: "Error"
+  note: "Register a new webhook"
+p1v3_webhooks_delete:
+  http_verb: 4
+  path: /webhooks/last
+  version: project1v3
+  output: "boolean"
+  output_error: "Error"
+  note: "Delete the most recent webhook"
+p1v4_webhooks_list:
+  http_verb: 0
+  path: /webhooks
+  version: project1v4
+  output: "[Webhook]"
+  output_error: "Error"
+  note: "List all webhooks"
+p1v4_webhooks_create:
+  http_verb: 1
+  path: /webhooks
+  version: project1v4
+  output: "Webhook"
+  output_error: "Error"
+  note: "Register a new webhook"
+p1v4_webhooks_delete:
+  http_verb: 4
+  path: /webhooks/last
+  version: project1v4
+  output: "boolean"
+  output_error: "Error"
+  note: "Delete the most recent webhook"
+
+# --- teams ---
+p1v3_teams_list:
+  http_verb: 0
+  path: /teams
+  version: project1v3
+  output: "[Team]"
+  output_error: "Error"
+  note: "List all teams"
+p1v3_teams_create:
+  http_verb: 1
+  path: /teams
+  version: project1v3
+  output: "Team"
+  output_error: "Error"
+  note: "Create a new team"
+p1v4_teams_list:
+  http_verb: 0
+  path: /teams
+  version: project1v4
+  output: "[Team]"
+  output_error: "Error"
+  note: "List all teams"
+p1v4_teams_create:
+  http_verb: 1
+  path: /teams
+  version: project1v4
+  output: "Team"
+  output_error: "Error"
+  note: "Create a new team"
+
+# --- labels ---
+p1v3_labels_list:
+  http_verb: 0
+  path: /labels
+  version: project1v3
+  output: "[Label]"
+  output_error: "Error"
+  note: "List all labels"
+p1v3_labels_create:
+  http_verb: 1
+  path: /labels
+  version: project1v3
+  output: "Label"
+  output_error: "Error"
+  note: "Create a new label"
+p1v4_labels_list:
+  http_verb: 0
+  path: /labels
+  version: project1v4
+  output: "[Label]"
+  output_error: "Error"
+  note: "List all labels"
+p1v4_labels_create:
+  http_verb: 1
+  path: /labels
+  version: project1v4
+  output: "Label"
+  output_error: "Error"
+  note: "Create a new label"
+
+# --- attachments ---
+p1v3_attachments_list:
+  http_verb: 0
+  path: /attachments
+  version: project1v3
+  output: "[Attachment]"
+  output_error: "Error"
+  note: "List all attachments"
+p1v3_attachments_create:
+  http_verb: 1
+  path: /attachments
+  version: project1v3
+  output: "Attachment"
+  output_error: "Error"
+  note: "Upload a new attachment"
+p1v4_attachments_list:
+  http_verb: 0
+  path: /attachments
+  version: project1v4
+  output: "[Attachment]"
+  output_error: "Error"
+  note: "List all attachments"
+p1v4_attachments_create:
+  http_verb: 1
+  path: /attachments
+  version: project1v4
+  output: "Attachment"
+  output_error: "Error"
+  note: "Upload a new attachment"
+
+# --- invites ---
+p1v3_invites_create:
+  http_verb: 1
+  path: /invites
+  version: project1v3
+  output: "Invite"
+  output_error: "Error"
+  note: "Send a new invite"
+p1v3_invites_pending:
+  http_verb: 0
+  path: /invites/pending
+  version: project1v3
+  output: "[Invite]"
+  output_error: "Error"
+  note: "List pending invites"
+p1v4_invites_create:
+  http_verb: 1
+  path: /invites
+  version: project1v4
+  output: "Invite"
+  output_error: "Error"
+  note: "Send a new invite"
+p1v4_invites_pending:
+  http_verb: 0
+  path: /invites/pending
+  version: project1v4
+  output: "[Invite]"
+  output_error: "Error"
+  note: "List pending invites"
+
+# --- v4-only additions (render as "added") ---
+p1v4_audit_logs_list:
+  http_verb: 0
+  path: /audit-logs
+  version: project1v4
+  output: "{total:number,items:[AuditLog]}"
+  output_error: "Error"
+  note: "List audit log entries with pagination"
+p1v4_exports_create:
+  http_verb: 1
+  path: /exports
+  version: project1v4
+  output: "boolean"
+  output_error: "Error"
+  note: "Trigger a data export"
+
+# --- empty-body endpoints (null response: output parses to Node::Nothing) ---
+# /ping exists in v3 and v4 (unchanged); /cache is v4-only (added).
+p1v3_ping:
+  http_verb: 1
+  path: /ping
+  version: project1v3
+  output: ""
+  output_error: "Error"
+  note: "Ping the server (no response body)"
+p1v4_ping:
+  http_verb: 1
+  path: /ping
+  version: project1v4
+  output: ""
+  output_error: "Error"
+  note: "Ping the server (no response body)"
+p1v4_cache_clear:
+  http_verb: 4
+  path: /cache
+  version: project1v4
+  output: ""
+  output_error: "Error"
+  note: "Clear the server cache (no response body)"
