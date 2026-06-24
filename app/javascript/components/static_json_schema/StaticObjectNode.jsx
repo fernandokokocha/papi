@@ -8,7 +8,8 @@ const StaticObjectNode = ({attributes}) => {
 
             {
                 attributes.map(({name, value}) => (
-                    <StaticObjectAttribute name={name}
+                    <StaticObjectAttribute key={name}
+                                           name={name}
                                            value={value}
                     />
                 ))

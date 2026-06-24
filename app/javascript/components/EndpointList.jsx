@@ -40,14 +40,15 @@ const EndpointList = ({
                     <div className="border border-emerald-200 rounded-lg overflow-hidden">
                         <div className="bg-emerald-700 text-white px-4 py-3 text-sm font-mono flex items-center gap-2 flex-wrap">
                             <select
+                                value={newVerb}
                                 onChange={updateNewVerb}
                                 className="bg-emerald-600 text-white text-xs rounded border border-emerald-500 px-1 py-0.5 focus:outline-none"
                             >
-                                <option value="verb_get" selected={newVerb === "verb_get"}>GET</option>
-                                <option value="verb_post" selected={newVerb === "verb_post"}>POST</option>
-                                <option value="verb_delete" selected={newVerb === "verb_delete"}>DELETE</option>
-                                <option value="verb_put" selected={newVerb === "verb_put"}>PUT</option>
-                                <option value="verb_patch" selected={newVerb === "verb_patch"}>PATCH</option>
+                                <option value="verb_get">GET</option>
+                                <option value="verb_post">POST</option>
+                                <option value="verb_delete">DELETE</option>
+                                <option value="verb_put">PUT</option>
+                                <option value="verb_patch">PATCH</option>
                             </select>
                             <input
                                 type="text"

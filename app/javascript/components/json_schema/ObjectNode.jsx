@@ -14,7 +14,8 @@ const ObjectNode = ({onChange, onDelete, onAdd, attributes, path, canBeDeleted, 
 
             {
                 attributes.map(({name, value}) => (
-                    <ObjectAttribute name={name}
+                    <ObjectAttribute key={name}
+                                     name={name}
                                      value={value}
                                      onChange={onChange}
                                      onDelete={onDelete}

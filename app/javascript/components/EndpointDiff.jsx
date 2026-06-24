@@ -63,7 +63,7 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
     }, [endpoint])
 
     return (
-        <div className="endpoint-diff" key={endpoint.id}>
+        <div className="endpoint-diff">
             {/* Left — original read-only */}
             <div className="endpoint-diff-card border border-gray-200 rounded-lg overflow-hidden">
                 <div className="bg-sky-900 text-white px-4 py-3 text-sm font-mono flex items-center">
@@ -93,14 +93,15 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
                     <div className="bg-sky-900 text-white px-4 py-3 text-sm font-mono flex items-center gap-2">
                         <select
                             name="version[endpoints_attributes][][http_verb]"
+                            value={endpoint.http_verb}
                             onChange={(e) => updateVerb(e.target.value)}
                             className="bg-sky-800 text-white text-xs rounded border border-sky-600 px-1 focus:outline-none"
                         >
-                            <option value="verb_get" selected={endpoint.http_verb === "verb_get"}>GET</option>
-                            <option value="verb_post" selected={endpoint.http_verb === "verb_post"}>POST</option>
-                            <option value="verb_delete" selected={endpoint.http_verb === "verb_delete"}>DELETE</option>
-                            <option value="verb_put" selected={endpoint.http_verb === "verb_put"}>PUT</option>
-                            <option value="verb_patch" selected={endpoint.http_verb === "verb_patch"}>PATCH</option>
+                            <option value="verb_get">GET</option>
+                            <option value="verb_post">POST</option>
+                            <option value="verb_delete">DELETE</option>
+                            <option value="verb_put">PUT</option>
+                            <option value="verb_patch">PATCH</option>
                         </select>
                         <input
                             type="text"
@@ -153,11 +154,12 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
                         ))}
                         <div className="flex items-center gap-2 pt-1">
                             <select
+                                value={newResponseCode ?? ""}
                                 onChange={(e) => setNewResponseCode(e.target.value)}
                                 className="border border-gray-300 rounded text-xs px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-sky-500"
                             >
                                 {responsesToAdd.map((r) => (
-                                    <option key={r} value={r} selected={newResponseCode === r}>{r}</option>
+                                    <option key={r} value={r}>{r}</option>
                                 ))}
                             </select>
                             <button

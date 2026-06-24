@@ -7,10 +7,10 @@ const TypeSelect = ({value, onChange, onDelete, path, canBeDeleted, canBeNothing
 
     return (
         <>
-            <select onChange={(e) => onChange(e, path)}>
+            <select value={value} onChange={(e) => onChange(e, path)}>
                 {
                     types.map((type) => (
-                        <option value={type} selected={value === type}>
+                        <option key={type} value={type}>
                             {type}
                         </option>
                     ))
@@ -19,7 +19,7 @@ const TypeSelect = ({value, onChange, onDelete, path, canBeDeleted, canBeNothing
                     <hr/>
                 )}
                 { custom_types.map(ct => (
-                    <option value={ct} selected={value === ct}>
+                    <option key={ct} value={ct}>
                         {ct}
                     </option>
                 )) }

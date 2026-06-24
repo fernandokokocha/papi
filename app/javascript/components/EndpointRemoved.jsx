@@ -7,7 +7,7 @@ const contentRowPl = "pl-2 py-2 bg-white border-b border-gray-200"
 
 const EndpointRemoved = ({endpoint, restore}) => {
     return (
-        <div className="grid grid-cols-2 gap-2" key={endpoint.id}>
+        <div className="grid grid-cols-2 gap-2">
             {/* Left — original read-only */}
             <div>
                 <div className="border border-gray-200 rounded-lg overflow-hidden">
