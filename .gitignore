@@ -50,3 +50,6 @@ node_modules
 /config/credentials/production.key
 
 /.superpowers
+
+# Generated Tailwind build output
+/app/assets/builds/tailwind.css
