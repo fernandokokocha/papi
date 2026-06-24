@@ -3,6 +3,8 @@ import JSONSchemaForm from "@/components/json_schema/JSONSchemaForm.jsx";
 import StaticJSONSchema from "@/components/static_json_schema/StaticJSONSchema.jsx";
 import {arrayDifference} from "@/helpers/arrayDiffrence.js";
 import {httpStatusCodes} from "@/helpers/values.js";
+import VerbBadge from "@/components/VerbBadge.jsx";
+import {verbSelectClass} from "@/helpers/verbColors.js";
 
 const sectionHeader = "bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide"
 const contentRow = "px-3 py-2 bg-white border-b border-gray-200 text-sm text-gray-700"
@@ -66,8 +68,9 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
         <div className="endpoint-diff">
             {/* Left — original read-only */}
             <div className="endpoint-diff-card border border-gray-200 rounded-lg overflow-hidden">
-                <div className="bg-sky-900 text-white px-4 py-3 text-sm font-mono flex items-center">
-                    {`${endpoint.original_verb} ${endpoint.original_path}`}
+                <div className="bg-sky-900 text-white px-4 py-3 text-sm font-mono flex items-center gap-2">
+                    <VerbBadge verb={endpoint.original_verb}/>
+                    <span className="truncate">{endpoint.original_path}</span>
                 </div>
                 <div className={sectionHeader}>Note</div>
                 <div className={contentRow}>{endpoint.original_note || <span className="text-gray-400 italic">—</span>}</div>
@@ -95,7 +98,7 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
                             name="version[endpoints_attributes][][http_verb]"
                             value={endpoint.http_verb}
                             onChange={(e) => updateVerb(e.target.value)}
-                            className="bg-sky-800 text-white text-xs rounded border border-sky-600 px-1 focus:outline-none"
+                            className={`text-xs font-bold rounded border px-1 py-0.5 focus:outline-none ${verbSelectClass(endpoint.http_verb)}`}
                         >
                             <option value="verb_get">GET</option>
                             <option value="verb_post">POST</option>

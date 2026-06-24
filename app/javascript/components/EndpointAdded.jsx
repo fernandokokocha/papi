@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react'
 import JSONSchemaForm from "@/components/json_schema/JSONSchemaForm.jsx";
 import {arrayDifference} from "@/helpers/arrayDiffrence.js";
 import {httpStatusCodes} from "@/helpers/values.js";
+import {verbSelectClass} from "@/helpers/verbColors.js";
 
 const sectionHeader = "bg-emerald-50 border-t border-emerald-200 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide"
 const contentRow = "px-3 py-2 bg-emerald-50 border-b border-emerald-200 text-sm text-gray-700"
@@ -71,7 +72,7 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
                             name="version[endpoints_attributes][][http_verb]"
                             value={endpoint.http_verb}
                             onChange={(e) => updateVerb(e.target.value)}
-                            className="bg-emerald-600 text-white text-xs rounded border border-emerald-500 px-1 focus:outline-none"
+                            className={`text-xs font-bold rounded border px-1 py-0.5 focus:outline-none ${verbSelectClass(endpoint.http_verb)}`}
                         >
                             <option value="verb_get">GET</option>
                             <option value="verb_post">POST</option>

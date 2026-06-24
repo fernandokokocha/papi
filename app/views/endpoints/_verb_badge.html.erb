@@ -1,0 +1,9 @@
+<%# locals: verb (e.g. "GET") %>
+<% tint = {
+  "GET" => "bg-blue-500 text-white",
+  "POST" => "bg-emerald-500 text-white",
+  "PUT" => "bg-amber-500 text-white",
+  "PATCH" => "bg-teal-500 text-white",
+  "DELETE" => "bg-red-500 text-white"
+}[verb] %>
+<span class="inline-flex items-center justify-center shrink-0 min-w-14 px-1.5 py-0.5 rounded text-xs font-bold font-mono tracking-wider leading-none ring-1 ring-inset ring-white/25 <%= tint %>"><%= verb %></span>

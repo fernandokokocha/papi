@@ -1,5 +1,6 @@
 import React from 'react'
 import StaticJSONSchema from "@/components/static_json_schema/StaticJSONSchema.jsx";
+import VerbBadge from "@/components/VerbBadge.jsx";
 
 const sectionHeader = "bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide"
 const contentRow = "px-3 py-2 bg-white border-b border-gray-200 text-sm text-gray-700"
@@ -11,8 +12,9 @@ const EndpointRemoved = ({endpoint, restore}) => {
             {/* Left — original read-only */}
             <div>
                 <div className="border border-gray-200 rounded-lg overflow-hidden">
-                    <div className="bg-sky-900 text-white px-4 py-3 text-sm font-mono">
-                        {`${endpoint.original_verb} ${endpoint.original_path}`}
+                    <div className="bg-sky-900 text-white px-4 py-3 text-sm font-mono flex items-center gap-2">
+                        <VerbBadge verb={endpoint.original_verb}/>
+                        <span className="truncate">{endpoint.original_path}</span>
                     </div>
                     <div className={sectionHeader}>Note</div>
                     <div className={contentRow}>{endpoint.original_note || <span className="text-gray-400 italic">—</span>}</div>
@@ -38,7 +40,8 @@ const EndpointRemoved = ({endpoint, restore}) => {
             <div>
                 <div className="border border-red-200 rounded-lg overflow-hidden">
                     <div className="bg-red-600 text-white px-4 py-3 text-sm font-mono flex items-center gap-2">
-                        <span className="line-through opacity-70">{`${endpoint.original_verb} ${endpoint.original_path}`}</span>
+                        <VerbBadge verb={endpoint.original_verb}/>
+                        <span className="line-through opacity-70 truncate">{endpoint.original_path}</span>
                         <button
                             type="button"
                             onClick={() => restore(endpoint.id)}

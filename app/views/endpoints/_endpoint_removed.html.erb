@@ -7,7 +7,10 @@
   <div>
     <div class="border border-red-200 rounded-lg">
       <div class="sticky top-0 z-10 rounded-t-lg bg-red-700 text-white px-4 py-3 text-sm font-mono flex items-center justify-between">
-        <span><%= endpoint.name %></span>
+        <span class="flex items-center gap-2 min-w-0">
+          <%= render "endpoints/verb_badge", verb: endpoint.verb %>
+          <span class="truncate"><%= endpoint.path %></span>
+        </span>
         <div class="flex items-center gap-2 ml-4">
           <% if endpoint.parsed_output.expandable? || endpoint.parsed_output_error.expandable? %>
             <% if expanded %>

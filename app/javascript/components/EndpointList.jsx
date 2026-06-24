@@ -1,5 +1,6 @@
 import React from 'react'
 import Endpoint from "~/components/Endpoint.jsx";
+import {verbSelectClass} from "@/helpers/verbColors.js";
 
 const EndpointList = ({
                           endpoints,
@@ -42,7 +43,7 @@ const EndpointList = ({
                             <select
                                 value={newVerb}
                                 onChange={updateNewVerb}
-                                className="bg-emerald-600 text-white text-xs rounded border border-emerald-500 px-1 py-0.5 focus:outline-none"
+                                className={`text-xs font-bold rounded border px-1 py-0.5 focus:outline-none ${verbSelectClass(newVerb)}`}
                             >
                                 <option value="verb_get">GET</option>
                                 <option value="verb_post">POST</option>
