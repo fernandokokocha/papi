@@ -106,6 +106,13 @@ select:has(option[value="boolean"]:checked) { background: cornflowerblue; }
 select:has(option[value="object"]:checked)  { background: sandybrown; }
 select:has(option[value="array"]:checked)   { background: yellow; }
 
+/* Custom entity types fall through the built-in cases above, so default the
+   editor's type <select> to violet — matching the static `span.custom` token.
+   The built-in rules above out-specify this and win for their own types;
+   "nothing" is restored to white below. */
+.json-schema select { background: violet; }
+.json-schema select:has(option[value="nothing"]:checked) { background: white; }
+
 .json-schema {
     font-family: monospace;
 }
@@ -140,4 +147,86 @@ select:has(option[value="array"]:checked)   { background: yellow; }
 
 .endpoint-diff-card:first-child { grid-column: 1; }
 .endpoint-diff-card:last-child  { grid-column: 2; }
+
+/* ── Schema editor controls (candidate form) ──────────────────────────────
+   Small inline affordances inside the monospace schema tree. Kept compact so
+   they don't disturb the tree's rhythm, but with enough weight/contrast to
+   read as interactive. */
+
+/* Remove-node "×": small round red chip that fills in on hover. */
+.json-schema .node-delete {
+  margin-left: 4px;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--color-red-600);
+  background: var(--color-red-50);
+  border: 1px solid var(--color-red-300);
+  border-radius: 9999px;
+  cursor: pointer;
+  vertical-align: middle;
+}
+.json-schema .node-delete:hover {
+  color: white;
+  background: var(--color-red-600);
+  border-color: var(--color-red-600);
+}
+
+/* Add-attribute: a small, self-contained "form" chip (dashed so it reads as a
+   blank to fill), with a named text field and a clear clickable "+". Inline-
+   flex keeps it content-sized so it never grows to fill the row. */
+.json-schema .object-new-attribute {
+  /* Block-level so it always sits on its own line under the opening "{"
+     (even when the object is empty), but width: fit-content keeps the chip
+     shrink-wrapped to its contents rather than spanning the row. */
+  display: flex;
+  width: fit-content;
+  align-items: center;
+  gap: 4px;
+  padding: 2px;
+  background: var(--color-gray-50);
+  border: 1px dashed var(--color-gray-300);
+  border-radius: 6px;
+}
+.json-schema .new-attribute-name {
+  width: 9ch;
+  padding: 1px 6px;
+  font-family: monospace;
+  font-size: 13px;
+  color: var(--color-gray-800);
+  background: white;
+  border: 1px solid var(--color-gray-300);
+  border-radius: 4px;
+}
+.json-schema .new-attribute-name:focus {
+  outline: none;
+  border-color: var(--color-sky-500);
+  box-shadow: 0 0 0 2px var(--color-sky-200);
+}
+.json-schema .new-attribute-add {
+  width: 18px;
+  height: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1;
+  color: white;
+  background: var(--color-sky-600);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.json-schema .new-attribute-add:hover { background: var(--color-sky-700); }
+.json-schema .new-attribute-add:disabled {
+  background: var(--color-gray-300);
+  cursor: not-allowed;
+}
 

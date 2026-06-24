@@ -29,14 +29,13 @@ const ObjectNode = ({onChange, onDelete, onAdd, attributes, path, canBeDeleted, 
             }
 
             <div className="object-new-attribute">
-                <input value={newName} onChange={(e) => {
+                <input className="new-attribute-name" value={newName} aria-label="New attribute name" onChange={(e) => {
                     setNewName(e.target.value)
                 }}></input>
-                <button type="button" onClick={(e) => onAdd(e, path, newName)} disabled={addDisabled}>+</button>
-
+                <button type="button" className="new-attribute-add" aria-label="Add attribute" onClick={(e) => onAdd(e, path, newName)} disabled={addDisabled}>+</button>
             </div>
 
-            {"}"}
+            <div className="object-close">{"}"}</div>
         </div>
     )
 }

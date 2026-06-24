@@ -24,7 +24,7 @@ const TypeSelect = ({value, onChange, onDelete, path, canBeDeleted, canBeNothing
                     </option>
                 )) }
             </select>
-            {canBeDeleted && <button type="button" onClick={(e) => onDelete(e, path)}>x</button>}
+            {canBeDeleted && <button type="button" className="node-delete" aria-label="Remove" onClick={(e) => onDelete(e, path)}>×</button>}
         </>
     )
 }

@@ -16,7 +16,7 @@ const EntityDiff = ({entity, updateEntity, removeEntity, entities}) => {
                         {entity.name}
                     </div>
                     <div className="pl-2 py-2 bg-white border-b border-gray-200">
-                        <StaticJSONSchema root={entity.root}/>
+                        <StaticJSONSchema root={entity.original_root}/>
                     </div>
                 </div>
             </div>
