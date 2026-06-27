@@ -1,8 +1,23 @@
 <div>
-  <% diff.each do |line| %>
-    <div>
-      <span class="line <%= line.code_change %>"><%= line.code %></span>:
-      <span class="<%= line.note_change %>"><%= line.note %></span>
+  <% lines.each do |line| %>
+    <% present = side == :before ? line.before_present? : line.after_present? %>
+    <% color = case line.state
+               when :added then "border-emerald-200 bg-emerald-50"
+               when :removed then "border-red-200 bg-red-50"
+               when :changed then "border-amber-200 bg-amber-50"
+               else "border-gray-200 bg-white" end %>
+    <div class="border rounded-md mb-2 <%= present ? color : "border-transparent" %>">
+      <% if present %>
+        <div class="px-2 py-1 text-xs font-mono text-gray-600">
+          <span class="font-semibold"><%= line.code %></span>
+          <%= render "specs/text", diff: (side == :before ? line.note_diff.before : line.note_diff.after) %>
+        </div>
+        <div class="pl-2 py-1">
+          <%= render "specs/json", diff: (side == :before ? line.output_diff.before : line.output_diff.after) %>
+        </div>
+      <% else %>
+        <div class="px-2 py-1 text-xs text-gray-300 font-mono"><%= line.code %></div>
+      <% end %>
     </div>
   <% end %>
 </div>
