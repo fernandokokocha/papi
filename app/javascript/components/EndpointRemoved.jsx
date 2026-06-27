@@ -23,16 +23,15 @@ const EndpointRemoved = ({endpoint, restore}) => {
                         {endpoint.original_responses.length === 0
                             ? <span className="text-xs text-gray-400 italic">—</span>
                             : endpoint.original_responses.map((r) => (
-                                <div key={r.code} className="text-sm text-gray-700">
-                                    <span className="font-mono text-gray-500">{r.code}</span>{r.note ? `: ${r.note}` : ""}
+                                <div key={r.code} className="border border-gray-200 rounded bg-white p-2 mb-2">
+                                    <div className="text-sm text-gray-700">
+                                        <span className="font-mono text-gray-500">{r.code}</span>{r.note ? `: ${r.note}` : ""}
+                                    </div>
+                                    <div className="pl-2 pt-1"><StaticJSONSchema root={r.output}/></div>
                                 </div>
                             ))
                         }
                     </div>
-                    <div className={sectionHeader}>Output</div>
-                    <div className={contentRowPl}><StaticJSONSchema root={endpoint.output}/></div>
-                    <div className={sectionHeader}>Output for Errors</div>
-                    <div className={contentRowPl}><StaticJSONSchema root={endpoint.output_error}/></div>
                 </div>
             </div>
 

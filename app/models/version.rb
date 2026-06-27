@@ -31,10 +31,8 @@ class Version < ApplicationRecord
         http_verb: endpoint.http_verb,
         verb: endpoint.verb,
         path: endpoint.path,
-        output: endpoint.output,
-        output_error: endpoint.output_error,
         note: endpoint.note,
-        responses: endpoint.responses.sort_by(&:code).map { |r| { code: r.code, note: r.note } }
+        responses: endpoint.responses.sort_by(&:code).map { |r| { code: r.code, note: r.note, output: r.output } }
       }
     end.to_json
   end

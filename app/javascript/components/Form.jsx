@@ -40,8 +40,9 @@ const checkEntitiesReferences = (endpoints, entities) => {
 const findCustomNameInEndpoints = (endpoints, name) => {
     let found = false;
     endpoints.forEach((e) => {
-        found = found || findCustomName(e.output, name)
-        found = found || findCustomName(e.output_error, name)
+        e.responses.forEach((r) => {
+            found = found || findCustomName(r.output, name)
+        })
     })
     return found
 }
@@ -97,6 +98,13 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
                 } else {
                     endpoint.collision = false;
                 }
+
+                if (endpoint.responses.length === 0) {
+                    newNoCollisions = false;
+                    endpoint.no_responses = true;
+                } else {
+                    endpoint.no_responses = false;
+                }
             })
         setNoCollisions(newNoCollisions)
 
@@ -106,12 +114,10 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
                 http_verb: endpoint.http_verb,
                 verb: endpoint.verb,
                 path: endpoint.path,
-                output: serialize(endpoint.output),
-                output_error: serialize(endpoint.output_error),
                 note: endpoint.note,
                 responses: [...endpoint.responses]
                     .sort((a, b) => Number(a.code) - Number(b.code))
-                    .map((r) => ({code: r.code, note: r.note})),
+                    .map((r) => ({code: r.code, note: r.note, output: serialize(r.output)})),
             })))
 
         if (serializedEndpointsToSend !== serializedEndpoints) {
@@ -168,10 +174,8 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
         endpointToRestore.http_verb = endpointToRestore.original_http_verb
         endpointToRestore.verb = endpointToRestore.original_verb
         endpointToRestore.path = endpointToRestore.original_path
-        endpointToRestore.output = endpointToRestore.original_output
-        endpointToRestore.output_error = endpointToRestore.original_output_error
         endpointToRestore.note = endpointToRestore.original_note
-        endpointToRestore.responses = endpointToRestore.original_responses
+        endpointToRestore.responses = JSON.parse(JSON.stringify(endpointToRestore.original_responses))
         endpointToRestore.collision = false
 
         validate(newEndpoints, entities)
@@ -188,8 +192,6 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
             http_verb: newVerb,
             verb: newVerb,
             path: newPath,
-            output: {nodeType: "primitive", value: "nothing"},
-            output_error: {nodeType: "primitive", value: "nothing"},
             responses: []
         })
 
@@ -266,17 +268,12 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
             endpointData.original_path = endpointData.path
             endpointData.original_verb = endpointData.verb
             endpointData.original_http_verb = endpointData.http_verb
-
-            const parsed_output = deserialize(endpointData.output)
-            endpointData.original_output = parsed_output
-            endpointData.output = parsed_output
-
-            const parsed_output_error = deserialize(endpointData.output_error)
-            endpointData.original_output_error = parsed_output_error
-            endpointData.output_error = parsed_output_error
-
             endpointData.original_note = endpointData.note
-            endpointData.original_responses = endpointData.responses
+
+            const editable = endpointData.responses.map((r) => ({code: r.code, note: r.note, output: deserialize(r.output)}))
+            const original = endpointData.responses.map((r) => ({code: r.code, note: r.note, output: deserialize(r.output)}))
+            endpointData.responses = editable
+            endpointData.original_responses = original
         })
         setEndpoints(parsed_endpoints)
 
