@@ -23,8 +23,6 @@ describe "Candidates requests", type: :request do
         endpoints_attributes: [
           { path: "/",
             http_verb: "verb_get",
-            output: "",
-            output_error: "",
             responses: { "200" => { note: "ok", output: "User" } }
           }
         ],

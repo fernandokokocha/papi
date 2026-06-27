@@ -34,21 +34,9 @@ class Endpoint < ApplicationRecord
     "#{verb}-#{path}"
   end
 
-  def parsed_output
-    parser = JSONSchemaParser.new(version.entities)
-    parser.parse_value(output)
-  end
-
-  def parsed_output_error
-    parser = JSONSchemaParser.new(version.entities)
-    parser.parse_value(output_error)
-  end
-
   def differs_from?(previous)
     DiffText::FromNotes.new(previous.note, note).any_changes? ||
-      DiffResponses::FromResponses.new(previous.responses, responses).any_changes? ||
-      Diff::FromValues.new(previous.parsed_output.expand, parsed_output.expand).any_changes? ||
-      Diff::FromValues.new(previous.parsed_output_error.expand, parsed_output_error.expand).any_changes?
+      DiffResponses::FromResponses.new(previous.responses, responses).any_changes?
   end
 
   def self.from_version_request(request, version)

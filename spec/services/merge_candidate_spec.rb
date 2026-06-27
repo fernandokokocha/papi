@@ -12,8 +12,6 @@ def valid_params(project, candidate_name = "rc1", version_name = "rc1")
       endpoints_attributes: [
         { path: "/",
           http_verb: "verb_get",
-          output: "",
-          output_error: "",
           auth: "bearer"
         }
       ],

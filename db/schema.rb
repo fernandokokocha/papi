@@ -27,8 +27,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_23_162601) do
     t.integer "http_verb", null: false
     t.string "path", null: false
     t.integer "version_id", null: false
-    t.string "output", null: false
-    t.string "output_error", null: false
     t.string "note"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
