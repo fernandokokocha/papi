@@ -46,6 +46,16 @@ describe "Candidates requests", type: :request do
       expect(response).to redirect_to(project_candidate_path(project.name, "rc1"))
     end
 
+    it "persists response note and output through real controller params" do
+      sign_in(user)
+      post project_candidates_path(project.name), params: valid_params
+
+      endpoint = Endpoint.last
+      response_record = endpoint.responses.find_by(code: "200")
+      expect(response_record.note).to eq("ok")
+      expect(response_record.output).to eq("User")
+    end
+
     it "does not create a version if user outside group" do
       sign_in(another_user)
       post project_candidates_path(project.name), params: valid_params

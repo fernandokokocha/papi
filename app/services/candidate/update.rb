@@ -31,6 +31,7 @@ class Candidate::Update
   def format_responses(responses_hash)
     return [] unless responses_hash
     responses_hash.to_hash.entries.map do |code, attrs|
+      attrs = attrs.to_h.with_indifferent_access
       { code: code, note: attrs[:note].to_s, output: attrs[:output].to_s }
     end
   end
