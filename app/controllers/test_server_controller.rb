@@ -23,12 +23,20 @@ class TestServerController < ApplicationController
 
   def output(endpoint, request)
     desired_response = request.params[:response]
-    return endpoint.parsed_output if desired_response.nil?
 
-    response = endpoint.responses.where(code: desired_response)
-    raise InvalidResponseCode.new("Invalid response code: #{desired_response}") if response.empty?
+    if desired_response.nil?
+      response = default_response(endpoint)
+      raise InvalidResponseCode.new("No responses defined") if response.nil?
+      return response.parsed_output
+    end
 
-    return endpoint.parsed_output if desired_response.start_with?("2")
-    endpoint.parsed_output_error
+    response = endpoint.responses.find_by(code: desired_response)
+    raise InvalidResponseCode.new("Invalid response code: #{desired_response}") if response.nil?
+    response.parsed_output
+  end
+
+  def default_response(endpoint)
+    responses = endpoint.responses.sort_by(&:code)
+    responses.find { |r| r.code.start_with?("2") } || responses.first
   end
 end

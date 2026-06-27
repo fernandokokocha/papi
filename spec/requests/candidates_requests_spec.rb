@@ -24,7 +24,8 @@ describe "Candidates requests", type: :request do
           { path: "/",
             http_verb: "verb_get",
             output: "",
-            output_error: ""
+            output_error: "",
+            responses: { "200" => { note: "ok", output: "User" } }
           }
         ],
         entities_attributes: [

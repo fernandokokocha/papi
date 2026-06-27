@@ -19,7 +19,8 @@ describe Candidate::Create do
             http_verb: "verb_get",
             output: "",
             output_error: "",
-            auth: "bearer"
+            auth: "bearer",
+            responses: { "200" => { note: "ok", output: "User" } }
           }
         ],
         entities_attributes: [
@@ -52,6 +53,13 @@ describe Candidate::Create do
 
     it "creates version" do
       expect { subject.call }.to change(Version, :count).by(1)
+    end
+
+    it "persists the per-response output schema" do
+      subject.call
+      response = Endpoint.last.responses.find_by(code: "200")
+      expect(response.output).to eq("User")
+      expect(response.note).to eq("ok")
     end
   end
 

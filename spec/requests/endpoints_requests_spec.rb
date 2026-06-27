@@ -23,7 +23,8 @@ describe "Endpoints requests", type: :request do
             http_verb: "verb_get",
             output: "",
             output_error: "",
-            auth: "bearer"
+            auth: "bearer",
+            responses: { "200" => { note: "ok", output: "User" } }
           }
         ],
         entities_attributes: [

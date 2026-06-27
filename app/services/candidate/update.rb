@@ -32,8 +32,8 @@ class Candidate::Update
 
   def format_responses(responses_hash)
     return [] unless responses_hash
-    responses_hash.to_hash.entries.map do |key, value|
-      { code: key, note: value }
+    responses_hash.to_hash.entries.map do |code, attrs|
+      { code: code, note: attrs[:note].to_s, output: attrs[:output].to_s }
     end
   end
 end
