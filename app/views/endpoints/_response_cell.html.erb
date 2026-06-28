@@ -1,0 +1,49 @@
+<% present = side == :before ? line.before_present? : line.after_present? %>
+<% if present %>
+  <%
+    wholesale = line.state == :added || line.state == :removed
+    if wholesale
+      node = side == :before ? line.before_output : line.after_output
+      raw_note = side == :before ? line.before_note : line.after_note
+      body = node.to_diff(line.state)
+      tint = line.state == :added ? "bg-emerald-50" : "bg-red-50"
+    else
+      note_lines = side == :before ? line.note_diff.before : line.note_diff.after
+      body = side == :before ? line.output_diff.before : line.output_diff.after
+      tint = ""
+    end
+    curl_path = local_assigns[:curl_path]
+  %>
+  <div class="py-1 <%= tint %>">
+    <div class="flex items-start gap-2">
+      <span class="font-mono text-xs font-semibold px-1.5 py-0.5 rounded bg-gray-100 text-gray-700 shrink-0"><%= line.code %></span>
+      <div class="text-sm min-w-0 flex-1 mt-0.5">
+        <% if wholesale %>
+          <% if raw_note.to_s.strip != "" %>
+            <span class="text-gray-600"><%= raw_note %></span>
+          <% else %>
+            <span class="text-gray-300 italic">No description</span>
+          <% end %>
+        <% elsif note_lines.any? { |l| l.whole_line.to_s.strip != "" } %>
+          <div class="text-gray-600"><%= render "specs/text", diff: note_lines %></div>
+        <% else %>
+          <div class="text-gray-300 italic">No description</div>
+        <% end %>
+      </div>
+      <% if curl_path %>
+        <button type="button"
+                data-controller="clipboard"
+                data-clipboard-verb-value="<%= local_assigns[:curl_verb] %>"
+                data-clipboard-path-value="<%= curl_path %>"
+                data-clipboard-response-value="<%= line.code %>"
+                data-action="clipboard#copy"
+                class="shrink-0 text-xs bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 px-2 py-0.5 rounded cursor-pointer leading-none">Copy cURL</button>
+      <% end %>
+    </div>
+    <% unless body.empty? %>
+      <div class="font-mono text-xs text-gray-800 mt-1"><%= render "specs/json", diff: body %></div>
+    <% end %>
+  </div>
+<% else %>
+  <div></div>
+<% end %>

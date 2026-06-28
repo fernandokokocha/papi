@@ -17,23 +17,28 @@ class DiffResponses::FromResponses
   private
 
   def build_line(code, before, after)
-    note_diff = DiffText::FromNotes.new(before&.note, after&.note)
-    output_diff = Diff::FromValues.new(output_value(before), output_value(after))
+    before_output = output_value(before)
+    after_output = output_value(after)
 
-    state =
-      if before.nil?
-        :added
-      elsif after.nil?
-        :removed
-      elsif note_diff.any_changes? || output_diff.any_changes?
-        :changed
-      else
-        :no_change
-      end
+    # Only changed/unchanged responses need a line-level diff; added and
+    # removed are rendered wholesale (all green / all red).
+    if before.nil?
+      state = :added
+      note_diff = output_diff = nil
+    elsif after.nil?
+      state = :removed
+      note_diff = output_diff = nil
+    else
+      note_diff = DiffText::FromNotes.new(before.note, after.note)
+      output_diff = Diff::FromValues.new(before_output, after_output)
+      state = note_diff.any_changes? || output_diff.any_changes? ? :changed : :no_change
+    end
 
     DiffResponses::ResponseDiff.new(
       code: code, state: state, note_diff: note_diff, output_diff: output_diff,
-      before_present: !before.nil?, after_present: !after.nil?
+      before_present: !before.nil?, after_present: !after.nil?,
+      before_output: before_output, after_output: after_output,
+      before_note: before&.note, after_note: after&.note
     )
   end
 

@@ -35,8 +35,9 @@ class TestServerController < ApplicationController
     response.parsed_output
   end
 
+  # When no response code is requested, serve the first response alphabetically
+  # by code (for valid 3-digit HTTP codes this is the lowest code).
   def default_response(endpoint)
-    responses = endpoint.responses.sort_by(&:code)
-    responses.find { |r| r.code.start_with?("2") } || responses.first
+    endpoint.responses.min_by(&:code)
   end
 end
