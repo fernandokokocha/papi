@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
-import JSONSchemaForm from "@/components/json_schema/JSONSchemaForm.jsx";
-import StaticJSONSchema from "@/components/static_json_schema/StaticJSONSchema.jsx";
+import ResponseList from "@/components/ResponseList.jsx";
+import StaticResponseList from "@/components/StaticResponseList.jsx";
 import {arrayDifference} from "@/helpers/arrayDiffrence.js";
 import {httpStatusCodes} from "@/helpers/values.js";
 import VerbBadge from "@/components/VerbBadge.jsx";
@@ -8,7 +8,6 @@ import {verbSelectClass} from "@/helpers/verbColors.js";
 
 const sectionHeader = "bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide"
 const contentRow = "px-3 py-2 bg-white border-b border-gray-200 text-sm text-gray-700"
-const contentRowPl = "pl-2 py-2 bg-white border-b border-gray-200"
 
 const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
     const updateVerb = (newVerb) => {
@@ -78,20 +77,7 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
                 </div>
                 <div className={sectionHeader}>Note</div>
                 <div className={contentRow}>{endpoint.original_note || <span className="text-gray-400 italic">—</span>}</div>
-                <div className={sectionHeader}>Responses</div>
-                <div className={contentRowPl}>
-                    {endpoint.original_responses.length === 0
-                        ? <span className="text-xs text-gray-400 italic">—</span>
-                        : endpoint.original_responses.map((r) => (
-                            <div key={r.code} className="border border-gray-200 rounded bg-white p-2 mb-2">
-                                <div className="text-sm text-gray-700">
-                                    <span className="font-mono text-gray-500">{r.code}</span>{r.note ? `: ${r.note}` : ""}
-                                </div>
-                                <div className="pl-2 pt-1"><StaticJSONSchema root={r.output}/></div>
-                            </div>
-                        ))
-                    }
-                </div>
+                <StaticResponseList responses={endpoint.original_responses}/>
             </div>
 
             {/* Right — editable */}
@@ -126,53 +112,19 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
                         {endpoint.collision && <span className="text-xs text-red-300">Collision!</span>}
                         {endpoint.no_responses && <span className="text-xs text-red-300">Needs a response</span>}
                     </div>
-                    <div className={sectionHeader}>Note</div>
-                    <div className="px-3 py-2 bg-white border-b border-gray-200">
-                        <textarea
-                            name="version[endpoints_attributes][][note]"
-                            value={endpoint.note}
-                            onChange={(e) => updateNote(e.target.value)}
-                            rows="3"
-                            className="border border-gray-300 rounded px-2 py-1 text-sm w-full focus:outline-none focus:ring-1 focus:ring-sky-500 resize-y"
-                        />
-                    </div>
-                    <div className={sectionHeader}>Responses</div>
-                    <div className="pl-2 py-2 bg-white border-b border-gray-200 space-y-3">
-                        {endpoint.responses.map((r) => (
-                            <div key={r.code} className="border border-gray-200 rounded bg-white p-2">
-                                <div className="flex items-center gap-2">
-                                    <span className="font-mono text-xs text-gray-500 shrink-0">{r.code}:</span>
-                                    <input
-                                        type="text"
-                                        value={r.note}
-                                        onChange={(e) => updateResponseNote(r.code, e.target.value)}
-                                        className="border border-gray-300 rounded px-2 py-0.5 text-xs flex-1 focus:outline-none focus:ring-1 focus:ring-sky-500 bg-white"
-                                    />
-                                    <button type="button" onClick={() => removeResponse(r.code)} className="text-xs text-red-500 hover:text-red-700 shrink-0">×</button>
-                                    <input type="hidden" name={`version[endpoints_attributes][][responses][${r.code}][note]`} value={r.note}/>
-                                </div>
-                                <div className="pl-2 pt-2">
-                                    <JSONSchemaForm
-                                        name={`version[endpoints_attributes][][responses][${r.code}][output]`}
-                                        update={(newOutput) => updateResponseOutput(r.code, newOutput)}
-                                        root={r.output}
-                                        id={`${endpoint.id}-${r.code}`}
-                                        entities={entities}
-                                    />
-                                </div>
-                            </div>
-                        ))}
-                        <div className="flex items-center gap-2 pt-1">
-                            <select
-                                value={newResponseCode ?? ""}
-                                onChange={(e) => setNewResponseCode(e.target.value)}
-                                className="border border-gray-300 rounded text-xs px-1 py-0.5 focus:outline-none focus:ring-1 focus:ring-sky-500 bg-white"
-                            >
-                                {responsesToAdd.map((r) => (<option key={r} value={r}>{r}</option>))}
-                            </select>
-                            <button type="button" onClick={() => addResponse()} className="text-xs bg-sky-600 hover:bg-sky-700 text-white px-2 py-0.5 rounded">Add</button>
-                        </div>
-                    </div>
+                    <ResponseList
+                        endpoint={endpoint}
+                        addResponse={addResponse}
+                        removeResponse={removeResponse}
+                        updateResponseNote={updateResponseNote}
+                        updateResponseOutput={updateResponseOutput}
+                        updateNote={updateNote}
+                        responsesToAdd={responsesToAdd}
+                        newResponseCode={newResponseCode}
+                        setNewResponseCode={setNewResponseCode}
+                        entities={entities}
+                        theme="sky"
+                    />
             </div>
         </div>
     )
