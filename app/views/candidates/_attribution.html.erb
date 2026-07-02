@@ -1,0 +1,9 @@
+<%# Renders a candidate's "Proposed by … · Merged/Rejected by …" line. Shared by the candidate and version show pages. Expects a `candidate` local (may be nil). %>
+<% if candidate && (candidate.author || candidate.decided_by) %>
+  <div class="text-sm text-gray-500 mt-1">
+    <% if candidate.author %>Proposed by <%= candidate.author.email_address %><% end %>
+    <% if candidate.decided_by %>
+      <%= " · " if candidate.author %><%= candidate.merged? ? "Merged" : "Rejected" %> by <%= candidate.decided_by.email_address %>
+    <% end %>
+  </div>
+<% end %>

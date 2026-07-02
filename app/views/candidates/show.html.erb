@@ -11,6 +11,7 @@
          end %>
       <span class="<%= state_classes %> text-xs font-semibold px-2.5 py-1 rounded-full"><%= @candidate.aasm_state.capitalize %></span>
     </div>
+    <%= render "attribution", candidate: @candidate %>
   </div>
 
   <% if @candidate.open? %>

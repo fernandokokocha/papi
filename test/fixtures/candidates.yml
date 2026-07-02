@@ -3,18 +3,30 @@ candidate1:
   project: project1
   order: 1
   aasm_state: "merged"
+  author: two
+  decided_by: one
+  decided_at: 2025-01-10 09:00:00
 candidate2:
   name: "rc2"
   project: project1
   order: 2
   aasm_state: "merged"
+  author: two
+  decided_by: one
+  decided_at: 2025-02-14 11:30:00
 candidate3:
   name: "rc3"
   project: project1
   order: 3
   aasm_state: "merged"
+  author: two
+  decided_by: one
+  decided_at: 2025-03-20 15:45:00
 candidate4:
   name: "rc4"
   project: project1
   order: 4
   aasm_state: "merged"
+  author: two
+  decided_by: one
+  decided_at: 2025-04-05 08:15:00

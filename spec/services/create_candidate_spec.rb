@@ -5,6 +5,8 @@ describe Candidate::Create do
   let!(:user) { User.create!(email_address: "test@example.com", password: "password", group: group) }
   let!(:project) { Project.create!(name: "project", group: group) }
 
+  before { Current.session = Session.new(user: user) }
+
   let(:valid_params) {
     {
       candidate: {
@@ -58,6 +60,11 @@ describe Candidate::Create do
       response = Endpoint.last.responses.find_by(code: "200")
       expect(response.output).to eq("User")
       expect(response.note).to eq("ok")
+    end
+
+    it "sets the author when one is passed" do
+      Candidate::Create.new(valid_params, author: user).call
+      expect(Candidate.last.author).to eq(user)
     end
   end
 
