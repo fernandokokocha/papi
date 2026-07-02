@@ -1,8 +1,9 @@
 class Candidate::Create
   attr_reader :params, :candidate, :version
 
-  def initialize(params)
+  def initialize(params, author: Current.user)
     @params = params
+    @author = author
   end
 
   def call
@@ -12,6 +13,9 @@ class Candidate::Create
       project = Project.find(params[:candidate][:project_id])
       base_version = project.latest_version
       params[:candidate][:base_version_id] = base_version.id || nil
+      params[:candidate][:author_id] = @author.id
+      params[:candidate][:decided_by_id] = nil
+      params[:candidate][:decided_at] = nil
 
       # STEP 2: Create candidate
       @candidate = Candidate.create!(params[:candidate])

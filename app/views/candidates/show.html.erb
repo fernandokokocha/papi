@@ -11,6 +11,12 @@
          end %>
       <span class="<%= state_classes %> text-xs font-semibold px-2.5 py-1 rounded-full"><%= @candidate.aasm_state.capitalize %></span>
     </div>
+    <div class="text-sm text-gray-500 mt-1">
+      <% if @candidate.author %>Proposed by <%= @candidate.author.email_address %><% end %>
+      <% if @candidate.decided_by %>
+        <%= " · " if @candidate.author %><%= @candidate.merged? ? "Merged" : "Rejected" %> by <%= @candidate.decided_by.email_address %>
+      <% end %>
+    </div>
   </div>
 
   <% if @candidate.open? %>

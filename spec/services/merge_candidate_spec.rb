@@ -29,6 +29,8 @@ describe Candidate::Merge do
   let!(:user) { User.create!(email_address: "test@example.com", password: "password", group: group) }
   let!(:project) { Project.create!(name: "project", group: group) }
 
+  before { Current.session = Session.new(user: user) }
+
   before do
     create_service = Candidate::Create.new(valid_params(project))
     create_service.call
@@ -61,6 +63,12 @@ describe Candidate::Merge do
       expect(@candidate).to be_open
       subject.call
       expect(@candidate).to be_merged
+    end
+
+    it "records who decided and when" do
+      Candidate::Merge.new(@candidate, decided_by: user).call
+      expect(@candidate.reload.decided_by).to eq(user)
+      expect(@candidate.decided_at).to be_within(5.seconds).of(Time.current)
     end
   end
 
