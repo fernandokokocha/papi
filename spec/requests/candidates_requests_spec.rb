@@ -153,4 +153,21 @@ describe "Candidates requests", type: :request do
       expect(flash[:alert]).to eq('You are not authorized to perform this action.')
     end
   end
+
+  describe "#show" do
+    it "renders candidate-level comments with an Author badge for the candidate author" do
+      candidate = FactoryBot.create :candidate, project: project, name: "rc9", author: author
+      FactoryBot.create :comment, candidate: candidate, author: author, body: "Comment by the candidate author"
+      FactoryBot.create :comment, candidate: candidate, author: user, body: "Comment by a reviewer"
+
+      sign_in(user)
+      get project_candidate_path(project.name, candidate.name)
+
+      expect(response.status).to eq(200)
+      expect(response.body).to include("Conversation")
+      expect(response.body).to include("Comment by the candidate author")
+      expect(response.body).to include("Comment by a reviewer")
+      expect(response.body).to include("Author")
+    end
+  end
 end

@@ -1,0 +1,24 @@
+c4_flag_root:
+  candidate: candidate4
+  author: one
+  body: "Should we gate this behind a flag before merging?"
+  scope: candidate
+  part: whole
+  created_at: 2025-04-01 10:00:00
+
+c4_flag_reply:
+  candidate: candidate4
+  author: two
+  parent: c4_flag_root
+  body: "Good call — I'll gate it and push an update."
+  scope: candidate
+  part: whole
+  created_at: 2025-04-01 11:15:00
+
+c4_rename_root:
+  candidate: candidate4
+  author: two
+  body: "Renamed the endpoint for consistency with the others in this version."
+  scope: candidate
+  part: whole
+  created_at: 2025-04-02 09:30:00

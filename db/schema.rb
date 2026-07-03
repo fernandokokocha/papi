@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_07_23_162601) do
+ActiveRecord::Schema[8.0].define(version: 2026_07_03_000001) do
   create_table "candidates", force: :cascade do |t|
     t.string "name"
     t.integer "order"
@@ -26,6 +26,26 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_23_162601) do
     t.index ["base_version_id"], name: "index_candidates_on_base_version_id"
     t.index ["decided_by_id"], name: "index_candidates_on_decided_by_id"
     t.index ["project_id"], name: "index_candidates_on_project_id"
+  end
+
+  create_table "comments", force: :cascade do |t|
+    t.integer "candidate_id", null: false
+    t.integer "author_id", null: false
+    t.integer "parent_id"
+    t.text "body", null: false
+    t.string "scope", null: false
+    t.string "endpoint_path"
+    t.integer "endpoint_http_verb"
+    t.string "entity_name"
+    t.string "response_code"
+    t.string "part", null: false
+    t.integer "line"
+    t.text "anchor_snapshot"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["author_id"], name: "index_comments_on_author_id"
+    t.index ["candidate_id"], name: "index_comments_on_candidate_id"
+    t.index ["parent_id"], name: "index_comments_on_parent_id"
   end
 
   create_table "endpoints", force: :cascade do |t|
@@ -110,6 +130,9 @@ ActiveRecord::Schema[8.0].define(version: 2025_07_23_162601) do
   add_foreign_key "candidates", "users", column: "author_id"
   add_foreign_key "candidates", "users", column: "decided_by_id"
   add_foreign_key "candidates", "versions", column: "base_version_id"
+  add_foreign_key "comments", "candidates"
+  add_foreign_key "comments", "comments", column: "parent_id"
+  add_foreign_key "comments", "users", column: "author_id"
   add_foreign_key "endpoints", "versions"
   add_foreign_key "entities", "versions"
   add_foreign_key "projects", "groups"

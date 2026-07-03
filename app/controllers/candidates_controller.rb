@@ -8,6 +8,11 @@ class CandidatesController < ApplicationController
 
     @categorized_endpoints = Version::CategorizeByName.new(@previous_version.endpoints, @version.endpoints).call
     @categorized_entities = Version::CategorizeByName.new(@previous_version.entities, @version.entities).call
+
+    @candidate_comment_threads = @candidate.comments
+      .includes(:author, replies: :author)
+      .select { |comment| comment.root? && comment.scope == "candidate" }
+      .sort_by(&:created_at)
   end
 
   def new

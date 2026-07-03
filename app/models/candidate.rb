@@ -3,6 +3,7 @@ class Candidate < ApplicationRecord
 
   belongs_to :project
   has_many :versions
+  has_many :comments
   belongs_to :base_version, class_name: "Version", foreign_key: "base_version_id", optional: true
   belongs_to :author, class_name: "User", optional: true
   belongs_to :decided_by, class_name: "User", optional: true

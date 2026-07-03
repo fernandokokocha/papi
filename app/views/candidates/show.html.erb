@@ -51,3 +51,16 @@
     </div>
   </div>
 <% end %>
+
+<section class="mt-10">
+  <h2 class="text-xl font-semibold text-gray-900 mb-4">Conversation</h2>
+  <% if @candidate_comment_threads.any? %>
+    <div class="flex flex-col gap-6">
+      <% @candidate_comment_threads.each do |thread| %>
+        <%= render "comments/thread", comment: thread %>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-sm text-gray-500">No comments yet.</p>
+  <% end %>
+</section>

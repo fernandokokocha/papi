@@ -1,0 +1,10 @@
+<div class="bg-white border border-gray-200 rounded-lg">
+  <%= render "comments/comment", comment: comment %>
+  <% if comment.replies.any? %>
+    <div class="border-t border-gray-200 pl-6 divide-y divide-gray-100">
+      <% comment.replies.sort_by(&:created_at).each do |reply| %>
+        <%= render "comments/comment", comment: reply %>
+      <% end %>
+    </div>
+  <% end %>
+</div>
