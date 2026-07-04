@@ -1,0 +1,5 @@
+<button type="button" data-reply-target="trigger" data-action="reply#show"
+        class="w-full text-left text-sm text-gray-400 border border-gray-300 rounded-lg px-3 py-1.5 hover:bg-gray-50 cursor-text">Reply…</button>
+<div data-reply-target="form" hidden>
+  <%= render "comments/form", candidate: parent.candidate, parent: parent %>
+</div>

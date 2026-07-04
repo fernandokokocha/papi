@@ -1,0 +1,16 @@
+<% if @comment.reply? %>
+  <%= turbo_stream.append dom_id(@comment.parent, :replies) do %>
+    <%= render "comments/reply", reply: @comment %>
+  <% end %>
+  <%= turbo_stream.update dom_id(@comment.parent, :reply_form) do %>
+    <%= render "comments/reply_form", parent: @comment.parent %>
+  <% end %>
+<% else %>
+  <%= turbo_stream.remove "no_comments_message" %>
+  <%= turbo_stream.append "candidate_comment_threads" do %>
+    <%= render "comments/thread", comment: @comment %>
+  <% end %>
+  <%= turbo_stream.update "new_comment_form" do %>
+    <%= render "comments/form", candidate: @candidate, parent: nil %>
+  <% end %>
+<% end %>

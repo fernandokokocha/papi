@@ -169,5 +169,16 @@ describe "Candidates requests", type: :request do
       expect(response.body).to include("Comment by a reviewer")
       expect(response.body).to include("Author")
     end
+
+    it "renders the new-comment form and a reply trigger per thread" do
+      candidate = FactoryBot.create :candidate, project: project, name: "rc9", author: author
+      FactoryBot.create :comment, candidate: candidate, author: author, body: "Root comment"
+
+      sign_in(user)
+      get project_candidate_path(project.name, candidate.name)
+
+      expect(response.body).to include("Leave a comment…")
+      expect(response.body).to include("Reply…")
+    end
   end
 end

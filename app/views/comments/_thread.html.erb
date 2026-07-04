@@ -1,10 +1,11 @@
-<div class="bg-white border border-gray-200 rounded-lg">
+<div id="<%= dom_id(comment) %>" class="bg-white border border-gray-200 rounded-lg">
   <%= render "comments/comment", comment: comment %>
-  <% if comment.replies.any? %>
-    <div class="border-t border-gray-200 pl-6 divide-y divide-gray-100">
-      <% comment.replies.sort_by(&:created_at).each do |reply| %>
-        <%= render "comments/comment", comment: reply %>
-      <% end %>
-    </div>
-  <% end %>
+  <div id="<%= dom_id(comment, :replies) %>" class="pl-6">
+    <% comment.replies.sort_by(&:created_at).each do |reply| %>
+      <%= render "comments/reply", reply: reply %>
+    <% end %>
+  </div>
+  <div id="<%= dom_id(comment, :reply_form) %>" class="border-t border-gray-200 p-4" data-controller="reply">
+    <%= render "comments/reply_form", parent: comment %>
+  </div>
 </div>

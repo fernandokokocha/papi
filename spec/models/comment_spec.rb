@@ -68,4 +68,22 @@ describe Comment do
       expect(comment.anchor_key).to eq([ "response", "/users", 0, nil, "200", "output", 7 ])
     end
   end
+
+  describe "anchor inheritance" do
+    it "copies the parent's anchor onto a reply" do
+      root = FactoryBot.create :comment, :endpoint_scope, candidate: candidate
+      reply = FactoryBot.create :comment, candidate: candidate, parent: root
+      expect(reply.scope).to eq("endpoint")
+      expect(reply.endpoint_path).to eq("/users")
+      expect(reply.endpoint_http_verb).to eq(0)
+      expect(reply.anchor_key).to eq(root.anchor_key)
+    end
+
+    it "overrides anchor attributes supplied on the reply itself" do
+      root = FactoryBot.create :comment, candidate: candidate
+      reply = FactoryBot.create :comment, :entity_scope, candidate: candidate, parent: root
+      expect(reply.scope).to eq("candidate")
+      expect(reply.entity_name).to be_nil
+    end
+  end
 end

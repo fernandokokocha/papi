@@ -4,6 +4,10 @@ class Comment < ApplicationRecord
   belongs_to :parent, class_name: "Comment", optional: true
   has_many :replies, class_name: "Comment", foreign_key: :parent_id, dependent: :destroy
 
+  ANCHOR_ATTRIBUTES = %w[scope part line endpoint_path endpoint_http_verb entity_name response_code anchor_snapshot].freeze
+
+  before_validation :inherit_parent_anchor, if: :parent
+
   validates :body, presence: true
   validate :parent_must_be_root
   validate :reply_on_parent_candidate
@@ -47,5 +51,9 @@ class Comment < ApplicationRecord
 
   def anchor_valid
     anchor.errors.each { |column, message| errors.add(column, message) }
+  end
+
+  def inherit_parent_anchor
+    assign_attributes(parent.slice(*ANCHOR_ATTRIBUTES))
   end
 end
