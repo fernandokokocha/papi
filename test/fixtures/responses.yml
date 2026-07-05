@@ -56,6 +56,7 @@ p1v3_sessions_delete_200: { endpoint: p1v3_sessions_delete, code: "200", note: "
 p1v3_sessions_delete_401: { endpoint: p1v3_sessions_delete, code: "401", note: "Authentication required", output: "Error" }
 p1v3_tasks_list_200: { endpoint: p1v3_tasks_list, code: "200", note: "Request succeeded", output: "{total:number,items:[Task]}" }
 p1v3_tasks_list_403: { endpoint: p1v3_tasks_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
+p1v3_tasks_list_429: { endpoint: p1v3_tasks_list, code: "429", note: "Too many requests", output: "Error" }
 p1v3_tasks_create_201: { endpoint: p1v3_tasks_create, code: "201", note: "Resource created", output: "Task" }
 p1v3_tasks_create_400: { endpoint: p1v3_tasks_create, code: "400", note: "Invalid request", output: "Error" }
 p1v3_tasks_create_403: { endpoint: p1v3_tasks_create, code: "403", note: "Not authorized to perform this action", output: "Error" }

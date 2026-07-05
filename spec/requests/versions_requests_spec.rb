@@ -41,5 +41,19 @@ describe "Version requests", type: :request do
       expect(response.body).to include("Merged by")
       expect(response.body).to include("decider@example.com")
     end
+
+    it "does not render candidate comment threads on the version page" do
+      merged_candidate = FactoryBot.create(:candidate, project: project, aasm_state: "merged")
+      merged_version = FactoryBot.create(:version, candidate: merged_candidate, project: project)
+      FactoryBot.create(:endpoint, version: merged_version, path: "/users", http_verb: "verb_get")
+      merged_candidate.comments.create!(author: user, body: "Endpoint thread body", scope: "endpoint", part: "whole", endpoint_path: "/users", endpoint_http_verb: 0)
+
+      sign_in(user)
+      get project_version_path(project.name, merged_version.name)
+
+      expect(response.status).to eq(200)
+      expect(response.body).not_to include("Endpoint thread body")
+      expect(response.body).not_to include("💬")
+    end
   end
 end

@@ -181,4 +181,20 @@ describe "Candidates requests", type: :request do
       expect(response.body).to include("Reply…")
     end
   end
+
+  describe "#show inline comment threads" do
+    it "renders endpoint- and entity-anchored threads on the candidate page" do
+      sign_in(user)
+      post project_candidates_path(project.name), params: valid_params
+      candidate = Candidate.find_by!(name: "rc1")
+      candidate.comments.create!(author: user, body: "Endpoint thread body", scope: "endpoint", part: "whole", endpoint_path: "/", endpoint_http_verb: 0)
+      candidate.comments.create!(author: user, body: "Entity thread body", scope: "entity", part: "root", entity_name: "User")
+
+      get project_candidate_path(project.name, candidate.name)
+
+      expect(response.body).to include("Endpoint thread body")
+      expect(response.body).to include("Entity thread body")
+      expect(response.body).to include("💬")
+    end
+  end
 end

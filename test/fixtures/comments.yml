@@ -22,3 +22,85 @@ c4_rename_root:
   scope: candidate
   part: whole
   created_at: 2025-04-02 09:30:00
+
+c4_users_list_root:
+  candidate: candidate4
+  author: one
+  body: "Pagination looks right, but should total include soft-deleted users?"
+  scope: endpoint
+  endpoint_path: /users
+  endpoint_http_verb: 0
+  part: whole
+  created_at: 2025-04-02 10:00:00
+
+c4_users_list_reply:
+  candidate: candidate4
+  author: two
+  parent: c4_users_list_root
+  body: "No — total counts active users only."
+  scope: endpoint
+  endpoint_path: /users
+  endpoint_http_verb: 0
+  part: whole
+  created_at: 2025-04-02 10:20:00
+
+c4_users_update_note:
+  candidate: candidate4
+  author: two
+  body: "The note should list which fields are editable."
+  scope: endpoint
+  endpoint_path: /users/me
+  endpoint_http_verb: 3
+  part: note
+  created_at: 2025-04-02 11:00:00
+
+c4_users_delete_removed:
+  candidate: candidate4
+  author: one
+  body: "Goodbye DELETE /users/me — account deactivation replaces it."
+  scope: endpoint
+  endpoint_path: /users/me
+  endpoint_http_verb: 4
+  part: whole
+  created_at: 2025-04-02 11:30:00
+
+c4_user_entity_root:
+  candidate: candidate4
+  author: one
+  body: "avatar_url should be nullable — not every user uploads one."
+  scope: entity
+  entity_name: User
+  part: root
+  created_at: 2025-04-03 09:00:00
+
+c4_users_list_200_output:
+  candidate: candidate4
+  author: two
+  body: "items is now [User] inside a wrapper object — clients must adapt."
+  scope: response
+  endpoint_path: /users
+  endpoint_http_verb: 0
+  response_code: "200"
+  part: output
+  created_at: 2025-04-03 09:30:00
+
+c4_audit_logs_root:
+  candidate: candidate4
+  author: two
+  body: "New audit log listing — do we need filtering by actor from day one?"
+  scope: endpoint
+  endpoint_path: /audit-logs
+  endpoint_http_verb: 0
+  part: whole
+  created_at: 2025-04-03 10:00:00
+
+c4_tasks_list_429_removed:
+  candidate: candidate4
+  author: one
+  body: "Dropping the 429 — rate limiting moves to the gateway."
+  scope: response
+  endpoint_path: /tasks
+  endpoint_http_verb: 0
+  response_code: "429"
+  part: whole
+  created_at: 2025-04-03 10:30:00

@@ -54,11 +54,12 @@
 
 <section class="mt-10">
   <h2 class="text-xl font-semibold text-gray-900 mb-4">Conversation</h2>
+  <% candidate_threads = comment_threads_for("candidate") %>
   <div id="candidate_comment_threads" class="flex flex-col gap-6">
-    <% @candidate_comment_threads.each do |thread| %>
+    <% candidate_threads.each do |thread| %>
       <%= render "comments/thread", comment: thread %>
     <% end %>
-    <% if @candidate_comment_threads.empty? %>
+    <% if candidate_threads.empty? %>
       <p id="no_comments_message" class="text-sm text-gray-500">No comments yet.</p>
     <% end %>
   </div>

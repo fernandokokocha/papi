@@ -34,6 +34,10 @@
                  class="flex items-center gap-1.5 px-1 py-0.5 rounded <%= tint %> hover:bg-gray-50">
                 <%= render "endpoints/verb_badge", verb: endpoint.verb %>
                 <span class="min-w-0 truncate text-sm font-mono"><%= endpoint.path %></span>
+                <% count = endpoint_comment_thread_count(endpoint) %>
+                <% if count > 0 %>
+                  <span class="ml-auto shrink-0 text-[10px] text-gray-500">💬 <%= count %></span>
+                <% end %>
               </a>
             <% end %>
           </div>
@@ -49,8 +53,12 @@
           <a href="<%= "#entity-#{entity.name}" %>"
              title="<%= entity.name %>"
              data-sidebar-target="link"
-             class="block px-2 py-1 rounded text-sm <%= tint %> hover:bg-gray-50 hover:text-sky-700 truncate">
-            <%= entity.name %>
+             class="flex items-center gap-1.5 px-2 py-1 rounded text-sm <%= tint %> hover:bg-gray-50 hover:text-sky-700">
+            <span class="min-w-0 truncate"><%= entity.name %></span>
+            <% count = entity_comment_thread_count(entity) %>
+            <% if count > 0 %>
+              <span class="ml-auto shrink-0 text-[10px] text-gray-500">💬 <%= count %></span>
+            <% end %>
           </a>
         <% end %>
       </div>
@@ -72,22 +80,23 @@
             <% if endpoint.annotation == "unchanged" || endpoint.annotation == "changed" %>
               <div data-controller="endpoint"
                    data-endpoint-target="container"
-                   data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id) %>">
+                   data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, candidate: @candidate&.name) %>">
                 <%= render "endpoints/endpoint_diff", endpoint: endpoint, previous_endpoint: endpoint.previous, expanded: false %>
               </div>
             <% elsif endpoint.annotation == "added" %>
               <div data-controller="endpoint"
                    data-endpoint-target="container"
-                   data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, kind: 'new') %>">
+                   data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, kind: 'new', candidate: @candidate&.name) %>">
                 <%= render "endpoints/endpoint_new", endpoint: endpoint, expanded: false %>
               </div>
             <% elsif endpoint.annotation == "removed" %>
               <div data-controller="endpoint"
                    data-endpoint-target="container"
-                   data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, kind: 'removed') %>">
+                   data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, kind: 'removed', candidate: @candidate&.name) %>">
                 <%= render "endpoints/endpoint_removed", endpoint: endpoint, expanded: false %>
               </div>
             <% end %>
+            <%= render "comments/inline_threads", threads: comment_threads_for("endpoint", endpoint: endpoint, part: "whole"), wrapper_class: endpoint.annotation == "removed" ? "mt-3 w-1/2 pr-1" : "mt-3 w-1/2 ml-auto pl-1" %>
           </div>
         <% end %>
       </div>
@@ -109,6 +118,7 @@
               <% diff = entity.parsed_root.to_diff(:no_change) %>
               <%= render "versions/entity_removed", entity: entity, diff: diff %>
             <% end %>
+            <%= render "comments/inline_threads", threads: comment_threads_for("entity", entity: entity), wrapper_class: entity.annotation == "removed" ? "mt-3 w-1/2 pr-1" : "mt-3 w-1/2 ml-auto pl-1" %>
           </div>
         <% end %>
       </div>

@@ -18,6 +18,13 @@ class Candidate < ApplicationRecord
     name
   end
 
+  def comment_threads_by_anchor
+    comments.includes(:author, replies: :author)
+      .select(&:root?)
+      .sort_by(&:created_at)
+      .group_by(&:anchor_key)
+  end
+
   aasm column: "aasm_state" do
     state :open, initial: true
     state :merged

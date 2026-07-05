@@ -2,5 +2,6 @@
   <% lines.each_with_index do |line, i| %>
     <% if i > 0 %><div class="border-t border-gray-200"></div><% end %>
     <%= render "endpoints/response_cell", line: line, side: side, curl_verb: local_assigns[:curl_verb], curl_path: local_assigns[:curl_path] %>
+    <%= render "comments/inline_threads", threads: comment_threads_for("response", endpoint: endpoint, response_code: line.code), wrapper_class: "bg-gray-50 border-t border-gray-200 p-3" %>
   <% end %>
 </div>

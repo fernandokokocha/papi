@@ -230,3 +230,12 @@ select:has(option[value="array"]:checked)   { background: yellow; }
   cursor: not-allowed;
 }
 
+/* Inline thread anchor highlight: outlines the element(s) the thread refers to
+   on hover. Outline instead of background avoids layout shifts and stays visible
+   over row tints (emerald/red/amber). */
+.anchor-highlight {
+  outline: 2px solid var(--color-sky-400);
+  outline-offset: -2px;
+  border-radius: 0.5rem;
+}
+

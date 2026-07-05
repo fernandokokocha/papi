@@ -19,8 +19,9 @@
       </div>
       <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Note</div>
       <div class="px-3 py-2 bg-white border-b border-gray-200 text-sm text-gray-700"><%= endpoint.note %></div>
+      <%= render "comments/inline_threads", threads: comment_threads_for("endpoint", endpoint: endpoint, part: "note"), wrapper_class: "bg-gray-50 border-t border-gray-200 p-3" %>
       <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Responses</div>
-      <div class="bg-white border-b border-gray-200"><%= render "specs/responses", lines: responses_diff.lines, side: :before %></div>
+      <div class="bg-white border-b border-gray-200"><%= render "specs/responses", lines: responses_diff.lines, side: :before, endpoint: endpoint %></div>
     </div>
   </div>
   <div></div>
