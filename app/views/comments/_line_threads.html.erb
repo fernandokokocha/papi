@@ -1,0 +1,10 @@
+<% if collapsed.any? || outdated.any? %>
+  <div class="anchor-strip <%= local_assigns[:wrapper_class] %> flex flex-col gap-2">
+    <% collapsed.each do |comment| %>
+      <%= render "comments/thread", comment: comment, line_badge: :collapsed %>
+    <% end %>
+    <% outdated.each do |comment| %>
+      <%= render "comments/thread", comment: comment, line_badge: :outdated %>
+    <% end %>
+  </div>
+<% end %>

@@ -1,5 +1,5 @@
 <div id="<%= dom_id(comment) %>" class="bg-white border border-gray-200 border-l-4 border-l-sky-500 rounded-lg shadow-sm">
-  <%= render "comments/comment", comment: comment %>
+  <%= render "comments/comment", comment: comment, line_badge: local_assigns[:line_badge] %>
   <div id="<%= dom_id(comment, :replies) %>" class="pl-6">
     <% comment.replies.sort_by(&:created_at).each do |reply| %>
       <%= render "comments/reply", reply: reply %>

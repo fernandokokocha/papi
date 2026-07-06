@@ -47,12 +47,15 @@
     <% responses_diff.lines.each_with_index do |line, i| %>
       <% if i > 0 %><div class="col-span-2 border-t border-gray-200"></div><% end %>
       <% resp_anchor = CommentAnchor.new(scope: "response", part: "whole", endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb], response_code: line.code) %>
+      <% resp_record = endpoint.responses.find { |r| r.code == line.code } %>
+      <% resp_line_comments = partition_line_comments(response_output_comments(endpoint, line.code), resp_record&.output, expanded: expanded) %>
       <%= render "endpoints/response_cell", line: line, side: :before, region_attr: comment_region_attr(resp_anchor) %>
-      <%= render "endpoints/response_cell", line: line, side: :after, curl_verb: endpoint.verb, curl_path: endpoint.path, region_attr: comment_region_attr(resp_anchor) %>
+      <%= render "endpoints/response_cell", line: line, side: :after, curl_verb: endpoint.verb, curl_path: endpoint.path, region_attr: comment_region_attr(resp_anchor), comments_by_line: resp_line_comments[:inline] %>
       <%= render "comments/anchor_region",
             anchor: resp_anchor,
             threads: comment_threads_for("response", endpoint: endpoint, response_code: line.code),
             wrapper_class: line.after_present? ? "col-start-2" : "col-start-1" %>
+      <%= render "comments/line_threads", collapsed: resp_line_comments[:collapsed], outdated: resp_line_comments[:outdated], wrapper_class: line.after_present? ? "col-start-2" : "col-start-1" %>
     <% end %>
   </div>
 </div>

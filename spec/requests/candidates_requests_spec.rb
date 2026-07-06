@@ -197,5 +197,57 @@ describe "Candidates requests", type: :request do
       expect(response.body).to include("💬")
       expect(response.body).to include("data-comment-region")
     end
+
+    it "renders output-line threads below the response on first (collapsed) load" do
+      sign_in(user)
+      post project_candidates_path(project.name), params: {
+        candidate: { project_id: project.id, name: "rc1" },
+        version: {
+          name: "v1",
+          order: 1,
+          endpoints_attributes: [
+            { path: "/users",
+              http_verb: "verb_get",
+              responses: { "200" => { note: "List users with pagination", output: "{total:number,items:[User]}" } } }
+          ],
+          entities_attributes: [
+            { name: "User", root: "{id:number,email:string,name:string}" }
+          ]
+        }
+      }
+      candidate = Candidate.find_by!(name: "rc1")
+      candidate.comments.create!(author: user, body: "Do clients page through items[] or is total the source of truth?",
+                                  scope: "response", endpoint_path: "/users", endpoint_http_verb: 0, response_code: "200",
+                                  part: "output", line: 2, anchor_snapshot: "{total:number,items:[User]}")
+      candidate.comments.create!(author: user, body: "When I flagged this, the response was still a bare [User] array.",
+                                  scope: "response", endpoint_path: "/users", endpoint_http_verb: 0, response_code: "200",
+                                  part: "output", line: 1, anchor_snapshot: "[User]")
+
+      get project_candidate_path(project.name, candidate.name)
+
+      expect(response.body).to include("GET /users → 200 → output · line 2")
+      expect(response.body).to include("GET /users → 200 → output · line 1")
+      expect(response.body).to include("Do clients page through items[]")
+      expect(response.body).to include("Outdated")            # the drifted [User] snapshot
+      expect(response.body).to include("[User]")               # snapshot shown for archeology
+      expect(response.body).to include(">Collapsed<")          # fresh line-2 comment, still collapsed
+    end
+
+    it "does not drop a fresh root-line comment on a removed entity" do
+      base_candidate = FactoryBot.create(:candidate, name: "rc8", project: project)
+      base_version = FactoryBot.create(:version, project: project, candidate: base_candidate, name: "base", order: 1)
+      removed_entity = FactoryBot.create(:entity, version: base_version, name: "User", root: "{ name: string }")
+      candidate = FactoryBot.create(:candidate, name: "rc9", project: project, base_version: base_version)
+      FactoryBot.create(:version, project: project, candidate: candidate, name: "v1", order: 1)
+      candidate.comments.create!(author: user, body: "Root comment on a removed entity",
+                                  scope: "entity", entity_name: "User",
+                                  part: "root", line: 0, anchor_snapshot: removed_entity.root)
+
+      sign_in(user)
+      get project_candidate_path(project.name, candidate.name)
+
+      expect(response.status).to eq(200)
+      expect(response.body).to include("Root comment on a removed entity")
+    end
   end
 end

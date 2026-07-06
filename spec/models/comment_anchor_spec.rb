@@ -111,4 +111,17 @@ describe CommentAnchor do
       expect(whole.dom_id).to match(/\Acomment_anchor_[0-9a-f]{32}\z/)
     end
   end
+
+  describe "#label" do
+    it "reads response output down to the line" do
+      a = anchor(scope: "response", part: "output", line: 0,
+                 endpoint_path: "/users", endpoint_http_verb: 0, response_code: "200")
+      expect(a.label).to eq("GET /users → 200 → output · line 0")
+    end
+
+    it "reads an entity root" do
+      a = anchor(scope: "entity", part: "root", line: 0, entity_name: "User")
+      expect(a.label).to eq("User → root · line 0")
+    end
+  end
 end

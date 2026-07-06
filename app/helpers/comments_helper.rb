@@ -68,4 +68,46 @@ module CommentsHelper
     return "".html_safe unless @candidate
     tag.attributes("data-comment-region": anchor.dom_id)
   end
+
+  # Output-line root threads for one response (scope response, part output, line set),
+  # sorted by [line, created_at]. [] outside candidate context.
+  def response_output_comments(endpoint, response_code)
+    return [] unless @comment_threads_by_anchor
+
+    verb = Endpoint.http_verbs[endpoint.http_verb]
+    @comment_threads_by_anchor.flat_map do |(scope, path, v, _name, code, part, line), threads|
+      next [] unless scope == "response" && part == "output" && !line.nil?
+      next [] unless path == endpoint.path && v == verb && code == response_code
+      threads
+    end.sort_by { |c| [ c.line, c.created_at ] }
+  end
+
+  # Root-line root threads for one entity (scope entity, part root, line set).
+  def entity_root_comments(entity)
+    return [] unless @comment_threads_by_anchor
+
+    @comment_threads_by_anchor.flat_map do |(scope, _path, _v, name, _code, part, line), threads|
+      next [] unless scope == "entity" && part == "root" && !line.nil?
+      next [] unless name == entity.name
+      threads
+    end.sort_by { |c| [ c.line, c.created_at ] }
+  end
+
+  # Buckets a block's line comments for placement:
+  # - inline: fresh AND the block is expanded → rendered under their row (grouped by line index)
+  # - collapsed: fresh but the block is collapsed → valid, just not placeable in this view
+  # - outdated: anchor_snapshot != current text → rendered below with archeology detail
+  def partition_line_comments(comments, current_text, expanded:)
+    inline, collapsed, outdated = [], [], []
+    comments.each do |comment|
+      if comment.anchor_snapshot != current_text
+        outdated << comment
+      elsif expanded
+        inline << comment
+      else
+        collapsed << comment
+      end
+    end
+    { inline: inline.group_by(&:line), collapsed: collapsed, outdated: outdated }
+  end
 end

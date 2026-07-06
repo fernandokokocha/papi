@@ -1,7 +1,11 @@
+<% comments_by_line = local_assigns[:comments_by_line] || {} %>
 <% if diff.empty? %>
   -
 <% else %>
-  <% diff.each do |diff_line| %>
+  <% diff.each.with_index do |diff_line, i| %>
     <div class="line <%= diff_line.change %>"><%= render_type(diff_line) %></div>
+    <% (comments_by_line[i] || []).each do |comment| %>
+      <%= render "comments/inline_line_comment", comment: comment %>
+    <% end %>
   <% end %>
 <% end %>

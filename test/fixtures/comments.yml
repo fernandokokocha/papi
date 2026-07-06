@@ -104,3 +104,51 @@ c4_tasks_list_429_removed:
   response_code: "429"
   part: whole
   created_at: 2025-04-03 10:30:00
+
+c4_users_list_200_output_line_fresh:
+  candidate: candidate4
+  author: two
+  body: "Do clients page through items[] or is total the source of truth?"
+  scope: response
+  endpoint_path: /users
+  endpoint_http_verb: 0
+  response_code: "200"
+  part: output
+  line: 2
+  anchor_snapshot: "{total:number,items:[User]}"
+  created_at: 2025-04-03 12:00:00
+
+c4_users_list_200_output_line_outdated:
+  candidate: candidate4
+  author: two
+  body: "When I flagged this, the response was still a bare [User] array."
+  scope: response
+  endpoint_path: /users
+  endpoint_http_verb: 0
+  response_code: "200"
+  part: output
+  line: 1
+  anchor_snapshot: "[User]"
+  created_at: 2025-04-03 12:30:00
+
+c4_user_entity_root_line_fresh:
+  candidate: candidate4
+  author: two
+  body: "name is required — worth documenting the max length here."
+  scope: entity
+  entity_name: User
+  part: root
+  line: 3
+  anchor_snapshot: "{id:number,email:string,name:string,avatar_url:string}"
+  created_at: 2025-04-03 13:00:00
+
+c4_user_entity_root_line_outdated:
+  candidate: candidate4
+  author: one
+  body: "Back when I commented, avatar_url wasn't on User yet."
+  scope: entity
+  entity_name: User
+  part: root
+  line: 3
+  anchor_snapshot: "{id:number,email:string,name:string}"
+  created_at: 2025-04-03 13:30:00

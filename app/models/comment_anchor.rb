@@ -12,15 +12,16 @@ class CommentAnchor
   IDENTITY_COLUMNS = %i[endpoint_path endpoint_http_verb entity_name response_code].freeze
   LINE_PARTS = %w[note output root].freeze
 
-  attr_reader :scope, :part, :line,
+  attr_reader :scope, :part, :line, :snapshot,
               :endpoint_path, :endpoint_http_verb, :entity_name, :response_code
 
-  def initialize(scope:, part:, line: nil,
+  def initialize(scope:, part:, line: nil, snapshot: nil,
                  endpoint_path: nil, endpoint_http_verb: nil,
                  entity_name: nil, response_code: nil)
     @scope = scope
     @part = part
     @line = line
+    @snapshot = snapshot
     @endpoint_path = endpoint_path
     @endpoint_http_verb = endpoint_http_verb
     @entity_name = entity_name
@@ -70,5 +71,23 @@ class CommentAnchor
 
   def dom_id
     "comment_anchor_#{Digest::MD5.hexdigest(key.map(&:to_s).join("\x1f"))}"
+  end
+
+  # e.g. "GET /users → 200 → output · line 0" / "User → root · line 0"
+  def label
+    segments = []
+    segments << "#{verb_word} #{endpoint_path}" if endpoint_path
+    segments << entity_name if entity_name
+    segments << response_code if response_code
+    segments << part unless part == "whole"
+    head = segments.join(" → ")
+    line ? "#{head} · line #{line}" : head
+  end
+
+  private
+
+  def verb_word
+    key = Endpoint.http_verbs.key(endpoint_http_verb)
+    key && Endpoint::VERB_TRANSLATIONS[key.to_sym]
   end
 end

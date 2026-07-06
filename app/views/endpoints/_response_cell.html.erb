@@ -41,7 +41,7 @@
       <% end %>
     </div>
     <% unless body.empty? %>
-      <div class="font-mono text-xs text-gray-800 mt-1"><%= render "specs/json", diff: body %></div>
+      <div class="font-mono text-xs text-gray-800 mt-1"><%= render "specs/json", diff: body, comments_by_line: local_assigns[:comments_by_line] || {} %></div>
     <% end %>
   </div>
 <% else %>
