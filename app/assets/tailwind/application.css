@@ -239,3 +239,23 @@ select:has(option[value="array"]:checked)   { background: yellow; }
   border-radius: 0.5rem;
 }
 
+.comment-pin {
+  position: fixed;
+  z-index: 60;
+  display: none;
+  pointer-events: none;
+  font-size: 20px;
+  line-height: 1;
+  transform: translate(2px, -26px);
+  filter: drop-shadow(0 2px 3px rgba(16, 24, 40, 0.35));
+}
+body.commenting .comment-pin { display: block; }
+body.commenting, body.commenting * { cursor: none !important; }
+/* threads, the open compose, and the toolbar stay normally interactive */
+body.commenting .anchor-strip, body.commenting .anchor-strip * { cursor: auto !important; }
+body.commenting [data-comment-toolbar], body.commenting [data-comment-toolbar] * { cursor: auto !important; }
+body.commenting [data-comment-exempt], body.commenting [data-comment-exempt] * { cursor: auto !important; }
+body.commenting .anchor-strip textarea, body.commenting [data-comment-exempt] textarea { cursor: text !important; }
+/* in comment mode, in-card controls don't fire — a click means "comment here" */
+body.commenting [data-action*="endpoint#"] { pointer-events: none; }
+

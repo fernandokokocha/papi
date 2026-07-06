@@ -30,11 +30,15 @@
   </div>
 
   <%# Note %>
+  <% note_anchor = CommentAnchor.new(scope: "endpoint", part: "note", endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb]) %>
   <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Note</div>
   <div class="grid grid-cols-2">
-    <div class="px-3 py-2 bg-white text-sm text-gray-700"><%= render "specs/text", diff: notes_diff.before %></div>
-    <div class="px-3 py-2 bg-white border-l border-gray-200 text-sm text-gray-700"><%= render "specs/text", diff: notes_diff.after %></div>
-    <%= render "comments/inline_threads", threads: comment_threads_for("endpoint", endpoint: endpoint, part: "note"), wrapper_class: "col-start-2 bg-gray-50 border-t border-l border-gray-200 p-3" %>
+    <div <%= comment_region_attr(note_anchor) %> class="px-3 py-2 bg-white text-sm text-gray-700"><%= render "specs/text", diff: notes_diff.before %></div>
+    <div <%= comment_region_attr(note_anchor) %> class="px-3 py-2 bg-white border-l border-gray-200 text-sm text-gray-700"><%= render "specs/text", diff: notes_diff.after %></div>
+    <%= render "comments/anchor_region",
+          anchor: note_anchor,
+          threads: comment_threads_for("endpoint", endpoint: endpoint, part: "note"),
+          wrapper_class: "col-start-2" %>
   </div>
 
   <%# Responses — one grid row per code keeps both sides vertically aligned %>
@@ -42,9 +46,13 @@
   <div class="grid grid-cols-2 gap-x-2 bg-white border-t border-gray-200">
     <% responses_diff.lines.each_with_index do |line, i| %>
       <% if i > 0 %><div class="col-span-2 border-t border-gray-200"></div><% end %>
-      <%= render "endpoints/response_cell", line: line, side: :before %>
-      <%= render "endpoints/response_cell", line: line, side: :after, curl_verb: endpoint.verb, curl_path: endpoint.path %>
-      <%= render "comments/inline_threads", threads: comment_threads_for("response", endpoint: endpoint, response_code: line.code), wrapper_class: line.after_present? ? "col-start-2 bg-gray-50 border-t border-gray-200 p-3" : "col-start-1 bg-gray-50 border-t border-gray-200 p-3" %>
+      <% resp_anchor = CommentAnchor.new(scope: "response", part: "whole", endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb], response_code: line.code) %>
+      <%= render "endpoints/response_cell", line: line, side: :before, region_attr: comment_region_attr(resp_anchor) %>
+      <%= render "endpoints/response_cell", line: line, side: :after, curl_verb: endpoint.verb, curl_path: endpoint.path, region_attr: comment_region_attr(resp_anchor) %>
+      <%= render "comments/anchor_region",
+            anchor: resp_anchor,
+            threads: comment_threads_for("response", endpoint: endpoint, response_code: line.code),
+            wrapper_class: line.after_present? ? "col-start-2" : "col-start-1" %>
     <% end %>
   </div>
 </div>

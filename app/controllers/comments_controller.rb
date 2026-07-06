@@ -4,10 +4,11 @@ class CommentsController < ApplicationController
     @candidate = Candidate.find_by!(name: params[:candidate_name], project: @project)
     @comment = @candidate.comments.new(comment_params)
     @comment.author = Current.user
-    @comment.assign_attributes(scope: "candidate", part: "whole") if @comment.parent_id.blank?
+    @comment.assign_attributes(CommentAnchor.from_params(anchor_params).to_columns) if @comment.parent_id.blank?
     authorize @comment
 
     if @comment.save
+      @comment_threads_by_anchor = @candidate.comment_threads_by_anchor
       respond_to do |format|
         format.turbo_stream
         format.html { redirect_to project_candidate_path(@project.name, @candidate.name) }
@@ -21,5 +22,9 @@ class CommentsController < ApplicationController
 
   def comment_params
     params.require(:comment).permit(:body, :parent_id)
+  end
+
+  def anchor_params
+    params.require(:comment).permit(:scope, :part, :endpoint_path, :endpoint_http_verb, :entity_name, :response_code)
   end
 end

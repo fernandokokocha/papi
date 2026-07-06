@@ -1,3 +1,5 @@
+require "digest/md5"
+
 class CommentAnchor
   # One row per scope: which parts are legal, and which identity columns pin it down.
   RULES = {
@@ -45,5 +47,28 @@ class CommentAnchor
 
     result << [ :line, "requires a text part" ] if line.present? && !LINE_PARTS.include?(part)
     result
+  end
+
+  def self.from_params(params)
+    new(
+      scope: (params[:scope] || params["scope"]).presence || "candidate",
+      part: (params[:part] || params["part"]).presence || "whole",
+      endpoint_path: (params[:endpoint_path] || params["endpoint_path"]).presence,
+      endpoint_http_verb: (params[:endpoint_http_verb] || params["endpoint_http_verb"]).presence&.to_i,
+      entity_name: (params[:entity_name] || params["entity_name"]).presence,
+      response_code: (params[:response_code] || params["response_code"]).presence
+    )
+  end
+
+  def to_columns
+    {
+      scope: scope, part: part, line: line,
+      endpoint_path: endpoint_path, endpoint_http_verb: endpoint_http_verb,
+      entity_name: entity_name, response_code: response_code
+    }
+  end
+
+  def dom_id
+    "comment_anchor_#{Digest::MD5.hexdigest(key.map(&:to_s).join("\x1f"))}"
   end
 end

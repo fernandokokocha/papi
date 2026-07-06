@@ -52,7 +52,7 @@
   </div>
 <% end %>
 
-<section class="mt-10">
+<section class="mt-10" data-comment-exempt>
   <h2 class="text-xl font-semibold text-gray-900 mb-4">Conversation</h2>
   <% candidate_threads = comment_threads_for("candidate") %>
   <div id="candidate_comment_threads" class="flex flex-col gap-6">
@@ -64,6 +64,10 @@
     <% end %>
   </div>
   <div id="new_comment_form" class="mt-6">
-    <%= render "comments/form", candidate: @candidate, parent: nil %>
+    <%= render "comments/form", candidate: @candidate, parent: nil, anchor: CommentAnchor.new(scope: "candidate", part: "whole") %>
   </div>
 </section>
+
+<div data-controller="comment-mode">
+  <%= render "comments/toolbar" %>
+</div>

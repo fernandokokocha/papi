@@ -1,9 +1,0 @@
-<% if threads.any? %>
-  <div class="<%= local_assigns[:wrapper_class] %> flex flex-col gap-3"
-       data-controller="anchor-highlight"
-       data-action="mouseenter->anchor-highlight#highlight mouseleave->anchor-highlight#unhighlight">
-    <% threads.each do |thread| %>
-      <%= render "comments/thread", comment: thread %>
-    <% end %>
-  </div>
-<% end %>

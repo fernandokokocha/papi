@@ -7,8 +7,8 @@ class EndpointsController < ApplicationController
     authorize @endpoint
 
     candidate_project = @endpoint.version.project || @endpoint.version.candidate&.project
-    candidate = Candidate.find_by(name: params[:candidate], project: candidate_project)
-    @comment_threads_by_anchor = candidate.comment_threads_by_anchor if candidate
+    @candidate = Candidate.find_by(name: params[:candidate], project: candidate_project)
+    @comment_threads_by_anchor = @candidate.comment_threads_by_anchor if @candidate
 
     expanded = params[:expanded].nil? ? true : parse_expanded(params[:expanded])
 

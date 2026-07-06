@@ -1,11 +1,23 @@
+<% anchor = local_assigns[:anchor] || CommentAnchor.new(scope: "candidate", part: "whole") %>
 <%= form_with model: Comment.new, url: project_candidate_comments_path(candidate.project.name, candidate.name), data: { turbo: true } do |form| %>
-  <%= form.hidden_field :parent_id, value: parent&.id %>
+  <% if parent %>
+    <%= form.hidden_field :parent_id, value: parent.id %>
+  <% else %>
+    <%= form.hidden_field :scope, value: anchor.scope %>
+    <%= form.hidden_field :part, value: anchor.part %>
+    <%= form.hidden_field :endpoint_path, value: anchor.endpoint_path %>
+    <%= form.hidden_field :endpoint_http_verb, value: anchor.endpoint_http_verb %>
+    <%= form.hidden_field :entity_name, value: anchor.entity_name %>
+    <%= form.hidden_field :response_code, value: anchor.response_code %>
+  <% end %>
   <%= form.text_area :body, rows: 3, required: true,
         placeholder: parent ? "Write a reply…" : "Leave a comment…",
         class: "w-full border border-gray-300 rounded-lg p-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500" %>
   <div class="flex justify-end gap-2 mt-2">
     <% if parent %>
       <button type="button" data-action="reply#cancel" class="bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-sm font-medium px-4 py-2 rounded cursor-pointer">Cancel</button>
+    <% elsif anchor.scope != "candidate" %>
+      <button type="button" data-comment-close class="bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-sm font-medium px-4 py-2 rounded cursor-pointer">Cancel</button>
     <% end %>
     <%= form.submit parent ? "Reply" : "Comment", class: "bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium px-4 py-2 rounded cursor-pointer" %>
   </div>

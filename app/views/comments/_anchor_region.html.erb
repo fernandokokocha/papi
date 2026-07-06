@@ -1,0 +1,15 @@
+<% if @candidate || threads.any? %>
+  <div class="anchor-strip <%= local_assigns[:wrapper_class] %> flex flex-col gap-2"
+       data-controller="anchor-highlight"
+       data-anchor-highlight-region-value="<%= anchor.dom_id %>">
+    <div id="<%= anchor.dom_id %>" class="flex flex-col gap-2"
+         data-action="mouseenter->anchor-highlight#on mouseleave->anchor-highlight#off">
+      <% threads.each do |thread| %>
+        <%= render "comments/thread", comment: thread %>
+      <% end %>
+    </div>
+    <% if @candidate %>
+      <%= render "comments/compose", anchor: anchor %>
+    <% end %>
+  </div>
+<% end %>

@@ -14,7 +14,7 @@
     end
     curl_path = local_assigns[:curl_path]
   %>
-  <div class="py-1 <%= tint %>">
+  <div <%= local_assigns[:region_attr] %> class="py-1 <%= tint %>">
     <div class="flex items-start gap-2">
       <span class="font-mono text-xs font-semibold px-1.5 py-0.5 rounded bg-gray-100 text-gray-700 shrink-0"><%= line.code %></span>
       <div class="text-sm min-w-0 flex-1 mt-0.5">
@@ -45,5 +45,5 @@
     <% end %>
   </div>
 <% else %>
-  <div></div>
+  <div <%= local_assigns[:region_attr] %>></div>
 <% end %>

@@ -114,5 +114,51 @@ describe "Comments requests", type: :request do
       expect(response.body).to include(%(action="update" target="reply_form_comment_#{root.id}"))
       expect(response.body).to include("Agreed.")
     end
+
+    it "creates an endpoint-anchored root from anchor params" do
+      sign_in(user)
+      post project_candidate_comments_path(project.name, candidate.name),
+           params: { comment: { body: "Pin me to GET /users", scope: "endpoint", part: "whole", endpoint_path: "/users", endpoint_http_verb: "0" } }
+
+      comment = Comment.last
+      expect(comment.scope).to eq("endpoint")
+      expect(comment.part).to eq("whole")
+      expect(comment.endpoint_path).to eq("/users")
+      expect(comment.endpoint_http_verb).to eq(0)
+      expect(comment.line).to be_nil
+      expect(comment.root?).to be true
+    end
+
+    it "rejects an anchor that violates the scope/part matrix" do
+      sign_in(user)
+      expect {
+        post project_candidate_comments_path(project.name, candidate.name),
+             params: { comment: { body: "Bad", scope: "entity", part: "output", entity_name: "User" } }
+      }.not_to change(Comment, :count)
+      expect(flash[:alert]).to eq("Comment could not be posted.")
+    end
+
+    it "renders a Turbo Stream targeting the anchor container when the request is turbo_stream" do
+      sign_in(user)
+      post project_candidate_comments_path(project.name, candidate.name),
+           params: { comment: { body: "Anchored", scope: "entity", part: "whole", entity_name: "User" } },
+           as: :turbo_stream
+
+      dom_id = Comment.last.anchor.dom_id
+      expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+      expect(response.body).to include("action=\"append\" target=\"#{dom_id}\"")
+      expect(response.body).to include("target=\"#{dom_id}_form\"")
+    end
+
+    it "live-updates the endpoint sidebar count when an anchored root is posted" do
+      sign_in(user)
+      post project_candidate_comments_path(project.name, candidate.name),
+           params: { comment: { body: "Anchored", scope: "endpoint", part: "whole", endpoint_path: "/users", endpoint_http_verb: "0" } },
+           as: :turbo_stream
+
+      sidebar_id = "sidebar_count_#{CommentAnchor.new(scope: "endpoint", part: "whole", endpoint_path: "/users", endpoint_http_verb: 0).dom_id}"
+      expect(response.body).to include("action=\"update\" target=\"#{sidebar_id}\"")
+      expect(response.body).to include("💬 1")
+    end
   end
 end

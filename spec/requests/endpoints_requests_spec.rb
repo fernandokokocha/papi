@@ -68,6 +68,12 @@ describe "Endpoints requests", type: :request do
       get project_endpoint_path(project.name, endpoint.id)
       expect(response.body).not_to include("Note thread body")
       expect(response.body).not_to include("Response thread body")
+
+      get project_endpoint_path(project.name, endpoint.id, candidate: candidate.name)
+      expect(response.body).to include("data-comment-region")
+
+      get project_endpoint_path(project.name, endpoint.id)
+      expect(response.body).not_to include("data-comment-region")
     end
 
     it "does not leak threads from a candidate the endpoint does not belong to" do

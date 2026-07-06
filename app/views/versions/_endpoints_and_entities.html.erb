@@ -34,10 +34,7 @@
                  class="flex items-center gap-1.5 px-1 py-0.5 rounded <%= tint %> hover:bg-gray-50">
                 <%= render "endpoints/verb_badge", verb: endpoint.verb %>
                 <span class="min-w-0 truncate text-sm font-mono"><%= endpoint.path %></span>
-                <% count = endpoint_comment_thread_count(endpoint) %>
-                <% if count > 0 %>
-                  <span class="ml-auto shrink-0 text-[10px] text-gray-500">💬 <%= count %></span>
-                <% end %>
+                <span id="<%= sidebar_count_dom_id(endpoint_sidebar_anchor(endpoint)) %>" class="ml-auto shrink-0"><%= comment_count_badge(endpoint_comment_thread_count(endpoint)) %></span>
               </a>
             <% end %>
           </div>
@@ -55,10 +52,7 @@
              data-sidebar-target="link"
              class="flex items-center gap-1.5 px-2 py-1 rounded text-sm <%= tint %> hover:bg-gray-50 hover:text-sky-700">
             <span class="min-w-0 truncate"><%= entity.name %></span>
-            <% count = entity_comment_thread_count(entity) %>
-            <% if count > 0 %>
-              <span class="ml-auto shrink-0 text-[10px] text-gray-500">💬 <%= count %></span>
-            <% end %>
+            <span id="<%= sidebar_count_dom_id(entity_sidebar_anchor(entity)) %>" class="ml-auto shrink-0"><%= comment_count_badge(entity_comment_thread_count(entity)) %></span>
           </a>
         <% end %>
       </div>
@@ -76,7 +70,8 @@
       <div class="text-xl font-semibold text-black uppercase tracking-wide mb-6">Endpoints</div>
       <div class="flex flex-col gap-10">
         <% @categorized_endpoints.each do |endpoint| %>
-          <div id="endpoint-<%= endpoint.page_url %>" data-sidebar-target="card" class="scroll-mt-6 rounded-xl">
+          <% endpoint_anchor = CommentAnchor.new(scope: "endpoint", part: "whole", endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb]) %>
+          <div id="endpoint-<%= endpoint.page_url %>" <%= comment_region_attr(endpoint_anchor) %> data-sidebar-target="card" class="scroll-mt-6 rounded-xl">
             <% if endpoint.annotation == "unchanged" || endpoint.annotation == "changed" %>
               <div data-controller="endpoint"
                    data-endpoint-target="container"
@@ -96,7 +91,10 @@
                 <%= render "endpoints/endpoint_removed", endpoint: endpoint, expanded: false %>
               </div>
             <% end %>
-            <%= render "comments/inline_threads", threads: comment_threads_for("endpoint", endpoint: endpoint, part: "whole"), wrapper_class: endpoint.annotation == "removed" ? "mt-3 w-1/2 pr-1" : "mt-3 w-1/2 ml-auto pl-1" %>
+            <%= render "comments/anchor_region",
+                  anchor: endpoint_anchor,
+                  threads: comment_threads_for("endpoint", endpoint: endpoint, part: "whole"),
+                  wrapper_class: endpoint.annotation == "removed" ? "mt-3 w-1/2 pr-1" : "mt-3 w-1/2 ml-auto pl-1" %>
           </div>
         <% end %>
       </div>
@@ -107,7 +105,8 @@
       <div class="text-xl font-semibold text-black uppercase tracking-wide mb-6 mt-8">Entities</div>
       <div class="flex flex-col gap-10">
         <% @categorized_entities.each do |entity| %>
-          <div id="entity-<%= entity.name %>" data-sidebar-target="card" class="scroll-mt-6 rounded-xl">
+          <% entity_anchor = CommentAnchor.new(scope: "entity", part: "whole", entity_name: entity.name) %>
+          <div id="entity-<%= entity.name %>" <%= comment_region_attr(entity_anchor) %> data-sidebar-target="card" class="scroll-mt-6 rounded-xl">
             <% if entity.annotation == "unchanged" || entity.annotation == "changed" %>
               <% diff = Diff::FromValues.new(entity.previous.parsed_root, entity.parsed_root) %>
               <%= render "versions/entity_diff", entity: entity, previous_entity: entity.previous, diff: diff %>
@@ -118,7 +117,10 @@
               <% diff = entity.parsed_root.to_diff(:no_change) %>
               <%= render "versions/entity_removed", entity: entity, diff: diff %>
             <% end %>
-            <%= render "comments/inline_threads", threads: comment_threads_for("entity", entity: entity), wrapper_class: entity.annotation == "removed" ? "mt-3 w-1/2 pr-1" : "mt-3 w-1/2 ml-auto pl-1" %>
+            <%= render "comments/anchor_region",
+                  anchor: entity_anchor,
+                  threads: comment_threads_for("entity", entity: entity),
+                  wrapper_class: entity.annotation == "removed" ? "mt-3 w-1/2 pr-1" : "mt-3 w-1/2 ml-auto pl-1" %>
           </div>
         <% end %>
       </div>

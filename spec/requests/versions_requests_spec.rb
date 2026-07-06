@@ -54,6 +54,7 @@ describe "Version requests", type: :request do
       expect(response.status).to eq(200)
       expect(response.body).not_to include("Endpoint thread body")
       expect(response.body).not_to include("💬")
+      expect(response.body).not_to include("data-comment-region")
     end
   end
 end

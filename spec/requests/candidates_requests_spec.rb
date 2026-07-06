@@ -195,6 +195,7 @@ describe "Candidates requests", type: :request do
       expect(response.body).to include("Endpoint thread body")
       expect(response.body).to include("Entity thread body")
       expect(response.body).to include("💬")
+      expect(response.body).to include("data-comment-region")
     end
   end
 end

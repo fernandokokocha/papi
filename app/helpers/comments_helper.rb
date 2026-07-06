@@ -19,19 +19,53 @@ module CommentsHelper
   end
 
   def endpoint_comment_thread_count(endpoint)
-    return 0 unless @comment_threads_by_anchor
-
-    verb = Endpoint.http_verbs[endpoint.http_verb]
-    @comment_threads_by_anchor.sum do |(scope, path, key_verb, *), threads|
-      %w[endpoint response].include?(scope) && path == endpoint.path && key_verb == verb ? threads.size : 0
-    end
+    comment_sidebar_count(endpoint_sidebar_anchor(endpoint))
   end
 
   def entity_comment_thread_count(entity)
+    comment_sidebar_count(entity_sidebar_anchor(entity))
+  end
+
+  # The whole-endpoint / whole-entity anchor a sidebar badge counts against.
+  # Its dom_id keys the badge container so a live create can target it.
+  def endpoint_sidebar_anchor(endpoint)
+    CommentAnchor.new(scope: "endpoint", part: "whole",
+                      endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb])
+  end
+
+  def entity_sidebar_anchor(entity)
+    CommentAnchor.new(scope: "entity", part: "whole", entity_name: entity.name)
+  end
+
+  def sidebar_count_dom_id(anchor)
+    "sidebar_count_#{anchor.dom_id}"
+  end
+
+  # Threads counted for a sidebar badge: all endpoint + response threads sharing
+  # the endpoint's identity, or all threads for an entity. 0 outside candidate
+  # context. Drives both the initial render and the live Turbo update on create.
+  def comment_sidebar_count(anchor)
     return 0 unless @comment_threads_by_anchor
 
-    @comment_threads_by_anchor.sum do |key, threads|
-      key[0] == "entity" && key[3] == entity.name ? threads.size : 0
+    if anchor.scope == "entity"
+      @comment_threads_by_anchor.sum { |key, threads| key[0] == "entity" && key[3] == anchor.entity_name ? threads.size : 0 }
+    else
+      @comment_threads_by_anchor.sum do |(scope, path, verb, *), threads|
+        %w[endpoint response].include?(scope) && path == anchor.endpoint_path && verb == anchor.endpoint_http_verb ? threads.size : 0
+      end
     end
+  end
+
+  def comment_count_badge(count)
+    return "".html_safe if count.zero?
+
+    tag.span("💬 #{count}", class: "text-[10px] text-gray-500")
+  end
+
+  # `data-comment-region` marker for a commentable target — emitted only in
+  # candidate context (@candidate present), so version pages stay affordance-free.
+  def comment_region_attr(anchor)
+    return "".html_safe unless @candidate
+    tag.attributes("data-comment-region": anchor.dom_id)
   end
 end
