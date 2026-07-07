@@ -61,6 +61,8 @@ describe "Version requests", type: :request do
       expect(response.body).not_to include("data-comment-region")
       expect(response.body).not_to include("Outdated")
       expect(response.body).not_to include("· line 0")
+      expect(response.body).not_to include("data-line-pick")
+      expect(response.body).not_to include("data-line-index")
     end
   end
 end

@@ -41,7 +41,7 @@
       <% end %>
     </div>
     <% unless body.empty? %>
-      <div class="font-mono text-xs text-gray-800 mt-1"><%= render "specs/json", diff: body, comments_by_line: local_assigns[:comments_by_line] || {} %></div>
+      <div <%= local_assigns[:line_pick_attr] %> class="font-mono text-xs text-gray-800 mt-1"><%= render "specs/json", diff: body, comments_by_line: local_assigns[:comments_by_line] || {}, line_index_map: local_assigns[:line_index_map] %></div>
     <% end %>
   </div>
 <% else %>

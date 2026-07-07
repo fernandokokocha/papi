@@ -49,8 +49,9 @@
       <% resp_anchor = CommentAnchor.new(scope: "response", part: "whole", endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb], response_code: line.code) %>
       <% resp_record = endpoint.responses.find { |r| r.code == line.code } %>
       <% resp_line_comments = partition_line_comments(response_output_comments(endpoint, line.code), resp_record&.output, expanded: expanded) %>
+      <% resp_map = response_line_index_map(previous_endpoint, endpoint, line.code, expanded: expanded) %>
       <%= render "endpoints/response_cell", line: line, side: :before, region_attr: comment_region_attr(resp_anchor) %>
-      <%= render "endpoints/response_cell", line: line, side: :after, curl_verb: endpoint.verb, curl_path: endpoint.path, region_attr: comment_region_attr(resp_anchor), comments_by_line: resp_line_comments[:inline] %>
+      <%= render "endpoints/response_cell", line: line, side: :after, curl_verb: endpoint.verb, curl_path: endpoint.path, region_attr: comment_region_attr(resp_anchor), comments_by_line: resp_line_comments[:inline], line_index_map: resp_map, line_pick_attr: response_line_pick_attr(endpoint, line.code, resp_record&.output, resp_map) %>
       <%= render "comments/anchor_region",
             anchor: resp_anchor,
             threads: comment_threads_for("response", endpoint: endpoint, response_code: line.code),

@@ -259,3 +259,17 @@ body.commenting .anchor-strip textarea, body.commenting [data-comment-exempt] te
 /* in comment mode, in-card controls don't fire — a click means "comment here" */
 body.commenting [data-action*="endpoint#"] { pointer-events: none; }
 
+/* Line picker (comment mode): hovered and picked rows in a pickable tree */
+.line-pick-highlight {
+  background-color: var(--color-sky-100);
+  outline: 2px solid var(--color-sky-400);
+  outline-offset: -2px;
+  border-radius: 0.25rem;
+}
+.line-picked {
+  background-color: var(--color-sky-100);
+  outline: 2px solid var(--color-sky-500);
+  outline-offset: -2px;
+  border-radius: 0.25rem;
+}
+

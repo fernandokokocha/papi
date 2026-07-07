@@ -76,6 +76,25 @@ describe "Endpoints requests", type: :request do
       expect(response.body).not_to include("data-comment-region")
     end
 
+    it "emits pick metadata only when re-rendering for a candidate page" do
+      sign_in(user)
+      post project_candidates_path(project.name), params: valid_params
+      candidate = Candidate.find_by!(name: "rc1")
+      endpoint = Endpoint.last
+
+      get project_endpoint_path(project.name, endpoint.id, candidate: candidate.name)
+      expect(response.body).to include('data-line-pick-label="GET / → 200 → output"')
+      expect(response.body).to include('data-line-index="2"')   # identity indices on the expanded tree
+
+      get project_endpoint_path(project.name, endpoint.id, candidate: candidate.name, expanded: "false")
+      expect(response.body).to include('data-line-index="0"')   # the collapsed "User" row, canonical index 0
+      expect(response.body).not_to include('data-line-index="1"')
+
+      get project_endpoint_path(project.name, endpoint.id)
+      expect(response.body).not_to include("data-line-pick")
+      expect(response.body).not_to include("data-line-index")
+    end
+
     it "does not leak threads from a candidate the endpoint does not belong to" do
       sign_in(user)
       post project_candidates_path(project.name), params: valid_params

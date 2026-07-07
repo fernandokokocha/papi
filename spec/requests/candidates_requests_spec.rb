@@ -233,6 +233,35 @@ describe "Candidates requests", type: :request do
       expect(response.body).to include(">Collapsed<")          # fresh line-2 comment, still collapsed
     end
 
+    it "marks pickable trees with normalized expanded-tree indices on the collapsed page" do
+      sign_in(user)
+      post project_candidates_path(project.name), params: {
+        candidate: { project_id: project.id, name: "rc1" },
+        version: {
+          name: "v1",
+          order: 1,
+          endpoints_attributes: [
+            { path: "/users",
+              http_verb: "verb_get",
+              responses: { "200" => { note: "List users", output: "{total:number,items:[User]}" } } }
+          ],
+          entities_attributes: [
+            { name: "User", root: "{id:number,email:string,name:string}" }
+          ]
+        }
+      }
+      candidate = Candidate.find_by!(name: "rc1")
+
+      get project_candidate_path(project.name, candidate.name)
+
+      expect(response.body).to include('data-line-pick="comment_anchor_')
+      expect(response.body).to include('data-line-pick-label="GET /users → 200 → output"')
+      expect(response.body).to include('data-line-pick-label="User → root"')
+      expect(response.body).to include('data-line-pick-snapshot="{total:number,items:[User]}"')
+      expect(response.body).to include('data-line-index="9"')   # the "]" row, normalized past the collapsed User subtree
+      expect(response.body).to include('data-line-index="10"')  # the closing "}" of the output tree
+    end
+
     it "does not drop a fresh root-line comment on a removed entity" do
       base_candidate = FactoryBot.create(:candidate, name: "rc8", project: project)
       base_version = FactoryBot.create(:version, project: project, candidate: base_candidate, name: "base", order: 1)

@@ -108,12 +108,13 @@
           <% entity_anchor = CommentAnchor.new(scope: "entity", part: "whole", entity_name: entity.name) %>
           <div id="entity-<%= entity.name %>" <%= comment_region_attr(entity_anchor) %> data-sidebar-target="card" class="scroll-mt-6 rounded-xl">
             <% entity_line_comments = partition_line_comments(entity_root_comments(entity), entity.root, expanded: entity.annotation != "removed") %>
+            <% entity_map = entity_line_index_map %>
             <% if entity.annotation == "unchanged" || entity.annotation == "changed" %>
               <% diff = Diff::FromValues.new(entity.previous.parsed_root, entity.parsed_root) %>
-              <%= render "versions/entity_diff", entity: entity, previous_entity: entity.previous, diff: diff, comments_by_line: entity_line_comments[:inline] %>
+              <%= render "versions/entity_diff", entity: entity, previous_entity: entity.previous, diff: diff, comments_by_line: entity_line_comments[:inline], line_index_map: entity_map, line_pick_attr: entity_line_pick_attr(entity, entity_map) %>
             <% elsif entity.annotation == "added" %>
               <% diff = entity.parsed_root.to_diff(:no_change) %>
-              <%= render "versions/entity_added", entity: entity, diff: diff, comments_by_line: entity_line_comments[:inline] %>
+              <%= render "versions/entity_added", entity: entity, diff: diff, comments_by_line: entity_line_comments[:inline], line_index_map: entity_map, line_pick_attr: entity_line_pick_attr(entity, entity_map) %>
             <% elsif entity.annotation == "removed" %>
               <% diff = entity.parsed_root.to_diff(:no_change) %>
               <%= render "versions/entity_removed", entity: entity, diff: diff %>

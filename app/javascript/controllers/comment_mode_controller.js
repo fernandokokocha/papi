@@ -3,11 +3,14 @@ import { Controller } from "@hotwired/stimulus"
 // Figma-style comment mode for the candidate page. Toggled from the toolbar
 // (or the "C" key). While on: the cursor becomes a 💬 pin, hovering a
 // [data-comment-region] target outlines it (.anchor-highlight), and clicking
-// opens that target's anchored compose form (#<dom_id>_form). Stays on until
-// Esc or toggled off. Threads / open compose / toolbar stay interactive; other
-// in-target controls (Copy cURL, Expand) are suppressed while on.
+// opens that target's anchored compose form (#<dom_id>_form). Rows inside a
+// [data-line-pick] tree are finer-grained targets: hovering highlights the
+// row, clicking picks it — capturing the canonical expanded-tree index and
+// the block's whole-output snapshot into the pick chip (no comment yet).
+// Stays on until Esc or toggled off. Threads / open compose / toolbar stay
+// interactive; other in-target controls (Copy cURL, Expand) are suppressed.
 export default class extends Controller {
-  static targets = ["button", "pin"]
+  static targets = ["button", "pin", "chip", "chipLabel", "chipSnapshot"]
 
   connect() {
     this.onMove = this.onMove.bind(this)
@@ -37,6 +40,8 @@ export default class extends Controller {
     document.body.classList.remove("commenting")
     this.buttonTarget.setAttribute("aria-pressed", "false")
     this.clearHighlight()
+    this.hoverRow(null)
+    this.clearPick()
     document.removeEventListener("mousemove", this.onMove)
     document.removeEventListener("click", this.onClick, true)
   }
@@ -60,12 +65,15 @@ export default class extends Controller {
     if (e.target.closest(".anchor-strip") || e.target.closest("[data-comment-toolbar]") || e.target.closest("[data-comment-exempt]")) {
       this.pinTarget.style.opacity = "0"
       this.clearHighlight()
+      this.hoverRow(null)
       return
     }
     this.pinTarget.style.opacity = "1"
     this.pinTarget.style.left = e.clientX + "px"
     this.pinTarget.style.top = e.clientY + "px"
-    this.highlight(e.target.closest("[data-comment-region]"))
+    const row = this.pickableRow(e.target)
+    this.hoverRow(row)
+    this.highlight(row ? null : e.target.closest("[data-comment-region]"))
   }
 
   onClick(e) {
@@ -75,6 +83,13 @@ export default class extends Controller {
       return
     }
     if (e.target.closest("[data-comment-toolbar]") || e.target.closest(".anchor-strip") || e.target.closest("[data-comment-exempt]")) return
+    const row = this.pickableRow(e.target)
+    if (row) {
+      e.preventDefault()
+      e.stopPropagation()
+      this.pick(row)
+      return
+    }
     const t = e.target.closest("[data-comment-region]")
     if (!t) return
     e.preventDefault()
@@ -82,8 +97,37 @@ export default class extends Controller {
     this.openCompose(t.getAttribute("data-comment-region"))
   }
 
+  pickableRow(target) {
+    const row = target.closest && target.closest("[data-line-index]")
+    return row && row.closest("[data-line-pick]") ? row : null
+  }
+
+  pick(row) {
+    this.clearPick()
+    this.picked = row
+    row.classList.add("line-picked")
+    const block = row.closest("[data-line-pick]")
+    this.chipLabelTarget.textContent = block.getAttribute("data-line-pick-label") + " · line " + row.getAttribute("data-line-index")
+    this.chipSnapshotTarget.textContent = block.getAttribute("data-line-pick-snapshot")
+    this.chipTarget.hidden = false
+  }
+
+  clearPick() {
+    if (this.picked) this.picked.classList.remove("line-picked")
+    this.picked = null
+    if (this.hasChipTarget) this.chipTarget.hidden = true
+  }
+
+  hoverRow(row) {
+    if (this.hovered === row) return
+    if (this.hovered) this.hovered.classList.remove("line-pick-highlight")
+    this.hovered = row
+    if (row) row.classList.add("line-pick-highlight")
+  }
+
   openCompose(domId) {
     this.clearHighlight()
+    this.clearPick()
     const form = document.getElementById(domId + "_form")
     if (!form) return
     // Only one anchored composer open at a time — close any other.

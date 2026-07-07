@@ -5,7 +5,7 @@
       <div class="sticky top-0 z-10 rounded-t-lg bg-emerald-700 text-white px-4 py-2 text-sm font-mono">
         <%= entity.name %>
       </div>
-      <div class="pl-2 py-2 bg-emerald-50 border-b border-emerald-200"><%= render "specs/json", diff: diff, comments_by_line: local_assigns[:comments_by_line] || {} %></div>
+      <div <%= local_assigns[:line_pick_attr] %> class="pl-2 py-2 bg-emerald-50 border-b border-emerald-200"><%= render "specs/json", diff: diff, comments_by_line: local_assigns[:comments_by_line] || {}, line_index_map: local_assigns[:line_index_map] %></div>
     </div>
   </div>
 </div>

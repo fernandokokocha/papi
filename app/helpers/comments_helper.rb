@@ -110,4 +110,56 @@ module CommentsHelper
     end
     { inline: inline.group_by(&:line), collapsed: collapsed, outdated: outdated }
   end
+
+  # Canonical-index map for one response's rendered output tree: :identity when
+  # rendered expanded, an Array (rendered row → expanded-tree row) when
+  # collapsed, nil when not pickable (no candidate context, or the response has
+  # no current side to pin to).
+  def response_line_index_map(previous_endpoint, endpoint, code, expanded:)
+    return nil unless @candidate
+    after = endpoint.responses.find { |r| r.code == code }
+    return nil unless after
+    return :identity if expanded
+
+    before = previous_endpoint&.responses&.find { |r| r.code == code }
+    if before
+      rendered = Diff::FromValues.new(before.parsed_output, after.parsed_output).after
+      expanded_lines = Diff::FromValues.new(before.parsed_output.expand, after.parsed_output.expand).after
+    else
+      rendered = after.parsed_output.to_diff(:added)
+      expanded_lines = after.parsed_output.expand.to_diff(:added)
+    end
+    Diff::LineIndexMap.new(rendered, expanded_lines).to_a
+  end
+
+  # Entity roots don't reference entities, so their trees render expanded as-is.
+  def entity_line_index_map
+    @candidate ? :identity : nil
+  end
+
+  def response_line_pick_attr(endpoint, code, output, map)
+    return "".html_safe if map.nil?
+    anchor = CommentAnchor.new(scope: "response", part: "output",
+                               endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb],
+                               response_code: code)
+    line_pick_attributes(anchor, output)
+  end
+
+  def entity_line_pick_attr(entity, map)
+    return "".html_safe if map.nil?
+    line_pick_attributes(CommentAnchor.new(scope: "entity", part: "root", entity_name: entity.name), entity.root)
+  end
+
+  # data-line-index for one rendered row: its canonical expanded-tree index.
+  # Blank alignment rows and non-pickable trees get nothing.
+  def line_index_attr(map, index, diff_line)
+    return "".html_safe if map.nil? || diff_line.change == :blank
+    canonical = map == :identity ? index : map[index]
+    return "".html_safe if canonical.nil?
+    tag.attributes("data-line-index": canonical)
+  end
+
+  def line_pick_attributes(anchor, snapshot)
+    tag.attributes("data-line-pick": anchor.dom_id, "data-line-pick-label": anchor.label, "data-line-pick-snapshot": snapshot)
+  end
 end
