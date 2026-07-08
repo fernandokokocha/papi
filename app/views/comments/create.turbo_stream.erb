@@ -14,11 +14,29 @@
     <%= render "comments/form", candidate: @candidate, parent: nil, anchor: CommentAnchor.new(scope: "candidate", part: "whole") %>
   <% end %>
 <% else %>
-  <%= turbo_stream.append @comment.anchor.dom_id do %>
-    <%= render "comments/thread", comment: @comment %>
-  <% end %>
-  <%= turbo_stream.replace "#{@comment.anchor.dom_id}_form" do %>
-    <%= render "comments/compose", anchor: @comment.anchor %>
+  <% region_anchor = @comment.anchor.without_line %>
+  <% if @comment.line.nil? %>
+    <%= turbo_stream.append region_anchor.dom_id do %>
+      <%= render "comments/thread", comment: @comment %>
+    <% end %>
+    <%= turbo_stream.replace "#{region_anchor.dom_id}_form" do %>
+      <%= render "comments/compose", anchor: region_anchor %>
+    <% end %>
+  <% else %>
+    <% expanded = params[:expanded] == "true" %>
+    <% if expanded %>
+      <%= turbo_stream.after_all "[data-line-pick=\"#{region_anchor.dom_id}\"] [data-line-index=\"#{@comment.line}\"]" do %>
+        <%= render "comments/inline_line_comment", comment: @comment %>
+      <% end %>
+    <% else %>
+      <%= turbo_stream.append "#{region_anchor.dom_id}_line_threads" do %>
+        <%= render "comments/thread", comment: @comment, line_badge: :collapsed %>
+      <% end %>
+    <% end %>
+    <%= turbo_stream.remove "#{region_anchor.dom_id}_form" %>
+    <%= turbo_stream.update "#{region_anchor.dom_id}_form_home" do %>
+      <%= render "comments/compose", anchor: region_anchor, line_pin: true, expanded: expanded %>
+    <% end %>
   <% end %>
   <% sidebar_anchor = @comment.scope == "entity" ? CommentAnchor.new(scope: "entity", part: "whole", entity_name: @comment.entity_name) : CommentAnchor.new(scope: "endpoint", part: "whole", endpoint_path: @comment.endpoint_path, endpoint_http_verb: @comment.endpoint_http_verb) %>
   <%= turbo_stream.update sidebar_count_dom_id(sidebar_anchor) do %>

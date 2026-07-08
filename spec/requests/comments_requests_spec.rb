@@ -160,5 +160,80 @@ describe "Comments requests", type: :request do
       expect(response.body).to include("action=\"update\" target=\"#{sidebar_id}\"")
       expect(response.body).to include("💬 1")
     end
+
+    describe "line-anchored roots" do
+      let!(:version) { FactoryBot.create :version, candidate: candidate, project: project, order: 1 }
+      let!(:endpoint) { FactoryBot.create :endpoint, version: version, path: "/users", http_verb: "verb_get" }
+      let!(:response_200) { FactoryBot.create :response, endpoint: endpoint, code: "200", output: "{total:number,items:[User]}" }
+      let!(:entity) { FactoryBot.create :entity, version: version, name: "User", root: "{id:number,email:string}" }
+      let(:line_params) do
+        { comment: { body: "Pinned to the User row", scope: "response", part: "output",
+                     endpoint_path: "/users", endpoint_http_verb: "0", response_code: "200", line: "4" } }
+      end
+
+      it "creates a line comment with the snapshot resolved server-side" do
+        sign_in(user)
+        post project_candidate_comments_path(project.name, candidate.name), params: line_params
+
+        comment = Comment.last
+        expect(comment.line).to eq(4)
+        expect(comment.anchor_snapshot).to eq("{total:number,items:[User]}")
+      end
+
+      it "ignores a client-supplied anchor_snapshot" do
+        sign_in(user)
+        forged = line_params.deep_merge(comment: { anchor_snapshot: "forged" })
+        post project_candidate_comments_path(project.name, candidate.name), params: forged
+
+        expect(Comment.last.anchor_snapshot).to eq("{total:number,items:[User]}")
+      end
+
+      it "resolves an entity root-line comment against the entity root" do
+        sign_in(user)
+        post project_candidate_comments_path(project.name, candidate.name),
+             params: { comment: { body: "Pinned to email", scope: "entity", part: "root", entity_name: "User", line: "2" } }
+
+        expect(Comment.last.anchor_snapshot).to eq("{id:number,email:string}")
+      end
+
+      it "rejects a line comment whose target does not exist" do
+        sign_in(user)
+        bad = { comment: line_params[:comment].merge(response_code: "404") }
+        expect {
+          post project_candidate_comments_path(project.name, candidate.name), params: bad
+        }.not_to change(Comment, :count)
+        expect(flash[:alert]).to eq("Comment could not be posted.")
+      end
+
+      it "streams the thread inline after its row when the block was expanded" do
+        sign_in(user)
+        post project_candidate_comments_path(project.name, candidate.name),
+             params: line_params.merge(expanded: "true"), as: :turbo_stream
+
+        region = CommentAnchor.new(scope: "response", part: "output",
+                                   endpoint_path: "/users", endpoint_http_verb: 0, response_code: "200")
+        expect(response.media_type).to eq("text/vnd.turbo-stream.html")
+        expect(response.body).to include('action="after"')
+        expect(response.body).to include("data-line-pick=&quot;#{region.dom_id}&quot;")
+        expect(response.body).to include("data-line-index=&quot;4&quot;")
+        expect(response.body).to include(">Inlined<")
+        expect(response.body).to include("action=\"remove\" target=\"#{region.dom_id}_form\"")
+        expect(response.body).to include("action=\"update\" target=\"#{region.dom_id}_form_home\"")
+      end
+
+      it "streams the thread into the below-block container when the block was collapsed" do
+        sign_in(user)
+        post project_candidate_comments_path(project.name, candidate.name),
+             params: line_params.merge(expanded: "false"), as: :turbo_stream
+
+        region = CommentAnchor.new(scope: "response", part: "output",
+                                   endpoint_path: "/users", endpoint_http_verb: 0, response_code: "200")
+        expect(response.body).to include("action=\"append\" target=\"#{region.dom_id}_line_threads\"")
+        expect(response.body).to include(">Collapsed<")
+        expect(response.body).to include("action=\"remove\" target=\"#{region.dom_id}_form\"")
+        expect(response.body).to include("action=\"update\" target=\"#{region.dom_id}_form_home\"")
+        expect(response.body).not_to include('action="after"')
+      end
+    end
   end
 end

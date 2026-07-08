@@ -54,6 +54,7 @@ class CommentAnchor
     new(
       scope: (params[:scope] || params["scope"]).presence || "candidate",
       part: (params[:part] || params["part"]).presence || "whole",
+      line: (params[:line] || params["line"]).presence&.to_i,
       endpoint_path: (params[:endpoint_path] || params["endpoint_path"]).presence,
       endpoint_http_verb: (params[:endpoint_http_verb] || params["endpoint_http_verb"]).presence&.to_i,
       entity_name: (params[:entity_name] || params["entity_name"]).presence,
@@ -67,6 +68,26 @@ class CommentAnchor
       endpoint_path: endpoint_path, endpoint_http_verb: endpoint_http_verb,
       entity_name: entity_name, response_code: response_code
     }
+  end
+
+  # The same anchor without the line — the pick region every line comment's
+  # DOM (compose form, below-block container) is keyed off.
+  def without_line
+    self.class.new(scope: scope, part: part,
+                   endpoint_path: endpoint_path, endpoint_http_verb: endpoint_http_verb,
+                   entity_name: entity_name, response_code: response_code)
+  end
+
+  # The whole current output of the addressed block in the given version;
+  # nil when the block doesn't exist there.
+  def current_output(version)
+    case part
+    when "output"
+      version.endpoints.find_by(path: endpoint_path, http_verb: endpoint_http_verb)
+        &.responses&.find_by(code: response_code)&.output
+    when "root"
+      version.entities.find_by(name: entity_name)&.root
+    end
   end
 
   def dom_id

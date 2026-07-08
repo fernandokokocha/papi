@@ -1,10 +1,18 @@
-<% if collapsed.any? || outdated.any? %>
+<% composable = local_assigns[:composable] %>
+<% if composable || collapsed.any? || outdated.any? %>
   <div class="anchor-strip <%= local_assigns[:wrapper_class] %> flex flex-col gap-2">
-    <% collapsed.each do |comment| %>
-      <%= render "comments/thread", comment: comment, line_badge: :collapsed %>
-    <% end %>
-    <% outdated.each do |comment| %>
-      <%= render "comments/thread", comment: comment, line_badge: :outdated %>
+    <div id="<%= anchor.dom_id %>_line_threads" class="flex flex-col gap-2">
+      <% collapsed.each do |comment| %>
+        <%= render "comments/thread", comment: comment, line_badge: :collapsed %>
+      <% end %>
+      <% outdated.each do |comment| %>
+        <%= render "comments/thread", comment: comment, line_badge: :outdated %>
+      <% end %>
+    </div>
+    <% if composable %>
+      <div id="<%= anchor.dom_id %>_form_home">
+        <%= render "comments/compose", anchor: anchor, line_pin: true, expanded: local_assigns[:expanded] %>
+      </div>
     <% end %>
   </div>
 <% end %>

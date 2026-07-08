@@ -18,6 +18,14 @@ describe Comment do
     expect(comment.errors[:entity_name]).to be_present
   end
 
+  it "requires a snapshot on a line comment" do
+    comment = FactoryBot.build :comment, :response_scope, part: "output", line: 4
+    expect(comment).not_to be_valid
+    expect(comment.errors[:anchor_snapshot]).to be_present
+    comment.anchor_snapshot = "{total:number}"
+    expect(comment).to be_valid
+  end
+
   describe "one-level threading" do
     it "allows a reply to a root" do
       root = FactoryBot.create :comment, candidate: candidate

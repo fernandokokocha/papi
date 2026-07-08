@@ -123,7 +123,7 @@
                   anchor: entity_anchor,
                   threads: comment_threads_for("entity", entity: entity),
                   wrapper_class: entity.annotation == "removed" ? "mt-3 w-1/2 pr-1" : "mt-3 w-1/2 ml-auto pl-1" %>
-            <%= render "comments/line_threads", collapsed: entity_line_comments[:collapsed], outdated: entity_line_comments[:outdated], wrapper_class: entity.annotation == "removed" ? "mt-3 w-1/2 pr-1" : "mt-3 w-1/2 ml-auto pl-1" %>
+            <%= render "comments/line_threads", anchor: entity_root_anchor(entity), collapsed: entity_line_comments[:collapsed], outdated: entity_line_comments[:outdated], composable: entity.annotation != "removed" && !entity_map.nil?, expanded: true, wrapper_class: entity.annotation == "removed" ? "mt-3 w-1/2 pr-1" : "mt-3 w-1/2 ml-auto pl-1" %>
           </div>
         <% end %>
       </div>

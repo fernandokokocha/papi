@@ -9,6 +9,11 @@
     <%= form.hidden_field :endpoint_http_verb, value: anchor.endpoint_http_verb %>
     <%= form.hidden_field :entity_name, value: anchor.entity_name %>
     <%= form.hidden_field :response_code, value: anchor.response_code %>
+    <% if local_assigns[:line_pin] %>
+      <div data-pick-label class="font-mono text-xs text-gray-500 mb-2"></div>
+      <%= form.hidden_field :line %>
+      <%= hidden_field_tag :expanded, local_assigns[:expanded] %>
+    <% end %>
   <% end %>
   <%= form.text_area :body, rows: 3, required: true,
         placeholder: parent ? "Write a reply…" : "Leave a comment…",

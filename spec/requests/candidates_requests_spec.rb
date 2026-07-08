@@ -257,9 +257,42 @@ describe "Candidates requests", type: :request do
       expect(response.body).to include('data-line-pick="comment_anchor_')
       expect(response.body).to include('data-line-pick-label="GET /users → 200 → output"')
       expect(response.body).to include('data-line-pick-label="User → root"')
-      expect(response.body).to include('data-line-pick-snapshot="{total:number,items:[User]}"')
+      expect(response.body).not_to include("data-line-pick-snapshot")
       expect(response.body).to include('data-line-index="9"')   # the "]" row, normalized past the collapsed User subtree
       expect(response.body).to include('data-line-index="10"')  # the closing "}" of the output tree
+    end
+
+    it "renders a hidden line compose form per pickable block" do
+      sign_in(user)
+      post project_candidates_path(project.name), params: {
+        candidate: { project_id: project.id, name: "rc1" },
+        version: {
+          name: "v1",
+          order: 1,
+          endpoints_attributes: [
+            { path: "/users",
+              http_verb: "verb_get",
+              responses: { "200" => { note: "List users", output: "{total:number,items:[User]}" } } }
+          ],
+          entities_attributes: [
+            { name: "User", root: "{id:number,email:string,name:string}" }
+          ]
+        }
+      }
+      candidate = Candidate.find_by!(name: "rc1")
+
+      get project_candidate_path(project.name, candidate.name)
+
+      output_anchor = CommentAnchor.new(scope: "response", part: "output",
+                                        endpoint_path: "/users", endpoint_http_verb: 0, response_code: "200")
+      root_anchor = CommentAnchor.new(scope: "entity", part: "root", entity_name: "User")
+      expect(response.body).to include("id=\"#{output_anchor.dom_id}_form\"")
+      expect(response.body).to include("id=\"#{output_anchor.dom_id}_form_home\"")
+      expect(response.body).to include("id=\"#{output_anchor.dom_id}_line_threads\"")
+      expect(response.body).to include("id=\"#{root_anchor.dom_id}_form\"")
+      expect(response.body).to include('name="comment[line]"')
+      expect(response.body).to include('name="expanded"')
+      expect(response.body).to include("data-pick-label")
     end
 
     it "does not drop a fresh root-line comment on a removed entity" do

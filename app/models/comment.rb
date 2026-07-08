@@ -9,6 +9,7 @@ class Comment < ApplicationRecord
   before_validation :inherit_parent_anchor, if: :parent
 
   validates :body, presence: true
+  validates :anchor_snapshot, presence: true, if: :line
   validate :parent_must_be_root
   validate :reply_on_parent_candidate
   validate :anchor_valid

@@ -137,17 +137,26 @@ module CommentsHelper
     @candidate ? :identity : nil
   end
 
-  def response_line_pick_attr(endpoint, code, output, map)
+  # The line-region anchor (part output/root, no line) a block's picks,
+  # compose form, and below-block container are keyed off.
+  def response_output_anchor(endpoint, code)
+    CommentAnchor.new(scope: "response", part: "output",
+                      endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb],
+                      response_code: code)
+  end
+
+  def entity_root_anchor(entity)
+    CommentAnchor.new(scope: "entity", part: "root", entity_name: entity.name)
+  end
+
+  def response_line_pick_attr(endpoint, code, map)
     return "".html_safe if map.nil?
-    anchor = CommentAnchor.new(scope: "response", part: "output",
-                               endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb],
-                               response_code: code)
-    line_pick_attributes(anchor, output)
+    line_pick_attributes(response_output_anchor(endpoint, code))
   end
 
   def entity_line_pick_attr(entity, map)
     return "".html_safe if map.nil?
-    line_pick_attributes(CommentAnchor.new(scope: "entity", part: "root", entity_name: entity.name), entity.root)
+    line_pick_attributes(entity_root_anchor(entity))
   end
 
   # data-line-index for one rendered row: its canonical expanded-tree index.
@@ -159,7 +168,7 @@ module CommentsHelper
     tag.attributes("data-line-index": canonical)
   end
 
-  def line_pick_attributes(anchor, snapshot)
-    tag.attributes("data-line-pick": anchor.dom_id, "data-line-pick-label": anchor.label, "data-line-pick-snapshot": snapshot)
+  def line_pick_attributes(anchor)
+    tag.attributes("data-line-pick": anchor.dom_id, "data-line-pick-label": anchor.label)
   end
 end

@@ -86,6 +86,11 @@ describe CommentAnchor do
       expect(anchor_obj.endpoint_path).to be_nil
       expect(anchor_obj.response_code).to be_nil
     end
+
+    it "parses line to an integer and leaves it nil when blank" do
+      expect(described_class.from_params({ "scope" => "response", "part" => "output", "line" => "4" }).line).to eq(4)
+      expect(described_class.from_params({ "scope" => "response", "part" => "output", "line" => "" }).line).to be_nil
+    end
   end
 
   describe "#to_columns" do
@@ -122,6 +127,39 @@ describe CommentAnchor do
     it "reads an entity root" do
       a = anchor(scope: "entity", part: "root", line: 0, entity_name: "User")
       expect(a.label).to eq("User → root · line 0")
+    end
+  end
+
+  describe "#without_line" do
+    it "keeps the identity and drops the line" do
+      with_line = anchor(scope: "response", part: "output", endpoint_path: "/users",
+                         endpoint_http_verb: 0, response_code: "200", line: 4)
+      expect(with_line.without_line.key).to eq([ "response", "/users", 0, nil, "200", "output", nil ])
+    end
+  end
+
+  describe "#current_output" do
+    let(:version) { FactoryBot.create :version }
+    let(:endpoint) { FactoryBot.create :endpoint, version: version, path: "/users", http_verb: "verb_get" }
+
+    before do
+      FactoryBot.create :response, endpoint: endpoint, code: "200", output: "{total:number,items:[User]}"
+      FactoryBot.create :entity, version: version, name: "User", root: "{id:number}"
+    end
+
+    it "returns the response output for a response/output anchor" do
+      a = anchor(scope: "response", part: "output", endpoint_path: "/users", endpoint_http_verb: 0, response_code: "200")
+      expect(a.current_output(version)).to eq("{total:number,items:[User]}")
+    end
+
+    it "returns the entity root for an entity/root anchor" do
+      a = anchor(scope: "entity", part: "root", entity_name: "User")
+      expect(a.current_output(version)).to eq("{id:number}")
+    end
+
+    it "is nil when the target does not exist in the version" do
+      a = anchor(scope: "response", part: "output", endpoint_path: "/users", endpoint_http_verb: 0, response_code: "404")
+      expect(a.current_output(version)).to be_nil
     end
   end
 end

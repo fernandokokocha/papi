@@ -4,7 +4,11 @@ class CommentsController < ApplicationController
     @candidate = Candidate.find_by!(name: params[:candidate_name], project: @project)
     @comment = @candidate.comments.new(comment_params)
     @comment.author = Current.user
-    @comment.assign_attributes(CommentAnchor.from_params(anchor_params).to_columns) if @comment.parent_id.blank?
+    if @comment.parent_id.blank?
+      anchor = CommentAnchor.from_params(anchor_params)
+      @comment.assign_attributes(anchor.to_columns)
+      @comment.anchor_snapshot = anchor.current_output(@candidate.latest_version) if anchor.line
+    end
     authorize @comment
 
     if @comment.save
@@ -25,6 +29,6 @@ class CommentsController < ApplicationController
   end
 
   def anchor_params
-    params.require(:comment).permit(:scope, :part, :endpoint_path, :endpoint_http_verb, :entity_name, :response_code)
+    params.require(:comment).permit(:scope, :part, :line, :endpoint_path, :endpoint_http_verb, :entity_name, :response_code)
   end
 end
