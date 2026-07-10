@@ -19,22 +19,11 @@ module CommentsHelper
   end
 
   def endpoint_comment_thread_count(endpoint)
-    comment_sidebar_count(endpoint_sidebar_anchor(endpoint))
+    comment_sidebar_count(CommentAnchor.for_endpoint(endpoint))
   end
 
   def entity_comment_thread_count(entity)
-    comment_sidebar_count(entity_sidebar_anchor(entity))
-  end
-
-  # The whole-endpoint / whole-entity anchor a sidebar badge counts against.
-  # Its dom_id keys the badge container so a live create can target it.
-  def endpoint_sidebar_anchor(endpoint)
-    CommentAnchor.new(scope: "endpoint", part: "whole",
-                      endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb])
-  end
-
-  def entity_sidebar_anchor(entity)
-    CommentAnchor.new(scope: "entity", part: "whole", entity_name: entity.name)
+    comment_sidebar_count(CommentAnchor.for_entity(entity))
   end
 
   def sidebar_count_dom_id(anchor)
@@ -137,26 +126,14 @@ module CommentsHelper
     @candidate ? :identity : nil
   end
 
-  # The line-region anchor (part output/root, no line) a block's picks,
-  # compose form, and below-block container are keyed off.
-  def response_output_anchor(endpoint, code)
-    CommentAnchor.new(scope: "response", part: "output",
-                      endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb],
-                      response_code: code)
-  end
-
-  def entity_root_anchor(entity)
-    CommentAnchor.new(scope: "entity", part: "root", entity_name: entity.name)
-  end
-
   def response_line_pick_attr(endpoint, code, map)
     return "".html_safe if map.nil?
-    line_pick_attributes(response_output_anchor(endpoint, code))
+    line_pick_attributes(CommentAnchor.for_response_output(endpoint, code))
   end
 
   def entity_line_pick_attr(entity, map)
     return "".html_safe if map.nil?
-    line_pick_attributes(entity_root_anchor(entity))
+    line_pick_attributes(CommentAnchor.for_entity_root(entity))
   end
 
   # data-line-index for one rendered row: its canonical expanded-tree index.

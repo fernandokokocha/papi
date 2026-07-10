@@ -34,7 +34,7 @@
                  class="flex items-center gap-1.5 px-1 py-0.5 rounded <%= tint %> hover:bg-gray-50">
                 <%= render "endpoints/verb_badge", verb: endpoint.verb %>
                 <span class="min-w-0 truncate text-sm font-mono"><%= endpoint.path %></span>
-                <span id="<%= sidebar_count_dom_id(endpoint_sidebar_anchor(endpoint)) %>" class="ml-auto shrink-0"><%= comment_count_badge(endpoint_comment_thread_count(endpoint)) %></span>
+                <span id="<%= sidebar_count_dom_id(CommentAnchor.for_endpoint(endpoint)) %>" class="ml-auto shrink-0"><%= comment_count_badge(endpoint_comment_thread_count(endpoint)) %></span>
               </a>
             <% end %>
           </div>
@@ -52,7 +52,7 @@
              data-sidebar-target="link"
              class="flex items-center gap-1.5 px-2 py-1 rounded text-sm <%= tint %> hover:bg-gray-50 hover:text-sky-700">
             <span class="min-w-0 truncate"><%= entity.name %></span>
-            <span id="<%= sidebar_count_dom_id(entity_sidebar_anchor(entity)) %>" class="ml-auto shrink-0"><%= comment_count_badge(entity_comment_thread_count(entity)) %></span>
+            <span id="<%= sidebar_count_dom_id(CommentAnchor.for_entity(entity)) %>" class="ml-auto shrink-0"><%= comment_count_badge(entity_comment_thread_count(entity)) %></span>
           </a>
         <% end %>
       </div>
@@ -123,7 +123,7 @@
                   anchor: entity_anchor,
                   threads: comment_threads_for("entity", entity: entity),
                   wrapper_class: entity.annotation == "removed" ? "mt-3 w-1/2 pr-1" : "mt-3 w-1/2 ml-auto pl-1" %>
-            <%= render "comments/line_threads", anchor: entity_root_anchor(entity), collapsed: entity_line_comments[:collapsed], outdated: entity_line_comments[:outdated], composable: entity.annotation != "removed" && !entity_map.nil?, expanded: true, wrapper_class: entity.annotation == "removed" ? "mt-3 w-1/2 pr-1" : "mt-3 w-1/2 ml-auto pl-1" %>
+            <%= render "comments/line_threads", anchor: CommentAnchor.for_entity_root(entity), collapsed: entity_line_comments[:collapsed], outdated: entity_line_comments[:outdated], composable: entity.annotation != "removed" && !entity_map.nil?, expanded: true, wrapper_class: entity.annotation == "removed" ? "mt-3 w-1/2 pr-1" : "mt-3 w-1/2 ml-auto pl-1" %>
           </div>
         <% end %>
       </div>

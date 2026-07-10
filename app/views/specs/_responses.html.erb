@@ -10,6 +10,6 @@
           anchor: resp_anchor,
           threads: comment_threads_for("response", endpoint: endpoint, response_code: line.code),
           wrapper_class: "" %>
-    <%= render "comments/line_threads", anchor: response_output_anchor(endpoint, line.code), collapsed: resp_line_comments[:collapsed], outdated: resp_line_comments[:outdated], composable: !resp_map.nil?, expanded: expanded, wrapper_class: "" %>
+    <%= render "comments/line_threads", anchor: CommentAnchor.for_response_output(endpoint, line.code), collapsed: resp_line_comments[:collapsed], outdated: resp_line_comments[:outdated], composable: !resp_map.nil?, expanded: expanded, wrapper_class: "" %>
   <% end %>
 </div>

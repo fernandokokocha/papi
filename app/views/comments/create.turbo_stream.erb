@@ -44,7 +44,7 @@
       <%= render "comments/compose", anchor: region_anchor, line_pin: true, expanded: expanded %>
     <% end %>
   <% end %>
-  <% sidebar_anchor = @comment.scope == "entity" ? CommentAnchor.new(scope: "entity", part: "whole", entity_name: @comment.entity_name) : CommentAnchor.new(scope: "endpoint", part: "whole", endpoint_path: @comment.endpoint_path, endpoint_http_verb: @comment.endpoint_http_verb) %>
+  <% sidebar_anchor = CommentAnchor.sidebar_for(@comment) %>
   <%= turbo_stream.update sidebar_count_dom_id(sidebar_anchor) do %>
     <%= comment_count_badge(comment_sidebar_count(sidebar_anchor)) %>
   <% end %>

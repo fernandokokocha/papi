@@ -56,7 +56,7 @@
             anchor: resp_anchor,
             threads: comment_threads_for("response", endpoint: endpoint, response_code: line.code),
             wrapper_class: line.after_present? ? "col-start-2" : "col-start-1" %>
-      <%= render "comments/line_threads", anchor: response_output_anchor(endpoint, line.code), collapsed: resp_line_comments[:collapsed], outdated: resp_line_comments[:outdated], composable: !resp_map.nil?, expanded: expanded, wrapper_class: line.after_present? ? "col-start-2" : "col-start-1" %>
+      <%= render "comments/line_threads", anchor: CommentAnchor.for_response_output(endpoint, line.code), collapsed: resp_line_comments[:collapsed], outdated: resp_line_comments[:outdated], composable: !resp_map.nil?, expanded: expanded, wrapper_class: line.after_present? ? "col-start-2" : "col-start-1" %>
     <% end %>
   </div>
 </div>

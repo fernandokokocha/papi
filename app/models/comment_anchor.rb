@@ -12,16 +12,15 @@ class CommentAnchor
   IDENTITY_COLUMNS = %i[endpoint_path endpoint_http_verb entity_name response_code].freeze
   LINE_PARTS = %w[note output root].freeze
 
-  attr_reader :scope, :part, :line, :snapshot,
+  attr_reader :scope, :part, :line,
               :endpoint_path, :endpoint_http_verb, :entity_name, :response_code
 
-  def initialize(scope:, part:, line: nil, snapshot: nil,
+  def initialize(scope:, part:, line: nil,
                  endpoint_path: nil, endpoint_http_verb: nil,
                  entity_name: nil, response_code: nil)
     @scope = scope
     @part = part
     @line = line
-    @snapshot = snapshot
     @endpoint_path = endpoint_path
     @endpoint_http_verb = endpoint_http_verb
     @entity_name = entity_name
@@ -60,6 +59,38 @@ class CommentAnchor
       entity_name: (params[:entity_name] || params["entity_name"]).presence,
       response_code: (params[:response_code] || params["response_code"]).presence
     )
+  end
+
+  # Anchor factories from domain objects — the single home for the
+  # http_verb → integer conversion every anchor needs.
+  def self.for_endpoint(endpoint)
+    new(scope: "endpoint", part: "whole",
+        endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb])
+  end
+
+  def self.for_entity(entity)
+    new(scope: "entity", part: "whole", entity_name: entity.name)
+  end
+
+  def self.for_response_output(endpoint, code)
+    new(scope: "response", part: "output",
+        endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb],
+        response_code: code)
+  end
+
+  def self.for_entity_root(entity)
+    new(scope: "entity", part: "root", entity_name: entity.name)
+  end
+
+  # The whole-endpoint / whole-entity anchor a comment's sidebar badge counts
+  # against, rebuilt from the comment's own columns (http_verb already integer).
+  def self.sidebar_for(comment)
+    if comment.scope == "entity"
+      new(scope: "entity", part: "whole", entity_name: comment.entity_name)
+    else
+      new(scope: "endpoint", part: "whole",
+          endpoint_path: comment.endpoint_path, endpoint_http_verb: comment.endpoint_http_verb)
+    end
   end
 
   def to_columns

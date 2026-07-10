@@ -39,7 +39,7 @@ class Comment < ApplicationRecord
 
   def anchor
     CommentAnchor.new(
-      scope: scope, part: part, line: line, snapshot: anchor_snapshot,
+      scope: scope, part: part, line: line,
       endpoint_path: endpoint_path, endpoint_http_verb: endpoint_http_verb,
       entity_name: entity_name, response_code: response_code
     )
