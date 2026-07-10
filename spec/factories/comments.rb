@@ -27,5 +27,10 @@ FactoryBot.define do
     trait :reply do
       parent { association(:comment, candidate: candidate) }
     end
+
+    trait :resolved do
+      resolved_at { Time.current }
+      association :resolved_by, factory: :user
+    end
   end
 end

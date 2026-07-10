@@ -1,11 +1,26 @@
+<% line_badge = local_assigns[:line_badge] %>
 <div id="<%= dom_id(comment) %>" class="bg-white border border-gray-200 border-l-4 border-l-sky-500 rounded-lg shadow-sm">
-  <%= render "comments/comment", comment: comment, line_badge: local_assigns[:line_badge] %>
-  <div id="<%= dom_id(comment, :replies) %>" class="pl-6">
-    <% comment.replies.sort_by(&:created_at).each do |reply| %>
-      <%= render "comments/reply", reply: reply %>
-    <% end %>
-  </div>
-  <div id="<%= dom_id(comment, :reply_form) %>" class="border-t border-gray-200 p-4" data-controller="reply">
-    <%= render "comments/reply_form", parent: comment %>
-  </div>
+  <% if comment.resolved? %>
+    <div data-controller="resolved-thread">
+      <div class="flex items-center gap-2 px-4 py-2.5">
+        <button type="button" data-action="resolved-thread#toggle"
+                class="flex items-center gap-2 text-left flex-1 cursor-pointer"
+                title="Resolved by <%= comment.resolved_by&.email_address %> at <%= comment.resolved_at.strftime("%Y-%m-%d %H:%M") %>">
+          <span class="text-emerald-600">✓</span>
+          <span class="text-sm text-gray-600">Resolved by <%= comment.resolved_by&.email_address %> · <%= pluralize(comment.replies.size + 1, "comment") %></span>
+        </button>
+        <%= render "comments/placement_badge", comment: comment, line_badge: line_badge %>
+        <% if policy(comment).resolve? %>
+          <%= button_to "Reopen", project_candidate_comment_resolution_path(comment.candidate.project.name, comment.candidate.name, comment),
+                method: :delete, params: { line_badge: line_badge }, form: { data: { turbo: true } },
+                class: "shrink-0 bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-xs font-medium px-3 py-1.5 rounded cursor-pointer" %>
+        <% end %>
+      </div>
+      <div data-resolved-thread-target="body" class="border-t border-gray-200" hidden>
+        <%= render "comments/thread_body", comment: comment, line_badge: line_badge %>
+      </div>
+    </div>
+  <% else %>
+    <%= render "comments/thread_body", comment: comment, line_badge: line_badge %>
+  <% end %>
 </div>

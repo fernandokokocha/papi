@@ -65,6 +65,8 @@ describe "Version requests", type: :request do
       expect(response.body).not_to include("data-line-index")
       expect(response.body).not_to include('name="comment[line]"')
       expect(response.body).not_to include("_line_threads")
+      expect(response.body).not_to include("Resolve thread")
+      expect(response.body).not_to include("resolved-thread")
     end
   end
 end

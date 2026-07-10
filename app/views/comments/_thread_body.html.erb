@@ -1,0 +1,17 @@
+<% line_badge = local_assigns[:line_badge] %>
+<%= render "comments/comment", comment: comment, line_badge: line_badge %>
+<div id="<%= dom_id(comment, :replies) %>" class="pl-6">
+  <% comment.replies.sort_by(&:created_at).each do |reply| %>
+    <%= render "comments/reply", reply: reply %>
+  <% end %>
+</div>
+<div id="<%= dom_id(comment, :reply_form) %>" class="border-t border-gray-200 p-4" data-controller="reply">
+  <%= render "comments/reply_form", parent: comment, line_badge: line_badge %>
+</div>
+<% if policy(comment).resolve? && !comment.resolved? %>
+  <div class="border-t border-gray-200 px-4 py-2 flex justify-end">
+    <%= button_to "Resolve thread", project_candidate_comment_resolution_path(comment.candidate.project.name, comment.candidate.name, comment),
+          params: { line_badge: line_badge }, form: { data: { turbo: true } },
+          class: "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-xs font-medium px-3 py-1.5 rounded cursor-pointer" %>
+  </div>
+<% end %>

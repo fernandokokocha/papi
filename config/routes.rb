@@ -8,7 +8,9 @@ Rails.application.routes.draw do
 
   resources :projects, only: [ :index, :new, :create ], param: :name do
     resources :candidates, only: [ :new, :create, :show, :edit, :update ], param: :name do
-      resources :comments, only: [ :create ]
+      resources :comments, only: [ :create ] do
+        resource :resolution, only: [ :create, :destroy ]
+      end
       match "*", via: :all, to: "test_server#candidate", constraints: CandidateTestServerConstraint.new
       resource :merge, only: [ :create ]
       resource :rejection, only: [ :create ]

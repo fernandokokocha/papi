@@ -15,6 +15,9 @@ class CreateComments < ActiveRecord::Migration[8.0]
       t.integer :line
       t.text :anchor_snapshot
 
+      t.datetime :resolved_at
+      t.references :resolved_by, null: true, foreign_key: { to_table: :users }
+
       t.timestamps
     end
   end

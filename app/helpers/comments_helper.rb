@@ -171,4 +171,11 @@ module CommentsHelper
   def line_pick_attributes(anchor)
     tag.attributes("data-line-pick": anchor.dom_id, "data-line-pick-label": anchor.label)
   end
+
+  # Whitelisted placement badge echoed from a resolve/reopen/reply form so a
+  # thread re-render keeps its Inlined/Collapsed/Outdated pill (the server
+  # can't recompute placement — it depends on the client's expanded state).
+  def line_badge_param
+    %w[inlined collapsed outdated].include?(params[:line_badge]) ? params[:line_badge].to_sym : nil
+  end
 end

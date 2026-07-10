@@ -1,9 +1,15 @@
 <% if @comment.reply? %>
-  <%= turbo_stream.append dom_id(@comment.parent, :replies) do %>
-    <%= render "comments/reply", reply: @comment %>
-  <% end %>
-  <%= turbo_stream.update dom_id(@comment.parent, :reply_form) do %>
-    <%= render "comments/reply_form", parent: @comment.parent %>
+  <% if @comment.reopened_parent? %>
+    <%= turbo_stream.replace dom_id(@comment.parent) do %>
+      <%= render "comments/thread", comment: @comment.parent, line_badge: line_badge_param %>
+    <% end %>
+  <% else %>
+    <%= turbo_stream.append dom_id(@comment.parent, :replies) do %>
+      <%= render "comments/reply", reply: @comment %>
+    <% end %>
+    <%= turbo_stream.update dom_id(@comment.parent, :reply_form) do %>
+      <%= render "comments/reply_form", parent: @comment.parent, line_badge: line_badge_param %>
+    <% end %>
   <% end %>
 <% elsif @comment.scope == "candidate" %>
   <%= turbo_stream.remove "no_comments_message" %>

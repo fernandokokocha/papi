@@ -2,6 +2,9 @@
 <%= form_with model: Comment.new, url: project_candidate_comments_path(candidate.project.name, candidate.name), data: { turbo: true } do |form| %>
   <% if parent %>
     <%= form.hidden_field :parent_id, value: parent.id %>
+    <% if local_assigns[:line_badge] %>
+      <%= hidden_field_tag :line_badge, local_assigns[:line_badge] %>
+    <% end %>
   <% else %>
     <%= form.hidden_field :scope, value: anchor.scope %>
     <%= form.hidden_field :part, value: anchor.part %>

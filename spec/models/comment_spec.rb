@@ -94,4 +94,34 @@ describe Comment do
       expect(reply.entity_name).to be_nil
     end
   end
+
+  describe "resolution" do
+    it "#resolved? reflects resolved_at" do
+      expect(FactoryBot.build(:comment)).not_to be_resolved
+      expect(FactoryBot.build(:comment, :resolved)).to be_resolved
+    end
+
+    it "rejects a reply that carries a resolution" do
+      root = FactoryBot.create :comment
+      reply = FactoryBot.build :comment, candidate: root.candidate, parent: root, resolved_at: Time.current
+      expect(reply).not_to be_valid
+      expect(reply.errors[:resolved_at]).to be_present
+    end
+
+    it "auto-reopens a resolved parent when a reply is created" do
+      root = FactoryBot.create :comment, :resolved
+      expect(root).to be_resolved
+
+      reply = FactoryBot.create :comment, candidate: root.candidate, parent: root
+      expect(reply.reopened_parent?).to be true
+      expect(root.reload).not_to be_resolved
+      expect(root.resolved_by_id).to be_nil
+    end
+
+    it "does not flag reopened_parent when the parent was already open" do
+      root = FactoryBot.create :comment
+      reply = FactoryBot.create :comment, candidate: root.candidate, parent: root
+      expect(reply.reopened_parent?).to be false
+    end
+  end
 end

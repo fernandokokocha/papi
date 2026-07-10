@@ -1,0 +1,8 @@
+<% case line_badge
+   when :inlined %>
+  <span class="ml-auto shrink-0 bg-gray-100 text-gray-600 border border-gray-200 text-[10px] font-semibold px-2 py-0.5 rounded-full cursor-help" title="<%= comment.anchor.label %>">Inlined</span>
+<% when :collapsed %>
+  <span class="ml-auto shrink-0 bg-sky-50 text-sky-700 border border-sky-200 text-[10px] font-semibold px-2 py-0.5 rounded-full cursor-help" title="<%= comment.anchor.label %> — expand to view inline">Collapsed</span>
+<% when :outdated %>
+  <span class="ml-auto shrink-0 bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-semibold px-2 py-0.5 rounded-full cursor-help" title="<%= comment.anchor.label %> · snapshot: <%= comment.anchor_snapshot %>">Outdated</span>
+<% end %>

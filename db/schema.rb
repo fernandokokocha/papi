@@ -41,11 +41,14 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_03_000001) do
     t.string "part", null: false
     t.integer "line"
     t.text "anchor_snapshot"
+    t.datetime "resolved_at"
+    t.integer "resolved_by_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["author_id"], name: "index_comments_on_author_id"
     t.index ["candidate_id"], name: "index_comments_on_candidate_id"
     t.index ["parent_id"], name: "index_comments_on_parent_id"
+    t.index ["resolved_by_id"], name: "index_comments_on_resolved_by_id"
   end
 
   create_table "endpoints", force: :cascade do |t|
@@ -133,6 +136,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_03_000001) do
   add_foreign_key "comments", "candidates"
   add_foreign_key "comments", "comments", column: "parent_id"
   add_foreign_key "comments", "users", column: "author_id"
+  add_foreign_key "comments", "users", column: "resolved_by_id"
   add_foreign_key "endpoints", "versions"
   add_foreign_key "entities", "versions"
   add_foreign_key "projects", "groups"

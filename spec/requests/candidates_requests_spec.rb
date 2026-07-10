@@ -311,5 +311,34 @@ describe "Candidates requests", type: :request do
       expect(response.status).to eq(200)
       expect(response.body).to include("Root comment on a removed entity")
     end
+
+    it "shows the Resolve control to the candidate author and collapses a resolved thread" do
+      sign_in(user)
+      post project_candidates_path(project.name), params: valid_params
+      candidate = Candidate.find_by!(name: "rc1")
+      candidate.comments.create!(author: user, body: "Please fix", scope: "candidate", part: "whole")
+      candidate.comments.create!(author: user, body: "Done here", scope: "candidate", part: "whole",
+                                 resolved_at: Time.current, resolved_by: user)
+
+      get project_candidate_path(project.name, candidate.name)
+
+      expect(response.body).to include("Resolve thread")
+      expect(response.body).to include("Resolved by #{user.email_address}")
+      expect(response.body).to include("data-controller=\"resolved-thread\"")
+    end
+
+    it "hides the Resolve control from a non-author in the same group" do
+      sign_in(user)
+      post project_candidates_path(project.name), params: valid_params
+      candidate = Candidate.find_by!(name: "rc1")
+      candidate.comments.create!(author: user, body: "Please fix", scope: "candidate", part: "whole")
+
+      reviewer = FactoryBot.create :user, email_address: "reviewer@example.com", password: "password", group: group
+      sign_in(reviewer)
+      get project_candidate_path(project.name, candidate.name)
+
+      expect(response.body).to include("Please fix")
+      expect(response.body).not_to include("Resolve thread")
+    end
   end
 end

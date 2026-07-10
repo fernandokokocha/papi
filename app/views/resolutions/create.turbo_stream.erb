@@ -1,0 +1,3 @@
+<%= turbo_stream.replace dom_id(@comment) do %>
+  <%= render "comments/thread", comment: @comment, line_badge: line_badge_param %>
+<% end %>
