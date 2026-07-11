@@ -25,4 +25,27 @@ describe Candidate do
       expect(map[[ "candidate", nil, nil, nil, nil, "whole", nil ]]).to eq([ older, newer ])
     end
   end
+
+  describe "#promoted_version" do
+    it "returns the merged candidate's version" do
+      candidate = FactoryBot.create(:candidate, aasm_state: "merged")
+      version = FactoryBot.create(:version, candidate: candidate, name: "v1", order: 1)
+
+      expect(candidate.promoted_version).to eq(version)
+    end
+
+    it "returns nil for an open candidate" do
+      candidate = FactoryBot.create(:candidate, aasm_state: "open")
+      FactoryBot.create(:version, candidate: candidate)
+
+      expect(candidate.promoted_version).to be_nil
+    end
+
+    it "returns nil for a rejected candidate" do
+      candidate = FactoryBot.create(:candidate, aasm_state: "rejected")
+      FactoryBot.create(:version, candidate: candidate)
+
+      expect(candidate.promoted_version).to be_nil
+    end
+  end
 end

@@ -1,0 +1,8 @@
+<%
+  classes = {
+    "open"     => "bg-yellow-50 text-yellow-700 border-yellow-200",
+    "merged"   => "bg-emerald-50 text-emerald-700 border-emerald-200",
+    "rejected" => "bg-red-50 text-red-700 border-red-200"
+  }[state]
+%>
+<span class="text-xs font-semibold px-2.5 py-0.5 rounded-full border <%= classes %>"><%= state.capitalize %></span>

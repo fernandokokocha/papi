@@ -1,0 +1,19 @@
+<% dot = { created: "bg-amber-400", merged: "bg-emerald-500", rejected: "bg-red-400" } %>
+<% verb = { created: "created", merged: "merged", rejected: "rejected" } %>
+<div class="flex flex-col">
+  <% project.events.each do |event| %>
+    <div class="flex items-start gap-3 py-2.5 border-b border-gray-100 last:border-0">
+      <span class="mt-1.5 w-2 h-2 rounded-full shrink-0 <%= dot[event.verb] %>"></span>
+      <div class="flex-1 text-sm text-gray-700">
+        <span class="font-medium text-gray-900"><%= event.actor&.email_address || "Someone" %></span>
+        <%= verb[event.verb] %>
+        <%= link_to event.candidate.name, project_candidate_path(project.name, event.candidate.name), class: "font-semibold text-sky-700" %>
+        <% if event.version %>
+          <span class="text-gray-400">→</span>
+          <%= link_to event.version.name, project_version_path(project.name, event.version.name), class: "font-semibold text-sky-700" %>
+        <% end %>
+      </div>
+      <span class="text-xs text-gray-400 whitespace-nowrap"><%= event.at.strftime("%Y-%m-%d %H:%M") %></span>
+    </div>
+  <% end %>
+</div>

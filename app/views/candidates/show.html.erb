@@ -25,6 +25,10 @@
       <%= button_to "Reject", project_candidate_rejection_path(@project.name, @candidate.name), class: "bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-4 py-2 rounded cursor-pointer" %>
       <%= button_to "Merge", project_candidate_merge_path(@project.name, @candidate.name), class: "bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium px-4 py-2 rounded cursor-pointer" %>
     </div>
+  <% elsif @candidate.merged? %>
+    <div class="flex items-center gap-3">
+      <%= link_to "View version → #{@candidate.promoted_version.name}", project_version_path(@project.name, @candidate.promoted_version.name), class: "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-sm font-medium px-4 py-2 rounded" %>
+    </div>
   <% end %>
 </div>
 

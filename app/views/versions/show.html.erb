@@ -13,6 +13,8 @@
   </div>
 
   <div class="flex items-center gap-3">
+    <%= link_to "View candidate → #{@version.candidate.name}", project_candidate_path(@project.name, @version.candidate.name), class: "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-sm font-medium px-4 py-2 rounded" %>
+
     <% if @previous_version.order > -1 %>
       <%= link_to "← #{@previous_version.name}", project_version_path(name: @previous_version.name, project_name: @previous_version.project.name), class: "bg-white text-gray-700 border border-gray-300 text-sm font-medium px-4 py-2 rounded" %>
     <% else %>

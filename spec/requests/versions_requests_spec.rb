@@ -42,6 +42,14 @@ describe "Version requests", type: :request do
       expect(response.body).to include("decider@example.com")
     end
 
+    it "links to the candidate that produced the version" do
+      sign_in(user)
+      get project_version_path(project.name, version.name)
+
+      expect(response.body).to include("View candidate")
+      expect(response.body).to include(project_candidate_path(project.name, candidate.name))
+    end
+
     it "does not render candidate comment threads on the version page" do
       merged_candidate = FactoryBot.create(:candidate, project: project, aasm_state: "merged")
       merged_version = FactoryBot.create(:version, candidate: merged_candidate, project: project)

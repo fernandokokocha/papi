@@ -114,6 +114,26 @@ describe "Candidates requests", type: :request do
       expect(response.body).to include("Rejected by")
       expect(response.body).to include("author@example.com")
     end
+
+    it "links a merged candidate to its version" do
+      merged = FactoryBot.create(:candidate, project: project, name: "rc1", aasm_state: "merged")
+      version = FactoryBot.create(:version, project: project, candidate: merged, name: "v1", order: 1)
+      sign_in(user)
+
+      get project_candidate_path(project.name, merged.name)
+
+      expect(response.body).to include("View version")
+      expect(response.body).to include(project_version_path(project.name, version.name))
+    end
+
+    it "shows no version link for an open candidate" do
+      open_candidate = FactoryBot.create(:candidate, project: project, name: "rc2", aasm_state: "open")
+      sign_in(user)
+
+      get project_candidate_path(project.name, open_candidate.name)
+
+      expect(response.body).not_to include("View version")
+    end
   end
 
   describe "#new" do

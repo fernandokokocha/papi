@@ -14,6 +14,11 @@ class Candidate < ApplicationRecord
     versions.order(order: :desc).first || Version.null_version(project)
   end
 
+  def promoted_version
+    return nil unless merged?
+    versions.max_by(&:order)
+  end
+
   def to_param
     name
   end

@@ -1,0 +1,41 @@
+<% current_version = project.latest_version %>
+<table class="w-full text-sm">
+  <thead>
+    <tr class="text-left text-xs font-semibold text-gray-500 uppercase tracking-wide">
+      <th class="px-3 py-2">Version</th>
+      <th class="px-3 py-2">Candidate</th>
+      <th class="px-3 py-2">State</th>
+      <th class="px-3 py-2">Proposed</th>
+      <th class="px-3 py-2">Decided</th>
+      <th class="px-3 py-2">💬</th>
+      <th class="px-3 py-2 text-right">Date</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% project.history.each do |candidate| %>
+      <% version = candidate.promoted_version %>
+      <% current = version && version.id == current_version.id %>
+      <tr class="border-t border-gray-100 <%= "bg-sky-50" if current %>">
+        <td class="px-3 py-2.5 <%= "border-l-4 border-sky-500" if current %>">
+          <% if current %>
+            <%= link_to project_version_path(project.name, version.name), class: "inline-flex items-center gap-1.5 bg-sky-700 hover:bg-sky-800 text-white text-xs font-bold px-2.5 py-1 rounded-md" do %>
+              <%= version.name %> · current
+            <% end %>
+          <% elsif version %>
+            <%= link_to version.name, project_version_path(project.name, version.name), class: "font-semibold text-sky-700" %>
+          <% else %>
+            <span class="text-gray-300">—</span>
+          <% end %>
+        </td>
+        <td class="px-3 py-2.5">
+          <%= link_to candidate.name, project_candidate_path(project.name, candidate.name), class: "font-semibold text-sky-700" %>
+        </td>
+        <td class="px-3 py-2.5"><%= render "projects/state_badge", state: candidate.aasm_state %></td>
+        <td class="px-3 py-2.5 text-gray-500"><%= candidate.author&.email_address || "—" %></td>
+        <td class="px-3 py-2.5 text-gray-500"><%= candidate.decided_by&.email_address || "—" %></td>
+        <td class="px-3 py-2.5 text-gray-500"><%= candidate.comments.size %></td>
+        <td class="px-3 py-2.5 text-right text-xs text-gray-500"><%= candidate.created_at.strftime("%Y-%m-%d") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
