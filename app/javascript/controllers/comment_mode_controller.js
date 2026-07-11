@@ -20,8 +20,10 @@ export default class extends Controller {
     this.onClick = this.onClick.bind(this)
     this.onKey = this.onKey.bind(this)
     this.onSubmitEnd = this.onSubmitEnd.bind(this)
+    this.onCommentsHide = () => this.deactivate()
     document.addEventListener("keydown", this.onKey)
     document.addEventListener("turbo:submit-end", this.onSubmitEnd)
+    window.addEventListener("comments:hide", this.onCommentsHide)
   }
 
   disconnect() {
@@ -29,11 +31,13 @@ export default class extends Controller {
     this.clearPick()
     document.removeEventListener("keydown", this.onKey)
     document.removeEventListener("turbo:submit-end", this.onSubmitEnd)
+    window.removeEventListener("comments:hide", this.onCommentsHide)
   }
 
   toggle() { this.active ? this.deactivate() : this.activate() }
 
   activate() {
+    window.dispatchEvent(new Event("comments:reveal"))
     this.active = true
     document.body.classList.add("commenting")
     this.buttonTarget.setAttribute("aria-pressed", "true")

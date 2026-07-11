@@ -7,7 +7,7 @@ import { Controller } from "@hotwired/stimulus"
 // reach the top of the viewport still select cleanly.
 // Persists collapsed state in localStorage so it survives navigations.
 export default class extends Controller {
-  static targets = ["aside", "showButton", "link", "card", "anchorToggle"]
+  static targets = ["aside", "showButton", "link", "card"]
   static storageKey = "papi.sidebar.collapsed"
   static anchorKey = "papi.anchor.enabled"
 
@@ -22,8 +22,11 @@ export default class extends Controller {
     this.pinnedId = null
 
     // Scroll-spy is opt-out; default on unless the user disabled it before.
+    // The control lives in the Display popover; it flips localStorage and fires
+    // "anchor:changed", which we re-read here.
     this.anchorEnabled = localStorage.getItem(this.constructor.anchorKey) !== "0"
-    if (this.hasAnchorToggleTarget) this.anchorToggleTarget.checked = this.anchorEnabled
+    this.onAnchorChanged = this.applyAnchorSetting.bind(this)
+    window.addEventListener("anchor:changed", this.onAnchorChanged)
 
     this.onScroll = this.scheduleUpdate.bind(this)
     this.onUserScroll = this.unpin.bind(this)
@@ -46,6 +49,7 @@ export default class extends Controller {
     window.removeEventListener("wheel", this.onUserScroll)
     window.removeEventListener("touchmove", this.onUserScroll)
     window.removeEventListener("keydown", this.onKey)
+    window.removeEventListener("anchor:changed", this.onAnchorChanged)
     this.element.removeEventListener("click", this.onClick)
   }
 
@@ -117,10 +121,9 @@ export default class extends Controller {
     this.scheduleUpdate()
   }
 
-  // Checkbox: turn scroll-spy / flash on or off (persisted across navigations).
-  toggleAnchor() {
-    this.anchorEnabled = this.anchorToggleTarget.checked
-    localStorage.setItem(this.constructor.anchorKey, this.anchorEnabled ? "1" : "0")
+  // Re-read the anchor setting after the Display popover changed it.
+  applyAnchorSetting() {
+    this.anchorEnabled = localStorage.getItem(this.constructor.anchorKey) !== "0"
     if (this.anchorEnabled) {
       this.updateCurrent()
     } else {

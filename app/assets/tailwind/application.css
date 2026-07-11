@@ -273,3 +273,18 @@ body.commenting [data-action*="endpoint#"] { pointer-events: none; }
   border-radius: 0.25rem;
 }
 
+/* Global "hide comments" (Display toolbox toggle): pull every thread and inline
+   comment card out of layout so the diff reads clean and response bodies stay
+   selectable. [data-comment-form] also covers a picked inline compose form,
+   which gets moved under its JSON row (outside .anchor-strip) while open.
+   Sidebar 💬 counts aren't .anchor-strip, so they stay visible. */
+body.comments-hidden .anchor-strip,
+body.comments-hidden .inline-line-comment,
+body.comments-hidden .candidate-conversation,
+body.comments-hidden [data-comment-form] { display: none; }
+
+/* A comment strip with no thread yet (just its composer) takes no vertical
+   space, so toggling comments never shifts a comment-free card. Spacing returns
+   the moment a thread exists — :has() re-evaluates live, no reload needed. */
+.anchor-strip:not(:has(.comment-thread)) { margin-top: 0; gap: 0; }
+

@@ -14,20 +14,13 @@
             class="absolute -left-10 top-0 bg-white border border-gray-200 hover:bg-gray-50 text-gray-500 hover:text-sky-700 rounded-lg p-2 shadow-sm"
             title="Hide quick access">«</button>
     <div class="max-h-screen overflow-x-hidden overflow-y-auto bg-white border border-gray-200 rounded-lg p-2">
-    <label class="flex items-center gap-1.5 mb-1.5 pb-1.5 border-b border-gray-200 text-xs text-gray-500 cursor-pointer select-none">
-      <input type="checkbox"
-             data-sidebar-target="anchorToggle"
-             data-action="sidebar#toggleAnchor"
-             class="accent-sky-600 cursor-pointer">
-      <span>Highlight on scroll</span>
-    </label>
     <% if @categorized_endpoints.any? %>
       <div>
         <div class="text-xs font-bold uppercase tracking-wide text-gray-700 mb-1">Endpoints</div>
         <% @categorized_endpoints.group_by(&:path).each_with_index do |(path, group), i| %>
           <div class="<%= "mt-1 pt-1 border-t border-gray-200" if i > 0 %>">
             <% group.each do |endpoint| %>
-              <% tint = { "added" => "bg-emerald-50 text-emerald-700", "removed" => "bg-red-50 text-red-700 line-through", "changed" => "bg-amber-50 text-amber-700" }[endpoint.annotation] || "text-gray-700" %>
+              <% tint = { "added" => "bg-emerald-50 text-emerald-700", "removed" => "bg-red-50 text-red-700", "changed" => "bg-amber-50 text-amber-700" }[endpoint.annotation] || "text-gray-700" %>
               <a href="<%= "#endpoint-#{endpoint.page_url}" %>"
                  title="<%= endpoint.name %>"
                  data-sidebar-target="link"
@@ -46,7 +39,7 @@
       <div class="<%= "mt-2 pt-2 border-t border-gray-200" if @categorized_endpoints.any? %>">
         <div class="text-xs font-bold uppercase tracking-wide text-gray-700 mb-1">Entities</div>
         <% @categorized_entities.each do |entity| %>
-          <% tint = { "added" => "bg-emerald-50 text-emerald-700 font-semibold", "removed" => "bg-red-50 text-red-700 font-semibold line-through", "changed" => "bg-amber-50 text-amber-700 font-semibold" }[entity.annotation] || "text-gray-700" %>
+          <% tint = { "added" => "bg-emerald-50 text-emerald-700 font-semibold", "removed" => "bg-red-50 text-red-700 font-semibold", "changed" => "bg-amber-50 text-amber-700 font-semibold" }[entity.annotation] || "text-gray-700" %>
           <a href="<%= "#entity-#{entity.name}" %>"
              title="<%= entity.name %>"
              data-sidebar-target="link"

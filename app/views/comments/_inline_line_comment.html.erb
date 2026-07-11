@@ -1,3 +1,7 @@
-<div class="my-1 ml-4 border-l-2 border-l-sky-200 pl-3 font-sans">
+<div class="inline-line-comment my-1 ml-4 border-l-2 border-l-sky-200 pl-3 font-sans"
+     data-controller="line-highlight"
+     data-line-highlight-pick-value="<%= comment.anchor.without_line.dom_id %>"
+     data-line-highlight-line-value="<%= comment.line %>"
+     data-action="mouseenter->line-highlight#on mouseleave->line-highlight#off">
   <%= render "comments/thread", comment: comment, line_badge: :inlined %>
 </div>

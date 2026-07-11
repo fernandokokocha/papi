@@ -4,8 +4,42 @@
           data-action="comment-mode#toggle"
           aria-pressed="false"
           class="inline-flex items-center gap-1.5 text-sm font-semibold text-gray-700 rounded-full px-3 py-1.5 cursor-pointer hover:bg-gray-50 aria-pressed:bg-sky-600 aria-pressed:text-white">
-    <span aria-hidden="true">💬</span> Comment
+    Comment
   </button>
   <span class="text-xs text-gray-400 select-none pr-1">press <kbd class="font-mono">C</kbd></span>
+
+  <span class="w-px h-5 bg-gray-200" aria-hidden="true"></span>
+
+  <div class="relative" data-controller="view-settings">
+    <button type="button"
+            data-view-settings-target="button"
+            data-action="view-settings#togglePanel"
+            aria-expanded="false"
+            class="inline-flex items-center gap-1 text-sm font-semibold text-gray-700 rounded-full px-3 py-1.5 cursor-pointer hover:bg-gray-50 aria-expanded:bg-gray-100">
+      Display <span aria-hidden="true" class="text-xs text-gray-400">▾</span>
+    </button>
+    <div data-view-settings-target="panel" hidden
+         class="absolute bottom-full right-0 mb-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg p-2 flex flex-col gap-0.5">
+      <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-50 text-sm text-gray-700 cursor-pointer select-none">
+        <input type="checkbox"
+               data-view-settings-target="toggle"
+               data-action="view-settings#change"
+               data-key="papi.anchor.enabled" data-default="1"
+               data-change-event="anchor:changed"
+               class="accent-sky-600 cursor-pointer">
+        <span>Highlight on scroll</span>
+      </label>
+      <label class="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-gray-50 text-sm text-gray-700 cursor-pointer select-none">
+        <input type="checkbox"
+               data-view-settings-target="toggle"
+               data-action="view-settings#change"
+               data-key="papi.comments.visible" data-default="1"
+               data-body-class-off="comments-hidden" data-off-event="comments:hide"
+               data-reveal-event="comments:reveal"
+               class="accent-sky-600 cursor-pointer">
+        <span>Show comments</span>
+      </label>
+    </div>
+  </div>
 </div>
 <span data-comment-mode-target="pin" class="comment-pin" aria-hidden="true">💬</span>
