@@ -8,15 +8,11 @@
 <div class="border <%= border_class %> rounded-lg overflow-hidden">
   <%# Headers %>
   <div class="grid grid-cols-2 sticky top-0 z-10">
-    <div class="<%= header_class %> text-white px-4 py-3 text-sm font-mono flex items-center gap-2">
-      <%= render "endpoints/verb_badge", verb: previous_endpoint.verb %>
-      <span class="truncate"><%= previous_endpoint.path %></span>
+    <div class="<%= header_class %> text-white px-4 py-3 text-sm font-mono flex items-center">
+      <%= render "endpoints/verb_path", verb: previous_endpoint.verb, path: previous_endpoint.path %>
     </div>
     <div class="<%= header_class %> border-l border-white/20 text-white px-4 py-3 text-sm font-mono flex items-center justify-between">
-      <span class="flex items-center gap-2 min-w-0">
-        <%= render "endpoints/verb_badge", verb: endpoint.verb %>
-        <span class="truncate"><%= endpoint.path %></span>
-      </span>
+      <%= render "endpoints/verb_path", verb: endpoint.verb, path: endpoint.path %>
       <div class="flex items-center gap-2 ml-4">
         <% if expandable %>
           <% if expanded %>
@@ -31,7 +27,10 @@
 
   <%# Note %>
   <% note_anchor = CommentAnchor.new(scope: "endpoint", part: "note", endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb]) %>
-  <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Note</div>
+  <div class="grid grid-cols-2 border-t border-gray-300">
+    <div class="bg-gray-200 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Note</div>
+    <div class="bg-gray-200 border-l border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Note</div>
+  </div>
   <div class="grid grid-cols-2">
     <div <%= comment_region_attr(note_anchor) %> class="px-3 py-2 bg-white text-sm text-gray-700"><%= render "specs/text", diff: notes_diff.before %></div>
     <div <%= comment_region_attr(note_anchor) %> class="px-3 py-2 bg-white border-l border-gray-200 text-sm text-gray-700"><%= render "specs/text", diff: notes_diff.after %></div>
@@ -42,7 +41,10 @@
   </div>
 
   <%# Responses — one grid row per code keeps both sides vertically aligned %>
-  <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Responses</div>
+  <div class="grid grid-cols-2 border-t border-gray-300">
+    <div class="bg-gray-200 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Responses</div>
+    <div class="bg-gray-200 border-l border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Responses</div>
+  </div>
   <div class="grid grid-cols-2 gap-x-2 bg-white border-t border-gray-200">
     <% responses_diff.lines.each_with_index do |line, i| %>
       <% if i > 0 %><div class="col-span-2 border-t border-gray-200"></div><% end %>

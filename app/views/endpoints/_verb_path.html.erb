@@ -1,0 +1,5 @@
+<%# locals: verb, path %>
+<span class="flex items-center min-w-0">
+  <%= render "endpoints/verb_badge", verb: verb %>
+  <span class="overflow-hidden text-ellipsis whitespace-pre"><%= " #{path}" %></span>
+</span>

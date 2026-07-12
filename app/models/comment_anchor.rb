@@ -136,6 +136,29 @@ class CommentAnchor
     line ? "#{head} · line #{line}" : head
   end
 
+  KIND_LABELS = {
+    line: "Line", response: "Response", note: "Note",
+    endpoint: "Endpoint", entity: "Entity", conversation: "Conversation"
+  }.freeze
+
+  # Coarse kind for the comment's reference chip: a line beats its part,
+  # a note part beats its scope, otherwise the scope names it. Candidate-level
+  # threads are the Conversation.
+  def kind
+    return :line if line
+    return :note if part == "note"
+    case scope
+    when "endpoint" then :endpoint
+    when "entity"   then :entity
+    when "response" then :response
+    else :conversation
+    end
+  end
+
+  def kind_label
+    KIND_LABELS.fetch(kind)
+  end
+
   private
 
   def verb_word

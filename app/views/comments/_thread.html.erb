@@ -1,15 +1,26 @@
 <% line_badge = local_assigns[:line_badge] %>
-<div id="<%= dom_id(comment) %>" class="comment-thread bg-white border border-gray-200 border-l-4 border-l-sky-500 rounded-lg shadow-sm">
+<% anchor = comment.anchor %>
+<% show_ref = anchor.kind != :conversation %>
+<div id="<%= dom_id(comment) %>" class="comment-thread <%= comment_kind_bg(anchor.kind) %> border border-gray-200 border-l-4 <%= comment_kind_rail(anchor.kind) %> rounded-lg shadow-sm overflow-hidden">
+  <% if show_ref %>
+    <div class="flex items-center gap-2 px-3 pt-2 pb-1 min-w-0">
+      <span class="shrink-0 border <%= comment_kind_chip(anchor.kind) %> text-[11px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full"><%= anchor.kind_label %></span>
+      <% if anchor.label.present? %>
+        <span class="font-mono text-xs text-gray-500 truncate"><%= anchor.label %></span>
+      <% end %>
+      <%= render "comments/placement_badge", comment: comment, line_badge: line_badge %>
+    </div>
+  <% end %>
+
   <% if comment.resolved? %>
     <div data-controller="resolved-thread">
-      <div class="flex items-center gap-2 px-4 py-2.5">
+      <div class="flex items-center gap-2 px-3 py-2 <%= "border-t border-gray-200" if show_ref %>">
         <button type="button" data-action="resolved-thread#toggle"
                 class="flex items-center gap-2 text-left flex-1 cursor-pointer"
                 title="Resolved by <%= comment.resolved_by&.email_address %> at <%= comment.resolved_at.strftime("%Y-%m-%d %H:%M") %>">
           <span class="text-emerald-600">✓</span>
           <span class="text-sm text-gray-600">Resolved by <%= comment.resolved_by&.email_address %> · <%= pluralize(comment.replies.size + 1, "comment") %></span>
         </button>
-        <%= render "comments/placement_badge", comment: comment, line_badge: line_badge %>
         <% if policy(comment).resolve? %>
           <%= button_to "Reopen", project_candidate_comment_resolution_path(comment.candidate.project.name, comment.candidate.name, comment),
                 method: :delete, params: { line_badge: line_badge }, form: { data: { turbo: true } },

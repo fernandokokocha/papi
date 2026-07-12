@@ -1,4 +1,30 @@
 module CommentsHelper
+  # Per-kind card wash, rail, and chip — complete literal class strings so
+  # Tailwind sees them. Kinds echo the app's card colors (endpoint sky, entity
+  # violet) plus non-semantic hues; all clear of the red / green / amber that
+  # already mean removed / added / changed (fuchsia, not pink, so response
+  # never reads as red).
+  KIND_STYLES = {
+    line:         { bg: "bg-indigo-50/60",  rail: "border-l-indigo-500",  chip: "bg-indigo-100 text-indigo-700 border-indigo-200" },
+    response:     { bg: "bg-fuchsia-50/60", rail: "border-l-fuchsia-500", chip: "bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200" },
+    note:         { bg: "bg-cyan-50/60",    rail: "border-l-cyan-500",    chip: "bg-cyan-100 text-cyan-700 border-cyan-200" },
+    endpoint:     { bg: "bg-sky-50/60",     rail: "border-l-sky-600",     chip: "bg-sky-100 text-sky-700 border-sky-200" },
+    entity:       { bg: "bg-violet-50/60",  rail: "border-l-violet-600",  chip: "bg-violet-100 text-violet-700 border-violet-200" },
+    conversation: { bg: "bg-blue-50/60",    rail: "border-l-blue-600",    chip: "bg-blue-100 text-blue-700 border-blue-200" }
+  }.freeze
+
+  def comment_kind_bg(kind)
+    KIND_STYLES.fetch(kind)[:bg]
+  end
+
+  def comment_kind_rail(kind)
+    KIND_STYLES.fetch(kind)[:rail]
+  end
+
+  def comment_kind_chip(kind)
+    KIND_STYLES.fetch(kind)[:chip]
+  end
+
   # Root comment threads pinned to the given target, across all of the
   # scope's valid parts (line-anchored threads are excluded; they render
   # elsewhere from Stage 6 on). Returns [] outside candidate-page context.

@@ -59,7 +59,7 @@
 <section class="mt-10 candidate-conversation" data-comment-exempt>
   <h2 class="text-xl font-semibold text-gray-900 mb-4">Conversation</h2>
   <% candidate_threads = comment_threads_for("candidate") %>
-  <div id="candidate_comment_threads" class="flex flex-col gap-6">
+  <div id="candidate_comment_threads" class="flex flex-col gap-3">
     <% candidate_threads.each do |thread| %>
       <%= render "comments/thread", comment: thread %>
     <% end %>

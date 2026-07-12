@@ -4,10 +4,7 @@
   <div>
     <div class="border border-emerald-200 rounded-lg">
       <div class="sticky top-0 z-10 rounded-t-lg bg-emerald-700 text-white px-4 py-3 text-sm font-mono flex items-center justify-between">
-        <span class="flex items-center gap-2 min-w-0">
-          <%= render "endpoints/verb_badge", verb: endpoint.verb %>
-          <span class="truncate"><%= endpoint.path %></span>
-        </span>
+        <%= render "endpoints/verb_path", verb: endpoint.verb, path: endpoint.path %>
         <div class="flex items-center gap-2 ml-4">
           <% if endpoint.responses.any? { |r| r.parsed_output.expandable? } %>
             <% if expanded %>
