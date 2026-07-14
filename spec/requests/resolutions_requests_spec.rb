@@ -23,8 +23,10 @@ describe "Resolutions requests", type: :request do
     end
 
     it "echoes the line_badge into the re-render" do
+      line_thread = FactoryBot.create :comment, :response_scope, candidate: candidate, author: author,
+                                      part: "output", line: 0, anchor_snapshot: "x"
       sign_in(author)
-      post project_candidate_comment_resolution_path(project.name, candidate.name, thread),
+      post project_candidate_comment_resolution_path(project.name, candidate.name, line_thread),
            params: { line_badge: "collapsed" }, as: :turbo_stream
       expect(response.body).to include(">Collapsed<")
     end

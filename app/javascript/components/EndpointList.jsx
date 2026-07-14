@@ -1,5 +1,6 @@
 import React from 'react'
 import Endpoint from "~/components/Endpoint.jsx";
+import CardComments from "@/components/CardComments.jsx";
 import {verbSelectClass} from "@/helpers/verbColors.js";
 
 const EndpointList = ({
@@ -14,6 +15,8 @@ const EndpointList = ({
                           newPath,
                           updateNewPath,
                           addEndpointDisabled,
+                          comments,
+                          edited,
                       }) => {
 
     return (
@@ -21,16 +24,23 @@ const EndpointList = ({
             <div className="text-xl font-semibold text-black uppercase tracking-wide mb-3 mt-6">Endpoints</div>
 
             <div className="flex flex-col gap-6">
-                {endpoints.map((endpoint) => (
-                    <Endpoint
-                        key={endpoint.id}
-                        endpoint={endpoint}
-                        remove={removeEndpoint}
-                        restore={restoreEndpoint}
-                        updateEndpoint={updateEndpoint}
-                        entities={entities}
-                    />
-                ))}
+                {endpoints.map((endpoint) => {
+                    const key = endpoint.type === 'new'
+                        ? null
+                        : `${endpoint.original_http_verb} ${endpoint.original_path}`
+                    return (
+                        <div key={endpoint.id}>
+                            <Endpoint
+                                endpoint={endpoint}
+                                remove={removeEndpoint}
+                                restore={restoreEndpoint}
+                                updateEndpoint={updateEndpoint}
+                                entities={entities}
+                            />
+                            <CardComments html={key && comments[key]} edited={edited} />
+                        </div>
+                    )
+                })}
             </div>
 
             <div className="text-xl font-semibold text-black uppercase tracking-wide mb-3 mt-8">Add Endpoint</div>

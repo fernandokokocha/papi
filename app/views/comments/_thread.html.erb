@@ -1,4 +1,5 @@
 <% line_badge = local_assigns[:line_badge] %>
+<% read_only = local_assigns[:read_only] %>
 <% anchor = comment.anchor %>
 <% show_ref = anchor.kind != :conversation %>
 <div id="<%= dom_id(comment) %>" class="comment-thread <%= comment_kind_bg(anchor.kind) %> border border-gray-200 border-l-4 <%= comment_kind_rail(anchor.kind) %> rounded-lg shadow-sm overflow-hidden">
@@ -21,17 +22,17 @@
           <span class="text-emerald-600">✓</span>
           <span class="text-sm text-gray-600">Resolved by <%= comment.resolved_by&.email_address %> · <%= pluralize(comment.replies.size + 1, "comment") %></span>
         </button>
-        <% if policy(comment).resolve? %>
+        <% if !read_only && policy(comment).resolve? %>
           <%= button_to "Reopen", project_candidate_comment_resolution_path(comment.candidate.project.name, comment.candidate.name, comment),
                 method: :delete, params: { line_badge: line_badge }, form: { data: { turbo: true } },
                 class: "shrink-0 bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-xs font-medium px-3 py-1.5 rounded cursor-pointer" %>
         <% end %>
       </div>
       <div data-resolved-thread-target="body" class="border-t border-gray-200" hidden>
-        <%= render "comments/thread_body", comment: comment, line_badge: line_badge %>
+        <%= render "comments/thread_body", comment: comment, line_badge: line_badge, read_only: read_only %>
       </div>
     </div>
   <% else %>
-    <%= render "comments/thread_body", comment: comment, line_badge: line_badge %>
+    <%= render "comments/thread_body", comment: comment, line_badge: line_badge, read_only: read_only %>
   <% end %>
 </div>

@@ -53,6 +53,12 @@ class CandidatesController < ApplicationController
     authorize @candidate
 
     @version = @candidate.latest_version
+    @previous_version = @candidate.base_version || Version.null_version(@project)
+
+    @categorized_endpoints = Version::CategorizeByName.new(@previous_version.endpoints, @version.endpoints).call
+    @categorized_entities = Version::CategorizeByName.new(@previous_version.entities, @version.entities).call
+
+    @comment_threads_by_anchor = @candidate.comment_threads_by_anchor
   end
 
   def update

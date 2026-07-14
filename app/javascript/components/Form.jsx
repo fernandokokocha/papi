@@ -67,7 +67,11 @@ const findCustomName = (root, name) => {
     return false;
 }
 
-const Form = ({serializedEndpoints, serializedEntities}) => {
+const Form = ({serializedEndpoints, serializedEntities, comments}) => {
+    const commentsMap = React.useMemo(
+        () => (comments ? JSON.parse(comments) : {endpoints: {}, entities: {}}),
+        [comments]
+    )
     const [entities, setEntities] = useState([]);
     const [endpoints, setEndpoints] = useState([]);
     const [noCollisions, setNoCollisions] = useState(true);
@@ -327,6 +331,8 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
                 newPath={newPath}
                 updateNewPath={updateNewPath}
                 addEndpointDisabled={addEndpointDisabled}
+                comments={commentsMap.endpoints}
+                edited={anyChanges}
             />
             <EntityList
                 entities={entities}
@@ -336,6 +342,8 @@ const Form = ({serializedEndpoints, serializedEntities}) => {
                 updateNewEntity={updateNewEntity}
                 addEntity={addEntity}
                 addEntityDisabled={addEntityDisabled}
+                comments={commentsMap.entities}
+                edited={anyChanges}
             />
         </>
     )

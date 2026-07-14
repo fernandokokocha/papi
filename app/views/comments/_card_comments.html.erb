@@ -1,0 +1,13 @@
+<div class="flex flex-col gap-2 mt-3">
+  <% threads[:whole].each do |thread| %>
+    <%= render "comments/thread", comment: thread, read_only: true %>
+  <% end %>
+  <% if threads[:lines].any? %>
+    <div class="line-threads flex flex-col gap-2">
+      <div class="line-threads-edited-note text-xs text-amber-700 font-medium">Edited — comments below may be outdated</div>
+      <% threads[:lines].each do |thread| %>
+        <%= render "comments/thread", comment: thread, read_only: true, line_badge: :collapsed %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

@@ -174,6 +174,36 @@ describe "Candidates requests", type: :request do
     end
   end
 
+  describe "#edit" do
+    let(:base_candidate) { FactoryBot.create(:candidate, name: "rc8", project: project) }
+    let(:base_version) { FactoryBot.create(:version, project: project, candidate: base_candidate, name: "base", order: 1) }
+    let(:candidate) { FactoryBot.create(:candidate, name: "rc9", project: project, base_version: base_version) }
+
+    it "renders anchored comments read-only in the form data" do
+      version = FactoryBot.create(:version, project: project, candidate: candidate, name: "v1", order: 1)
+      FactoryBot.create(:endpoint, version: version, path: "/users", http_verb: "verb_get")
+      candidate.comments.create!(author: user, body: "Please paginate", scope: "endpoint", part: "whole", endpoint_path: "/users", endpoint_http_verb: 0)
+
+      sign_in(admin)
+      get edit_project_candidate_path(project.name, candidate.name)
+
+      expect(response).to have_http_status(:ok)
+      body = CGI.unescapeHTML(response.body)
+      expect(body).to include("Please paginate")
+      expect(body).to include("verb_get /users")
+      expect(response.body).not_to include("Resolve thread")
+    end
+
+    it "sends an empty comments map for a candidate with no comments" do
+      FactoryBot.create(:version, project: project, candidate: candidate, name: "v1", order: 1)
+
+      sign_in(admin)
+      get edit_project_candidate_path(project.name, candidate.name)
+
+      expect(CGI.unescapeHTML(response.body)).to include(%({"endpoints":{},"entities":{}}))
+    end
+  end
+
   describe "#show" do
     it "renders candidate-level comments with an Author badge for the candidate author" do
       candidate = FactoryBot.create :candidate, project: project, name: "rc9", author: author

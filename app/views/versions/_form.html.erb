@@ -23,5 +23,6 @@
     id="react-form"
     data-serialized-endpoints="<%= @version.existing_endpoints_for_frontend %>"
     data-serialized-entities="<%= @version.existing_entities_for_frontend %>"
+    data-comments="<%= card_comments_data(@categorized_endpoints, @categorized_entities) %>"
   ></div>
 <% end %>

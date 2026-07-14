@@ -1,21 +1,27 @@
 import React from 'react'
 import Entity from "@/components/Entity.jsx";
+import CardComments from "@/components/CardComments.jsx";
 
-const EntityList = ({entities, updateEntity, removeEntity, addEntity, addEntityDisabled, newEntity, updateNewEntity}) => {
+const EntityList = ({entities, updateEntity, removeEntity, addEntity, addEntityDisabled, newEntity, updateNewEntity, comments, edited}) => {
     return (
         <>
             <div className="text-xl font-semibold text-black uppercase tracking-wide mb-3 mt-8">Entities</div>
 
             <div className="flex flex-col gap-6">
-                {entities.map((entity) => (
-                    <Entity
-                        key={entity.id}
-                        entity={entity}
-                        updateEntity={updateEntity}
-                        removeEntity={removeEntity}
-                        entities={entities}
-                    />
-                ))}
+                {entities.map((entity) => {
+                    const key = entity.type === 'new' ? null : entity.original_name
+                    return (
+                        <div key={entity.id}>
+                            <Entity
+                                entity={entity}
+                                updateEntity={updateEntity}
+                                removeEntity={removeEntity}
+                                entities={entities}
+                            />
+                            <CardComments html={key && comments[key]} edited={edited} />
+                        </div>
+                    )
+                })}
             </div>
 
             <div className="text-xl font-semibold text-black uppercase tracking-wide mb-3 mt-8">Add Entity</div>

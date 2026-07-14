@@ -80,4 +80,43 @@ describe CommentsHelper, type: :helper do
 
     expect(helper.endpoint_comment_thread_count(endpoint)).to eq(0)
   end
+
+  describe "#card_threads_for_endpoint" do
+    it "splits an endpoint's threads into whole-scope and line-anchored" do
+      whole = FactoryBot.create(:comment, :endpoint_scope, candidate: candidate)
+      response_whole = FactoryBot.create(:comment, :response_scope, candidate: candidate)
+      line = FactoryBot.create(:comment, :response_scope, candidate: candidate, part: "output", line: 2, anchor_snapshot: "x")
+      assign_map
+
+      result = helper.card_threads_for_endpoint(endpoint)
+      expect(result[:whole]).to contain_exactly(whole, response_whole)
+      expect(result[:lines]).to eq([ line ])
+    end
+
+    it "does not match a different endpoint" do
+      FactoryBot.create(:comment, :endpoint_scope, candidate: candidate)
+      other = FactoryBot.create(:endpoint, path: "/tasks", http_verb: "verb_get")
+      assign_map
+
+      expect(helper.card_threads_for_endpoint(other)).to eq({ whole: [], lines: [] })
+    end
+
+    it "returns empty buckets outside candidate context" do
+      FactoryBot.create(:comment, :endpoint_scope, candidate: candidate)
+
+      expect(helper.card_threads_for_endpoint(endpoint)).to eq({ whole: [], lines: [] })
+    end
+  end
+
+  describe "#card_threads_for_entity" do
+    it "splits an entity's threads into whole-scope and line-anchored" do
+      whole = FactoryBot.create(:comment, :entity_scope, candidate: candidate)
+      line = FactoryBot.create(:comment, :entity_scope, candidate: candidate, part: "root", line: 0, anchor_snapshot: "x")
+      assign_map
+
+      result = helper.card_threads_for_entity(entity)
+      expect(result[:whole]).to eq([ whole ])
+      expect(result[:lines]).to eq([ line ])
+    end
+  end
 end

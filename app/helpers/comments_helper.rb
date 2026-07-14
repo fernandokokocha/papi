@@ -175,6 +175,54 @@ module CommentsHelper
     tag.attributes("data-line-pick": anchor.dom_id, "data-line-pick-label": anchor.label)
   end
 
+  # All root threads for one endpoint card, split into whole-scope (endpoint /
+  # response, line unset) and line-anchored (line set). Scans the in-memory map
+  # by logical identity; empty outside candidate context.
+  def card_threads_for_endpoint(endpoint)
+    return { whole: [], lines: [] } unless @comment_threads_by_anchor
+
+    verb = Endpoint.http_verbs[endpoint.http_verb]
+    whole, lines = [], []
+    @comment_threads_by_anchor.each do |(scope, path, v, _name, _code, _part, line), threads|
+      next unless %w[endpoint response].include?(scope) && path == endpoint.path && v == verb
+      (line.nil? ? whole : lines).concat(threads)
+    end
+    { whole: whole.sort_by(&:created_at), lines: lines.sort_by { |c| [ c.line, c.created_at ] } }
+  end
+
+  # All root threads for one entity card, split like card_threads_for_endpoint.
+  def card_threads_for_entity(entity)
+    return { whole: [], lines: [] } unless @comment_threads_by_anchor
+
+    whole, lines = [], []
+    @comment_threads_by_anchor.each do |(scope, _path, _v, name, _code, _part, line), threads|
+      next unless scope == "entity" && name == entity.name
+      (line.nil? ? whole : lines).concat(threads)
+    end
+    { whole: whole.sort_by(&:created_at), lines: lines.sort_by { |c| [ c.line, c.created_at ] } }
+  end
+
+  # JSON map of pre-rendered read-only comment HTML per card, for injection into
+  # the React edit form. Keyed by logical identity React can reconstruct:
+  # endpoints "<http_verb> <path>", entities by name. Cards with no threads are
+  # omitted. "{}" outside candidate context.
+  def card_comments_data(endpoints, entities)
+    return "{}".html_safe unless @comment_threads_by_anchor
+
+    data = { endpoints: {}, entities: {} }
+    endpoints.each do |endpoint|
+      threads = card_threads_for_endpoint(endpoint)
+      next if threads[:whole].empty? && threads[:lines].empty?
+      data[:endpoints]["#{endpoint.http_verb} #{endpoint.path}"] = render("comments/card_comments", threads: threads)
+    end
+    entities.each do |entity|
+      threads = card_threads_for_entity(entity)
+      next if threads[:whole].empty? && threads[:lines].empty?
+      data[:entities][entity.name] = render("comments/card_comments", threads: threads)
+    end
+    data.to_json
+  end
+
   # Whitelisted placement badge echoed from a resolve/reopen/reply form so a
   # thread re-render keeps its Inlined/Collapsed/Outdated pill (the server
   # can't recompute placement — it depends on the client's expanded state).
