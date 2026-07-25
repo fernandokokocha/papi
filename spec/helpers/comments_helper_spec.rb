@@ -108,6 +108,12 @@ describe CommentsHelper, type: :helper do
     end
   end
 
+  describe "#card_comments_data" do
+    it "returns the full empty shape outside candidate context" do
+      expect(helper.card_comments_data([ endpoint ], [ entity ])).to eq('{"endpoints":{},"entities":{}}')
+    end
+  end
+
   describe "#card_threads_for_entity" do
     it "splits an entity's threads into whole-scope and line-anchored" do
       whole = FactoryBot.create(:comment, :entity_scope, candidate: candidate)

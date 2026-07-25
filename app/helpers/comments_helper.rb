@@ -205,11 +205,11 @@ module CommentsHelper
   # JSON map of pre-rendered read-only comment HTML per card, for injection into
   # the React edit form. Keyed by logical identity React can reconstruct:
   # endpoints "<http_verb> <path>", entities by name. Cards with no threads are
-  # omitted. "{}" outside candidate context.
+  # omitted. Empty {endpoints:{}, entities:{}} outside candidate context.
   def card_comments_data(endpoints, entities)
-    return "{}".html_safe unless @comment_threads_by_anchor
-
     data = { endpoints: {}, entities: {} }
+    return data.to_json unless @comment_threads_by_anchor
+
     endpoints.each do |endpoint|
       threads = card_threads_for_endpoint(endpoint)
       next if threads[:whole].empty? && threads[:lines].empty?
