@@ -1,11 +1,12 @@
 <% line_badge = local_assigns[:line_badge] %>
 <% read_only = local_assigns[:read_only] %>
 <% anchor = comment.anchor %>
+<% style = comment_kind_style(anchor.kind) %>
 <% show_ref = anchor.kind != :conversation %>
-<div id="<%= dom_id(comment) %>" class="comment-thread <%= comment_kind_bg(anchor.kind) %> border border-gray-200 border-l-4 <%= comment_kind_rail(anchor.kind) %> rounded-lg shadow-sm overflow-hidden">
+<div id="<%= dom_id(comment) %>" class="comment-thread <%= style[:bg] %> border border-gray-200 border-l-4 <%= style[:rail] %> rounded-lg shadow-sm overflow-hidden">
   <% if show_ref %>
     <div class="flex items-center gap-2 px-3 pt-2 pb-1 min-w-0">
-      <span class="shrink-0 border <%= comment_kind_chip(anchor.kind) %> text-[11px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full"><%= anchor.kind_label %></span>
+      <span class="shrink-0 border <%= style[:chip] %> text-[11px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full"><%= style[:label] %></span>
       <% if anchor.label.present? %>
         <span class="font-mono text-xs text-gray-500 truncate"><%= anchor.label %></span>
       <% end %>

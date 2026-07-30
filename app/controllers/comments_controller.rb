@@ -4,7 +4,7 @@ class CommentsController < ApplicationController
     @candidate = Candidate.find_by!(name: params[:candidate_name], project: @project)
     @comment = @candidate.comments.new(comment_params)
     @comment.author = Current.user
-    if @comment.parent_id.blank?
+    if @comment.root?
       anchor = CommentAnchor.from_params(anchor_params)
       @comment.assign_attributes(anchor.to_columns)
       @comment.anchor_snapshot = anchor.current_output(@candidate.latest_version) if anchor.line

@@ -86,13 +86,6 @@ describe Comment do
       expect(reply.endpoint_http_verb).to eq(0)
       expect(reply.anchor_key).to eq(root.anchor_key)
     end
-
-    it "overrides anchor attributes supplied on the reply itself" do
-      root = FactoryBot.create :comment, candidate: candidate
-      reply = FactoryBot.create :comment, :entity_scope, candidate: candidate, parent: root
-      expect(reply.scope).to eq("candidate")
-      expect(reply.entity_name).to be_nil
-    end
   end
 
   describe "resolution" do

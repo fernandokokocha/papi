@@ -16,7 +16,7 @@ describe "Resolutions requests", type: :request do
       expect(thread.reload).to be_resolved
       expect(thread.resolved_by).to eq(author)
       expect(response.media_type).to eq("text/vnd.turbo-stream.html")
-      expect(response.body).to include("action=\"replace\" target=\"#{ActionView::RecordIdentifier.dom_id(thread)}\"")
+      expect(turbo_actions).to include([ "replace", ActionView::RecordIdentifier.dom_id(thread) ])
       expect(response.body).to include("Resolved by author@example.com")
       expect(response.body).to include("Reopen")
       expect(response.body).not_to include("Resolve thread")
@@ -46,7 +46,7 @@ describe "Resolutions requests", type: :request do
       delete project_candidate_comment_resolution_path(project.name, candidate.name, thread), as: :turbo_stream
 
       expect(thread.reload).not_to be_resolved
-      expect(response.body).to include("action=\"replace\" target=\"#{ActionView::RecordIdentifier.dom_id(thread)}\"")
+      expect(turbo_actions).to include([ "replace", ActionView::RecordIdentifier.dom_id(thread) ])
       expect(response.body).not_to include("Resolved by")
       expect(response.body).to include("Resolve thread")
       expect(response.body).not_to include("Reopen")

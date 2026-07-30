@@ -24,9 +24,9 @@ class Candidate < ApplicationRecord
   end
 
   def comment_threads_by_anchor
-    comments.includes(:author, replies: :author)
-      .select(&:root?)
-      .sort_by(&:created_at)
+    comments.where(parent_id: nil)
+      .includes(:author, replies: :author)
+      .order(:created_at)
       .group_by(&:anchor_key)
   end
 

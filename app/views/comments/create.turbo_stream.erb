@@ -17,7 +17,7 @@
     <%= render "comments/thread", comment: @comment %>
   <% end %>
   <%= turbo_stream.update "new_comment_form" do %>
-    <%= render "comments/form", candidate: @candidate, parent: nil, anchor: CommentAnchor.new(scope: "candidate", part: "whole") %>
+    <%= render "comments/form", candidate: @candidate, parent: nil, anchor: CommentAnchor.for_candidate %>
   <% end %>
 <% else %>
   <% region_anchor = @comment.anchor.without_line %>

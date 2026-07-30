@@ -1,4 +1,3 @@
-<% anchor = local_assigns[:anchor] || CommentAnchor.new(scope: "candidate", part: "whole") %>
 <%= form_with model: Comment.new, url: project_candidate_comments_path(candidate.project.name, candidate.name), data: { turbo: true } do |form| %>
   <% if parent %>
     <%= form.hidden_field :parent_id, value: parent.id %>

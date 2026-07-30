@@ -68,7 +68,7 @@
     <% end %>
   </div>
   <div id="new_comment_form" class="mt-6">
-    <%= render "comments/form", candidate: @candidate, parent: nil, anchor: CommentAnchor.new(scope: "candidate", part: "whole") %>
+    <%= render "comments/form", candidate: @candidate, parent: nil, anchor: CommentAnchor.for_candidate %>
   </div>
 </section>
 

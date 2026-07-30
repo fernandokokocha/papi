@@ -64,7 +64,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_03_000001) do
   create_table "entities", force: :cascade do |t|
     t.string "name"
     t.integer "version_id", null: false
-    t.string "root"
+    t.string "root", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["version_id", "name"], name: "index_entities_on_version_id_and_name", unique: true

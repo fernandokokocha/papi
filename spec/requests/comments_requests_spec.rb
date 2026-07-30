@@ -92,9 +92,11 @@ describe "Comments requests", type: :request do
            headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
       expect(response.media_type).to eq("text/vnd.turbo-stream.html")
-      expect(response.body).to include('action="append" target="candidate_comment_threads"')
-      expect(response.body).to include('action="remove" target="no_comments_message"')
-      expect(response.body).to include('action="update" target="new_comment_form"')
+      expect(turbo_actions).to include(
+        [ "append", "candidate_comment_threads" ],
+        [ "remove", "no_comments_message" ],
+        [ "update", "new_comment_form" ]
+      )
       expect(response.body).to include("First!")
 
       textarea_contents = response.body.scan(%r{<textarea[^>]*>([\s\S]*?)</textarea>}).flatten
@@ -110,8 +112,10 @@ describe "Comments requests", type: :request do
            headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
       expect(response.media_type).to eq("text/vnd.turbo-stream.html")
-      expect(response.body).to include(%(action="append" target="replies_comment_#{root.id}"))
-      expect(response.body).to include(%(action="update" target="reply_form_comment_#{root.id}"))
+      expect(turbo_actions).to include(
+        [ "append", "replies_comment_#{root.id}" ],
+        [ "update", "reply_form_comment_#{root.id}" ]
+      )
       expect(response.body).to include("Agreed.")
     end
 
@@ -123,7 +127,7 @@ describe "Comments requests", type: :request do
              params: { comment: { body: "One more thing", parent_id: root.id } }, as: :turbo_stream
 
         expect(root.reload).not_to be_resolved
-        expect(response.body).to include("action=\"replace\" target=\"#{ActionView::RecordIdentifier.dom_id(root)}\"")
+        expect(turbo_actions).to include([ "replace", ActionView::RecordIdentifier.dom_id(root) ])
         expect(response.body).to include("One more thing")
         expect(response.body).not_to include("Resolved by")
       end
@@ -134,7 +138,7 @@ describe "Comments requests", type: :request do
         post project_candidate_comments_path(project.name, candidate.name),
              params: { comment: { body: "A reply", parent_id: root.id } }, as: :turbo_stream
 
-        expect(response.body).to include("action=\"append\" target=\"#{ActionView::RecordIdentifier.dom_id(root, :replies)}\"")
+        expect(turbo_actions).to include([ "append", ActionView::RecordIdentifier.dom_id(root, :replies) ])
       end
     end
 
@@ -169,8 +173,10 @@ describe "Comments requests", type: :request do
 
       dom_id = Comment.last.anchor.dom_id
       expect(response.media_type).to eq("text/vnd.turbo-stream.html")
-      expect(response.body).to include("action=\"append\" target=\"#{dom_id}\"")
-      expect(response.body).to include("target=\"#{dom_id}_form\"")
+      expect(turbo_actions).to include(
+        [ "append", dom_id ],
+        [ "replace", "#{dom_id}_form" ]
+      )
     end
 
     it "live-updates the endpoint sidebar count when an anchored root is posted" do
@@ -180,7 +186,7 @@ describe "Comments requests", type: :request do
            as: :turbo_stream
 
       sidebar_id = "sidebar_count_#{CommentAnchor.new(scope: "endpoint", part: "whole", endpoint_path: "/users", endpoint_http_verb: 0).dom_id}"
-      expect(response.body).to include("action=\"update\" target=\"#{sidebar_id}\"")
+      expect(turbo_actions).to include([ "update", sidebar_id ])
       expect(response.body).to include("💬 1")
     end
 
@@ -219,13 +225,12 @@ describe "Comments requests", type: :request do
         expect(Comment.last.anchor_snapshot).to eq("{id:number,email:string}")
       end
 
-      it "rejects a line comment whose target does not exist" do
+      it "raises on a line comment whose target does not exist" do
         sign_in(user)
         bad = { comment: line_params[:comment].merge(response_code: "404") }
         expect {
           post project_candidate_comments_path(project.name, candidate.name), params: bad
-        }.not_to change(Comment, :count)
-        expect(flash[:alert]).to eq("Comment could not be posted.")
+        }.to raise_error(NoMethodError)
       end
 
       it "streams the thread inline after its row when the block was expanded" do
@@ -236,12 +241,12 @@ describe "Comments requests", type: :request do
         region = CommentAnchor.new(scope: "response", part: "output",
                                    endpoint_path: "/users", endpoint_http_verb: 0, response_code: "200")
         expect(response.media_type).to eq("text/vnd.turbo-stream.html")
-        expect(response.body).to include('action="after"')
-        expect(response.body).to include("data-line-pick=&quot;#{region.dom_id}&quot;")
-        expect(response.body).to include("data-line-index=&quot;4&quot;")
+        expect(turbo_actions).to include(
+          [ "after", %([data-line-pick="#{region.dom_id}"] [data-line-index="4"]) ],
+          [ "remove", "#{region.dom_id}_form" ],
+          [ "update", "#{region.dom_id}_form_home" ]
+        )
         expect(response.body).to include(">Inlined<")
-        expect(response.body).to include("action=\"remove\" target=\"#{region.dom_id}_form\"")
-        expect(response.body).to include("action=\"update\" target=\"#{region.dom_id}_form_home\"")
       end
 
       it "streams the thread into the below-block container when the block was collapsed" do
@@ -251,11 +256,13 @@ describe "Comments requests", type: :request do
 
         region = CommentAnchor.new(scope: "response", part: "output",
                                    endpoint_path: "/users", endpoint_http_verb: 0, response_code: "200")
-        expect(response.body).to include("action=\"append\" target=\"#{region.dom_id}_line_threads\"")
+        expect(turbo_actions).to include(
+          [ "append", "#{region.dom_id}_line_threads" ],
+          [ "remove", "#{region.dom_id}_form" ],
+          [ "update", "#{region.dom_id}_form_home" ]
+        )
         expect(response.body).to include(">Collapsed<")
-        expect(response.body).to include("action=\"remove\" target=\"#{region.dom_id}_form\"")
-        expect(response.body).to include("action=\"update\" target=\"#{region.dom_id}_form_home\"")
-        expect(response.body).not_to include('action="after"')
+        expect(turbo_actions.map(&:first)).not_to include("after")
       end
     end
   end

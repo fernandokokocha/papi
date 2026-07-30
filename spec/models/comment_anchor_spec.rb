@@ -130,6 +130,37 @@ describe CommentAnchor do
     end
   end
 
+  describe "#kind" do
+    it "names the coarse kind, preferring line over part over scope" do
+      # the scope names it
+      expect(anchor(scope: "candidate", part: "whole", line: nil,
+                    endpoint_path: nil, endpoint_http_verb: nil,
+                    entity_name: nil, response_code: nil).kind).to eq(:conversation)
+      expect(anchor(scope: "endpoint", part: "whole", line: nil,
+                    endpoint_path: "/users", endpoint_http_verb: 0,
+                    entity_name: nil, response_code: nil).kind).to eq(:endpoint)
+      expect(anchor(scope: "entity", part: "whole", line: nil,
+                    endpoint_path: nil, endpoint_http_verb: nil,
+                    entity_name: "User", response_code: nil).kind).to eq(:entity)
+      expect(anchor(scope: "response", part: "whole", line: nil,
+                    endpoint_path: "/users", endpoint_http_verb: 0,
+                    entity_name: nil, response_code: "200").kind).to eq(:response)
+
+      # a note part beats the scope
+      expect(anchor(scope: "endpoint", part: "note", line: nil,
+                    endpoint_path: "/users", endpoint_http_verb: 0,
+                    entity_name: nil, response_code: nil).kind).to eq(:note)
+
+      # a line beats both
+      expect(anchor(scope: "endpoint", part: "note", line: 3,
+                    endpoint_path: "/users", endpoint_http_verb: 0,
+                    entity_name: nil, response_code: nil).kind).to eq(:line)
+      expect(anchor(scope: "entity", part: "root", line: 0,
+                    endpoint_path: nil, endpoint_http_verb: nil,
+                    entity_name: "User", response_code: nil).kind).to eq(:line)
+    end
+  end
+
   describe "#without_line" do
     it "keeps the identity and drops the line" do
       with_line = anchor(scope: "response", part: "output", endpoint_path: "/users",
@@ -157,9 +188,27 @@ describe CommentAnchor do
       expect(a.current_output(version)).to eq("{id:number}")
     end
 
-    it "is nil when the target does not exist in the version" do
-      a = anchor(scope: "response", part: "output", endpoint_path: "/users", endpoint_http_verb: 0, response_code: "404")
-      expect(a.current_output(version)).to be_nil
+    it "raises when the target is missing — nothing validates that an anchor's target exists" do
+      # the response is missing
+      expect {
+        anchor(scope: "response", part: "output", line: nil,
+               endpoint_path: "/users", endpoint_http_verb: 0,
+               entity_name: nil, response_code: "404").current_output(version)
+      }.to raise_error(NoMethodError)
+
+      # the endpoint is missing
+      expect {
+        anchor(scope: "response", part: "output", line: nil,
+               endpoint_path: "/nope", endpoint_http_verb: 0,
+               entity_name: nil, response_code: "200").current_output(version)
+      }.to raise_error(NoMethodError)
+
+      # the entity is missing
+      expect {
+        anchor(scope: "entity", part: "root", line: nil,
+               endpoint_path: nil, endpoint_http_verb: nil,
+               entity_name: "Nope", response_code: nil).current_output(version)
+      }.to raise_error(NoMethodError)
     end
   end
 end
