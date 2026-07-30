@@ -1,4 +1,4 @@
-<% if @candidate || threads.any? %>
+<% if @candidate %>
   <div class="anchor-strip <%= local_assigns[:wrapper_class] %> flex flex-col gap-2"
        data-controller="anchor-highlight"
        data-anchor-highlight-region-value="<%= anchor.dom_id %>">

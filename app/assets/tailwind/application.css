@@ -10,8 +10,8 @@ body {
 /* Sidebar collapse animation: folds horizontally (width 14rem → 0) and clips
    its content, rather than fading — so it never reveals the card behind it. */
 .sidebar-collapsed {
-  width: 0 !important;
-  margin-right: 0 !important;
+  width: 0;
+  margin-right: 0;
   overflow: hidden;
   pointer-events: none;
 }
@@ -42,11 +42,10 @@ body {
 }
 
 /* Sidebar link for the current card. Soft sky pill; keeps the link's own
-   annotation color (added/removed/changed) so it doesn't fight those hues.
-   !important overrides the per-annotation tint backgrounds. */
+   annotation color (added/removed/changed) so it doesn't fight those hues. */
 .sidebar-link-active {
-  background-color: var(--color-sky-100) !important;
-  font-weight: 600 !important;
+  background-color: var(--color-sky-100);
+  font-weight: 600;
 }
 
 /* ── Spec display styles (shared between old and v2 design) ── */
@@ -250,12 +249,12 @@ select:has(option[value="array"]:checked)   { background: yellow; }
   filter: drop-shadow(0 2px 3px rgba(16, 24, 40, 0.35));
 }
 body.commenting .comment-pin { display: block; }
-body.commenting, body.commenting * { cursor: none !important; }
+body.commenting, body.commenting * { cursor: none; }
 /* threads, the open compose, and the toolbar stay normally interactive */
-body.commenting .anchor-strip, body.commenting .anchor-strip * { cursor: auto !important; }
-body.commenting [data-comment-toolbar], body.commenting [data-comment-toolbar] * { cursor: auto !important; }
-body.commenting [data-comment-exempt], body.commenting [data-comment-exempt] * { cursor: auto !important; }
-body.commenting .anchor-strip textarea, body.commenting [data-comment-exempt] textarea { cursor: text !important; }
+body.commenting .anchor-strip, body.commenting .anchor-strip * { cursor: auto; }
+body.commenting [data-comment-toolbar], body.commenting [data-comment-toolbar] * { cursor: auto; }
+body.commenting [data-comment-exempt], body.commenting [data-comment-exempt] * { cursor: auto; }
+body.commenting .anchor-strip textarea, body.commenting [data-comment-exempt] textarea { cursor: text; }
 /* in comment mode, in-card controls don't fire — a click means "comment here" */
 body.commenting [data-action*="endpoint#"] { pointer-events: none; }
 

@@ -1,19 +1,8 @@
 import { Controller } from "@hotwired/stimulus"
+import { isExempt } from "helpers/commentTargets"
 
-// Figma-style comment mode for the candidate page. Toggled from the toolbar
-// (or the "C" key). While on: the cursor becomes a 💬 pin, hovering a
-// [data-comment-region] target outlines it (.anchor-highlight), and clicking
-// opens that target's anchored compose form (#<dom_id>_form). Rows inside a
-// [data-line-pick] tree are finer-grained targets: clicking one opens the
-// block's line compose form (#<pick dom_id>_form) fed the row's canonical
-// expanded-tree index; the form opens inline under the picked row when the
-// block is expanded, or below the block when collapsed; the picked row
-// keeps its outline until the form closes or the comment is posted. Stays
-// on until Esc or toggled off.
-// Threads / open compose / toolbar stay interactive; other in-target
-// controls (Copy cURL, Expand) are suppressed.
 export default class extends Controller {
-  static targets = ["button", "pin"]
+  static targets = ["button"]
 
   connect() {
     this.onMove = this.onMove.bind(this)
@@ -79,15 +68,11 @@ export default class extends Controller {
   }
 
   onMove(e) {
-    if (e.target.closest(".anchor-strip") || e.target.closest("[data-comment-toolbar]") || e.target.closest("[data-comment-exempt]") || e.target.closest("[data-comment-form]")) {
-      this.pinTarget.style.opacity = "0"
+    if (isExempt(e.target)) {
       this.clearHighlight()
       this.hoverRow(null)
       return
     }
-    this.pinTarget.style.opacity = "1"
-    this.pinTarget.style.left = e.clientX + "px"
-    this.pinTarget.style.top = e.clientY + "px"
     const row = this.pickableRow(e.target)
     this.hoverRow(row)
     this.highlight(row ? null : e.target.closest("[data-comment-region]"))
@@ -102,7 +87,7 @@ export default class extends Controller {
       }
       return
     }
-    if (e.target.closest("[data-comment-toolbar]") || e.target.closest(".anchor-strip") || e.target.closest("[data-comment-exempt]") || e.target.closest("[data-comment-form]")) return
+    if (isExempt(e.target)) return
     const row = this.pickableRow(e.target)
     if (row) {
       e.preventDefault()

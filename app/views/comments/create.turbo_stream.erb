@@ -46,6 +46,6 @@
   <% end %>
   <% sidebar_anchor = CommentAnchor.sidebar_for(@comment) %>
   <%= turbo_stream.update sidebar_count_dom_id(sidebar_anchor) do %>
-    <%= comment_count_badge(comment_sidebar_count(sidebar_anchor)) %>
+    <%= render "comments/count_badge", count: candidate_comments.sidebar_count(sidebar_anchor) %>
   <% end %>
 <% end %>

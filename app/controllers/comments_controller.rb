@@ -12,7 +12,6 @@ class CommentsController < ApplicationController
     authorize @comment
 
     if @comment.save
-      @comment_threads_by_anchor = @candidate.comment_threads_by_anchor
       respond_to do |format|
         format.turbo_stream
         format.html { redirect_to project_candidate_path(@project.name, @candidate.name) }

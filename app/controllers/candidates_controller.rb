@@ -8,8 +8,6 @@ class CandidatesController < ApplicationController
 
     @categorized_endpoints = Version::CategorizeByName.new(@previous_version.endpoints, @version.endpoints).call
     @categorized_entities = Version::CategorizeByName.new(@previous_version.entities, @version.entities).call
-
-    @comment_threads_by_anchor = @candidate.comment_threads_by_anchor
   end
 
   def new
@@ -24,6 +22,8 @@ class CandidatesController < ApplicationController
     @candidate.created_at = Time.zone.now
     @candidate.updated_at = Time.zone.now
     @candidate.base_version = @project.latest_version
+    @categorized_endpoints = []
+    @categorized_entities = []
 
     @version = @candidate.base_version.amoeba_dup
     @version.order = 1
@@ -57,8 +57,6 @@ class CandidatesController < ApplicationController
 
     @categorized_endpoints = Version::CategorizeByName.new(@previous_version.endpoints, @version.endpoints).call
     @categorized_entities = Version::CategorizeByName.new(@previous_version.entities, @version.entities).call
-
-    @comment_threads_by_anchor = @candidate.comment_threads_by_anchor
   end
 
   def update
