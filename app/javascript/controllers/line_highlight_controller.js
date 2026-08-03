@@ -7,8 +7,12 @@ export default class extends Controller {
   off() { this.row()?.classList.remove("anchor-highlight") }
 
   row() {
-    return document.querySelector(
-      `[data-line-pick="${this.pickValue}"] [data-line-index="${this.lineValue}"]`
-    )
+    const rows = document.querySelectorAll(`[data-line-pick="${this.pickValue}"] [data-line-index]`)
+    let containing = null
+    for (const row of rows) {
+      if (Number(row.getAttribute("data-line-index")) > this.lineValue) break
+      containing = row
+    }
+    return containing
   }
 }
