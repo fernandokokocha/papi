@@ -6,4 +6,8 @@ class CommentPolicy < ApplicationPolicy
   def resolve?
     @user == @record.candidate.author
   end
+
+  def reopen?
+    @user == @record.candidate.author
+  end
 end

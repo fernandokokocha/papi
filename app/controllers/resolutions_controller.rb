@@ -8,7 +8,7 @@ class ResolutionsController < ApplicationController
   end
 
   def destroy
-    authorize @comment, :resolve?
+    authorize @comment, :reopen?
     @comment.update(resolved_at: nil, resolved_by: nil)
     respond_with_thread
   end

@@ -51,5 +51,11 @@ describe "Resolutions requests", type: :request do
       expect(response.body).to include("Resolve thread")
       expect(response.body).not_to include("Reopen")
     end
+
+    it "forbids a non-author" do
+      sign_in(other)
+      delete project_candidate_comment_resolution_path(project.name, candidate.name, thread)
+      expect(thread.reload).to be_resolved
+    end
   end
 end
