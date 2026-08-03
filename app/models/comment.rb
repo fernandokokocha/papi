@@ -8,7 +8,6 @@ class Comment < ApplicationRecord
   ANCHOR_ATTRIBUTES = %w[scope part line endpoint_path endpoint_http_verb entity_name response_code anchor_snapshot].freeze
 
   before_validation :inherit_parent_anchor, if: :parent
-  after_create :reopen_parent, if: :reply?
 
   validates :body, presence: true
   validates :anchor_snapshot, presence: true, if: :line
@@ -27,10 +26,6 @@ class Comment < ApplicationRecord
 
   def resolved?
     resolved_at.present?
-  end
-
-  def reopened_parent?
-    @reopened_parent == true
   end
 
   def by_candidate_author?
@@ -72,11 +67,5 @@ class Comment < ApplicationRecord
   def reply_not_resolved
     return unless reply?
     errors.add(:resolved_at, "cannot be set on a reply") if resolved_at.present? || resolved_by_id.present?
-  end
-
-  def reopen_parent
-    return unless parent&.resolved?
-    parent.update_columns(resolved_at: nil, resolved_by_id: nil)
-    @reopened_parent = true
   end
 end

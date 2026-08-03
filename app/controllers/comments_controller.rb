@@ -12,6 +12,7 @@ class CommentsController < ApplicationController
     authorize @comment
 
     if @comment.save
+      @reopened_parent = @comment.reply? && Comment::Reopen.new(@comment.parent).call
       respond_to do |format|
         format.turbo_stream
         format.html { redirect_to project_candidate_path(@project.name, @candidate.name) }

@@ -1,5 +1,5 @@
 <% if @comment.reply? %>
-  <% if @comment.reopened_parent? %>
+  <% if @reopened_parent %>
     <%= turbo_stream.replace dom_id(@comment.parent) do %>
       <%= render "comments/thread", comment: @comment.parent, line_badge: line_badge_param %>
     <% end %>
