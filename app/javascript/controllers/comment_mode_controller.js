@@ -1,10 +1,12 @@
 import { Controller } from "@hotwired/stimulus"
 import { isExempt } from "helpers/commentTargets"
+import { LinePicker } from "helpers/linePicker"
 
 export default class extends Controller {
   static targets = ["button"]
 
   connect() {
+    this.picker = new LinePicker()
     this.onMove = this.onMove.bind(this)
     this.onClick = this.onClick.bind(this)
     this.onKey = this.onKey.bind(this)
@@ -17,7 +19,7 @@ export default class extends Controller {
 
   disconnect() {
     this.deactivate()
-    this.clearPick()
+    this.picker.clear()
     document.removeEventListener("keydown", this.onKey)
     document.removeEventListener("turbo:submit-end", this.onSubmitEnd)
     window.removeEventListener("comments:hide", this.onCommentsHide)
@@ -40,9 +42,9 @@ export default class extends Controller {
     document.body.classList.remove("commenting")
     this.buttonTarget.setAttribute("aria-pressed", "false")
     this.clearHighlight()
-    this.hoverRow(null)
+    this.picker.hover(null)
     // A pick backing an open composer survives leaving comment mode.
-    if (!this.pickedForm || this.pickedForm.hidden) this.clearPick()
+    if (!this.picker.form || this.picker.form.hidden) this.picker.clear()
     document.removeEventListener("mousemove", this.onMove)
     document.removeEventListener("click", this.onClick, true)
   }
@@ -52,7 +54,7 @@ export default class extends Controller {
       const open = e.target.closest && e.target.closest("[data-comment-form]")
       if (open) {
         open.hidden = true
-        if (open === this.pickedForm) this.clearPick()
+        if (open === this.picker.form) this.picker.clear()
         this.buttonTarget.focus()
         return
       }
@@ -70,11 +72,11 @@ export default class extends Controller {
   onMove(e) {
     if (isExempt(e.target)) {
       this.clearHighlight()
-      this.hoverRow(null)
+      this.picker.hover(null)
       return
     }
-    const row = this.pickableRow(e.target)
-    this.hoverRow(row)
+    const row = LinePicker.rowIn(e.target)
+    this.picker.hover(row)
     this.highlight(row ? null : e.target.closest("[data-comment-region]"))
   }
 
@@ -83,16 +85,17 @@ export default class extends Controller {
       const f = e.target.closest("[data-comment-form]")
       if (f) {
         f.hidden = true
-        if (f === this.pickedForm) this.clearPick()
+        if (f === this.picker.form) this.picker.clear()
       }
       return
     }
     if (isExempt(e.target)) return
-    const row = this.pickableRow(e.target)
+    const row = LinePicker.rowIn(e.target)
     if (row) {
       e.preventDefault()
       e.stopPropagation()
-      this.pick(row)
+      const form = this.picker.pick(row)
+      if (form) this.showForm(form)
       return
     }
     const t = e.target.closest("[data-comment-region]")
@@ -103,53 +106,13 @@ export default class extends Controller {
   }
 
   onSubmitEnd(e) {
-    if (!this.pickedForm || !e.detail.success) return
-    if (e.target.closest && e.target.closest("[data-comment-form]") === this.pickedForm) this.clearPick()
-  }
-
-  pickableRow(target) {
-    const row = target.closest && target.closest("[data-line-index]")
-    return row && row.closest("[data-line-pick]") ? row : null
-  }
-
-  pick(row) {
-    const block = row.closest("[data-line-pick]")
-    const form = document.getElementById(block.getAttribute("data-line-pick") + "_form")
-    if (!form) return
-    this.clearPick()
-    this.picked = row
-    this.pickedForm = form
-    row.classList.add("line-picked")
-    const line = row.getAttribute("data-line-index")
-    form.querySelector("input[name='comment[line]']").value = line
-    form.querySelector("[data-pick-label]").textContent = "📌 " + block.getAttribute("data-line-pick-label") + " · line " + line
-    if (form.querySelector("input[name='expanded']").value === "true") {
-      row.after(form)
-      form.classList.add("my-1", "ml-4", "font-sans")
-    } else {
-      const home = document.getElementById(form.id + "_home")
-      if (home && form.parentElement !== home) home.appendChild(form)
-      form.classList.remove("my-1", "ml-4", "font-sans")
-    }
-    this.showForm(form)
-  }
-
-  clearPick() {
-    if (this.picked) this.picked.classList.remove("line-picked")
-    this.picked = null
-    this.pickedForm = null
-  }
-
-  hoverRow(row) {
-    if (this.hovered === row) return
-    if (this.hovered) this.hovered.classList.remove("line-pick-highlight")
-    this.hovered = row
-    if (row) row.classList.add("line-pick-highlight")
+    if (!this.picker.form || !e.detail.success) return
+    if (e.target.closest && e.target.closest("[data-comment-form]") === this.picker.form) this.picker.clear()
   }
 
   openCompose(domId) {
     this.clearHighlight()
-    this.clearPick()
+    this.picker.clear()
     const form = document.getElementById(domId + "_form")
     if (form) this.showForm(form)
   }
