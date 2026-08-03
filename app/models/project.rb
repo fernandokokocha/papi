@@ -14,7 +14,7 @@ class Project < ApplicationRecord
   end
 
   def history
-    candidates.includes(:author, :decided_by, :versions, :comments).order(order: :desc)
+    @history ||= candidates.includes(:author, :decided_by, :versions, :comments).order(order: :desc)
   end
 
   Event = Struct.new(:at, :actor, :verb, :candidate, :version, keyword_init: true)
