@@ -19,9 +19,9 @@
       <div class="flex items-center gap-2 px-3 py-2 <%= "border-t border-gray-200" if show_ref %>">
         <button type="button" data-action="resolved-thread#toggle"
                 class="flex items-center gap-2 text-left flex-1 cursor-pointer"
-                title="Resolved by <%= comment.resolved_by&.email_address %> at <%= comment.resolved_at.strftime("%Y-%m-%d %H:%M") %>">
+                title="Resolved by <%= comment.resolved_by.email_address %> at <%= comment.resolved_at.strftime("%Y-%m-%d %H:%M") %>">
           <span class="text-emerald-600">✓</span>
-          <span class="text-sm text-gray-600">Resolved by <%= comment.resolved_by&.email_address %> · <%= pluralize(comment.replies.size + 1, "comment") %></span>
+          <span class="text-sm text-gray-600">Resolved by <%= comment.resolved_by.email_address %> · <%= pluralize(comment.replies.size + 1, "comment") %></span>
         </button>
         <% if !read_only && policy(comment).resolve? %>
           <%= button_to "Reopen", project_candidate_comment_resolution_path(comment.candidate.project.name, comment.candidate.name, comment),
