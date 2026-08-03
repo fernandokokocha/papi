@@ -17,7 +17,8 @@
       <div class="flex items-center justify-between mb-6">
         <div class="flex items-center gap-4">
           <h2 class="text-lg font-semibold text-gray-900"><%= project.name %></h2>
-          <% if (latest = project.versions.order({ order: "DESC" }).first) %>
+          <% latest = project.latest_version %>
+          <% if latest.persisted? %>
             <%= link_to latest.name, project_version_path(name: latest.name, project_name: project.name), class: "text-sm font-semibold text-sky-700 underline underline-offset-2 hover:text-sky-900" %>
           <% end %>
         </div>

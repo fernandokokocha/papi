@@ -12,7 +12,8 @@ class Version < ApplicationRecord
     self.new(
       project: project,
       name: "",
-      order: -1
+      order: -1,
+      created_at: NullTime.new
     )
   end
 

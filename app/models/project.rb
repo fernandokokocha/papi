@@ -6,7 +6,7 @@ class Project < ApplicationRecord
   validates :name, uniqueness: { scope: :group_id }
 
   def latest_version
-    versions.order(order: :desc).first || null_version
+    versions.order(order: :desc).first || Version.null_version(self)
   end
 
   def latest_candidate
@@ -28,10 +28,6 @@ class Project < ApplicationRecord
       end
       list
     end.sort_by(&:at).reverse
-  end
-
-  def null_version
-    Version.new(project: self, name: "", order: 0, created_at: NullTime.new)
   end
 
   def null_candidate
