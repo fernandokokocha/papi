@@ -1,53 +1,48 @@
 require "digest/md5"
 
 class CommentAnchor
-  # One row per scope: which parts are legal, and which identity columns pin it down.
-  RULES = {
-    "candidate" => { parts: %w[whole],             identity: %i[] },
-    "endpoint"  => { parts: %w[whole note],        identity: %i[endpoint_path endpoint_http_verb] },
-    "entity"    => { parts: %w[whole root],        identity: %i[entity_name] },
-    "response"  => { parts: %w[whole note output], identity: %i[endpoint_path endpoint_http_verb response_code] }
-  }.freeze
-
   IDENTITY_COLUMNS = %i[endpoint_path endpoint_http_verb entity_name response_code].freeze
   LINE_PARTS = %w[note output root].freeze
-  private_constant :RULES, :IDENTITY_COLUMNS, :LINE_PARTS
+  private_constant :IDENTITY_COLUMNS, :LINE_PARTS
 
   def self.parts_for(scope)
-    RULES.fetch(scope)[:parts]
+    CommentTarget.parts_for(scope)
   end
 
-  attr_reader :scope, :part, :line,
-              :endpoint_path, :endpoint_http_verb, :entity_name, :response_code
+  attr_reader :target, :part, :line
 
   def initialize(scope:, part:, line: nil,
                  endpoint_path: nil, endpoint_http_verb: nil,
                  entity_name: nil, response_code: nil)
+    @identity = { endpoint_path: endpoint_path, endpoint_http_verb: endpoint_http_verb,
+                  entity_name: entity_name, response_code: response_code }
     @scope = scope
+    @target = CommentTarget.build(scope, @identity)
     @part = part
     @line = line
-    @endpoint_path = endpoint_path
-    @endpoint_http_verb = endpoint_http_verb
-    @entity_name = entity_name
-    @response_code = response_code
   end
+
+  def scope = @scope
+  def endpoint_path = @identity[:endpoint_path]
+  def endpoint_http_verb = @identity[:endpoint_http_verb]
+  def entity_name = @identity[:entity_name]
+  def response_code = @identity[:response_code]
 
   def key
     [ scope, endpoint_path, endpoint_http_verb, entity_name, response_code, part, line ]
   end
 
   def errors
-    rule = RULES[scope]
-    return [ [ :scope, "is not a valid scope" ] ] unless rule
+    return [ [ :scope, "is not a valid scope" ] ] unless target
 
     result = []
-    result << [ :part, "is not valid for scope #{scope}" ] unless rule[:parts].include?(part)
+    result << [ :part, "is not valid for scope #{scope}" ] unless target.parts.include?(part)
 
-    rule[:identity].each do |col|
-      result << [ col, "is required for scope #{scope}" ] if public_send(col).blank?
+    target.required.each do |column|
+      result << [ column, "is required for scope #{scope}" ] if @identity[column].blank?
     end
-    (IDENTITY_COLUMNS - rule[:identity]).each do |col|
-      result << [ col, "must be blank for scope #{scope}" ] if public_send(col).present?
+    (IDENTITY_COLUMNS - target.required).each do |column|
+      result << [ column, "must be blank for scope #{scope}" ] if @identity[column].present?
     end
 
     result << [ :line, "requires a text part" ] if line.present? && !LINE_PARTS.include?(part)
@@ -114,11 +109,8 @@ class CommentAnchor
 
   def current_output(version)
     case part
-    when "output"
-      version.endpoints.find_by(path: endpoint_path, http_verb: endpoint_http_verb)
-        .responses.find_by(code: response_code).output
-    when "root"
-      version.entities.find_by(name: entity_name).root
+    when "output" then target.record(version).output
+    when "root"   then target.record(version).root
     end
   end
 
@@ -127,11 +119,8 @@ class CommentAnchor
   end
 
   def label
-    segments = []
-    segments << "#{verb_word} #{endpoint_path}" if endpoint_path
-    segments << entity_name if entity_name
-    segments << response_code if response_code
-    segments << part unless part == "whole"
+    segments = target.label_segments
+    segments += [ part ] unless part == "whole"
     head = segments.join(" → ")
     line ? "#{head} · line #{line}" : head
   end
@@ -145,12 +134,5 @@ class CommentAnchor
     when "response" then :response
     else :conversation
     end
-  end
-
-  private
-
-  def verb_word
-    key = Endpoint.http_verbs.key(endpoint_http_verb)
-    key && Endpoint::VERB_TRANSLATIONS[key.to_sym]
   end
 end

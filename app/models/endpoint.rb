@@ -18,6 +18,11 @@ class Endpoint < ApplicationRecord
 
   accepts_nested_attributes_for :responses
 
+  def self.verb_word(http_verb)
+    key = http_verbs.key(http_verb)
+    key && VERB_TRANSLATIONS[key.to_sym]
+  end
+
   def verb
     VERB_TRANSLATIONS[http_verb.to_sym]
   end
