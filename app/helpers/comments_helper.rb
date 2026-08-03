@@ -97,6 +97,6 @@ module CommentsHelper
   end
 
   def line_badge_param
-    %w[inlined collapsed outdated].include?(params[:line_badge]) ? params[:line_badge].to_sym : nil
+    params[:line_badge]&.to_sym
   end
 end
