@@ -33,22 +33,30 @@ module CommentsHelper
     return nil unless @candidate
     after = endpoint.responses.find { |r| r.code == code }
     return nil unless after
-    return :identity if expanded
 
     before = previous_endpoint&.responses&.find { |r| r.code == code }
-    if before
-      collapsed = Diff::FromValues.new(before.parsed_output, after.parsed_output).after
-      expanded_lines = Diff::FromValues.new(before.parsed_output.expand, after.parsed_output.expand).after
-    else
-      collapsed = after.parsed_output.to_diff(:added)
-      expanded_lines = after.parsed_output.expand.to_diff(:added)
-    end
-    Diff::CollapsedToExpandedMap.new(collapsed, expanded_lines).to_a
+    after_value = expanded ? after.parsed_output.expand : after.parsed_output
+    lines =
+      if before
+        before_value = expanded ? before.parsed_output.expand : before.parsed_output
+        Diff::FromValues.new(before_value, after_value).after
+      else
+        after_value.to_diff(:added)
+      end
+    ExpandedLineIndex.new(lines, endpoint.version.entities).to_a
   end
 
-  # Entity roots don't reference entities, so their trees render expanded as-is.
-  def entity_line_index_map
-    @candidate ? :identity : nil
+  def entity_line_index_map(entity)
+    return nil unless @candidate
+    return nil if entity.annotation == "removed"
+
+    lines =
+      if entity.previous
+        Diff::FromValues.new(entity.previous.parsed_root, entity.parsed_root).after
+      else
+        entity.parsed_root.to_diff(:no_change)
+      end
+    ExpandedLineIndex.new(lines, entity.version.entities).to_a
   end
 
   def response_line_pick_attr(endpoint, code, map)
@@ -61,9 +69,9 @@ module CommentsHelper
     line_pick_attributes(CommentAnchor.for_entity_root(entity))
   end
 
-  def line_index_attr(map, index, diff_line)
-    return "".html_safe if map.nil? || diff_line.change == :blank
-    expanded_index = map == :identity ? index : map[index]
+  def line_index_attr(map, index)
+    return "".html_safe if map.nil?
+    expanded_index = map[index]
     return "".html_safe if expanded_index.nil?
     tag.attributes("data-line-index": expanded_index)
   end

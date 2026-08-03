@@ -13,6 +13,10 @@ class Entity < ApplicationRecord
     parser.parse_value(root)
   end
 
+  def to_lines
+    parsed_root.to_diff(:no_change).lines
+  end
+
   def sort_name
     name
   end
