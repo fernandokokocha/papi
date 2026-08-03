@@ -17,8 +17,8 @@ describe CandidateComments do
       expect(none.sidebar_count(CommentAnchor.for_endpoint(endpoint))).to eq(0)
       expect(none.card_for_endpoint(endpoint)).to eq(whole: [], lines: [])
       expect(none.card_for_entity(entity)).to eq(whole: [], lines: [])
-      expect(none.response_output_lines(endpoint, "200")).to eq([])
-      expect(none.entity_root_lines(entity)).to eq([])
+      expect(none.response_output_lines(endpoint, "200")).to eq(described_class::LineComments.new(fresh: [], outdated: []))
+      expect(none.entity_root_lines(entity)).to eq(described_class::LineComments.new(fresh: [], outdated: []))
     end
   end
 
@@ -88,14 +88,38 @@ describe CandidateComments do
   end
 
   describe "line readers" do
-    it "returns line-anchored threads for one response or entity root, ordered by line" do
-      second = FactoryBot.create(:comment, :response_scope, candidate: candidate, part: "output", line: 5, anchor_snapshot: "x")
-      first = FactoryBot.create(:comment, :response_scope, candidate: candidate, part: "output", line: 2, anchor_snapshot: "x")
-      entity_line = FactoryBot.create(:comment, :entity_scope, candidate: candidate, part: "root", line: 0, anchor_snapshot: "x")
+    it "splits line-anchored threads into fresh and outdated, ordered by line" do
+      FactoryBot.create(:response, endpoint: endpoint, code: "200", output: "{id:number}")
+      entity.update!(root: "{name:string}")
 
-      expect(comments.response_output_lines(endpoint, "200")).to eq([ first, second ])
-      expect(comments.response_output_lines(endpoint, "404")).to eq([])
-      expect(comments.entity_root_lines(entity)).to eq([ entity_line ])
+      second = FactoryBot.create(:comment, :response_scope, candidate: candidate, part: "output", line: 5, anchor_snapshot: "{id:number}")
+      first = FactoryBot.create(:comment, :response_scope, candidate: candidate, part: "output", line: 2, anchor_snapshot: "{id:number}")
+      stale = FactoryBot.create(:comment, :response_scope, candidate: candidate, part: "output", line: 3, anchor_snapshot: "{id:number,legacy:string}")
+      entity_line = FactoryBot.create(:comment, :entity_scope, candidate: candidate, part: "root", line: 0, anchor_snapshot: "{name:string}")
+      entity_stale = FactoryBot.create(:comment, :entity_scope, candidate: candidate, part: "root", line: 1, anchor_snapshot: "{name:string,legacy:string}")
+
+      response_lines = comments.response_output_lines(endpoint, "200")
+      entity_lines = comments.entity_root_lines(entity)
+
+      # a snapshot matching the current text is fresh, ordered by line
+      expect(response_lines.fresh).to eq([ first, second ])
+      expect(entity_lines.fresh).to eq([ entity_line ])
+
+      # anything else outdated, whatever the text changed to
+      expect(response_lines.outdated).to eq([ stale ])
+      expect(entity_lines.outdated).to eq([ entity_stale ])
+
+      # fresh threads indexed by line for inline rendering
+      expect(response_lines.by_line).to eq(2 => [ first ], 5 => [ second ])
+
+      # identity has to match
+      expect(comments.response_output_lines(endpoint, "404").fresh).to eq([])
+    end
+
+    it "treats every thread as outdated when the anchored text is gone" do
+      orphan = FactoryBot.create(:comment, :response_scope, candidate: candidate, part: "output", line: 2, anchor_snapshot: "{id:number}")
+
+      expect(comments.response_output_lines(endpoint, "200").outdated).to eq([ orphan ])
     end
   end
 end

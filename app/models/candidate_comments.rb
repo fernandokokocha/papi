@@ -1,6 +1,12 @@
 class CandidateComments
   EMPTY_CARD = { whole: [], lines: [] }.freeze
 
+  LineComments = Data.define(:fresh, :outdated) do
+    def by_line
+      fresh.group_by(&:line)
+    end
+  end
+
   def self.for(candidate)
     return new([]) unless candidate
 
@@ -37,14 +43,20 @@ class CandidateComments
   end
 
   def response_output_lines(endpoint, response_code)
-    @response_lines.fetch([ *endpoint_key(endpoint), response_code ], [])
+    current_output = endpoint.responses.find { |r| r.code == response_code }&.output
+    by_freshness(@response_lines.fetch([ *endpoint_key(endpoint), response_code ], []), current_output)
   end
 
   def entity_root_lines(entity)
-    @entity_lines.fetch(entity.name, [])
+    by_freshness(@entity_lines.fetch(entity.name, []), entity.root)
   end
 
   private
+
+  def by_freshness(comments, current_text)
+    fresh, outdated = comments.partition { |comment| comment.anchor_snapshot == current_text }
+    LineComments.new(fresh: fresh, outdated: outdated)
+  end
 
   def index(comment)
     (@by_anchor[comment.anchor_key] ||= []) << comment

@@ -87,7 +87,7 @@ describe "Endpoints requests", type: :request do
       expect(response.body).to include('data-line-index="2"')   # identity indices on the expanded tree
 
       get project_endpoint_path(project.name, endpoint.id, candidate: candidate.name, expanded: "false")
-      expect(response.body).to include('data-line-index="0"')   # the collapsed "User" row, canonical index 0
+      expect(response.body).to include('data-line-index="0"')   # the collapsed "User" row, expanded index 0
       expect(response.body).not_to include('data-line-index="1"')
 
       get project_endpoint_path(project.name, endpoint.id)

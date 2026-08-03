@@ -1,6 +1,6 @@
 require "rails_helper"
 
-describe Diff::LineIndexMap, type: :model do
+describe Diff::CollapsedToExpandedMap, type: :model do
   let(:version) { Version.new }
   let(:user_entity) { Entity.new(name: "User", root: "{id:number,email:string,name:string}", version: version) }
   let(:parser) { JSONSchemaParser.new([ user_entity ]) }
