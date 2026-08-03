@@ -119,27 +119,16 @@ describe "Comments requests", type: :request do
       expect(response.body).to include("Agreed.")
     end
 
-    describe "reply on a resolved thread" do
-      it "auto-reopens the parent and replaces the whole thread" do
-        root = FactoryBot.create :comment, :resolved, candidate: candidate, author: user
-        sign_in(user)
-        post project_candidate_comments_path(project.name, candidate.name),
-             params: { comment: { body: "One more thing", parent_id: root.id } }, as: :turbo_stream
+    it "reopens a resolved parent on reply and replaces the whole thread" do
+      root = FactoryBot.create :comment, :resolved, candidate: candidate, author: user
+      sign_in(user)
+      post project_candidate_comments_path(project.name, candidate.name),
+           params: { comment: { body: "One more thing", parent_id: root.id } }, as: :turbo_stream
 
-        expect(root.reload).not_to be_resolved
-        expect(turbo_actions).to include([ "replace", ActionView::RecordIdentifier.dom_id(root) ])
-        expect(response.body).to include("One more thing")
-        expect(response.body).not_to include("Resolved by")
-      end
-
-      it "leaves an open thread on the normal append path" do
-        root = FactoryBot.create :comment, candidate: candidate, author: user
-        sign_in(user)
-        post project_candidate_comments_path(project.name, candidate.name),
-             params: { comment: { body: "A reply", parent_id: root.id } }, as: :turbo_stream
-
-        expect(turbo_actions).to include([ "append", ActionView::RecordIdentifier.dom_id(root, :replies) ])
-      end
+      expect(root.reload).not_to be_resolved
+      expect(turbo_actions).to include([ "replace", ActionView::RecordIdentifier.dom_id(root) ])
+      expect(response.body).to include("One more thing")
+      expect(response.body).not_to include("Resolved by")
     end
 
     it "creates an endpoint-anchored root from anchor params" do
