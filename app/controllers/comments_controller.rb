@@ -2,17 +2,12 @@ class CommentsController < ApplicationController
   def create
     @project = Project.find_by!(name: params[:project_name])
     @candidate = Candidate.find_by!(name: params[:candidate_name], project: @project)
-    @comment = @candidate.comments.new(comment_params)
-    @comment.author = Current.user
-    if @comment.root?
-      anchor = CommentAnchor.from_params(anchor_params)
-      @comment.assign_attributes(anchor.to_columns)
-      @comment.anchor_snapshot = anchor.current_output(@candidate.latest_version) if anchor.line
-    end
+    service = Comment::Create.new(@candidate, comment_params, anchor_params)
+    @comment = service.comment
     authorize @comment
 
-    if @comment.save
-      @reopened_parent = @comment.reply? && Comment::Reopen.new(@comment.parent).call
+    if service.call
+      @reopened_parent = service.reopened_parent
       respond_to do |format|
         format.turbo_stream
         format.html { redirect_to project_candidate_path(@project.name, @candidate.name) }

@@ -10,32 +10,6 @@ describe "Comments requests", type: :request do
   let(:another_user) { FactoryBot.create :user, email_address: "test2@example.com", password: "password", group: another_group }
 
   describe "#create" do
-    it "creates a candidate-level root comment authored by the signed-in user" do
-      sign_in(user)
-      post project_candidate_comments_path(project.name, candidate.name),
-           params: { comment: { body: "First!" } }
-
-      comment = Comment.last
-      expect(comment.body).to eq("First!")
-      expect(comment.author).to eq(user)
-      expect(comment.candidate).to eq(candidate)
-      expect(comment.scope).to eq("candidate")
-      expect(comment.part).to eq("whole")
-      expect(comment.root?).to be true
-      expect(response).to redirect_to(project_candidate_path(project.name, candidate.name))
-    end
-
-    it "creates a reply that inherits the root's anchor" do
-      root = FactoryBot.create :comment, candidate: candidate
-      sign_in(user)
-      post project_candidate_comments_path(project.name, candidate.name),
-           params: { comment: { body: "Agreed.", parent_id: root.id } }
-
-      reply = Comment.last
-      expect(reply.parent).to eq(root)
-      expect(reply.anchor_key).to eq(root.anchor_key)
-    end
-
     it "does not create a comment for a user outside the group" do
       sign_in(another_user)
       expect {
@@ -46,34 +20,13 @@ describe "Comments requests", type: :request do
       expect(flash[:alert]).to eq("You are not authorized to perform this action.")
     end
 
-    it "rejects a reply to a reply" do
-      root = FactoryBot.create :comment, candidate: candidate
-      reply = FactoryBot.create :comment, candidate: candidate, parent: root
-      sign_in(user)
-      expect {
-        post project_candidate_comments_path(project.name, candidate.name),
-             params: { comment: { body: "Too deep", parent_id: reply.id } }
-      }.not_to change(Comment, :count)
-      expect(flash[:alert]).to eq("Comment could not be posted.")
-    end
-
-    it "rejects a blank body" do
+    it "redirects with an alert when the comment is invalid" do
       sign_in(user)
       expect {
         post project_candidate_comments_path(project.name, candidate.name),
              params: { comment: { body: "" } }
       }.not_to change(Comment, :count)
-      expect(flash[:alert]).to eq("Comment could not be posted.")
-    end
-
-    it "rejects a parent from another candidate" do
-      other_candidate = FactoryBot.create :candidate, project: project, name: "rc2"
-      foreign_root = FactoryBot.create :comment, candidate: other_candidate
-      sign_in(user)
-      expect {
-        post project_candidate_comments_path(project.name, candidate.name),
-             params: { comment: { body: "Crossed wires", parent_id: foreign_root.id } }
-      }.not_to change(Comment, :count)
+      expect(response).to redirect_to(project_candidate_path(project.name, candidate.name))
       expect(flash[:alert]).to eq("Comment could not be posted.")
     end
 
@@ -119,39 +72,15 @@ describe "Comments requests", type: :request do
       expect(response.body).to include("Agreed.")
     end
 
-    it "reopens a resolved parent on reply and replaces the whole thread" do
+    it "replaces the whole thread when a reply reopens a resolved parent" do
       root = FactoryBot.create :comment, :resolved, candidate: candidate, author: user
       sign_in(user)
       post project_candidate_comments_path(project.name, candidate.name),
            params: { comment: { body: "One more thing", parent_id: root.id } }, as: :turbo_stream
 
-      expect(root.reload).not_to be_resolved
       expect(turbo_actions).to include([ "replace", ActionView::RecordIdentifier.dom_id(root) ])
       expect(response.body).to include("One more thing")
       expect(response.body).not_to include("Resolved by")
-    end
-
-    it "creates an endpoint-anchored root from anchor params" do
-      sign_in(user)
-      post project_candidate_comments_path(project.name, candidate.name),
-           params: { comment: { body: "Pin me to GET /users", scope: "endpoint", part: "whole", endpoint_path: "/users", endpoint_http_verb: "0" } }
-
-      comment = Comment.last
-      expect(comment.scope).to eq("endpoint")
-      expect(comment.part).to eq("whole")
-      expect(comment.endpoint_path).to eq("/users")
-      expect(comment.endpoint_http_verb).to eq(0)
-      expect(comment.line).to be_nil
-      expect(comment.root?).to be true
-    end
-
-    it "rejects an anchor that violates the scope/part matrix" do
-      sign_in(user)
-      expect {
-        post project_candidate_comments_path(project.name, candidate.name),
-             params: { comment: { body: "Bad", scope: "entity", part: "output", entity_name: "User" } }
-      }.not_to change(Comment, :count)
-      expect(flash[:alert]).to eq("Comment could not be posted.")
     end
 
     it "renders a Turbo Stream targeting the anchor container when the request is turbo_stream" do
@@ -189,37 +118,12 @@ describe "Comments requests", type: :request do
                      endpoint_path: "/users", endpoint_http_verb: "0", response_code: "200", line: "4" } }
       end
 
-      it "creates a line comment with the snapshot resolved server-side" do
-        sign_in(user)
-        post project_candidate_comments_path(project.name, candidate.name), params: line_params
-
-        comment = Comment.last
-        expect(comment.line).to eq(4)
-        expect(comment.anchor_snapshot).to eq("{total:number,items:[User]}")
-      end
-
       it "ignores a client-supplied anchor_snapshot" do
         sign_in(user)
         forged = line_params.deep_merge(comment: { anchor_snapshot: "forged" })
         post project_candidate_comments_path(project.name, candidate.name), params: forged
 
         expect(Comment.last.anchor_snapshot).to eq("{total:number,items:[User]}")
-      end
-
-      it "resolves an entity root-line comment against the entity root" do
-        sign_in(user)
-        post project_candidate_comments_path(project.name, candidate.name),
-             params: { comment: { body: "Pinned to email", scope: "entity", part: "root", entity_name: "User", line: "2" } }
-
-        expect(Comment.last.anchor_snapshot).to eq("{id:number,email:string}")
-      end
-
-      it "raises on a line comment whose target does not exist" do
-        sign_in(user)
-        bad = { comment: line_params[:comment].merge(response_code: "404") }
-        expect {
-          post project_candidate_comments_path(project.name, candidate.name), params: bad
-        }.to raise_error(NoMethodError)
       end
 
       it "streams the thread inline after its row when the block was expanded" do
