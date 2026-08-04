@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+@~/.claude/bartech-way.md
+
 ## Commands
 - `bundle exec rspec` - Run all tests (the project uses RSpec; `test/` holds only legacy fixtures)
 - `bundle exec rspec spec/path/to/file_spec.rb` - Run a single spec file
