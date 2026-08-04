@@ -12,18 +12,18 @@ class CandidatePolicy < ApplicationPolicy
   end
 
   def edit?
-    @user.group === @record.project.group && @user.admin?
+    @user.group === @record.project.group && @user.admin? && @record.open?
   end
 
   def update?
-    @user.group === @record.project.group && @user.admin?
+    @user.group === @record.project.group && @user.admin? && @record.open?
   end
 
   def merge?
-    @user.group === @record.project.group && @user.admin?
+    @user.group === @record.project.group && @user.admin? && @record.open?
   end
 
   def reject?
-    @user.group === @record.project.group && @user.admin?
+    @user.group === @record.project.group && @user.admin? && @record.open?
   end
 end

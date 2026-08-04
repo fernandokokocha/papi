@@ -74,6 +74,27 @@ describe "Rejections requests", type: :request do
         expect(@candidate.reload).to be_open
         expect(flash[:alert]).to eq('You are not authorized to perform this action.')
       end
+
+      it "does not reject an already rejected candidate again" do
+        sign_in(admin)
+        post project_candidate_rejection_path(project.name, @candidate.name)
+        decided_at = @candidate.reload.decided_at
+
+        post project_candidate_rejection_path(project.name, @candidate.name)
+
+        expect(@candidate.reload.decided_at).to eq(decided_at)
+        expect(flash[:alert]).to eq('You are not authorized to perform this action.')
+      end
+
+      it "does not reject a merged candidate" do
+        sign_in(admin)
+        post project_candidate_merge_path(project.name, @candidate.name)
+
+        post project_candidate_rejection_path(project.name, @candidate.name)
+
+        expect(@candidate.reload).to be_merged
+        expect(flash[:alert]).to eq('You are not authorized to perform this action.')
+      end
     end
   end
 end

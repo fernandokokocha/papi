@@ -189,6 +189,34 @@ describe "Candidates requests", type: :request do
       expect(response).to redirect_to('/')
       expect(flash[:alert]).to eq('You are not authorized to perform this action.')
     end
+
+    it "does not accept a merged candidate" do
+      sign_in(admin)
+      post project_candidates_path(project.name), params: valid_params
+      candidate = Candidate.last
+      candidate.update!(aasm_state: "merged")
+      endpoint_id = Version.last.endpoints.first.id
+
+      patch project_candidate_path(project_name: project.name, name: candidate.name), params: valid_params
+
+      expect(Version.last.endpoints.first.id).to eq(endpoint_id)
+      expect(response).to redirect_to('/')
+      expect(flash[:alert]).to eq('You are not authorized to perform this action.')
+    end
+
+    it "does not accept a rejected candidate" do
+      sign_in(admin)
+      post project_candidates_path(project.name), params: valid_params
+      candidate = Candidate.last
+      candidate.update!(aasm_state: "rejected")
+      endpoint_id = Version.last.endpoints.first.id
+
+      patch project_candidate_path(project_name: project.name, name: candidate.name), params: valid_params
+
+      expect(Version.last.endpoints.first.id).to eq(endpoint_id)
+      expect(response).to redirect_to('/')
+      expect(flash[:alert]).to eq('You are not authorized to perform this action.')
+    end
   end
 
   describe "#edit" do
@@ -235,6 +263,28 @@ describe "Candidates requests", type: :request do
 
       sign_in(another_user)
       get edit_project_candidate_path(project.name, candidate.name)
+
+      expect(response).to redirect_to('/')
+      expect(flash[:alert]).to eq('You are not authorized to perform this action.')
+    end
+
+    it "does not accept a merged candidate" do
+      merged = FactoryBot.create(:candidate, name: "rc10", project: project, aasm_state: "merged")
+      FactoryBot.create(:version, project: project, candidate: merged, name: "v1", order: 1)
+
+      sign_in(admin)
+      get edit_project_candidate_path(project.name, merged.name)
+
+      expect(response).to redirect_to('/')
+      expect(flash[:alert]).to eq('You are not authorized to perform this action.')
+    end
+
+    it "does not accept a rejected candidate" do
+      rejected = FactoryBot.create(:candidate, name: "rc11", project: project, aasm_state: "rejected")
+      FactoryBot.create(:version, project: project, candidate: rejected, name: "v1", order: 1)
+
+      sign_in(admin)
+      get edit_project_candidate_path(project.name, rejected.name)
 
       expect(response).to redirect_to('/')
       expect(flash[:alert]).to eq('You are not authorized to perform this action.')
