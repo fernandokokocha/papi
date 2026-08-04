@@ -164,11 +164,28 @@ describe "Candidates requests", type: :request do
       expect(response).to redirect_to(project_candidate_path(project.name, "rc1"))
     end
 
-    it "does not create a version if user outside group" do
-      sign_in(another_user)
+    it "does not accept if regular user from the group" do
+      sign_in(admin)
       post project_candidates_path(project.name), params: valid_params
-      expect(Version.count).to eq(0)
-      expect(response.status).to eq(302)
+      candidate_name = Candidate.last.name
+      endpoint_id = Version.last.endpoints.first.id
+
+      sign_in(user)
+      patch project_candidate_path(project_name: project.name, name: candidate_name), params: valid_params
+      expect(Version.last.endpoints.first.id).to eq(endpoint_id)
+      expect(response).to redirect_to('/')
+      expect(flash[:alert]).to eq('You are not authorized to perform this action.')
+    end
+
+    it "does not accept if user from outside the group" do
+      sign_in(admin)
+      post project_candidates_path(project.name), params: valid_params
+      candidate_name = Candidate.last.name
+      endpoint_id = Version.last.endpoints.first.id
+
+      sign_in(another_user)
+      patch project_candidate_path(project_name: project.name, name: candidate_name), params: valid_params
+      expect(Version.last.endpoints.first.id).to eq(endpoint_id)
       expect(response).to redirect_to('/')
       expect(flash[:alert]).to eq('You are not authorized to perform this action.')
     end
@@ -201,6 +218,26 @@ describe "Candidates requests", type: :request do
       get edit_project_candidate_path(project.name, candidate.name)
 
       expect(CGI.unescapeHTML(response.body)).to include(%({"endpoints":{},"entities":{}}))
+    end
+
+    it "does not accept if regular user from the group" do
+      FactoryBot.create(:version, project: project, candidate: candidate, name: "v1", order: 1)
+
+      sign_in(user)
+      get edit_project_candidate_path(project.name, candidate.name)
+
+      expect(response).to redirect_to('/')
+      expect(flash[:alert]).to eq('You are not authorized to perform this action.')
+    end
+
+    it "does not accept if user from outside the group" do
+      FactoryBot.create(:version, project: project, candidate: candidate, name: "v1", order: 1)
+
+      sign_in(another_user)
+      get edit_project_candidate_path(project.name, candidate.name)
+
+      expect(response).to redirect_to('/')
+      expect(flash[:alert]).to eq('You are not authorized to perform this action.')
     end
   end
 
