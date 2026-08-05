@@ -31,10 +31,7 @@ class Node::Object
   end
 
   def ==(other)
-    children_match = object_attributes.zip(other.object_attributes).all? do |attr1, attr2|
-      attr1 == attr2
-    end
-    (self.class == other.class) && children_match
+    (self.class == other.class) && (object_attributes == other.object_attributes)
   end
 
   def expand
