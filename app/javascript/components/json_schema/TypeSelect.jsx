@@ -1,9 +1,13 @@
 import React from 'react'
 
-const TypeSelect = ({value, onChange, onDelete, path, canBeDeleted, canBeNothing, entities}) => {
-    let types = ["string", "number", "boolean", "object", "array"]
+const TypeSelect = ({value, onChange, onDelete, path, canBeDeleted, canBeNothing, entities, excludeTypes = []}) => {
+    let types = ["string", "number", "boolean", "object", "array", "oneOf"]
     if (canBeNothing) types.unshift("nothing")
-    const custom_types = entities.filter((e) => (e.type !== 'removed')).map((e) => e.name);
+    types = types.filter((type) => !excludeTypes.includes(type))
+    const custom_types = entities
+        .filter((e) => (e.type !== 'removed'))
+        .map((e) => e.name)
+        .filter((name) => !excludeTypes.includes(name));
 
     return (
         <>

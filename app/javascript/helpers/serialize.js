@@ -14,6 +14,10 @@ const serialize = (root) => {
         return `{${root.attributes.map(a => `${a.name}:${serialize(a.value)}`).join(",")}}`
     }
 
+    if (root.nodeType === "oneOf") {
+        return `(${root.branches.map(branch => serialize(branch)).join("|")})`
+    }
+
     if (root.nodeType === "custom") {
         return root.value;
     }

@@ -4,6 +4,17 @@ import serialize from "@/helpers/serialize.js";
 import deserialize from "@/helpers/deserialize.js";
 import findByPath from "@/helpers/findByPath.js";
 
+const PRIMITIVE_KINDS = ["string", "number", "boolean"]
+const SCALAR_TYPES = ["nothing", ...PRIMITIVE_KINDS]
+
+const unusedBranch = (branches) => {
+    const taken = branches.filter(b => b.nodeType === "primitive").map(b => b.value)
+    const kind = PRIMITIVE_KINDS.find(k => !taken.includes(k))
+
+    if (kind) return {nodeType: "primitive", value: kind}
+    return {nodeType: "object", attributes: []}
+}
+
 const JSONSchemaForm = ({root, name, update, id, entities}) => {
     const serializedRoot = serialize(root);
 
@@ -15,7 +26,11 @@ const JSONSchemaForm = ({root, name, update, id, entities}) => {
         let newRoot = JSON.parse(JSON.stringify(root));
         const parent = findByPath(newRoot, parentPath);
 
-        parent.attributes = parent.attributes.filter(attr => attr.name !== lastElement)
+        if (typeof lastElement === "number") {
+            parent.branches = parent.branches.filter((_, index) => index !== lastElement)
+        } else {
+            parent.attributes = parent.attributes.filter(attr => attr.name !== lastElement)
+        }
 
         update(newRoot)
     }
@@ -26,7 +41,11 @@ const JSONSchemaForm = ({root, name, update, id, entities}) => {
         let newRoot = JSON.parse(JSON.stringify(root));
         const current = findByPath(newRoot, path);
 
-        current.attributes.push({name, value: {nodeType: "primitive", value: "string"}})
+        if (current.nodeType === "oneOf") {
+            current.branches.push(unusedBranch(current.branches))
+        } else {
+            current.attributes.push({name, value: {nodeType: "primitive", value: "string"}})
+        }
 
         update(newRoot)
     }
@@ -46,7 +65,13 @@ const JSONSchemaForm = ({root, name, update, id, entities}) => {
                 nodeType: "primitive",
                 value: "string"
             }
-        } else if (["array", "string", "boolean"].includes(e.target.value)) {
+        } else if (e.target.value === "oneOf") {
+            current.nodeType = "oneOf";
+            current.branches = [
+                {nodeType: "primitive", value: "string"},
+                {nodeType: "primitive", value: "number"}
+            ]
+        } else if (SCALAR_TYPES.includes(e.target.value)) {
             current.nodeType = "primitive";
             current.value = e.target.value;
         } else {

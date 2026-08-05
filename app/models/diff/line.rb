@@ -5,7 +5,7 @@ class Diff::Line
     @whole_line = whole_line
     @change = change
     @indent = indent
-    @is_opening = %w({ [).include?(whole_line)
+    @is_opening = [ "{", "[", "(" ].include?(whole_line)
 
     infer_type
   end

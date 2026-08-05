@@ -1,4 +1,7 @@
 class JSONSchemaParser
+  OPENING_BRACKETS = [ "{", "[", "(" ].freeze
+  CLOSING_BRACKETS = [ "}", "]", ")" ].freeze
+
   def initialize(valid_entities = [])
     @valid_entities = valid_entities
   end
@@ -18,6 +21,8 @@ class JSONSchemaParser
       parse_object(value)
     elsif value[0] == "["
       parse_array(value)
+    elsif value[0] == "("
+      parse_one_of(value)
     else
       parse_entity(value)
     end
@@ -39,6 +44,30 @@ class JSONSchemaParser
     inside = parse_value(new_str)
     root.value = inside
     root
+  end
+
+  def parse_one_of(str)
+    Node::OneOf.new(branches: split_by_pipe(str[1...-1]).map { |branch| parse_value(branch) })
+  end
+
+  def split_by_pipe(str)
+    ret = []
+    deep = 0
+    tmp = ""
+
+    str.chars.each do |char|
+      if char == "|" && deep.zero?
+        ret << tmp
+        tmp = ""
+      else
+        deep += 1 if OPENING_BRACKETS.include?(char)
+        deep -= 1 if CLOSING_BRACKETS.include?(char)
+        tmp += char
+      end
+    end
+
+    ret << tmp
+    ret
   end
 
   def parse_entity(value)

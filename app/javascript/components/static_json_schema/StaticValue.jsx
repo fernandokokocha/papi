@@ -2,6 +2,7 @@ import React from 'react'
 import StaticPrimitiveNode from "@/components/static_json_schema/StaticPrimitiveNode.jsx";
 import StaticObjectNode from "@/components/static_json_schema/StaticObjectNode.jsx";
 import StaticArrayNode from "@/components/static_json_schema/StaticArrayNode.jsx";
+import StaticOneOfNode from "@/components/static_json_schema/StaticOneOfNode.jsx";
 import StaticEntityNode from "@/components/static_json_schema/StaticEntityNode.jsx";
 
 const StaticValue = ({root}) => {
@@ -11,6 +12,10 @@ const StaticValue = ({root}) => {
 
     if (root.nodeType === "array") {
         return <StaticArrayNode value={root.value}/>
+    }
+
+    if (root.nodeType === "oneOf") {
+        return <StaticOneOfNode branches={root.branches}/>
     }
 
     if (root.nodeType === "primitive") {

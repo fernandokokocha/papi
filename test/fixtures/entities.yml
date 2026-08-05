@@ -137,4 +137,4 @@ p1v4_invite:
 p1v4_audit_log:
   name: AuditLog
   version: project1v4
-  root: "{id:number,action:string,actor_id:number,created_at:string}"
+  root: "{id:number,action:string,actor_id:(number|string),created_at:string}"

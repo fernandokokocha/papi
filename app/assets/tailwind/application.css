@@ -104,6 +104,7 @@ select:has(option[value="number"]:checked)  { background: lawngreen; }
 select:has(option[value="boolean"]:checked) { background: cornflowerblue; }
 select:has(option[value="object"]:checked)  { background: sandybrown; }
 select:has(option[value="array"]:checked)   { background: yellow; }
+select:has(option[value="oneOf"]:checked)   { background: aquamarine; }
 
 /* Custom entity types fall through the built-in cases above, so default the
    editor's type <select> to violet — matching the static `span.custom` token.
@@ -122,6 +123,11 @@ select:has(option[value="array"]:checked)   { background: yellow; }
 }
 
 .json-schema .array .array-value {
+    margin-left: 20px;
+}
+
+.json-schema .one-of .one-of-branch,
+.json-schema .one-of .one-of-new-branch {
     margin-left: 20px;
 }
 
@@ -208,7 +214,8 @@ select:has(option[value="array"]:checked)   { background: yellow; }
   border-color: var(--color-sky-500);
   box-shadow: 0 0 0 2px var(--color-sky-200);
 }
-.json-schema .new-attribute-add {
+.json-schema .new-attribute-add,
+.json-schema .new-branch-add {
   width: 18px;
   height: 18px;
   display: inline-flex;
@@ -223,7 +230,8 @@ select:has(option[value="array"]:checked)   { background: yellow; }
   border-radius: 4px;
   cursor: pointer;
 }
-.json-schema .new-attribute-add:hover { background: var(--color-sky-700); }
+.json-schema .new-attribute-add:hover,
+.json-schema .new-branch-add:hover { background: var(--color-sky-700); }
 .json-schema .new-attribute-add:disabled {
   background: var(--color-gray-300);
   cursor: not-allowed;

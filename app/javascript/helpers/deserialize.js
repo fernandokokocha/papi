@@ -42,6 +42,25 @@ const splitByComma = (str) => {
     return ret;
 }
 
+const splitByPipe = (str) => {
+    const ret = []
+    let deep = 0
+    let tmp = ""
+    for (let i = 0; i < str.length; i++) {
+        if (str[i] === "|" && deep === 0) {
+            ret.push(tmp)
+            tmp = ""
+        } else {
+            if ("{[(".includes(str[i])) deep += 1
+            if ("}])".includes(str[i])) deep -= 1
+            tmp += str[i]
+        }
+    }
+    ret.push(tmp)
+
+    return ret;
+}
+
 const deserialize = (root) => {
     root = root.trim()
 
@@ -66,6 +85,14 @@ const deserialize = (root) => {
         return {
             nodeType: "array",
             value: deserialize(newRoot)
+        }
+    }
+
+    if (root[0] === "(") {
+        const inside = trimEdgesAndWhitespace(root)
+        return {
+            nodeType: "oneOf",
+            branches: splitByPipe(inside).map(branch => deserialize(branch))
         }
     }
 

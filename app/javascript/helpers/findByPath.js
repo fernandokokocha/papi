@@ -5,6 +5,8 @@ const findByPath = (root, path) => {
         const next = pathCopy.shift()
         if (next === null) {
             current = current.value
+        } else if (typeof next === "number") {
+            current = current.branches[next]
         } else {
             current = current.attributes.find(a => a.name === next).value
         }
