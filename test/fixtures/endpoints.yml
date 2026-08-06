@@ -1,410 +1,404 @@
-# http_verb: 0=GET, 1=POST, 2=PUT, 3=PATCH, 4=DELETE
-
-# ===== v1: initial User API =====
+# ===== v1 =====
 p1v1_users_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /users
   version: project1v1
   note: "List all users"
 p1v1_users_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /users
   version: project1v1
   note: "Create a new user"
 p1v1_users_get:
-  http_verb: 0
+  http_verb: verb_get
   path: /users/me
   version: project1v1
   note: "Get the current user"
 p1v1_users_delete:
-  http_verb: 4
+  http_verb: verb_delete
   path: /users/me
   version: project1v1
   note: "Delete the current user"
 p1v1_sessions_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /sessions
   version: project1v1
   note: "Log in with email and password"
 
-# ===== v2: pagination + editing + logout =====
+# ===== v2 =====
 p1v2_users_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /users
   version: project1v2
   note: "List users with pagination"
 p1v2_users_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /users
   version: project1v2
   note: "Create a new user"
 p1v2_users_get:
-  http_verb: 0
+  http_verb: verb_get
   path: /users/me
   version: project1v2
   note: "Get the current user"
 p1v2_users_update:
-  http_verb: 3
+  http_verb: verb_patch
   path: /users/me
   version: project1v2
   note: "Update the current user's fields"
 p1v2_users_delete:
-  http_verb: 4
+  http_verb: verb_delete
   path: /users/me
   version: project1v2
   note: "Delete the current user"
 p1v2_sessions_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /sessions
   version: project1v2
   note: "Log in with email and password"
 p1v2_sessions_delete:
-  http_verb: 4
+  http_verb: verb_delete
   path: /sessions
   version: project1v2
   note: "Log out the current session"
 
-# ===== v3: purely additive — Tasks feature =====
+# ===== v3 =====
 p1v3_users_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /users
   version: project1v3
   note: "List users with pagination"
 p1v3_users_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /users
   version: project1v3
   note: "Create a new user"
 p1v3_users_get:
-  http_verb: 0
+  http_verb: verb_get
   path: /users/me
   version: project1v3
   note: "Get the current user"
 p1v3_users_update:
-  http_verb: 3
+  http_verb: verb_patch
   path: /users/me
   version: project1v3
   note: "Update the current user's fields"
 p1v3_users_delete:
-  http_verb: 4
+  http_verb: verb_delete
   path: /users/me
   version: project1v3
   note: "Delete the current user"
 p1v3_sessions_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /sessions
   version: project1v3
   note: "Log in with email and password"
 p1v3_sessions_delete:
-  http_verb: 4
+  http_verb: verb_delete
   path: /sessions
   version: project1v3
   note: "Log out the current session"
 p1v3_tasks_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /tasks
   version: project1v3
   note: "List tasks with pagination"
 p1v3_tasks_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /tasks
   version: project1v3
   note: "Create a new task"
 p1v3_tasks_get:
-  http_verb: 0
+  http_verb: verb_get
   path: /tasks/next
   version: project1v3
   note: "Get the next pending task"
 
-# ===== v4: entity refactors + removal + completion endpoint =====
-# DELETE /users/me is removed. User & Task entities change, cascading "changed" into many endpoints.
+# ===== v4 =====
 p1v4_users_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /users
   version: project1v4
   note: "List users with pagination"
 p1v4_users_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /users
   version: project1v4
   note: "Create a new user"
 p1v4_users_get:
-  http_verb: 0
+  http_verb: verb_get
   path: /users/me
   version: project1v4
   note: "Get the current user"
 p1v4_users_update:
-  http_verb: 3
+  http_verb: verb_patch
   path: /users/me
   version: project1v4
   note: "Update the current user's fields"
 p1v4_sessions_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /sessions
   version: project1v4
   note: "Log in with email and password"
 p1v4_sessions_delete:
-  http_verb: 4
+  http_verb: verb_delete
   path: /sessions
   version: project1v4
   note: "Log out the current session"
 p1v4_tasks_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /tasks
   version: project1v4
   note: "List tasks with pagination"
 p1v4_tasks_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /tasks
   version: project1v4
   note: "Create a new task"
 p1v4_tasks_get:
-  http_verb: 0
+  http_verb: verb_get
   path: /tasks/next
   version: project1v4
   note: "Get the next pending task"
 p1v4_tasks_complete:
-  http_verb: 1
+  http_verb: verb_post
   path: /tasks/complete-next
   version: project1v4
   note: "Mark the next pending task as complete"
 
-# ===== bulk fixtures: extra resources so the sidebar overflows the viewport =====
-# Each resource below exists identically in v3 and v4 (so it renders as "unchanged"
-# in v4's diff), giving a long sidebar with a realistic mix of badges.
+# ===== bulk fixtures =====
 
 # --- projects ---
 p1v3_projects_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /projects
   version: project1v3
   note: "List projects with pagination"
 p1v3_projects_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /projects
   version: project1v3
   note: "Create a new project"
 p1v3_projects_active:
-  http_verb: 0
+  http_verb: verb_get
   path: /projects/active
   version: project1v3
   note: "Get the active project"
 p1v4_projects_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /projects
   version: project1v4
   note: "List projects with pagination"
 p1v4_projects_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /projects
   version: project1v4
   note: "Create a new project"
 p1v4_projects_active:
-  http_verb: 0
+  http_verb: verb_get
   path: /projects/active
   version: project1v4
   note: "Get the active project"
 
 # --- comments ---
 p1v3_comments_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /comments
   version: project1v3
   note: "List comments with pagination"
 p1v3_comments_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /comments
   version: project1v3
   note: "Create a new comment"
 p1v3_comments_delete:
-  http_verb: 4
+  http_verb: verb_delete
   path: /comments/last
   version: project1v3
   note: "Delete the most recent comment"
 p1v4_comments_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /comments
   version: project1v4
   note: "List comments with pagination"
 p1v4_comments_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /comments
   version: project1v4
   note: "Create a new comment"
 p1v4_comments_delete:
-  http_verb: 4
+  http_verb: verb_delete
   path: /comments/last
   version: project1v4
   note: "Delete the most recent comment"
 
 # --- notifications ---
 p1v3_notifications_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /notifications
   version: project1v3
   note: "List notifications with pagination"
 p1v3_notifications_read_all:
-  http_verb: 1
+  http_verb: verb_post
   path: /notifications/read-all
   version: project1v3
   note: "Mark all notifications as read"
 p1v4_notifications_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /notifications
   version: project1v4
   note: "List notifications with pagination"
 p1v4_notifications_read_all:
-  http_verb: 1
+  http_verb: verb_post
   path: /notifications/read-all
   version: project1v4
   note: "Mark all notifications as read"
 
 # --- webhooks ---
 p1v3_webhooks_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /webhooks
   version: project1v3
   note: "List all webhooks"
 p1v3_webhooks_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /webhooks
   version: project1v3
   note: "Register a new webhook"
 p1v3_webhooks_delete:
-  http_verb: 4
+  http_verb: verb_delete
   path: /webhooks/last
   version: project1v3
   note: "Delete the most recent webhook"
 p1v4_webhooks_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /webhooks
   version: project1v4
   note: "List all webhooks"
 p1v4_webhooks_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /webhooks
   version: project1v4
   note: "Register a new webhook"
 p1v4_webhooks_delete:
-  http_verb: 4
+  http_verb: verb_delete
   path: /webhooks/last
   version: project1v4
   note: "Delete the most recent webhook"
 
 # --- teams ---
 p1v3_teams_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /teams
   version: project1v3
   note: "List all teams"
 p1v3_teams_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /teams
   version: project1v3
   note: "Create a new team"
 p1v4_teams_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /teams
   version: project1v4
   note: "List all teams"
 p1v4_teams_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /teams
   version: project1v4
   note: "Create a new team"
 
 # --- labels ---
 p1v3_labels_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /labels
   version: project1v3
   note: "List all labels"
 p1v3_labels_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /labels
   version: project1v3
   note: "Create a new label"
 p1v4_labels_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /labels
   version: project1v4
   note: "List all labels"
 p1v4_labels_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /labels
   version: project1v4
   note: "Create a new label"
 
 # --- attachments ---
 p1v3_attachments_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /attachments
   version: project1v3
   note: "List all attachments"
 p1v3_attachments_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /attachments
   version: project1v3
   note: "Upload a new attachment"
 p1v4_attachments_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /attachments
   version: project1v4
   note: "List all attachments"
 p1v4_attachments_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /attachments
   version: project1v4
   note: "Upload a new attachment"
 
 # --- invites ---
 p1v3_invites_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /invites
   version: project1v3
   note: "Send a new invite"
 p1v3_invites_pending:
-  http_verb: 0
+  http_verb: verb_get
   path: /invites/pending
   version: project1v3
   note: "List pending invites"
 p1v4_invites_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /invites
   version: project1v4
   note: "Send a new invite"
 p1v4_invites_pending:
-  http_verb: 0
+  http_verb: verb_get
   path: /invites/pending
   version: project1v4
   note: "List pending invites"
 
-# --- v4-only additions (render as "added") ---
+# --- v4-only additions ---
 p1v4_audit_logs_list:
-  http_verb: 0
+  http_verb: verb_get
   path: /audit-logs
   version: project1v4
   note: "List audit log entries with pagination"
 p1v4_exports_create:
-  http_verb: 1
+  http_verb: verb_post
   path: /exports
   version: project1v4
   note: "Trigger a data export"
 
-# --- empty-body endpoints (no response body: parses to Node::Nothing) ---
-# /ping exists in v3 and v4 (unchanged); /cache is v4-only (added).
+# --- empty-body endpoints ---
 p1v3_ping:
-  http_verb: 1
+  http_verb: verb_post
   path: /ping
   version: project1v3
   note: "Ping the server (no response body)"
 p1v4_ping:
-  http_verb: 1
+  http_verb: verb_post
   path: /ping
   version: project1v4
   note: "Ping the server (no response body)"
 p1v4_cache_clear:
-  http_verb: 4
+  http_verb: verb_delete
   path: /cache
   version: project1v4
   note: "Clear the server cache (no response body)"
