@@ -4,11 +4,39 @@ require "ostruct"
 describe JSONSchemaParser, type: :model do
   subject(:parser) { JSONSchemaParser.new }
 
-  describe "#parse_value" do
+  describe "#parse_response_output" do
     it "parse empty string" do
-      actual = parser.parse_value("")
+      actual = parser.parse_response_output("")
       expected = Node::Nothing.new
       expect(actual).to eq(expected)
+    end
+
+    it "parse a present output like any other value" do
+      actual = parser.parse_response_output("[string]")
+      expected = Node::Array.new(value: Node::Primitive.new(kind: "string"))
+      expect(actual).to eq(expected)
+    end
+  end
+
+  describe "#parse_value" do
+    it "rejects an empty string" do
+      expect { parser.parse_value("") }
+        .to raise_error(RuntimeError, "Empty value: only a whole response output may be empty")
+    end
+
+    it "rejects an empty object attribute" do
+      expect { parser.parse_value("{a:}") }
+        .to raise_error(RuntimeError, "Empty value: only a whole response output may be empty")
+    end
+
+    it "rejects an empty array element" do
+      expect { parser.parse_value("[]") }
+        .to raise_error(RuntimeError, "Empty value: only a whole response output may be empty")
+    end
+
+    it "rejects an empty union branch" do
+      expect { parser.parse_value("(string|)") }
+        .to raise_error(RuntimeError, "Empty value: only a whole response output may be empty")
     end
 
     it "parse {}" do

@@ -73,6 +73,7 @@ const ResponseList = ({
                                 root={r.output}
                                 id={`${endpoint.id}-${r.code}`}
                                 entities={entities}
+                                canBeNothing={true}
                             />
                         </div>
                     </div>

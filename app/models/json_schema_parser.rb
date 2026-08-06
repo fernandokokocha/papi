@@ -6,10 +6,15 @@ class JSONSchemaParser
     @valid_entities = valid_entities
   end
 
-  def parse_value(raw_value)
+  def parse_response_output(raw_value)
     return Node::Nothing.new if raw_value.empty?
 
+    parse_value(raw_value)
+  end
+
+  def parse_value(raw_value)
     value = raw_value.gsub(/\s+/, "")
+    raise RuntimeError.new("Empty value: only a whole response output may be empty") if value.empty?
 
     if value.start_with? "string"
       Node::Primitive.new(kind: "string")
