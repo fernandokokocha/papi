@@ -96,7 +96,7 @@ const deserialize = (root) => {
         }
     }
 
-    if (["string", "boolean", "number"].includes(root)) {
+    if (["string", "boolean", "number", "null"].includes(root)) {
         return {
             nodeType: "primitive",
             value: root

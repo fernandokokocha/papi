@@ -35,7 +35,7 @@ p1v2_sessions_delete_200: { endpoint: p1v2_sessions_delete, code: "200", note: "
 p1v2_sessions_delete_401: { endpoint: p1v2_sessions_delete, code: "401", note: "Authentication required", output: "Error" }
 
 # ===== v3 =====
-p1v3_users_list_200: { endpoint: p1v3_users_list, code: "200", note: "Request succeeded", output: "{total:number,items:[User]}" }
+p1v3_users_list_200: { endpoint: p1v3_users_list, code: "200", note: "Request succeeded", output: "{total:number,items:[User],next_cursor:(string|null)}" }
 p1v3_users_list_403: { endpoint: p1v3_users_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
 p1v3_users_create_201: { endpoint: p1v3_users_create, code: "201", note: "Resource created", output: "User" }
 p1v3_users_create_400: { endpoint: p1v3_users_create, code: "400", note: "Invalid request", output: "Error" }
@@ -65,7 +65,7 @@ p1v3_tasks_get_403: { endpoint: p1v3_tasks_get, code: "403", note: "Not authoriz
 p1v3_tasks_get_404: { endpoint: p1v3_tasks_get, code: "404", note: "Resource not found", output: "Error" }
 
 # ===== v4 =====
-p1v4_users_list_200: { endpoint: p1v4_users_list, code: "200", note: "Request succeeded", output: "{total:number,items:[User]}" }
+p1v4_users_list_200: { endpoint: p1v4_users_list, code: "200", note: "Request succeeded", output: "{total:number,items:[User],next_cursor:(string|null)}" }
 p1v4_users_list_403: { endpoint: p1v4_users_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
 p1v4_users_create_201: { endpoint: p1v4_users_create, code: "201", note: "Resource created", output: "User" }
 p1v4_users_create_400: { endpoint: p1v4_users_create, code: "400", note: "Invalid request", output: "Error" }

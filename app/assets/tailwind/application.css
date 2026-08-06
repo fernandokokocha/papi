@@ -95,6 +95,7 @@ body {
 span.string  { background: red; }
 span.number  { background: lawngreen; }
 span.boolean { background: cornflowerblue; }
+span.null    { background: lightgray; }
 span.object  { background: sandybrown; }
 span.array   { background: yellow; }
 span.custom  { background: violet; }
@@ -102,6 +103,7 @@ span.custom  { background: violet; }
 select:has(option[value="string"]:checked)  { background: red; }
 select:has(option[value="number"]:checked)  { background: lawngreen; }
 select:has(option[value="boolean"]:checked) { background: cornflowerblue; }
+select:has(option[value="null"]:checked)    { background: lightgray; }
 select:has(option[value="object"]:checked)  { background: sandybrown; }
 select:has(option[value="array"]:checked)   { background: yellow; }
 select:has(option[value="oneOf"]:checked)   { background: aquamarine; }

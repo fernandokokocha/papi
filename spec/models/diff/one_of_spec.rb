@@ -94,6 +94,35 @@ describe "OneOf diffs", type: :model do
     end
   end
 
+  context "nullability" do
+    it "reports making a field nullable as a change" do
+      expect(diff("boolean", "(boolean|null)")).to eq(<<~DIFF)
+        ~ boolean                   ~ (
+                                    ~   boolean
+                                    ~   null
+                                    ~ )
+      DIFF
+    end
+
+    it "reports making a field non-nullable as a change" do
+      expect(diff("(boolean|null)", "boolean")).to eq(<<~DIFF)
+        ~ (                         ~ boolean
+        ~   boolean
+        ~   null
+        ~ )
+      DIFF
+    end
+
+    it "reports a type swap under an unchanged null branch" do
+      expect(diff("(string|null)", "(number|null)")).to eq(<<~DIFF)
+        . (                         . (
+        ~   string                  ~   number
+        .   null                    .   null
+        . )                         . )
+      DIFF
+    end
+  end
+
   context "entity branches" do
     it "reports nothing when the entity and its root are unchanged" do
       expect(diff("(Resource|number)", "(Resource|number)")).to eq(<<~DIFF)

@@ -19,6 +19,8 @@ class Node::Primitive
       "0"
     when "boolean"
       "true"
+    when "null"
+      "null"
     end
   end
 

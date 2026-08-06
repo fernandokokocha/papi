@@ -29,6 +29,10 @@ class Diff::Line
       @type = "boolean"
       @class_name = "boolean"
       @pre_type = @whole_line[0..-8]
+    elsif @whole_line.end_with?("null")
+      @type = "null"
+      @class_name = "null"
+      @pre_type = @whole_line[0..-5]
     elsif (custom_name = parse_custom_name(@whole_line))
       @type = custom_name
       @class_name = "custom"

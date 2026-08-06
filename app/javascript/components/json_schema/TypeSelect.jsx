@@ -1,7 +1,7 @@
 import React from 'react'
 
 const TypeSelect = ({value, onChange, onDelete, path, canBeDeleted, canBeNothing, entities, excludeTypes = []}) => {
-    let types = ["string", "number", "boolean", "object", "array", "oneOf"]
+    let types = ["string", "number", "boolean", "null", "object", "array", "oneOf"]
     if (canBeNothing) types.unshift("nothing")
     types = types.filter((type) => !excludeTypes.includes(type))
     const custom_types = entities

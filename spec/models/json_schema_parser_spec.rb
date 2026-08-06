@@ -150,6 +150,13 @@ describe JSONSchemaParser, type: :model do
       expect(actual).to eq(expected)
     end
 
+    it "parse null" do
+      actual = parser.parse_value("null")
+      expected = Node::Primitive.new(kind: "null")
+
+      expect(actual).to eq(expected)
+    end
+
     it "parse entity" do
       expect { parser.parse_value("User") }.to raise_error(RuntimeError, "Unknown value: User")
     end

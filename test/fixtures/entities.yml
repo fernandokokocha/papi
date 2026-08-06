@@ -1,7 +1,4 @@
-# Entity bodies contain only primitives — entities cannot reference other entities.
-# Pagination / composite shapes live inline on endpoint outputs.
-
-# v1 — initial entities
+# ===== v1 =====
 p1v1_error:
   name: Error
   version: project1v1
@@ -9,13 +6,13 @@ p1v1_error:
 p1v1_user:
   name: User
   version: project1v1
-  root: "{id:number,email:string,name:string}"
+  root: "{id:number,email:string,name:(string|null)}"
 p1v1_session:
   name: Session
   version: project1v1
   root: "{token:string,user_id:number,expires_at:string}"
 
-# v2 — identical to v1 (the change in v2 is on endpoints, not entities)
+# ===== v2 =====
 p1v2_error:
   name: Error
   version: project1v2
@@ -23,13 +20,13 @@ p1v2_error:
 p1v2_user:
   name: User
   version: project1v2
-  root: "{id:number,email:string,name:string}"
+  root: "{id:number,email:string,name:(string|null)}"
 p1v2_session:
   name: Session
   version: project1v2
   root: "{token:string,user_id:number,expires_at:string}"
 
-# v3 — everything from v2 unchanged; Task added
+# ===== v3 =====
 p1v3_error:
   name: Error
   version: project1v3
@@ -37,7 +34,7 @@ p1v3_error:
 p1v3_user:
   name: User
   version: project1v3
-  root: "{id:number,email:string,name:string}"
+  root: "{id:number,email:string,name:(string|null)}"
 p1v3_session:
   name: Session
   version: project1v3
@@ -47,7 +44,7 @@ p1v3_task:
   version: project1v3
   root: "{id:number,title:string,done:boolean,created_by_id:number}"
 
-# v4 — User gains avatar_url (CHANGED); Task swaps done→status and created_by_id→assignee_id (CHANGED)
+# ===== v4 =====
 p1v4_error:
   name: Error
   version: project1v4
@@ -55,7 +52,7 @@ p1v4_error:
 p1v4_user:
   name: User
   version: project1v4
-  root: "{id:number,email:string,name:string,avatar_url:string}"
+  root: "{id:number,email:string,name:(string|null),avatar_url:(string|null)}"
 p1v4_session:
   name: Session
   version: project1v4
@@ -63,11 +60,9 @@ p1v4_session:
 p1v4_task:
   name: Task
   version: project1v4
-  root: "{id:number,title:string,status:string,assignee_id:number}"
+  root: "{id:number,title:string,status:string,assignee_id:(number|null)}"
 
-# ===== bulk fixtures: extra entities backing the extra endpoints =====
-# Identical in v3 and v4 (so they render as "unchanged" in v4's diff). Primitives
-# only — entities cannot reference other entities.
+# ===== bulk fixtures =====
 p1v3_project:
   name: Project
   version: project1v3
@@ -107,7 +102,7 @@ p1v4_project:
 p1v4_comment:
   name: Comment
   version: project1v4
-  root: "{id:number,body:string,author_id:number,task_id:number}"
+  root: "{id:number,body:string,author_id:number,task_id:(number|null)}"
 p1v4_notification:
   name: Notification
   version: project1v4
@@ -133,8 +128,7 @@ p1v4_invite:
   version: project1v4
   root: "{id:number,email:string,token:string,accepted:boolean}"
 
-# v4-only entity (renders as "added")
 p1v4_audit_log:
   name: AuditLog
   version: project1v4
-  root: "{id:number,action:string,actor_id:(number|string),created_at:string}"
+  root: "{id:number,action:string,actor_id:(number|string|null),created_at:string}"

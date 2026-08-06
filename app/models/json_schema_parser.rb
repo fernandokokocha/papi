@@ -22,6 +22,8 @@ class JSONSchemaParser
       Node::Primitive.new(kind: "number")
     elsif value.start_with? "boolean"
       Node::Primitive.new(kind: "boolean")
+    elsif value.start_with? "null"
+      Node::Primitive.new(kind: "null")
     elsif value[0] == "{"
       parse_object(value)
     elsif value[0] == "["
