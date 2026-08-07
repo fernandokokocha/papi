@@ -40,6 +40,12 @@ describe Endpoint, "#differs_from?" do
     expect(e2.differs_from?(e1)).to be(true)
   end
 
+  it "differs when a param is renamed" do
+    e1 = FactoryBot.create(:endpoint, version: v1, path: "/user/:id")
+    e2 = FactoryBot.create(:endpoint, version: v2, path: "/user/:user_id")
+    expect(e2.differs_from?(e1)).to be(true)
+  end
+
   it "differs when a param kind changes" do
     e1 = FactoryBot.create(:endpoint, version: v1, path: "/x/:id")
     FactoryBot.create(:endpoint_param, endpoint: e1, name: "id", kind: "string")
@@ -75,6 +81,36 @@ describe Endpoint, "#param_names" do
   it "stops a token at a slash" do
     endpoint = FactoryBot.build(:endpoint, version: version, path: "/post/:postId/revisions")
     expect(endpoint.param_names).to eq([ "postId" ])
+  end
+end
+
+describe Endpoint, "#identity_name" do
+  let!(:group) { Group.create!(name: "g") }
+  let!(:project) { Project.create!(name: "p", group: group) }
+  let!(:version) { FactoryBot.create(:version, project: project, name: "v1") }
+
+  def endpoint(path, verb: "verb_get")
+    FactoryBot.build(:endpoint, version: version, path: path, http_verb: verb)
+  end
+
+  it "erases param names, which are ours rather than the client's" do
+    expect(endpoint("/user/:id").identity_name).to eq(endpoint("/user/:user_id").identity_name)
+  end
+
+  it "keeps paths with different literal segments apart" do
+    expect(endpoint("/user/:id").identity_name).not_to eq(endpoint("/account/:id").identity_name)
+  end
+
+  it "keeps the same path under different verbs apart" do
+    expect(endpoint("/user/:id").identity_name).not_to eq(endpoint("/user/:id", verb: "verb_post").identity_name)
+  end
+
+  it "counts how many params the path takes" do
+    expect(endpoint("/user/:id/post/:postId").identity_name).not_to eq(endpoint("/user/:id/post").identity_name)
+  end
+
+  it "leaves a path with no params alone" do
+    expect(endpoint("/users/me").identity_name).to eq("GET /users/me")
   end
 end
 

@@ -11,6 +11,7 @@ class Endpoint < ApplicationRecord
   }
 
   PARAM_TOKEN = /:([A-Za-z_][A-Za-z0-9_]*)/
+  PARAM_SEGMENT = /\A#{PARAM_TOKEN.source}\z/
 
   enum :http_verb, [ :verb_get, :verb_post, :verb_put, :verb_patch, :verb_delete ]
   belongs_to :version
@@ -31,6 +32,28 @@ class Endpoint < ApplicationRecord
 
   def verb
     VERB_TRANSLATIONS[http_verb.to_sym]
+  end
+
+  # Param names are ours, not the client's: /user/:id and /user/:user_id are one
+  # endpoint. Identity erases the names so a rename reads as a change, not as a
+  # removal plus an addition.
+  def self.identity_path(path)
+    path.gsub(PARAM_TOKEN, ":")
+  end
+
+  def identity_path
+    self.class.identity_path(path)
+  end
+
+  # where() builds a fresh relation, so this never reads a stale association
+  # cache — the identity itself cannot be matched in SQL.
+  def self.find_by_identity(version, path, http_verb)
+    identity = identity_path(path)
+    version.endpoints.where(http_verb: http_verb).find { |endpoint| endpoint.identity_path == identity }
+  end
+
+  def identity_name
+    "#{verb} #{identity_path}"
   end
 
   def name
@@ -61,28 +84,40 @@ class Endpoint < ApplicationRecord
   end
 
   def differs_from?(previous)
-    DiffParams::FromParams.new(previous.path_params, path_params).any_changes? ||
+    previous.path != path ||
+      DiffParams::FromParams.new(previous.path_params, path_params).any_changes? ||
       DiffText::FromNotes.new(previous.note, note).any_changes? ||
       Diff::FromValues.new(previous.parsed_input, parsed_input).any_changes? ||
       DiffResponses::FromResponses.new(previous.responses, responses).any_changes?
   end
 
   def self.from_version_request(request, version)
-    method = request.method
-    http_verb = "verb_#{method.downcase}"
-
-    prefix = %r{^/projects/[^/]+/versions/[^/]+}
-    path = request.path.sub(prefix, "")
-    Endpoint.where(http_verb: http_verb, path: path, version: version)
+    from_request(request, version, %r{^/projects/[^/]+/versions/[^/]+})
   end
 
   def self.from_candidate_request(request, version)
-    method = request.method
-    http_verb = "verb_#{method.downcase}"
+    from_request(request, version, %r{^/projects/[^/]+/candidates/[^/]+})
+  end
 
-    prefix = %r{^/projects/[^/]+/candidates/[^/]+}
-    path = request.path.sub(prefix, "")
-    Endpoint.where(http_verb: http_verb, path: path, version: version)
+  # A literal path wins over a param that would also match it, so /users/me
+  # keeps beating /users/:id.
+  def self.from_request(request, version, prefix)
+    http_verb = "verb_#{request.method.downcase}"
+    requested = request.path.sub(prefix, "")
+    candidates = version.endpoints.where(http_verb: http_verb)
+
+    candidates.find { |endpoint| endpoint.path == requested } ||
+      candidates.find { |endpoint| endpoint.serves?(requested) }
+  end
+
+  def serves?(requested_path)
+    own = path.split("/")
+    given = requested_path.split("/")
+    return false unless own.size == given.size
+
+    own.zip(given).all? do |own_segment, given_segment|
+      own_segment.match?(PARAM_SEGMENT) ? given_segment.present? : own_segment == given_segment
+    end
   end
 
   amoeba do

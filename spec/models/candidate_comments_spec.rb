@@ -8,6 +8,38 @@ describe CandidateComments do
 
   def comments = described_class.for(candidate)
 
+  describe "when a path param is renamed" do
+    let(:renamed) { FactoryBot.create(:endpoint, path: "/users/:user_id", http_verb: "verb_get", input: "{name:string}") }
+
+    def comment_on(path, trait, **attrs)
+      FactoryBot.create(:comment, trait, candidate: candidate, endpoint_path: path, **attrs)
+    end
+
+    it "keeps an endpoint thread attached" do
+      thread = comment_on("/users/:id", :endpoint_scope)
+
+      expect(comments.threads_for("endpoint", endpoint: renamed, part: "whole")).to eq([ thread ])
+    end
+
+    it "keeps the endpoint's comment card" do
+      comment_on("/users/:id", :endpoint_scope)
+
+      expect(comments.card_for_endpoint(renamed)[:whole].size).to eq(1)
+    end
+
+    it "keeps an input line comment attached" do
+      comment_on("/users/:id", :endpoint_input, line: 0, anchor_snapshot: renamed.input)
+
+      expect(comments.endpoint_input_lines(renamed).fresh.size).to eq(1)
+    end
+
+    it "still keeps a different endpoint's comments apart" do
+      comment_on("/tasks/:id", :endpoint_scope)
+
+      expect(comments.threads_for("endpoint", endpoint: renamed, part: "whole")).to eq([])
+    end
+  end
+
   describe "without a candidate" do
     it "answers empty to every reader" do
       FactoryBot.create(:comment, :endpoint_scope, candidate: candidate)

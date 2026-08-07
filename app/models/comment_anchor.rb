@@ -28,8 +28,14 @@ class CommentAnchor
   def entity_name = @identity[:entity_name]
   def response_code = @identity[:response_code]
 
+  # The stored path keeps its param names so labels stay readable; identity
+  # erases them, so renaming :id to :user_id does not orphan the thread.
+  def endpoint_identity_path
+    endpoint_path && Endpoint.identity_path(endpoint_path)
+  end
+
   def key
-    [ scope, endpoint_path, endpoint_http_verb, entity_name, response_code, part, line ]
+    [ scope, endpoint_identity_path, endpoint_http_verb, entity_name, response_code, part, line ]
   end
 
   def errors

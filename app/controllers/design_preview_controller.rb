@@ -65,6 +65,10 @@ class DesignPreviewController < ApplicationController
       "verb_#{verb.downcase}"
     end
 
+    def identity_path
+      Endpoint.identity_path(path)
+    end
+
     def parsed_input(expanded: false)
       value = JSONSchemaParser.new([]).parse_whole_value(input)
       expanded ? value.expand : value

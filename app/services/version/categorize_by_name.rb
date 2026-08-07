@@ -6,7 +6,7 @@ class Version::CategorizeByName
 
   def call
     @collection.each do |e|
-      found = @previous_collection.find { |ne| ne.name == e.name }
+      found = @previous_collection.find { |ne| ne.identity_name == e.identity_name }
       if found
         e.previous = found
         e.annotation = e.differs_from?(found) ? "changed" : "unchanged"
@@ -17,7 +17,7 @@ class Version::CategorizeByName
     end
 
     not_present_in_present = @previous_collection.select do |e|
-      found = @collection.find { |ne| ne.name == e.name }
+      found = @collection.find { |ne| ne.identity_name == e.identity_name }
       not found
     end
 

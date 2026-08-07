@@ -7,6 +7,7 @@ class Version < ApplicationRecord
   accepts_nested_attributes_for :entities
 
   validates :name, uniqueness: { scope: :project_id }
+  validate :endpoints_are_distinct_to_a_client
 
   def self.null_version(project)
     self.new(
@@ -55,5 +56,14 @@ class Version < ApplicationRecord
 
   amoeba do
     enable
+  end
+
+  private
+
+  def endpoints_are_distinct_to_a_client
+    collisions = endpoints.map(&:identity_name).tally.select { |_name, count| count > 1 }.keys
+    return if collisions.empty?
+
+    errors.add(:endpoints, "collide: #{collisions.join(', ')}")
   end
 end
