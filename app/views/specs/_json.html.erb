@@ -4,8 +4,9 @@
 <% else %>
   <% line_index_map = local_assigns[:line_index_map] %>
   <% diff.each.with_index do |diff_line, i| %>
+    <% comment_line = line_index_map ? line_index_map[i] : i %>
     <div class="line <%= diff_line.change %>" <%= line_index_attr(line_index_map, i) %>><%= render_type(diff_line) %></div>
-    <% (comments_by_line[i] || []).each do |comment| %>
+    <% (comments_by_line[comment_line] || []).each do |comment| %>
       <%= render "comments/inline_line_comment", comment: comment %>
     <% end %>
   <% end %>

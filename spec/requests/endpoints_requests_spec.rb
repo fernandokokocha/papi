@@ -110,6 +110,29 @@ describe "Endpoints requests", type: :request do
       expect(response.body).not_to include("Foreign thread body")
     end
 
+    it "renders an inline thread after its own row when a blank row precedes it" do
+      base_candidate = FactoryBot.create(:candidate, name: "rc8", project: project)
+      base_version = FactoryBot.create(:version, project: project, candidate: base_candidate, name: "v1", order: 1)
+      FactoryBot.create(:endpoint, version: base_version, path: "/users", http_verb: "verb_post",
+                                   input: "{a:string,b:string,c:string}")
+      candidate = FactoryBot.create(:candidate, name: "rc9", project: project, base_version: base_version)
+      version = FactoryBot.create(:version, project: project, candidate: candidate, name: "v2", order: 2)
+      endpoint = FactoryBot.create(:endpoint, version: version, path: "/users", http_verb: "verb_post",
+                                              input: "{a:string,c:string}")
+      # dropping b leaves a blank row at raw index 3, so the closing "}" is raw 4 but expanded line 3
+      candidate.comments.create!(author: user, body: "Thread on the closing brace", scope: "endpoint", part: "input",
+                                 endpoint_path: "/users", endpoint_http_verb: 1,
+                                 line: 3, anchor_snapshot: "{a:string,c:string}")
+
+      sign_in(user)
+      get project_endpoint_path(project.name, endpoint.id, candidate: candidate.name)
+
+      brace_row = response.body.index('data-line-index="3"')
+      thread = response.body.index("Thread on the closing brace")
+      expect(brace_row).not_to be_nil
+      expect(thread).to be > brace_row
+    end
+
     it "keeps removed-endpoint threads on candidate-page re-renders" do
       base_candidate = FactoryBot.create(:candidate, name: "rc8", project: project)
       base_version = FactoryBot.create(:version, project: project, candidate: base_candidate, name: "v1", order: 1)
