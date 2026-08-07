@@ -1,5 +1,5 @@
 import React from 'react'
-import StaticResponseList from "@/components/StaticResponseList.jsx";
+import StaticEndpointFields from "@/components/StaticEndpointFields.jsx";
 import VerbBadge from "@/components/VerbBadge.jsx";
 
 const sectionHeader = "bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide"
@@ -17,7 +17,7 @@ const EndpointRemoved = ({endpoint, restore}) => {
                     </div>
                     <div className={sectionHeader}>Note</div>
                     <div className={contentRow}>{endpoint.original_note || <span className="text-gray-400 italic">—</span>}</div>
-                    <StaticResponseList responses={endpoint.original_responses}/>
+                    <StaticEndpointFields input={endpoint.original_input} responses={endpoint.original_responses}/>
                 </div>
             </div>
 

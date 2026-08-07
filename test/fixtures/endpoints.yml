@@ -9,6 +9,7 @@ p1v1_users_create:
   path: /users
   version: project1v1
   note: "Create a new user"
+  input: "{email:string,name:string,password:string}"
 p1v1_users_get:
   http_verb: verb_get
   path: /users/me
@@ -19,11 +20,13 @@ p1v1_users_delete:
   path: /users/me
   version: project1v1
   note: "Delete the current user"
+  input: "{reason:string,confirm:boolean}"
 p1v1_sessions_create:
   http_verb: verb_post
   path: /sessions
   version: project1v1
   note: "Log in with email and password"
+  input: "{email:string,password:string}"
 
 # ===== v2 =====
 p1v2_users_list:
@@ -36,6 +39,7 @@ p1v2_users_create:
   path: /users
   version: project1v2
   note: "Create a new user"
+  input: "{email:string,name:string,password:string}"
 p1v2_users_get:
   http_verb: verb_get
   path: /users/me
@@ -46,16 +50,19 @@ p1v2_users_update:
   path: /users/me
   version: project1v2
   note: "Update the current user's fields"
+  input: "{name:string}"
 p1v2_users_delete:
   http_verb: verb_delete
   path: /users/me
   version: project1v2
   note: "Delete the current user"
+  input: "{reason:string,confirm:boolean}"
 p1v2_sessions_create:
   http_verb: verb_post
   path: /sessions
   version: project1v2
   note: "Log in with email and password"
+  input: "{email:string,password:string}"
 p1v2_sessions_delete:
   http_verb: verb_delete
   path: /sessions
@@ -73,6 +80,7 @@ p1v3_users_create:
   path: /users
   version: project1v3
   note: "Create a new user"
+  input: "{email:string,name:string,password:string}"
 p1v3_users_get:
   http_verb: verb_get
   path: /users/me
@@ -83,16 +91,19 @@ p1v3_users_update:
   path: /users/me
   version: project1v3
   note: "Update the current user's fields"
+  input: "{name:string}"
 p1v3_users_delete:
   http_verb: verb_delete
   path: /users/me
   version: project1v3
   note: "Delete the current user"
+  input: "{reason:string,confirm:boolean}"
 p1v3_sessions_create:
   http_verb: verb_post
   path: /sessions
   version: project1v3
   note: "Log in with email and password"
+  input: "{email:string,password:string}"
 p1v3_sessions_delete:
   http_verb: verb_delete
   path: /sessions
@@ -125,6 +136,7 @@ p1v4_users_create:
   path: /users
   version: project1v4
   note: "Create a new user"
+  input: "{email:string,name:(string|null),password:string,avatar_url:(string|null)}"
 p1v4_users_get:
   http_verb: verb_get
   path: /users/me
@@ -135,11 +147,13 @@ p1v4_users_update:
   path: /users/me
   version: project1v4
   note: "Update the current user's fields"
+  input: "{name:(string|null),avatar_url:(string|null)}"
 p1v4_sessions_create:
   http_verb: verb_post
   path: /sessions
   version: project1v4
   note: "Log in with email and password"
+  input: "{email:string,password:string}"
 p1v4_sessions_delete:
   http_verb: verb_delete
   path: /sessions
@@ -155,6 +169,7 @@ p1v4_tasks_create:
   path: /tasks
   version: project1v4
   note: "Create a new task"
+  input: "{title:string,assignee_id:(number|null)}"
 p1v4_tasks_get:
   http_verb: verb_get
   path: /tasks/next
@@ -243,6 +258,7 @@ p1v3_notifications_read_all:
   path: /notifications/read-all
   version: project1v3
   note: "Mark all notifications as read"
+  input: "{ids:[number]}"
 p1v4_notifications_list:
   http_verb: verb_get
   path: /notifications
@@ -297,6 +313,7 @@ p1v3_teams_create:
   path: /teams
   version: project1v3
   note: "Create a new team"
+  input: "{team:Team,member_ids:[number]}"
 p1v4_teams_list:
   http_verb: verb_get
   path: /teams
@@ -307,6 +324,7 @@ p1v4_teams_create:
   path: /teams
   version: project1v4
   note: "Create a new team"
+  input: "{team:Team,member_ids:[number]}"
 
 # --- labels ---
 p1v3_labels_list:
@@ -385,6 +403,7 @@ p1v4_exports_create:
   path: /exports
   version: project1v4
   note: "Trigger a data export"
+  input: "{format:string,include_archived:boolean}"
 
 # --- empty-body endpoints ---
 p1v3_ping:

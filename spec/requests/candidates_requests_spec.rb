@@ -24,6 +24,7 @@ describe "Candidates requests", type: :request do
         endpoints_attributes: [
           { path: "/",
             http_verb: "verb_get",
+            input: "",
             responses: { "200" => { note: "ok", output: "User" } }
           }
         ],
@@ -345,6 +346,7 @@ describe "Candidates requests", type: :request do
           endpoints_attributes: [
             { path: "/users",
               http_verb: "verb_get",
+              input: "",
               responses: { "200" => { note: "List users with pagination", output: "{total:number,items:[User]}" } } }
           ],
           entities_attributes: [
@@ -380,6 +382,7 @@ describe "Candidates requests", type: :request do
           endpoints_attributes: [
             { path: "/users",
               http_verb: "verb_get",
+              input: "",
               responses: { "200" => { note: "List users", output: "{total:number,items:[User]}" } } }
           ],
           entities_attributes: [
@@ -409,6 +412,7 @@ describe "Candidates requests", type: :request do
           endpoints_attributes: [
             { path: "/users",
               http_verb: "verb_get",
+              input: "",
               responses: { "200" => { note: "List users", output: "{total:number,items:[User]}" } } }
           ],
           entities_attributes: [

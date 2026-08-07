@@ -20,6 +20,7 @@ describe Candidate::Create do
           { path: "/",
             http_verb: "verb_get",
             auth: "bearer",
+            input: "{query:string}",
             responses: { "200" => { note: "ok", output: "User" } }
           }
         ],
@@ -60,6 +61,11 @@ describe Candidate::Create do
       response = Endpoint.last.responses.find_by(code: "200")
       expect(response.output).to eq("User")
       expect(response.note).to eq("ok")
+    end
+
+    it "persists the endpoint input schema" do
+      subject.call
+      expect(Endpoint.last.input).to eq("{query:string}")
     end
 
     it "sets the author when one is passed" do

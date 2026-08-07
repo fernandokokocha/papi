@@ -17,6 +17,7 @@ class Candidate::Update
           path: endpoint_attr[:path],
           http_verb: endpoint_attr[:http_verb],
           note: endpoint_attr[:note],
+          input: endpoint_attr[:input],
           version: @version,
           responses_attributes: format_responses(endpoint_attr[:responses])
         }

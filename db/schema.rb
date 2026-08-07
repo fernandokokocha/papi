@@ -56,6 +56,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_03_000001) do
     t.string "path", null: false
     t.integer "version_id", null: false
     t.string "note"
+    t.string "input", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["version_id"], name: "index_endpoints_on_version_id"

@@ -6,6 +6,7 @@ const themes = {
         sectionHeader: "bg-emerald-50 border-t border-emerald-200 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide",
         noteWrapper: "px-3 py-2 bg-emerald-50 border-b border-emerald-200",
         noteTextarea: "border border-emerald-300 rounded px-2 py-1 text-sm w-full focus:outline-none focus:ring-1 focus:ring-emerald-500 resize-y bg-white",
+        inputWrapper: "pl-2 py-2 bg-emerald-50 border-b border-emerald-200",
         responsesWrapper: "pl-2 py-2 bg-emerald-50 border-b border-emerald-200 space-y-3",
         responseCard: "border border-emerald-200 rounded bg-white p-2",
         responseNoteInput: "border border-gray-300 rounded px-2 py-0.5 text-xs flex-1 focus:outline-none focus:ring-1 focus:ring-emerald-500 bg-white",
@@ -16,6 +17,7 @@ const themes = {
         sectionHeader: "bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide",
         noteWrapper: "px-3 py-2 bg-white border-b border-gray-200",
         noteTextarea: "border border-gray-300 rounded px-2 py-1 text-sm w-full focus:outline-none focus:ring-1 focus:ring-sky-500 resize-y",
+        inputWrapper: "pl-2 py-2 bg-white border-b border-gray-200",
         responsesWrapper: "pl-2 py-2 bg-white border-b border-gray-200 space-y-3",
         responseCard: "border border-gray-200 rounded bg-white p-2",
         responseNoteInput: "border border-gray-300 rounded px-2 py-0.5 text-xs flex-1 focus:outline-none focus:ring-1 focus:ring-sky-500 bg-white",
@@ -24,13 +26,14 @@ const themes = {
     },
 }
 
-const ResponseList = ({
+const EndpointFields = ({
     endpoint,
     addResponse,
     removeResponse,
     updateResponseNote,
     updateResponseOutput,
     updateNote,
+    updateInput,
     responsesToAdd,
     newResponseCode,
     setNewResponseCode,
@@ -49,6 +52,17 @@ const ResponseList = ({
                     onChange={(e) => updateNote(e.target.value)}
                     rows="3"
                     className={t.noteTextarea}
+                />
+            </div>
+            <div className={t.sectionHeader}>Input</div>
+            <div className={t.inputWrapper}>
+                <JSONSchemaForm
+                    name="version[endpoints_attributes][][input]"
+                    update={updateInput}
+                    root={endpoint.input}
+                    id={`${endpoint.id}-input`}
+                    entities={entities}
+                    canBeNothing={true}
                 />
             </div>
             <div className={t.sectionHeader}>Responses</div>
@@ -93,4 +107,4 @@ const ResponseList = ({
     )
 }
 
-export default ResponseList
+export default EndpointFields

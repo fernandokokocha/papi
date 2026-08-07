@@ -1,9 +1,10 @@
 <% notes_diff = DiffText::FromNotes.new(previous_endpoint.note, endpoint.note) %>
+<% input_diff = Diff::FromValues.new(previous_endpoint.parsed_input(expanded: expanded), endpoint.parsed_input(expanded: expanded)) %>
 <% responses_diff = DiffResponses::FromResponses.new(previous_endpoint.responses, endpoint.responses, expanded: expanded) %>
 <% changed = endpoint.differs_from?(previous_endpoint) %>
 <% border_class = changed ? "border-amber-200" : "border-gray-200" %>
 <% header_class = changed ? "bg-amber-600" : "bg-sky-900" %>
-<% expandable = previous_endpoint.responses.any? { |r| r.parsed_output.expandable? } || endpoint.responses.any? { |r| r.parsed_output.expandable? } %>
+<% expandable = [ previous_endpoint, endpoint ].any? { |e| e.parsed_input.expandable? || e.responses.any? { |r| r.parsed_output.expandable? } } %>
 
 <div class="border <%= border_class %> rounded-lg overflow-hidden">
   <%# Headers %>
@@ -38,6 +39,15 @@
           anchor: note_anchor,
           threads: candidate_comments.threads_for("endpoint", endpoint: endpoint, part: "note"),
           wrapper_class: "col-start-2" %>
+  </div>
+
+  <div class="grid grid-cols-2 border-t border-gray-300">
+    <div class="bg-gray-200 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Input</div>
+    <div class="bg-gray-200 border-l border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Input</div>
+  </div>
+  <div class="grid grid-cols-2">
+    <div class="px-3 py-2 bg-white font-mono text-xs text-gray-800"><%= render "specs/json", diff: input_diff.before %></div>
+    <div class="px-3 py-2 bg-white border-l border-gray-200 font-mono text-xs text-gray-800"><%= render "specs/json", diff: input_diff.after %></div>
   </div>
 
   <%# Responses — one grid row per code keeps both sides vertically aligned %>

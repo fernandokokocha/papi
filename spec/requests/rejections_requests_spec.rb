@@ -25,6 +25,7 @@ describe "Rejections requests", type: :request do
             endpoints_attributes: [
               { path: "/",
                 http_verb: "verb_get",
+                input: "",
                 auth: "bearer"
               }
             ],

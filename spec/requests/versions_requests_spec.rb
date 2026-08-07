@@ -50,6 +50,28 @@ describe "Version requests", type: :request do
       expect(response.body).to include(project_candidate_path(project.name, candidate.name))
     end
 
+    it "renders the input schema of an endpoint that takes a request body" do
+      endpoint = FactoryBot.create(:endpoint, version: version, path: "/users", http_verb: "verb_post", input: "{email:string}")
+      FactoryBot.create(:response, endpoint: endpoint, code: "201", output: "string")
+
+      sign_in(user)
+      get project_version_path(project.name, version.name)
+
+      expect(response.body).to include("Input")
+      expect(response.body).to include("email")
+    end
+
+    it "still shows the input section for an endpoint that takes no request body" do
+      endpoint = FactoryBot.create(:endpoint, version: version, path: "/users", http_verb: "verb_get")
+      FactoryBot.create(:response, endpoint: endpoint, code: "200", output: "string")
+
+      sign_in(user)
+      get project_version_path(project.name, version.name)
+
+      expect(response.status).to eq(200)
+      expect(response.body).to include("Input")
+    end
+
     it "does not render candidate comment threads on the version page" do
       merged_candidate = FactoryBot.create(:candidate, project: project, aasm_state: "merged")
       merged_version = FactoryBot.create(:version, candidate: merged_candidate, project: project)

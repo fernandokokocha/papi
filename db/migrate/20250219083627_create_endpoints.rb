@@ -5,6 +5,7 @@ class CreateEndpoints < ActiveRecord::Migration[8.0]
       t.string :path, null: false
       t.references :version, null: false, foreign_key: true
       t.string :note, null: true
+      t.string :input, null: false, default: ""
 
       t.timestamps
     end

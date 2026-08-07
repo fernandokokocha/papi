@@ -4,9 +4,11 @@ import StaticJSONSchema from "@/components/static_json_schema/StaticJSONSchema.j
 const sectionHeader = "bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide"
 const contentRowPl = "pl-2 py-2 bg-white border-b border-gray-200"
 
-const StaticResponseList = ({responses}) => {
+const StaticEndpointFields = ({input, responses}) => {
     return (
         <>
+            <div className={sectionHeader}>Input</div>
+            <div className={contentRowPl}><StaticJSONSchema root={input}/></div>
             <div className={sectionHeader}>Responses</div>
             <div className={contentRowPl}>
                 {responses.length === 0
@@ -25,4 +27,4 @@ const StaticResponseList = ({responses}) => {
     )
 }
 
-export default StaticResponseList
+export default StaticEndpointFields

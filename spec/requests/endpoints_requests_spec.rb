@@ -21,6 +21,7 @@ describe "Endpoints requests", type: :request do
         endpoints_attributes: [
           { path: "/",
             http_verb: "verb_get",
+            input: "",
             auth: "bearer",
             responses: { "200" => { note: "ok", output: "User" } }
           }

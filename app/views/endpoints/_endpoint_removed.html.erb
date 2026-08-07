@@ -1,11 +1,12 @@
 <% responses_diff = DiffResponses::FromResponses.new(endpoint.responses, [], expanded: expanded) %>
+<% input_diff = endpoint.parsed_input(expanded: expanded).to_diff(:removed) %>
 <div class="grid grid-cols-2 gap-2">
   <div>
     <div class="border border-red-200 rounded-lg">
       <div class="sticky top-0 z-10 rounded-t-lg bg-red-700 text-white px-4 py-3 text-sm font-mono flex items-center justify-between">
         <%= render "endpoints/verb_path", verb: endpoint.verb, path: endpoint.path %>
         <div class="flex items-center gap-2 ml-4">
-          <% if endpoint.responses.any? { |r| r.parsed_output.expandable? } %>
+          <% if endpoint.parsed_input.expandable? || endpoint.responses.any? { |r| r.parsed_output.expandable? } %>
             <% if expanded %>
               <button type="button" data-action="endpoint#collapse" class="text-xs bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 px-2.5 py-0.5 rounded cursor-pointer leading-none">Collapse</button>
             <% else %>
@@ -21,6 +22,8 @@
             anchor: note_anchor,
             threads: candidate_comments.threads_for("endpoint", endpoint: endpoint, part: "note"),
             wrapper_class: "" %>
+      <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Input</div>
+      <div class="px-3 py-2 bg-white border-b border-gray-200 font-mono text-xs text-gray-800"><%= render "specs/json", diff: input_diff %></div>
       <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Responses</div>
       <div class="bg-white border-b border-gray-200"><%= render "specs/responses", lines: responses_diff.lines, side: :before, endpoint: endpoint, expanded: expanded %></div>
     </div>

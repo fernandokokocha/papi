@@ -40,6 +40,7 @@ const checkEntitiesReferences = (endpoints, entities) => {
 const findCustomNameInEndpoints = (endpoints, name) => {
     let found = false;
     endpoints.forEach((e) => {
+        found = found || findCustomName(e.input, name)
         e.responses.forEach((r) => {
             found = found || findCustomName(r.output, name)
         })
@@ -119,6 +120,7 @@ const Form = ({serializedEndpoints, serializedEntities, comments}) => {
                 verb: endpoint.verb,
                 path: endpoint.path,
                 note: endpoint.note,
+                input: serialize(endpoint.input),
                 responses: [...endpoint.responses]
                     .sort((a, b) => Number(a.code) - Number(b.code))
                     .map((r) => ({code: r.code, note: r.note, output: serialize(r.output)})),
@@ -179,6 +181,7 @@ const Form = ({serializedEndpoints, serializedEntities, comments}) => {
         endpointToRestore.verb = endpointToRestore.original_verb
         endpointToRestore.path = endpointToRestore.original_path
         endpointToRestore.note = endpointToRestore.original_note
+        endpointToRestore.input = JSON.parse(JSON.stringify(endpointToRestore.original_input))
         endpointToRestore.responses = JSON.parse(JSON.stringify(endpointToRestore.original_responses))
         endpointToRestore.collision = false
 
@@ -196,6 +199,7 @@ const Form = ({serializedEndpoints, serializedEntities, comments}) => {
             http_verb: newVerb,
             verb: newVerb,
             path: newPath,
+            input: {nodeType: "primitive", value: "nothing"},
             responses: []
         })
 
@@ -273,6 +277,10 @@ const Form = ({serializedEndpoints, serializedEntities, comments}) => {
             endpointData.original_verb = endpointData.verb
             endpointData.original_http_verb = endpointData.http_verb
             endpointData.original_note = endpointData.note
+
+            const parsed_input = deserialize(endpointData.input)
+            endpointData.input = parsed_input
+            endpointData.original_input = parsed_input
 
             const editable = endpointData.responses.map((r) => ({code: r.code, note: r.note, output: deserialize(r.output)}))
             const original = endpointData.responses.map((r) => ({code: r.code, note: r.note, output: deserialize(r.output)}))

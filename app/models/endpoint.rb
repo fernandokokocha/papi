@@ -39,8 +39,15 @@ class Endpoint < ApplicationRecord
     "#{verb}-#{path}"
   end
 
+  def parsed_input(expanded: false)
+    parser = JSONSchemaParser.new(version.entities)
+    value = parser.parse_whole_value(input)
+    expanded ? value.expand : value
+  end
+
   def differs_from?(previous)
     DiffText::FromNotes.new(previous.note, note).any_changes? ||
+      Diff::FromValues.new(previous.parsed_input, parsed_input).any_changes? ||
       DiffResponses::FromResponses.new(previous.responses, responses).any_changes?
   end
 

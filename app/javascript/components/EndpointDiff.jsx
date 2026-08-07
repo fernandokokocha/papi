@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react'
-import ResponseList from "@/components/ResponseList.jsx";
-import StaticResponseList from "@/components/StaticResponseList.jsx";
+import EndpointFields from "@/components/EndpointFields.jsx";
+import StaticEndpointFields from "@/components/StaticEndpointFields.jsx";
 import {arrayDifference} from "@/helpers/arrayDiffrence.js";
 import {httpStatusCodes} from "@/helpers/values.js";
 import VerbBadge from "@/components/VerbBadge.jsx";
@@ -20,6 +20,10 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
 
     const updateNote = (newNote) => {
         updateEndpoint(endpoint.id, {...endpoint, note: newNote})
+    }
+
+    const updateInput = (newInput) => {
+        updateEndpoint(endpoint.id, {...endpoint, input: newInput})
     }
 
     const addResponse = () => {
@@ -77,7 +81,7 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
                 </div>
                 <div className={sectionHeader}>Note</div>
                 <div className={contentRow}>{endpoint.original_note || <span className="text-gray-400 italic">—</span>}</div>
-                <StaticResponseList responses={endpoint.original_responses}/>
+                <StaticEndpointFields input={endpoint.original_input} responses={endpoint.original_responses}/>
             </div>
 
             {/* Right — editable */}
@@ -112,13 +116,14 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
                         {endpoint.collision && <span className="text-xs text-red-300">Collision!</span>}
                         {endpoint.no_responses && <span className="text-xs text-red-300">Needs a response</span>}
                     </div>
-                    <ResponseList
+                    <EndpointFields
                         endpoint={endpoint}
                         addResponse={addResponse}
                         removeResponse={removeResponse}
                         updateResponseNote={updateResponseNote}
                         updateResponseOutput={updateResponseOutput}
                         updateNote={updateNote}
+                        updateInput={updateInput}
                         responsesToAdd={responsesToAdd}
                         newResponseCode={newResponseCode}
                         setNewResponseCode={setNewResponseCode}

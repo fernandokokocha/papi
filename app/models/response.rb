@@ -5,7 +5,7 @@ class Response < ApplicationRecord
 
   def parsed_output
     parser = JSONSchemaParser.new(endpoint.version.entities)
-    parser.parse_response_output(output)
+    parser.parse_whole_value(output)
   end
 
   def serialize
