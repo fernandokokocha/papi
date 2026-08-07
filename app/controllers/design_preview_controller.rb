@@ -54,7 +54,11 @@ class DesignPreviewController < ApplicationController
     entity = build.(6, { scope: "entity", part: "whole", entity_name: "User" },
       by: author, body: "Renamed total_cents → amount.", ago: 70.minutes)
 
-    [ conversation, endpoint, note, response, line, entity ]
+    param = build.(7, { scope: "param", part: "whole", param_name: "userId",
+                        endpoint_path: "/users/:userId", endpoint_http_verb: Endpoint.http_verbs[:verb_delete] },
+      by: reviewer, body: "Should this be a slug rather than a number?", ago: 60.minutes)
+
+    [ conversation, endpoint, note, response, line, entity, param ]
   end
 
   FakeResponse = Struct.new(:code, :note, :parsed_output) do

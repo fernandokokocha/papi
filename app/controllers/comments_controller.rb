@@ -24,6 +24,6 @@ class CommentsController < ApplicationController
   end
 
   def anchor_params
-    params.require(:comment).permit(:scope, :part, :line, :endpoint_path, :endpoint_http_verb, :entity_name, :response_code)
+    params.require(:comment).permit(:scope, :part, :line, :endpoint_path, :endpoint_http_verb, :entity_name, :response_code, :param_name)
   end
 end

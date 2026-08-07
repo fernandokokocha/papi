@@ -87,6 +87,43 @@ describe CandidateComments do
     end
   end
 
+  describe "param threads" do
+    let(:param_endpoint) { FactoryBot.create(:endpoint, path: "/users/:id", http_verb: "verb_get") }
+
+    it "finds a thread by endpoint identity and param name" do
+      thread = FactoryBot.create(:comment, :param_scope, candidate: candidate)
+
+      expect(comments.threads_for("param", endpoint: param_endpoint, param_name: "id")).to eq([ thread ])
+      expect(comments.threads_for("param", endpoint: param_endpoint, param_name: "slug")).to eq([])
+    end
+
+    it "keeps two params on one endpoint apart" do
+      on_id = FactoryBot.create(:comment, :param_scope, candidate: candidate)
+      on_slug = FactoryBot.create(:comment, :param_scope, candidate: candidate,
+                                  endpoint_path: "/users/:id/:slug", param_name: "slug")
+      endpoint = FactoryBot.create(:endpoint, path: "/users/:id/:slug", http_verb: "verb_get")
+
+      expect(comments.threads_for("param", endpoint: endpoint, param_name: "slug")).to eq([ on_slug ])
+      expect(comments.threads_for("param", endpoint: param_endpoint, param_name: "id")).to eq([ on_id ])
+    end
+
+    # Identity keys on the name, so unlike an endpoint thread a param thread does
+    # not survive its param being renamed.
+    it "orphans a thread when the param is renamed" do
+      FactoryBot.create(:comment, :param_scope, candidate: candidate)
+      renamed = FactoryBot.create(:endpoint, path: "/users/:user_id", http_verb: "verb_get")
+
+      expect(comments.threads_for("param", endpoint: renamed, param_name: "user_id")).to eq([])
+    end
+
+    it "counts into the endpoint's card and sidebar count" do
+      FactoryBot.create(:comment, :param_scope, candidate: candidate)
+
+      expect(comments.card_for_endpoint(param_endpoint)[:whole].size).to eq(1)
+      expect(comments.sidebar_count(CommentAnchor.for_endpoint(param_endpoint))).to eq(1)
+    end
+  end
+
   describe "#sidebar_count" do
     it "counts every thread under the target, not replies" do
       root = FactoryBot.create(:comment, :endpoint_scope, candidate: candidate)

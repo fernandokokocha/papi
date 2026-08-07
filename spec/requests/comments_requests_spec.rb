@@ -108,6 +108,81 @@ describe "Comments requests", type: :request do
       expect(response.body).to include("💬 1")
     end
 
+    describe "param-anchored roots" do
+      let(:anchor) do
+        CommentAnchor.new(scope: "param", part: "whole",
+                          endpoint_path: "/users/:id", endpoint_http_verb: 0, param_name: "id")
+      end
+
+      def post_param_comment
+        post project_candidate_comments_path(project.name, candidate.name),
+             params: { comment: { body: "Should this be a slug?", scope: "param", part: "whole",
+                                  endpoint_path: "/users/:id", endpoint_http_verb: "0", param_name: "id" } },
+             as: :turbo_stream
+      end
+
+      it "stores the param name and takes no snapshot" do
+        sign_in(user)
+        post_param_comment
+
+        expect(Comment.last.param_name).to eq("id")
+        expect(Comment.last.anchor.label).to eq("GET /users/:id → :id")
+        expect(Comment.last.anchor_snapshot).to be_nil
+      end
+
+      it "streams the thread into the param's inline container" do
+        sign_in(user)
+        post_param_comment
+
+        expect(turbo_actions).to include(
+          [ "append", anchor.dom_id ],
+          [ "replace", "#{anchor.dom_id}_form" ]
+        )
+      end
+
+      it "counts a param thread into the endpoint's sidebar badge" do
+        sign_in(user)
+        post_param_comment
+
+        sidebar_id = "sidebar_count_#{CommentAnchor.new(scope: "endpoint", part: "whole", endpoint_path: "/users/:id", endpoint_http_verb: 0).dom_id}"
+        expect(turbo_actions).to include([ "update", sidebar_id ])
+        expect(response.body).to include("💬 1")
+      end
+
+      it "rejects a param anchor with no param name" do
+        sign_in(user)
+        post project_candidate_comments_path(project.name, candidate.name),
+             params: { comment: { body: "Nameless", scope: "param", part: "whole",
+                                  endpoint_path: "/users/:id", endpoint_http_verb: "0" } }
+
+        expect(Comment.count).to eq(0)
+        expect(flash[:alert]).to eq("Comment could not be posted.")
+      end
+    end
+
+    describe "param regions on the candidate page" do
+      let!(:version) { FactoryBot.create :version, candidate: candidate, project: project, order: 1 }
+      let!(:endpoint) { FactoryBot.create :endpoint, version: version, path: "/users/:id", http_verb: "verb_get" }
+      let(:anchor) { CommentAnchor.for_endpoint_param(endpoint, "id") }
+
+      it "makes each param row its own comment region" do
+        sign_in(user)
+        get project_candidate_path(project.name, candidate.name)
+
+        expect(response.body).to include(%(data-comment-region="#{anchor.dom_id}"))
+      end
+
+      it "renders a param thread inline under its row" do
+        FactoryBot.create :comment, :param_scope, candidate: candidate, author: user, body: "Should this be a slug?"
+        sign_in(user)
+        get project_candidate_path(project.name, candidate.name)
+
+        expect(response.body).to include(%(id="#{anchor.dom_id}"))
+        expect(response.body).to include("Should this be a slug?")
+        expect(response.body).to include("GET /users/:id → :id")
+      end
+    end
+
     describe "line-anchored roots" do
       let!(:version) { FactoryBot.create :version, candidate: candidate, project: project, order: 1 }
       let!(:endpoint) { FactoryBot.create :endpoint, version: version, path: "/users", http_verb: "verb_get" }

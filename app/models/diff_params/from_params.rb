@@ -1,16 +1,20 @@
 class DiffParams::FromParams
+  Row = Data.define(:name, :line) do
+    def removed? = line.change == "removed"
+  end
+
   def initialize(previous_params, params)
     @previous_by_name = previous_params.index_by(&:name)
     @by_name = params.index_by(&:name)
     @names = (previous_params.map(&:name) + params.map(&:name)).uniq
   end
 
-  def before
-    @names.map { |name| line(name, @previous_by_name[name], change_for(name)) }.compact
+  def before_rows
+    rows(@previous_by_name)
   end
 
-  def after
-    @names.map { |name| line(name, @by_name[name], change_for(name)) }.compact
+  def after_rows
+    rows(@by_name)
   end
 
   def any_changes?
@@ -18,6 +22,13 @@ class DiffParams::FromParams
   end
 
   private
+
+  def rows(by_name)
+    @names.filter_map do |name|
+      param = by_name[name]
+      Row.new(name: name, line: line(name, param, change_for(name))) if param
+    end
+  end
 
   def change_for(name)
     previous = @previous_by_name[name]
@@ -29,8 +40,6 @@ class DiffParams::FromParams
   end
 
   def line(name, param, change)
-    return nil if param.nil?
-
     Diff::Line.new("#{padded(name)} #{param.kind}", change, 1)
   end
 

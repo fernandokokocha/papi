@@ -1,6 +1,6 @@
 module CommentTarget
   def self.classes
-    { "candidate" => Candidate, "endpoint" => Endpoint, "entity" => Entity, "response" => Response }
+    { "candidate" => Candidate, "endpoint" => Endpoint, "entity" => Entity, "response" => Response, "param" => Param }
   end
 
   def self.parts_for(scope)

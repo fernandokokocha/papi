@@ -9,6 +9,7 @@ module CommentsHelper
     response:     { label: "Response",     bg: "bg-fuchsia-50/60", rail: "border-l-fuchsia-500", chip: "bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200" },
     note:         { label: "Note",         bg: "bg-cyan-50/60",    rail: "border-l-cyan-500",    chip: "bg-cyan-100 text-cyan-700 border-cyan-200" },
     input:        { label: "Input",        bg: "bg-slate-50/60",   rail: "border-l-slate-500",   chip: "bg-slate-100 text-slate-700 border-slate-200" },
+    param:        { label: "Param",        bg: "bg-teal-50/60",    rail: "border-l-teal-500",    chip: "bg-teal-100 text-teal-700 border-teal-200" },
     endpoint:     { label: "Endpoint",     bg: "bg-sky-50/60",     rail: "border-l-sky-600",     chip: "bg-sky-100 text-sky-700 border-sky-200" },
     entity:       { label: "Entity",       bg: "bg-violet-50/60",  rail: "border-l-violet-600",  chip: "bg-violet-100 text-violet-700 border-violet-200" },
     conversation: { label: "Conversation", bg: "bg-blue-50/60",    rail: "border-l-blue-600",    chip: "bg-blue-100 text-blue-700 border-blue-200" }

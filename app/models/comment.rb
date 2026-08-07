@@ -5,7 +5,7 @@ class Comment < ApplicationRecord
   belongs_to :resolved_by, class_name: "User", optional: true
   has_many :replies, class_name: "Comment", foreign_key: :parent_id, dependent: :destroy
 
-  ANCHOR_ATTRIBUTES = %w[scope part line endpoint_path endpoint_http_verb entity_name response_code anchor_snapshot].freeze
+  ANCHOR_ATTRIBUTES = %w[scope part line endpoint_path endpoint_http_verb entity_name response_code param_name anchor_snapshot].freeze
 
   before_validation :inherit_parent_anchor, if: :parent
 
@@ -36,7 +36,7 @@ class Comment < ApplicationRecord
     CommentAnchor.new(
       scope: scope, part: part, line: line,
       endpoint_path: endpoint_path, endpoint_http_verb: endpoint_http_verb,
-      entity_name: entity_name, response_code: response_code
+      entity_name: entity_name, response_code: response_code, param_name: param_name
     )
   end
 

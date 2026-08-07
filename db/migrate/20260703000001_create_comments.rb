@@ -11,6 +11,7 @@ class CreateComments < ActiveRecord::Migration[8.0]
       t.integer :endpoint_http_verb
       t.string :entity_name
       t.string :response_code
+      t.string :param_name
       t.string :part, null: false
       t.integer :line
       t.text :anchor_snapshot

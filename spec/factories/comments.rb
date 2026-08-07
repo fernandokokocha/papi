@@ -31,6 +31,13 @@ FactoryBot.define do
       response_code { "200" }
     end
 
+    trait :param_scope do
+      add_attribute(:scope) { "param" }
+      endpoint_path { "/users/:id" }
+      endpoint_http_verb { 0 }
+      param_name { "id" }
+    end
+
     trait :reply do
       parent { association(:comment, candidate: candidate) }
     end

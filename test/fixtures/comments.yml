@@ -252,6 +252,40 @@ c4_exports_create_input_new_endpoint:
   part: input
   created_at: 2025-04-03 17:30:00
 
+c4_tasks_show_task_id_param:
+  candidate: candidate4
+  author: one
+  body: "Narrowing taskId to a number breaks anyone passing a slug — is that deliberate?"
+  scope: param
+  endpoint_path: /tasks/:taskId
+  endpoint_http_verb: 0
+  param_name: taskId
+  part: whole
+  created_at: 2025-04-03 18:30:00
+
+c4_tasks_show_task_id_param_reply:
+  candidate: candidate4
+  author: two
+  parent: c4_tasks_show_task_id_param
+  body: "Deliberate — slugs never shipped, every caller sends the id already."
+  scope: param
+  endpoint_path: /tasks/:taskId
+  endpoint_http_verb: 0
+  param_name: taskId
+  part: whole
+  created_at: 2025-04-03 18:45:00
+
+c4_tasks_comments_comment_id_param:
+  candidate: candidate4
+  author: two
+  body: "commentId is scoped to the task, so a mismatched pair should 404 rather than 403."
+  scope: param
+  endpoint_path: /tasks/:taskId/comments/:commentId
+  endpoint_http_verb: 0
+  param_name: commentId
+  part: whole
+  created_at: 2025-04-03 19:00:00
+
 c4_users_delete_input_removed:
   candidate: candidate4
   author: two

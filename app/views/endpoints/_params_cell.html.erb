@@ -1,0 +1,15 @@
+<% if rows.empty? %>
+  -
+<% else %>
+  <% rows.each do |row| %>
+    <% commentable = side == :after || row.removed? %>
+    <% anchor = CommentAnchor.for_endpoint_param(endpoint, row.name) %>
+    <div class="line <%= row.line.change %>" <%= comment_region_attr(anchor) if commentable %>><%= render_type(row.line) %></div>
+    <% if commentable %>
+      <%= render "comments/anchor_region",
+            anchor: anchor,
+            threads: candidate_comments.threads_for("param", endpoint: endpoint, param_name: row.name),
+            wrapper_class: "my-1 ml-4 border-l-2 border-l-sky-200 pl-3 font-sans" %>
+    <% end %>
+  <% end %>
+<% end %>

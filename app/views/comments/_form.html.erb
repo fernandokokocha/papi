@@ -11,6 +11,7 @@
     <%= form.hidden_field :endpoint_http_verb, value: anchor.endpoint_http_verb %>
     <%= form.hidden_field :entity_name, value: anchor.entity_name %>
     <%= form.hidden_field :response_code, value: anchor.response_code %>
+    <%= form.hidden_field :param_name, value: anchor.param_name %>
     <% if local_assigns[:line_pin] %>
       <div data-pick-label class="font-mono text-xs text-gray-500 mb-2"></div>
       <%= form.hidden_field :line %>

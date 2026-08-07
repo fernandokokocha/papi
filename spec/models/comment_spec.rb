@@ -73,7 +73,7 @@ describe Comment do
   describe "#anchor_key" do
     it "delegates to the anchor's key" do
       comment = FactoryBot.build :comment, :response_scope, part: "output", line: 7
-      expect(comment.anchor_key).to eq([ "response", "/users", 0, nil, "200", "output", 7 ])
+      expect(comment.anchor_key).to eq([ "response", "/users", 0, nil, "200", nil, "output", 7 ])
     end
   end
 
