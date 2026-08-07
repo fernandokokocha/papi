@@ -27,7 +27,7 @@ class CandidateComments
   def threads_for(scope, endpoint: nil, entity: nil, response_code: nil, part: nil)
     parts = part ? [ part ] : CommentAnchor.parts_for(scope)
     parts.flat_map do |scope_part|
-      @by_anchor.fetch([ scope, endpoint&.path, verb_of(endpoint), entity&.name, response_code, scope_part, nil ], [])
+      @by_anchor.fetch([ scope, endpoint&.identity_path, verb_of(endpoint), entity&.name, response_code, scope_part, nil ], [])
     end.sort_by(&:created_at)
   end
 
@@ -68,12 +68,13 @@ class CandidateComments
 
     case comment.scope
     when "endpoint", "response"
-      into_card(@endpoint_cards, [ comment.endpoint_path, comment.endpoint_http_verb ], comment)
+      key = comment_endpoint_key(comment)
+      into_card(@endpoint_cards, key, comment)
       if comment.scope == "response" && comment.part == "output" && comment.line
-        (@response_lines[[ comment.endpoint_path, comment.endpoint_http_verb, comment.response_code ]] ||= []) << comment
+        (@response_lines[[ *key, comment.response_code ]] ||= []) << comment
       end
       if comment.scope == "endpoint" && comment.part == "input" && comment.line
-        (@input_lines[[ comment.endpoint_path, comment.endpoint_http_verb ]] ||= []) << comment
+        (@input_lines[key] ||= []) << comment
       end
     when "entity"
       into_card(@entity_cards, comment.entity_name, comment)
@@ -90,7 +91,7 @@ class CandidateComments
     if anchor.scope == "entity"
       @entity_cards.fetch(anchor.entity_name, EMPTY_CARD)
     else
-      @endpoint_cards.fetch([ anchor.endpoint_path, anchor.endpoint_http_verb ], EMPTY_CARD)
+      @endpoint_cards.fetch([ anchor.endpoint_identity_path, anchor.endpoint_http_verb ], EMPTY_CARD)
     end
   end
 
@@ -104,7 +105,11 @@ class CandidateComments
   end
 
   def endpoint_key(endpoint)
-    [ endpoint.path, verb_of(endpoint) ]
+    [ endpoint.identity_path, verb_of(endpoint) ]
+  end
+
+  def comment_endpoint_key(comment)
+    [ Endpoint.identity_path(comment.endpoint_path), comment.endpoint_http_verb ]
   end
 
   def verb_of(endpoint)

@@ -4,13 +4,13 @@ import EntityList from "@/components/EntityList.jsx";
 import {v4 as uuidv4} from "uuid";
 import deserialize from "@/helpers/deserialize.js";
 import serialize from "@/helpers/serialize.js";
-import {hasDuplicateParams, paramsOf} from "@/helpers/pathParams.js";
+import {hasDuplicateParams, identityPath, paramsOf} from "@/helpers/pathParams.js";
 
 const isNewEndpointColliding = (verb, path, e) => {
     let newEndpointColliding = false
     e.filter((endpoint) => (endpoint.type !== 'removed'))
         .forEach((endpoint) => {
-            const collidingWithNewEndpoint = (endpoint.path === path && endpoint.http_verb === verb)
+            const collidingWithNewEndpoint = (identityPath(endpoint.path) === identityPath(path) && endpoint.http_verb === verb)
             if (collidingWithNewEndpoint) {
                 newEndpointColliding = true
             }
@@ -97,7 +97,7 @@ const Form = ({serializedEndpoints, serializedEntities, comments}) => {
         endpointsToSend
             .filter((endpoint) => (endpoint.type !== 'removed'))
             .forEach((endpoint) => {
-                const colliding = endpointsToSend.filter((otherEndpoint) => otherEndpoint.path === endpoint.path && otherEndpoint.http_verb === endpoint.http_verb)
+                const colliding = endpointsToSend.filter((otherEndpoint) => identityPath(otherEndpoint.path) === identityPath(endpoint.path) && otherEndpoint.http_verb === endpoint.http_verb)
                 if (colliding.length > 1) {
                     newNoCollisions = false;
                     endpoint.collision = true;

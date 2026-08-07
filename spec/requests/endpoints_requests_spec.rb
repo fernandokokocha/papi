@@ -144,5 +144,22 @@ describe "Endpoints requests", type: :request do
       get project_endpoint_path(project.name, removed_endpoint.id, kind: "removed", candidate: "rc9")
       expect(response.body).to include("Removed thread body")
     end
+
+    it "expands a renamed param as a diff against its previous version, not as a new endpoint" do
+      base_candidate = FactoryBot.create(:candidate, name: "rc10", project: project)
+      base_version = FactoryBot.create(:version, project: project, candidate: base_candidate, name: "v1", order: 1)
+      FactoryBot.create(:endpoint, version: base_version, path: "/user/:id", http_verb: "verb_get", note: "before")
+
+      next_candidate = FactoryBot.create(:candidate, name: "rc11", project: project)
+      next_version = FactoryBot.create(:version, project: project, candidate: next_candidate, name: "v2", order: 2)
+      renamed = FactoryBot.create(:endpoint, version: next_version, path: "/user/:user_id", http_verb: "verb_get", note: "after")
+
+      sign_in(user)
+      get project_endpoint_path(project.name, renamed.id, expanded: true)
+
+      expect(response.body).to include("/user/:id")
+      expect(response.body).to include("/user/:user_id")
+      expect(response.body).to include("before")
+    end
   end
 end

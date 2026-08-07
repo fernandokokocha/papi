@@ -17,6 +17,6 @@ class CommentTarget::Response
   def label_segments = [ "#{Endpoint.verb_word(http_verb)} #{path}", code ]
 
   def record(version)
-    version.endpoints.find_by(path: path, http_verb: http_verb).responses.find_by(code: code)
+    Endpoint.find_by_identity(version, path, http_verb).responses.find_by(code: code)
   end
 end

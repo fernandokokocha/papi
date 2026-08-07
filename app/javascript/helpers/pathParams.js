@@ -7,6 +7,10 @@ export const paramNames = (path) => [...path.matchAll(PARAM_TOKEN)].map((m) => m
 export const paramsOf = (path, kinds) =>
     paramNames(path).map((name) => ({name: name, kind: kinds[name] || "string"}))
 
+// Mirrors Endpoint.identity_path — param names are ours, not the client's, so
+// /user/:id and /user/:user_id are one endpoint.
+export const identityPath = (path) => path.replace(PARAM_TOKEN, ":")
+
 export const hasDuplicateParams = (path) => {
     const names = paramNames(path)
     return names.length !== new Set(names).size

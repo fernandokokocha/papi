@@ -24,7 +24,8 @@ class EndpointsController < ApplicationController
       return
     end
 
-    previous_endpoint = previous_version&.endpoints&.where(path: @endpoint.path, http_verb: @endpoint.http_verb)&.first
+    previous_endpoint = previous_version &&
+      Endpoint.find_by_identity(previous_version, @endpoint.path, Endpoint.http_verbs[@endpoint.http_verb])
 
     unless previous_endpoint
       respond_to do |format|
