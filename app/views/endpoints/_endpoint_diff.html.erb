@@ -26,6 +26,19 @@
     </div>
   </div>
 
+  <%# Params %>
+  <% if endpoint.path_params.any? %>
+    <% params_diff = DiffParams::FromParams.new(previous_endpoint.path_params, endpoint.path_params) %>
+    <div class="grid grid-cols-2 border-t border-gray-300">
+      <div class="bg-gray-200 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Params</div>
+      <div class="bg-gray-200 border-l border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Params</div>
+    </div>
+    <div class="grid grid-cols-2">
+      <div class="px-3 py-2 bg-white font-mono text-xs text-gray-800"><%= render "specs/json", diff: params_diff.before %></div>
+      <div class="px-3 py-2 bg-white border-l border-gray-200 font-mono text-xs text-gray-800"><%= render "specs/json", diff: params_diff.after %></div>
+    </div>
+  <% end %>
+
   <%# Note %>
   <% note_anchor = CommentAnchor.new(scope: "endpoint", part: "note", endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb]) %>
   <div class="grid grid-cols-2 border-t border-gray-300">

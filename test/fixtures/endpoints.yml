@@ -124,6 +124,11 @@ p1v3_tasks_get:
   path: /tasks/next
   version: project1v3
   note: "Get the next pending task"
+p1v3_tasks_show:
+  http_verb: verb_get
+  path: /tasks/:taskId
+  version: project1v3
+  note: "Get one task by id"
 
 # ===== v4 =====
 p1v4_users_list:
@@ -180,6 +185,16 @@ p1v4_tasks_complete:
   path: /tasks/complete-next
   version: project1v4
   note: "Mark the next pending task as complete"
+p1v4_tasks_show:
+  http_verb: verb_get
+  path: /tasks/:taskId
+  version: project1v4
+  note: "Get one task by id"
+p1v4_tasks_comments:
+  http_verb: verb_get
+  path: /tasks/:taskId/comments/:commentId
+  version: project1v4
+  note: "Get one comment on a task"
 
 # ===== bulk fixtures =====
 

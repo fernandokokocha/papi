@@ -4,6 +4,7 @@ import EntityList from "@/components/EntityList.jsx";
 import {v4 as uuidv4} from "uuid";
 import deserialize from "@/helpers/deserialize.js";
 import serialize from "@/helpers/serialize.js";
+import {hasDuplicateParams, paramsOf} from "@/helpers/pathParams.js";
 
 const isNewEndpointColliding = (verb, path, e) => {
     let newEndpointColliding = false
@@ -110,6 +111,13 @@ const Form = ({serializedEndpoints, serializedEntities, comments}) => {
                 } else {
                     endpoint.no_responses = false;
                 }
+
+                if (hasDuplicateParams(endpoint.path)) {
+                    newNoCollisions = false;
+                    endpoint.duplicate_params = true;
+                } else {
+                    endpoint.duplicate_params = false;
+                }
             })
         setNoCollisions(newNoCollisions)
 
@@ -119,6 +127,7 @@ const Form = ({serializedEndpoints, serializedEntities, comments}) => {
                 http_verb: endpoint.http_verb,
                 verb: endpoint.verb,
                 path: endpoint.path,
+                params: paramsOf(endpoint.path, endpoint.paramKinds),
                 note: endpoint.note,
                 input: serialize(endpoint.input),
                 responses: [...endpoint.responses]
@@ -183,6 +192,7 @@ const Form = ({serializedEndpoints, serializedEntities, comments}) => {
         endpointToRestore.note = endpointToRestore.original_note
         endpointToRestore.input = JSON.parse(JSON.stringify(endpointToRestore.original_input))
         endpointToRestore.responses = JSON.parse(JSON.stringify(endpointToRestore.original_responses))
+        endpointToRestore.paramKinds = {...endpointToRestore.original_paramKinds}
         endpointToRestore.collision = false
 
         validate(newEndpoints, entities)
@@ -199,6 +209,7 @@ const Form = ({serializedEndpoints, serializedEntities, comments}) => {
             http_verb: newVerb,
             verb: newVerb,
             path: newPath,
+            paramKinds: {},
             input: {nodeType: "primitive", value: "nothing"},
             responses: []
         })
@@ -277,6 +288,11 @@ const Form = ({serializedEndpoints, serializedEntities, comments}) => {
             endpointData.original_verb = endpointData.verb
             endpointData.original_http_verb = endpointData.http_verb
             endpointData.original_note = endpointData.note
+
+            const kinds = Object.fromEntries(endpointData.params.map((p) => [p.name, p.kind]))
+            endpointData.paramKinds = kinds
+            endpointData.original_paramKinds = {...kinds}
+            delete endpointData.params
 
             const parsed_input = deserialize(endpointData.input)
             endpointData.input = parsed_input

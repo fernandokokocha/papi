@@ -1,5 +1,6 @@
 import React from 'react'
 import JSONSchemaForm from "@/components/json_schema/JSONSchemaForm.jsx";
+import {paramKinds, paramsOf} from "@/helpers/pathParams.js";
 
 const themes = {
     emerald: {
@@ -7,6 +8,7 @@ const themes = {
         noteWrapper: "px-3 py-2 bg-emerald-50 border-b border-emerald-200",
         noteTextarea: "border border-emerald-300 rounded px-2 py-1 text-sm w-full focus:outline-none focus:ring-1 focus:ring-emerald-500 resize-y bg-white",
         inputWrapper: "pl-2 py-2 bg-emerald-50 border-b border-emerald-200",
+        paramsWrapper: "px-3 py-2 bg-emerald-50 border-b border-emerald-200 space-y-1",
         responsesWrapper: "pl-2 py-2 bg-emerald-50 border-b border-emerald-200 space-y-3",
         responseCard: "border border-emerald-200 rounded bg-white p-2",
         responseNoteInput: "border border-gray-300 rounded px-2 py-0.5 text-xs flex-1 focus:outline-none focus:ring-1 focus:ring-emerald-500 bg-white",
@@ -18,6 +20,7 @@ const themes = {
         noteWrapper: "px-3 py-2 bg-white border-b border-gray-200",
         noteTextarea: "border border-gray-300 rounded px-2 py-1 text-sm w-full focus:outline-none focus:ring-1 focus:ring-sky-500 resize-y",
         inputWrapper: "pl-2 py-2 bg-white border-b border-gray-200",
+        paramsWrapper: "px-3 py-2 bg-white border-b border-gray-200 space-y-1",
         responsesWrapper: "pl-2 py-2 bg-white border-b border-gray-200 space-y-3",
         responseCard: "border border-gray-200 rounded bg-white p-2",
         responseNoteInput: "border border-gray-300 rounded px-2 py-0.5 text-xs flex-1 focus:outline-none focus:ring-1 focus:ring-sky-500 bg-white",
@@ -34,6 +37,8 @@ const EndpointFields = ({
     updateResponseOutput,
     updateNote,
     updateInput,
+    updateParamKind,
+    showParams,
     responsesToAdd,
     newResponseCode,
     setNewResponseCode,
@@ -41,9 +46,31 @@ const EndpointFields = ({
     theme,
 }) => {
     const t = themes[theme]
+    const params = paramsOf(endpoint.path, endpoint.paramKinds)
 
     return (
         <>
+            {showParams && (
+                <>
+                    <div className={t.sectionHeader}>Params</div>
+                    <div className={t.paramsWrapper}>
+                        {params.length === 0 && <span className="text-xs text-gray-400 italic">—</span>}
+                        {params.map((p) => (
+                            <div key={p.name} className="flex items-center gap-2">
+                                <span className="font-mono text-xs text-gray-800 w-40 shrink-0 truncate">:{p.name}</span>
+                                <select
+                                    value={p.kind}
+                                    onChange={(e) => updateParamKind(p.name, e.target.value)}
+                                    className={t.responseSelect}
+                                >
+                                    {paramKinds.map((k) => (<option key={k} value={k}>{k}</option>))}
+                                </select>
+                                <input type="hidden" name={`version[endpoints_attributes][][params][${p.name}][kind]`} value={p.kind}/>
+                            </div>
+                        ))}
+                    </div>
+                </>
+            )}
             <div className={t.sectionHeader}>Note</div>
             <div className={t.noteWrapper}>
                 <textarea

@@ -68,6 +68,19 @@ describe Candidate::Create do
       expect(Endpoint.last.input).to eq("{query:string}")
     end
 
+    it "persists the kind chosen for each path param" do
+      params = valid_params.deep_dup
+      params[:version][:endpoints_attributes][0][:path] = "/posts/:postId/comments/:commentId"
+      params[:version][:endpoints_attributes][0][:params] = {
+        "postId" => { kind: "number" }, "commentId" => { kind: "string" }
+      }
+
+      Candidate::Create.new(params).call
+
+      expect(Endpoint.last.path_params.map { |p| [ p.name, p.kind ] })
+        .to eq([ [ "postId", "number" ], [ "commentId", "string" ] ])
+    end
+
     it "sets the author when one is passed" do
       Candidate::Create.new(valid_params, author: user).call
       expect(Candidate.last.author).to eq(user)

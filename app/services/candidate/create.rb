@@ -29,6 +29,7 @@ class Candidate::Create
           note: endpoint_attr[:note],
           input: endpoint_attr[:input],
           version: @version,
+          params_attributes: format_params(endpoint_attr[:params]),
           responses_attributes: format_responses(endpoint_attr[:responses])
         }
       end
@@ -40,6 +41,13 @@ class Candidate::Create
   end
 
   private
+
+  def format_params(params_hash)
+    return [] unless params_hash
+    params_hash.to_hash.entries.map do |name, attrs|
+      { name: name, kind: attrs.to_h.with_indifferent_access[:kind].to_s }
+    end
+  end
 
   def format_responses(responses_hash)
     return [] unless responses_hash

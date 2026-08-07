@@ -1,0 +1,19 @@
+# ===== v3 =====
+p1v3_tasks_show_task_id:
+  endpoint: p1v3_tasks_show
+  name: taskId
+  kind: string
+
+# ===== v4 (taskId narrowed from string to number) =====
+p1v4_tasks_show_task_id:
+  endpoint: p1v4_tasks_show
+  name: taskId
+  kind: number
+p1v4_tasks_comments_task_id:
+  endpoint: p1v4_tasks_comments
+  name: taskId
+  kind: number
+p1v4_tasks_comments_comment_id:
+  endpoint: p1v4_tasks_comments
+  name: commentId
+  kind: number

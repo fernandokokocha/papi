@@ -3,6 +3,7 @@ import EndpointFields from "@/components/EndpointFields.jsx";
 import {arrayDifference} from "@/helpers/arrayDiffrence.js";
 import {httpStatusCodes} from "@/helpers/values.js";
 import {verbSelectClass} from "@/helpers/verbColors.js";
+import {paramsOf} from "@/helpers/pathParams.js";
 
 const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
     const updateVerb = (newVerb) => {
@@ -19,6 +20,10 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
 
     const updateInput = (newInput) => {
         updateEndpoint(endpoint.id, {...endpoint, input: newInput})
+    }
+
+    const updateParamKind = (name, newKind) => {
+        updateEndpoint(endpoint.id, {...endpoint, paramKinds: {...endpoint.paramKinds, [name]: newKind}})
     }
 
     const addResponse = () => {
@@ -100,6 +105,7 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
                         </button>
                         {endpoint.collision && <span className="text-xs text-red-300">Collision!</span>}
                         {endpoint.no_responses && <span className="text-xs text-red-300">Needs a response</span>}
+                        {endpoint.duplicate_params && <span className="text-xs text-red-300">Duplicate param</span>}
                     </div>
                     <EndpointFields
                         endpoint={endpoint}
@@ -109,6 +115,8 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
                         updateResponseOutput={updateResponseOutput}
                         updateNote={updateNote}
                         updateInput={updateInput}
+                        updateParamKind={updateParamKind}
+                        showParams={paramsOf(endpoint.path, endpoint.paramKinds).length > 0}
                         responsesToAdd={responsesToAdd}
                         newResponseCode={newResponseCode}
                         setNewResponseCode={setNewResponseCode}

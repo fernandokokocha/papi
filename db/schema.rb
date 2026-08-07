@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_07_03_000001) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_07_000001) do
   create_table "candidates", force: :cascade do |t|
     t.string "name"
     t.integer "order"
@@ -49,6 +49,16 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_03_000001) do
     t.index ["candidate_id"], name: "index_comments_on_candidate_id"
     t.index ["parent_id"], name: "index_comments_on_parent_id"
     t.index ["resolved_by_id"], name: "index_comments_on_resolved_by_id"
+  end
+
+  create_table "endpoint_params", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "kind", default: "string", null: false
+    t.integer "endpoint_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["endpoint_id", "name"], name: "index_endpoint_params_on_endpoint_id_and_name", unique: true
+    t.index ["endpoint_id"], name: "index_endpoint_params_on_endpoint_id"
   end
 
   create_table "endpoints", force: :cascade do |t|
@@ -138,6 +148,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_07_03_000001) do
   add_foreign_key "comments", "comments", column: "parent_id"
   add_foreign_key "comments", "users", column: "author_id"
   add_foreign_key "comments", "users", column: "resolved_by_id"
+  add_foreign_key "endpoint_params", "endpoints"
   add_foreign_key "endpoints", "versions"
   add_foreign_key "entities", "versions"
   add_foreign_key "projects", "groups"

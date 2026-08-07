@@ -183,3 +183,9 @@ p1v4_webhooks_delete_200: { endpoint: p1v4_webhooks_delete, code: "200", note: "
 p1v4_webhooks_delete_403: { endpoint: p1v4_webhooks_delete, code: "403", note: "Not authorized to perform this action", output: "Error" }
 p1v4_webhooks_list_200: { endpoint: p1v4_webhooks_list, code: "200", note: "Request succeeded", output: "[Webhook]" }
 p1v4_webhooks_list_403: { endpoint: p1v4_webhooks_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
+p1v3_tasks_show_200: { endpoint: p1v3_tasks_show, code: "200", note: "Request succeeded", output: "Task" }
+p1v3_tasks_show_404: { endpoint: p1v3_tasks_show, code: "404", note: "Resource not found", output: "Error" }
+p1v4_tasks_show_200: { endpoint: p1v4_tasks_show, code: "200", note: "Request succeeded", output: "Task" }
+p1v4_tasks_show_404: { endpoint: p1v4_tasks_show, code: "404", note: "Resource not found", output: "Error" }
+p1v4_tasks_comments_200: { endpoint: p1v4_tasks_comments, code: "200", note: "Request succeeded", output: "Comment" }
+p1v4_tasks_comments_404: { endpoint: p1v4_tasks_comments, code: "404", note: "Resource not found", output: "Error" }

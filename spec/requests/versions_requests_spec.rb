@@ -72,6 +72,29 @@ describe "Version requests", type: :request do
       expect(response.body).to include("Input")
     end
 
+    it "renders the params of an endpoint whose path takes them" do
+      endpoint = FactoryBot.create(:endpoint, version: version, path: "/tasks/:taskId", http_verb: "verb_get")
+      FactoryBot.create(:endpoint_param, endpoint: endpoint, name: "taskId", kind: "number")
+      FactoryBot.create(:response, endpoint: endpoint, code: "200", output: "string")
+
+      sign_in(user)
+      get project_version_path(project.name, version.name)
+
+      expect(response.body).to include(">Params</div>")
+      expect(response.body).to include(":taskId")
+    end
+
+    it "omits the params section for an endpoint whose path takes none" do
+      endpoint = FactoryBot.create(:endpoint, version: version, path: "/tasks", http_verb: "verb_get")
+      FactoryBot.create(:response, endpoint: endpoint, code: "200", output: "string")
+
+      sign_in(user)
+      get project_version_path(project.name, version.name)
+
+      expect(response.status).to eq(200)
+      expect(response.body).not_to include(">Params</div>")
+    end
+
     it "does not render candidate comment threads on the version page" do
       merged_candidate = FactoryBot.create(:candidate, project: project, aasm_state: "merged")
       merged_version = FactoryBot.create(:version, candidate: merged_candidate, project: project)
