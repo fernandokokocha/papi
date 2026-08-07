@@ -35,6 +35,20 @@ const JSONSchemaForm = ({root, name, update, id, entities, canBeNothing = false}
         update(newRoot)
     }
 
+    const toggleOptional = (e, path) => {
+        e.preventDefault()
+
+        const lastElement = path.slice(-1)[0]
+        const parentPath = path.slice(0, -1)
+        let newRoot = JSON.parse(JSON.stringify(root));
+        const parent = findByPath(newRoot, parentPath);
+        const attribute = parent.attributes.find(attr => attr.name === lastElement)
+
+        attribute.optional = !attribute.optional
+
+        update(newRoot)
+    }
+
     const addNode = (e, path, name) => {
         e.preventDefault()
 
@@ -44,7 +58,7 @@ const JSONSchemaForm = ({root, name, update, id, entities, canBeNothing = false}
         if (current.nodeType === "oneOf") {
             current.branches.push(unusedBranch(current.branches))
         } else {
-            current.attributes.push({name, value: {nodeType: "primitive", value: "string"}})
+            current.attributes.push({name, optional: false, value: {nodeType: "primitive", value: "string"}})
         }
 
         update(newRoot)
@@ -93,6 +107,7 @@ const JSONSchemaForm = ({root, name, update, id, entities, canBeNothing = false}
                 onChange={changeType}
                 onDelete={removeNode}
                 onAdd={addNode}
+                onToggleOptional={toggleOptional}
                 path={[]}
                 canBeDeleted={false}
                 canBeNothing={canBeNothing}

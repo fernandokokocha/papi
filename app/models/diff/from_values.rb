@@ -9,12 +9,17 @@ class Diff::FromValues
     @after = diff.after
   end
 
-  def add_parent(name)
-    @before.add_parent(name)
-    @after.add_parent(name)
+  def add_parent(before_name, after_name)
+    @before.add_parent(before_name)
+    @after.add_parent(after_name)
 
     @before.level_with_blank_lines(@after)
     @after.level_with_blank_lines(@before)
+  end
+
+  def mark_parents(change)
+    @before.mark_first(change)
+    @after.mark_first(change)
   end
 
   def any_changes?

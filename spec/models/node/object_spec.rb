@@ -34,5 +34,21 @@ describe Node::Object, type: :model do
     it "is false for a node of another kind" do
       expect(object("a" => string)).not_to eq(string)
     end
+
+    it "is false when one attribute is optional and the other is not" do
+      required = Node::Object.new(object_attributes: [ Node::ObjectAttribute.new(name: "a", value: string) ])
+      optional = Node::Object.new(object_attributes: [ Node::ObjectAttribute.new(name: "a", value: string, optional: true) ])
+
+      expect(required).not_to eq(optional)
+    end
+  end
+
+  describe "#expand" do
+    it "keeps the optional flag" do
+      attribute = Node::ObjectAttribute.new(name: "nickname", value: string, optional: true)
+      expanded = Node::Object.new(object_attributes: [ attribute ]).expand
+
+      expect(expanded.object_attributes.first.optional).to eq(true)
+    end
   end
 end

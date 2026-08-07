@@ -6,25 +6,21 @@ class Diff::ObjectToObject
     after = Diff::Lines.new([ Diff::Line.new("{", :no_change, indent) ])
 
     value2.object_attributes.each do |oa|
-      matching_attribute = value1.object_attributes.select { |a| a.name == oa.name }
-      if matching_attribute.empty?
-        other = Node::Nothing.new
-      else
-        other = matching_attribute.first.value
-      end
+      matching = value1.object_attributes.find { |a| a.name == oa.name }
 
-      subdiff = Diff::FromValues.new(other, oa.value, indent + 1)
-      subdiff.add_parent(oa.name)
+      subdiff = Diff::FromValues.new(matching ? matching.value : Node::Nothing.new, oa.value, indent + 1)
+      subdiff.add_parent(matching ? matching.label : oa.label, oa.label)
+      subdiff.mark_parents(:type_changed) if matching && matching.optional != oa.optional
+
       before.concat(subdiff.before)
       after.concat(subdiff.after)
     end
 
     value1.object_attributes.each do |oa|
-      matching_attribute = value2.object_attributes.select { |a| a.name == oa.name }
-      next if matching_attribute.any?
+      next if value2.object_attributes.any? { |a| a.name == oa.name }
 
       subdiff = Diff::FromValues.new(oa.value, Node::Nothing.new, indent + 1)
-      subdiff.add_parent(oa.name)
+      subdiff.add_parent(oa.label, oa.label)
 
       before.concat(subdiff.before)
       after.concat(subdiff.after)

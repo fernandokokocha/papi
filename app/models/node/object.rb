@@ -18,7 +18,7 @@ class Node::Object
 
     object_attributes.each do |oa|
       attribute_lines = oa.value.to_diff(change, indent + 1)
-      attribute_lines.add_parent(oa.name)
+      attribute_lines.add_parent(oa.label)
       ret.concat(attribute_lines)
     end
 
@@ -36,7 +36,9 @@ class Node::Object
 
   def expand
     Node::Object.new(
-      object_attributes: object_attributes.map { |oa| Node::ObjectAttribute.new(name: oa.name, value: oa.value.expand) }
+      object_attributes: object_attributes.map { |oa|
+        Node::ObjectAttribute.new(name: oa.name, value: oa.value.expand, optional: oa.optional)
+      }
     )
   end
 

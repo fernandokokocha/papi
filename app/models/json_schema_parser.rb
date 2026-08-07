@@ -1,6 +1,7 @@
 class JSONSchemaParser
   OPENING_BRACKETS = [ "{", "[", "(" ].freeze
   CLOSING_BRACKETS = [ "}", "]", ")" ].freeze
+  OPTIONAL_SUFFIX = "?".freeze
 
   def initialize(valid_entities = [])
     @valid_entities = valid_entities
@@ -37,10 +38,13 @@ class JSONSchemaParser
 
   def parse_object(str)
     root = Node::Object.new
-    attrs = split_by_comma(str[1...-1])
-    attrs.map.with_index do |attr, i|
-      value = parse_value(attr[1])
-      root.object_attributes << Node::ObjectAttribute.new(name: attr[0], value: value)
+    split_by_comma(str[1...-1]).each do |raw_name, raw_value|
+      optional = raw_name.end_with?(OPTIONAL_SUFFIX)
+      root.object_attributes << Node::ObjectAttribute.new(
+        name: optional ? raw_name.delete_suffix(OPTIONAL_SUFFIX) : raw_name,
+        value: parse_value(raw_value),
+        optional: optional
+      )
     end
     root
   end

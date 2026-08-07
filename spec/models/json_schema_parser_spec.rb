@@ -63,6 +63,27 @@ describe JSONSchemaParser, type: :model do
       expect(actual).to eq(expected)
     end
 
+    it "parse { nickname?: string }" do
+      actual = parser.parse_value("{ nickname?: string }")
+      expected = Node::Object.new(object_attributes: [
+        Node::ObjectAttribute.new(name: "nickname", value: Node::Primitive.new(kind: "string"), optional: true)
+      ])
+
+      expect(actual).to eq(expected)
+    end
+
+    it "treats an attribute without the suffix as required" do
+      actual = parser.parse_value("{ nickname: string }")
+
+      expect(actual.object_attributes.first.optional).to eq(false)
+    end
+
+    it "round-trips the optional suffix through serialize" do
+      actual = parser.parse_value("{ id: number, nickname?: string }")
+
+      expect(actual.serialize).to eq("{id:number,nickname?:string}")
+    end
+
     it "parse { a: string, b: number }" do
       actual = parser.parse_value("{ a: string, b: number }")
       expected = Node::Object.new(object_attributes: [

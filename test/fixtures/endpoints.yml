@@ -152,7 +152,7 @@ p1v4_users_update:
   path: /users/me
   version: project1v4
   note: "Update the current user's fields"
-  input: "{name:(string|null),avatar_url:(string|null)}"
+  input: "{name?:string,avatar_url?:string}"
 p1v4_sessions_create:
   http_verb: verb_post
   path: /sessions

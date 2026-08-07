@@ -2,7 +2,7 @@
 p1v1_error:
   name: Error
   version: project1v1
-  root: "{code:number,message:string}"
+  root: "{code:number,message:string,details?:string}"
 p1v1_user:
   name: User
   version: project1v1
@@ -16,7 +16,7 @@ p1v1_session:
 p1v2_error:
   name: Error
   version: project1v2
-  root: "{code:number,message:string}"
+  root: "{code:number,message:string,details?:string}"
 p1v2_user:
   name: User
   version: project1v2
@@ -30,7 +30,7 @@ p1v2_session:
 p1v3_error:
   name: Error
   version: project1v3
-  root: "{code:number,message:string}"
+  root: "{code:number,message:string,details?:string}"
 p1v3_user:
   name: User
   version: project1v3
@@ -48,7 +48,7 @@ p1v3_task:
 p1v4_error:
   name: Error
   version: project1v4
-  root: "{code:number,message:string}"
+  root: "{code:number,message:string,details?:string}"
 p1v4_user:
   name: User
   version: project1v4
@@ -102,7 +102,7 @@ p1v4_project:
 p1v4_comment:
   name: Comment
   version: project1v4
-  root: "{id:number,body:string,author_id:number,task_id:(number|null)}"
+  root: "{id:number,body:string,author_id:number,task_id?:number}"
 p1v4_notification:
   name: Notification
   version: project1v4

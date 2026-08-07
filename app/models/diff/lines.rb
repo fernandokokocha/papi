@@ -16,6 +16,10 @@ class Diff::Lines
     end
   end
 
+  def mark_first(change)
+    @lines.first.change = change
+  end
+
   def concat(array)
     if array.respond_to?(:lines)
       @lines.concat(array.lines)

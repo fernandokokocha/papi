@@ -3,6 +3,18 @@ const trimEdgesAndWhitespace = (str) => {
     return str.slice(1, -1).trim();
 }
 
+const attribute = (str) => {
+    const splitted = str.split(":")
+    const rawName = splitted[0].trim()
+    const optional = rawName.endsWith("?")
+
+    return {
+        name: optional ? rawName.slice(0, -1) : rawName,
+        optional: optional,
+        value: deserialize(str.slice(splitted[0].length + 1))
+    }
+}
+
 const splitByComma = (str) => {
     if (str.length === 0) return []
     const ret = []
@@ -11,12 +23,7 @@ const splitByComma = (str) => {
     for (let i = 0; i < str.length; i++) {
         if (str[i] === ",") {
             if (deep === 0) {
-                const splitted = tmp.split(":")
-                const rest = tmp.slice(splitted[0].length + 1)
-                ret.push({
-                    name: splitted[0].trim(),
-                    value: deserialize(rest)
-                })
+                ret.push(attribute(tmp))
                 tmp = ""
             } else {
                 tmp += str[i]
@@ -32,12 +39,7 @@ const splitByComma = (str) => {
         }
     }
 
-    const splitted = tmp.split(":")
-    const rest = tmp.slice(splitted[0].length + 1)
-    ret.push({
-        name: splitted[0].trim(),
-        value: deserialize(rest)
-    })
+    ret.push(attribute(tmp))
 
     return ret;
 }

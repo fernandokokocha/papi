@@ -60,7 +60,7 @@ describe Diff::FromValues, type: :model do
       ])
 
       diff = Diff::FromValues.new(value1, value2)
-      diff.add_parent("parent")
+      diff.add_parent("parent", "parent")
       expected = Diff::Lines.new([
                                    Diff::Line.new("parent: string", :type_changed, 0),
                                    Diff::Line.new("", :blank, 0),
@@ -610,6 +610,41 @@ describe Diff::FromValues, type: :model do
                                    Diff::Line.new("string", :type_changed, 0)
                                  ])
       expect(diff.after).to eq(expected)
+    end
+  end
+
+  context "optionality" do
+    subject(:parser) { JSONSchemaParser.new }
+
+    def diff_of(before, after)
+      Diff::FromValues.new(parser.parse_value(before), parser.parse_value(after))
+    end
+
+    it "marks an attribute that became optional" do
+      diff = diff_of("{a:string}", "{a?:string}")
+
+      expect(diff.any_changes?).to eq(true)
+      expect(diff.before.lines.map(&:whole_line)).to eq([ "{", "a: string", "}" ])
+      expect(diff.after.lines.map(&:whole_line)).to eq([ "{", "a?: string", "}" ])
+    end
+
+    it "marks an attribute that became required" do
+      diff = diff_of("{a?:string}", "{a:string}")
+
+      expect(diff.any_changes?).to eq(true)
+    end
+
+    it "leaves a matching pair of optional attributes unchanged" do
+      diff = diff_of("{a?:string}", "{a?:string}")
+
+      expect(diff.any_changes?).to eq(false)
+    end
+
+    it "marks an object-valued attribute that became optional" do
+      diff = diff_of("{a:{b:string}}", "{a?:{b:string}}")
+
+      expect(diff.any_changes?).to eq(true)
+      expect(diff.after.lines.map(&:whole_line)).to eq([ "{", "a?:", "{", "b: string", "}", "}" ])
     end
   end
 end

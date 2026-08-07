@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import TypeSelect from "@/components/json_schema/TypeSelect.jsx";
 import ObjectAttribute from "@/components/json_schema/ObjectAttribute.jsx";
 
-const ObjectNode = ({onChange, onDelete, onAdd, attributes, path, canBeDeleted, canBeNothing, entities, excludeTypes}) => {
+const ObjectNode = ({onChange, onDelete, onAdd, onToggleOptional, attributes, path, canBeDeleted, canBeNothing, entities, excludeTypes}) => {
     const [newName, setNewName] = useState("new")
 
     const addDisabled = attributes.some(({name}) => name === newName)
@@ -13,13 +13,15 @@ const ObjectNode = ({onChange, onDelete, onAdd, attributes, path, canBeDeleted, 
             {"{"}
 
             {
-                attributes.map(({name, value}) => (
+                attributes.map(({name, optional, value}) => (
                     <ObjectAttribute key={name}
                                      name={name}
+                                     optional={optional}
                                      value={value}
                                      onChange={onChange}
                                      onDelete={onDelete}
                                      onAdd={onAdd}
+                                     onToggleOptional={onToggleOptional}
                                      path={path.concat(name)}
                                      canBeDeleted={true}
                                      canBeNothing={false}
