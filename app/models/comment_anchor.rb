@@ -2,7 +2,7 @@ require "digest/md5"
 
 class CommentAnchor
   IDENTITY_COLUMNS = %i[endpoint_path endpoint_http_verb entity_name response_code].freeze
-  LINE_PARTS = %w[note output root].freeze
+  LINE_PARTS = %w[note output root input].freeze
   private_constant :IDENTITY_COLUMNS, :LINE_PARTS
 
   def self.parts_for(scope)
@@ -84,6 +84,11 @@ class CommentAnchor
     new(scope: "entity", part: "root", entity_name: entity.name)
   end
 
+  def self.for_endpoint_input(endpoint)
+    new(scope: "endpoint", part: "input",
+        endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb])
+  end
+
   def self.sidebar_for(comment)
     if comment.scope == "entity"
       new(scope: "entity", part: "whole", entity_name: comment.entity_name)
@@ -111,6 +116,7 @@ class CommentAnchor
     case part
     when "output" then target.record(version).output
     when "root"   then target.record(version).root
+    when "input"  then target.record(version).input
     end
   end
 
@@ -128,6 +134,7 @@ class CommentAnchor
   def kind
     return :line if line
     return :note if part == "note"
+    return :input if part == "input"
     case scope
     when "endpoint" then :endpoint
     when "entity"   then :entity

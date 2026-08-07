@@ -152,3 +152,112 @@ c4_user_entity_root_line_outdated:
   line: 3
   anchor_snapshot: "{id:number,email:string,name:string}"
   created_at: 2025-04-03 13:30:00
+
+c4_users_create_input_region:
+  candidate: candidate4
+  author: one
+  body: "Making name nullable on create is a breaking change for the mobile client."
+  scope: endpoint
+  endpoint_path: /users
+  endpoint_http_verb: 1
+  part: input
+  created_at: 2025-04-03 14:00:00
+
+c4_users_create_input_region_reply:
+  candidate: candidate4
+  author: two
+  parent: c4_users_create_input_region
+  body: "It only relaxes the type — an existing client sending a name still validates."
+  scope: endpoint
+  endpoint_path: /users
+  endpoint_http_verb: 1
+  part: input
+  created_at: 2025-04-03 14:20:00
+
+c4_users_create_input_line_fresh:
+  candidate: candidate4
+  author: two
+  body: "Is avatar_url a URL we host, or one the caller supplies?"
+  scope: endpoint
+  endpoint_path: /users
+  endpoint_http_verb: 1
+  part: input
+  line: 8
+  anchor_snapshot: "{email:string,name:(string|null),password:string,avatar_url:(string|null)}"
+  created_at: 2025-04-03 14:30:00
+
+c4_users_create_input_line_outdated:
+  candidate: candidate4
+  author: one
+  body: "When I flagged this, name was still a plain required string."
+  scope: endpoint
+  endpoint_path: /users
+  endpoint_http_verb: 1
+  part: input
+  line: 2
+  anchor_snapshot: "{email:string,name:string,password:string}"
+  created_at: 2025-04-03 15:00:00
+
+c4_users_update_input_region:
+  candidate: candidate4
+  author: one
+  body: "PATCH takes a partial body — should omitting a field differ from sending null?"
+  scope: endpoint
+  endpoint_path: /users/me
+  endpoint_http_verb: 3
+  part: input
+  created_at: 2025-04-03 15:30:00
+
+c4_teams_create_input_line_entity:
+  candidate: candidate4
+  author: two
+  body: "member_ids alongside a nested team feels redundant — can the team carry them?"
+  scope: endpoint
+  endpoint_path: /teams
+  endpoint_http_verb: 1
+  part: input
+  line: 7
+  anchor_snapshot: "{team:Team,member_ids:[number]}"
+  created_at: 2025-04-03 16:00:00
+
+c4_tasks_create_input_added:
+  candidate: candidate4
+  author: one
+  body: "Good that POST /tasks finally documents its body."
+  scope: endpoint
+  endpoint_path: /tasks
+  endpoint_http_verb: 1
+  part: input
+  created_at: 2025-04-03 16:30:00
+
+c4_notifications_read_all_input_dropped:
+  candidate: candidate4
+  author: two
+  body: "Dropping ids[] means read-all is now unconditional — is that intended?"
+  scope: endpoint
+  endpoint_path: /notifications/read-all
+  endpoint_http_verb: 1
+  part: input
+  line: 1
+  anchor_snapshot: "{ids:[number]}"
+  created_at: 2025-04-03 17:00:00
+
+c4_exports_create_input_new_endpoint:
+  candidate: candidate4
+  author: one
+  body: "format should be an enum, not a free string."
+  scope: endpoint
+  endpoint_path: /exports
+  endpoint_http_verb: 1
+  part: input
+  created_at: 2025-04-03 17:30:00
+
+c4_users_delete_input_removed:
+  candidate: candidate4
+  author: two
+  body: "The reason/confirm body goes away with the endpoint — worth capturing elsewhere?"
+  scope: endpoint
+  endpoint_path: /users/me
+  endpoint_http_verb: 4
+  part: input
+  created_at: 2025-04-03 18:00:00

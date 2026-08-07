@@ -41,13 +41,22 @@
           wrapper_class: "col-start-2" %>
   </div>
 
+  <%# Input %>
+  <% input_anchor = CommentAnchor.new(scope: "endpoint", part: "input", endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb]) %>
+  <% input_lines = candidate_comments.endpoint_input_lines(endpoint) %>
+  <% input_map = endpoint_input_line_index_map(previous_endpoint, endpoint, expanded: expanded) %>
   <div class="grid grid-cols-2 border-t border-gray-300">
     <div class="bg-gray-200 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Input</div>
     <div class="bg-gray-200 border-l border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Input</div>
   </div>
   <div class="grid grid-cols-2">
-    <div class="px-3 py-2 bg-white font-mono text-xs text-gray-800"><%= render "specs/json", diff: input_diff.before %></div>
-    <div class="px-3 py-2 bg-white border-l border-gray-200 font-mono text-xs text-gray-800"><%= render "specs/json", diff: input_diff.after %></div>
+    <div <%= comment_region_attr(input_anchor) %> class="px-3 py-2 bg-white font-mono text-xs text-gray-800"><%= render "specs/json", diff: input_diff.before %></div>
+    <div <%= comment_region_attr(input_anchor) %> <%= endpoint_input_line_pick_attr(endpoint, input_map) %> class="px-3 py-2 bg-white border-l border-gray-200 font-mono text-xs text-gray-800"><%= render "specs/json", diff: input_diff.after, comments_by_line: expanded ? input_lines.by_line : {}, line_index_map: input_map %></div>
+    <%= render "comments/anchor_region",
+          anchor: input_anchor,
+          threads: candidate_comments.threads_for("endpoint", endpoint: endpoint, part: "input"),
+          wrapper_class: "col-start-2" %>
+    <%= render "comments/line_threads", anchor: CommentAnchor.for_endpoint_input(endpoint), collapsed: expanded ? [] : input_lines.fresh, outdated: input_lines.outdated, composable: !input_map.nil?, expanded: expanded, wrapper_class: "col-start-2" %>
   </div>
 
   <%# Responses — one grid row per code keeps both sides vertically aligned %>

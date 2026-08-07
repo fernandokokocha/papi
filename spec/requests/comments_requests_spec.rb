@@ -157,6 +157,76 @@ describe "Comments requests", type: :request do
         expect(response.body).to include(">Collapsed<")
         expect(turbo_actions.map(&:first)).not_to include("after")
       end
+
+      describe "on an endpoint input" do
+        let(:input_params) do
+          { comment: { body: "Pinned to the name row", scope: "endpoint", part: "input",
+                       endpoint_path: "/users", endpoint_http_verb: "0", line: "1" } }
+        end
+        let(:region) do
+          CommentAnchor.new(scope: "endpoint", part: "input", endpoint_path: "/users", endpoint_http_verb: 0)
+        end
+
+        before { endpoint.update!(input: "{name:string,email:string}") }
+
+        it "snapshots the endpoint's raw input, ignoring a client-supplied one" do
+          sign_in(user)
+          forged = input_params.deep_merge(comment: { anchor_snapshot: "forged" })
+          post project_candidate_comments_path(project.name, candidate.name), params: forged
+
+          expect(Comment.last.anchor_snapshot).to eq("{name:string,email:string}")
+        end
+
+        it "streams the thread inline after its row when the block was expanded" do
+          sign_in(user)
+          post project_candidate_comments_path(project.name, candidate.name),
+               params: input_params.merge(expanded: "true"), as: :turbo_stream
+
+          expect(turbo_actions).to include(
+            [ "after", %([data-line-pick="#{region.dom_id}"] [data-line-index="1"]) ],
+            [ "remove", "#{region.dom_id}_form" ],
+            [ "update", "#{region.dom_id}_form_home" ]
+          )
+          expect(response.body).to include(">Inlined<")
+        end
+
+        it "streams the thread into the below-block container when the block was collapsed" do
+          sign_in(user)
+          post project_candidate_comments_path(project.name, candidate.name),
+               params: input_params.merge(expanded: "false"), as: :turbo_stream
+
+          expect(turbo_actions).to include(
+            [ "append", "#{region.dom_id}_line_threads" ],
+            [ "remove", "#{region.dom_id}_form" ],
+            [ "update", "#{region.dom_id}_form_home" ]
+          )
+          expect(response.body).to include(">Collapsed<")
+        end
+
+        it "counts an input thread into the endpoint's sidebar badge" do
+          sign_in(user)
+          post project_candidate_comments_path(project.name, candidate.name),
+               params: input_params, as: :turbo_stream
+
+          sidebar_id = "sidebar_count_#{CommentAnchor.for_endpoint(endpoint).dom_id}"
+          expect(turbo_actions).to include([ "update", sidebar_id ])
+          expect(response.body).to include("💬 1")
+        end
+
+        it "appends a region thread to the input anchor when no line is picked" do
+          sign_in(user)
+          post project_candidate_comments_path(project.name, candidate.name),
+               params: { comment: { body: "The whole body needs work", scope: "endpoint", part: "input",
+                                    endpoint_path: "/users", endpoint_http_verb: "0" } },
+               as: :turbo_stream
+
+          expect(turbo_actions).to include(
+            [ "append", region.dom_id ],
+            [ "replace", "#{region.dom_id}_form" ]
+          )
+          expect(Comment.last.anchor_snapshot).to be_nil
+        end
+      end
     end
   end
 end

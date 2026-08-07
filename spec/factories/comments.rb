@@ -12,6 +12,13 @@ FactoryBot.define do
       endpoint_http_verb { 0 }
     end
 
+    trait :endpoint_input do
+      add_attribute(:scope) { "endpoint" }
+      part { "input" }
+      endpoint_path { "/users" }
+      endpoint_http_verb { 0 }
+    end
+
     trait :entity_scope do
       add_attribute(:scope) { "entity" }
       entity_name { "User" }

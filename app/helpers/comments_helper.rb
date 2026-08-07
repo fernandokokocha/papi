@@ -2,11 +2,13 @@ module CommentsHelper
   # Complete literal class strings so Tailwind sees them. Kinds echo the app's
   # card colors (endpoint sky, entity violet) plus non-semantic hues; all clear
   # of the red / green / amber that already mean removed / added / changed
-  # (fuchsia, not pink, so response never reads as red).
+  # (fuchsia, not pink, so response never reads as red; slate for input, because
+  # every remaining saturated hue sits next to a diff color or to note's cyan).
   KIND_STYLES = {
     line:         { label: "Line",         bg: "bg-indigo-50/60",  rail: "border-l-indigo-500",  chip: "bg-indigo-100 text-indigo-700 border-indigo-200" },
     response:     { label: "Response",     bg: "bg-fuchsia-50/60", rail: "border-l-fuchsia-500", chip: "bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200" },
     note:         { label: "Note",         bg: "bg-cyan-50/60",    rail: "border-l-cyan-500",    chip: "bg-cyan-100 text-cyan-700 border-cyan-200" },
+    input:        { label: "Input",        bg: "bg-slate-50/60",   rail: "border-l-slate-500",   chip: "bg-slate-100 text-slate-700 border-slate-200" },
     endpoint:     { label: "Endpoint",     bg: "bg-sky-50/60",     rail: "border-l-sky-600",     chip: "bg-sky-100 text-sky-700 border-sky-200" },
     entity:       { label: "Entity",       bg: "bg-violet-50/60",  rail: "border-l-violet-600",  chip: "bg-violet-100 text-violet-700 border-violet-200" },
     conversation: { label: "Conversation", bg: "bg-blue-50/60",    rail: "border-l-blue-600",    chip: "bg-blue-100 text-blue-700 border-blue-200" }
@@ -57,6 +59,24 @@ module CommentsHelper
         entity.parsed_root.to_diff(:no_change)
       end
     ExpandedLineIndex.new(lines, entity.version.entities).to_a
+  end
+
+  def endpoint_input_line_index_map(previous_endpoint, endpoint, expanded:)
+    return nil unless @candidate
+
+    after_value = endpoint.parsed_input(expanded: expanded)
+    lines =
+      if previous_endpoint
+        Diff::FromValues.new(previous_endpoint.parsed_input(expanded: expanded), after_value).after
+      else
+        after_value.to_diff(:added)
+      end
+    ExpandedLineIndex.new(lines, endpoint.version.entities).to_a
+  end
+
+  def endpoint_input_line_pick_attr(endpoint, map)
+    return "".html_safe if map.nil?
+    line_pick_attributes(CommentAnchor.for_endpoint_input(endpoint))
   end
 
   def response_line_pick_attr(endpoint, code, map)

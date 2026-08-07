@@ -47,6 +47,14 @@ describe CommentAnchor do
       expect(a.errors).to include([ :response_code, a_string_including("required") ])
     end
 
+    it "accepts input as an endpoint part, with or without a line" do
+      region = anchor(scope: "endpoint", part: "input", endpoint_path: "/users", endpoint_http_verb: 1)
+      line = anchor(scope: "endpoint", part: "input", line: 3, endpoint_path: "/users", endpoint_http_verb: 1)
+
+      expect(region.errors).to eq([])
+      expect(line.errors).to eq([])
+    end
+
     it "allows a line only on a text part" do
       valid = anchor(scope: "response", part: "output", line: 3,
                      endpoint_path: "/users", endpoint_http_verb: 0, response_code: "200")
@@ -128,6 +136,11 @@ describe CommentAnchor do
       a = anchor(scope: "entity", part: "root", line: 0, entity_name: "User")
       expect(a.label).to eq("User → root · line 0")
     end
+
+    it "reads an endpoint input" do
+      a = anchor(scope: "endpoint", part: "input", line: 2, endpoint_path: "/users", endpoint_http_verb: 1)
+      expect(a.label).to eq("POST /users → input · line 2")
+    end
   end
 
   describe "#kind" do
@@ -151,6 +164,11 @@ describe CommentAnchor do
                     endpoint_path: "/users", endpoint_http_verb: 0,
                     entity_name: nil, response_code: nil).kind).to eq(:note)
 
+      # so does an input part
+      expect(anchor(scope: "endpoint", part: "input", line: nil,
+                    endpoint_path: "/users", endpoint_http_verb: 0,
+                    entity_name: nil, response_code: nil).kind).to eq(:input)
+
       # a line beats both
       expect(anchor(scope: "endpoint", part: "note", line: 3,
                     endpoint_path: "/users", endpoint_http_verb: 0,
@@ -158,6 +176,18 @@ describe CommentAnchor do
       expect(anchor(scope: "entity", part: "root", line: 0,
                     endpoint_path: nil, endpoint_http_verb: nil,
                     entity_name: "User", response_code: nil).kind).to eq(:line)
+      expect(anchor(scope: "endpoint", part: "input", line: 1,
+                    endpoint_path: "/users", endpoint_http_verb: 0,
+                    entity_name: nil, response_code: nil).kind).to eq(:line)
+    end
+  end
+
+  describe ".for_endpoint_input" do
+    it "builds the line-part anchor from an endpoint record" do
+      endpoint = FactoryBot.build(:endpoint, path: "/users", http_verb: "verb_post")
+      built = described_class.for_endpoint_input(endpoint)
+
+      expect(built.key).to eq([ "endpoint", "/users", 1, nil, nil, "input", nil ])
     end
   end
 
@@ -171,7 +201,7 @@ describe CommentAnchor do
 
   describe "#current_output" do
     let(:version) { FactoryBot.create :version }
-    let(:endpoint) { FactoryBot.create :endpoint, version: version, path: "/users", http_verb: "verb_get" }
+    let(:endpoint) { FactoryBot.create :endpoint, version: version, path: "/users", http_verb: "verb_get", input: "{name:string}" }
 
     before do
       FactoryBot.create :response, endpoint: endpoint, code: "200", output: "{total:number,items:[User]}"
@@ -186,6 +216,18 @@ describe CommentAnchor do
     it "returns the entity root for an entity/root anchor" do
       a = anchor(scope: "entity", part: "root", entity_name: "User")
       expect(a.current_output(version)).to eq("{id:number}")
+    end
+
+    it "returns the raw input string for an endpoint/input anchor" do
+      a = anchor(scope: "endpoint", part: "input", endpoint_path: "/users", endpoint_http_verb: 0)
+      expect(a.current_output(version)).to eq("{name:string}")
+    end
+
+    it "returns the empty input of a body-less endpoint, not nil" do
+      FactoryBot.create :endpoint, version: version, path: "/health", http_verb: "verb_get", input: ""
+      a = anchor(scope: "endpoint", part: "input", endpoint_path: "/health", endpoint_http_verb: 0)
+
+      expect(a.current_output(version)).to eq("")
     end
 
     it "raises when the target is missing — nothing validates that an anchor's target exists" do
@@ -209,6 +251,23 @@ describe CommentAnchor do
                endpoint_path: nil, endpoint_http_verb: nil,
                entity_name: "Nope", response_code: nil).current_output(version)
       }.to raise_error(NoMethodError)
+
+      # the endpoint behind an input anchor is missing
+      expect {
+        anchor(scope: "endpoint", part: "input", line: nil,
+               endpoint_path: "/nope", endpoint_http_verb: 0,
+               entity_name: nil, response_code: nil).current_output(version)
+      }.to raise_error(NoMethodError)
+    end
+
+    it "picks the endpoint by verb as well as path" do
+      FactoryBot.create :endpoint, version: version, path: "/users", http_verb: "verb_post", input: "{name:string,email:string}"
+
+      get_anchor = anchor(scope: "endpoint", part: "input", endpoint_path: "/users", endpoint_http_verb: 0)
+      post_anchor = anchor(scope: "endpoint", part: "input", endpoint_path: "/users", endpoint_http_verb: 1)
+
+      expect(get_anchor.current_output(version)).to eq("{name:string}")
+      expect(post_anchor.current_output(version)).to eq("{name:string,email:string}")
     end
   end
 end

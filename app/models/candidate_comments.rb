@@ -19,6 +19,7 @@ class CandidateComments
     @entity_cards = {}
     @response_lines = {}
     @entity_lines = {}
+    @input_lines = {}
     roots.each { |comment| index(comment) }
     sort_line_buckets
   end
@@ -51,6 +52,10 @@ class CandidateComments
     by_freshness(@entity_lines.fetch(entity.name, []), entity.root)
   end
 
+  def endpoint_input_lines(endpoint)
+    by_freshness(@input_lines.fetch(endpoint_key(endpoint), []), endpoint.input)
+  end
+
   private
 
   def by_freshness(comments, current_text)
@@ -66,6 +71,9 @@ class CandidateComments
       into_card(@endpoint_cards, [ comment.endpoint_path, comment.endpoint_http_verb ], comment)
       if comment.scope == "response" && comment.part == "output" && comment.line
         (@response_lines[[ comment.endpoint_path, comment.endpoint_http_verb, comment.response_code ]] ||= []) << comment
+      end
+      if comment.scope == "endpoint" && comment.part == "input" && comment.line
+        (@input_lines[[ comment.endpoint_path, comment.endpoint_http_verb ]] ||= []) << comment
       end
     when "entity"
       into_card(@entity_cards, comment.entity_name, comment)
@@ -90,7 +98,7 @@ class CandidateComments
     (@endpoint_cards.values + @entity_cards.values).each do |card|
       card[:lines].sort_by! { |comment| [ comment.line, comment.created_at ] }
     end
-    (@response_lines.values + @entity_lines.values).each do |list|
+    (@response_lines.values + @entity_lines.values + @input_lines.values).each do |list|
       list.sort_by! { |comment| [ comment.line, comment.created_at ] }
     end
   end

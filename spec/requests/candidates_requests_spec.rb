@@ -240,6 +240,24 @@ describe "Candidates requests", type: :request do
       expect(response.body).not_to include("Resolve thread")
     end
 
+    it "carries input comments into the endpoint card the React form renders" do
+      version = FactoryBot.create(:version, project: project, candidate: candidate, name: "v1", order: 1)
+      FactoryBot.create(:endpoint, version: version, path: "/users", http_verb: "verb_post", input: "{name:string}")
+      candidate.comments.create!(author: user, body: "Region comment on the body", scope: "endpoint",
+                                 part: "input", endpoint_path: "/users", endpoint_http_verb: 1)
+      candidate.comments.create!(author: user, body: "Line comment on the body", scope: "endpoint",
+                                 part: "input", endpoint_path: "/users", endpoint_http_verb: 1,
+                                 line: 1, anchor_snapshot: "{name:string}")
+
+      sign_in(admin)
+      get edit_project_candidate_path(project.name, candidate.name)
+
+      body = CGI.unescapeHTML(response.body)
+      expect(body).to include("Region comment on the body")
+      expect(body).to include("Line comment on the body")
+      expect(body).to include("verb_post /users")
+    end
+
     it "sends an empty comments map for a candidate with no comments" do
       FactoryBot.create(:version, project: project, candidate: candidate, name: "v1", order: 1)
 
@@ -434,6 +452,96 @@ describe "Candidates requests", type: :request do
       expect(response.body).to include('name="comment[line]"')
       expect(response.body).to include('name="expanded"')
       expect(response.body).to include("data-pick-label")
+    end
+
+    it "makes the input block pickable alongside the response output" do
+      sign_in(user)
+      post project_candidates_path(project.name), params: {
+        candidate: { project_id: project.id, name: "rc1" },
+        version: {
+          name: "v1",
+          order: 1,
+          endpoints_attributes: [
+            { path: "/users",
+              http_verb: "verb_post",
+              input: "{name:string,email:string}",
+              responses: { "201" => { note: "Created", output: "User" } } }
+          ],
+          entities_attributes: [
+            { name: "User", root: "{id:number,email:string}" }
+          ]
+        }
+      }
+      candidate = Candidate.find_by!(name: "rc1")
+
+      get project_candidate_path(project.name, candidate.name)
+
+      input_anchor = CommentAnchor.new(scope: "endpoint", part: "input", endpoint_path: "/users", endpoint_http_verb: 1)
+      expect(response.body).to include('data-line-pick-label="POST /users → input"')
+      expect(response.body).to include("id=\"#{input_anchor.dom_id}_form\"")
+      expect(response.body).to include("id=\"#{input_anchor.dom_id}_form_home\"")
+      expect(response.body).to include("id=\"#{input_anchor.dom_id}_line_threads\"")
+      expect(response.body).to include("data-comment-region=\"#{input_anchor.dom_id}\"")
+    end
+
+    it "renders input-line threads below the block on first (collapsed) load" do
+      sign_in(user)
+      post project_candidates_path(project.name), params: {
+        candidate: { project_id: project.id, name: "rc1" },
+        version: {
+          name: "v1",
+          order: 1,
+          endpoints_attributes: [
+            { path: "/users",
+              http_verb: "verb_post",
+              input: "{name:string,email:string}",
+              responses: { "201" => { note: "Created", output: "User" } } }
+          ],
+          entities_attributes: [
+            { name: "User", root: "{id:number}" }
+          ]
+        }
+      }
+      candidate = Candidate.find_by!(name: "rc1")
+      candidate.comments.create!(author: user, body: "Should email be optional on create?",
+                                 scope: "endpoint", endpoint_path: "/users", endpoint_http_verb: 1,
+                                 part: "input", line: 2, anchor_snapshot: "{name:string,email:string}")
+      candidate.comments.create!(author: user, body: "When I flagged this, the body was just {name:string}.",
+                                 scope: "endpoint", endpoint_path: "/users", endpoint_http_verb: 1,
+                                 part: "input", line: 1, anchor_snapshot: "{name:string}")
+
+      get project_candidate_path(project.name, candidate.name)
+
+      expect(response.body).to include("POST /users → input · line 2")
+      expect(response.body).to include("Should email be optional on create?")
+      expect(response.body).to include("Outdated")     # the drifted {name:string} snapshot
+      expect(response.body).to include(">Collapsed<")  # fresh line-2 comment, still collapsed
+    end
+
+    it "labels an input region thread with the Input kind chip, not a raw part chip" do
+      sign_in(user)
+      post project_candidates_path(project.name), params: {
+        candidate: { project_id: project.id, name: "rc1" },
+        version: {
+          name: "v1",
+          order: 1,
+          endpoints_attributes: [
+            { path: "/users", http_verb: "verb_post", input: "{name:string}",
+              responses: { "201" => { note: "Created", output: "User" } } }
+          ],
+          entities_attributes: [ { name: "User", root: "{id:number}" } ]
+        }
+      }
+      candidate = Candidate.find_by!(name: "rc1")
+      candidate.comments.create!(author: user, body: "This body should take the whole profile",
+                                 scope: "endpoint", endpoint_path: "/users", endpoint_http_verb: 1, part: "input")
+
+      get project_candidate_path(project.name, candidate.name)
+
+      expect(response.body).to include("This body should take the whole profile")
+      expect(response.body).to include(">Input<")                     # the kind chip
+      expect(response.body).to include("POST /users → input")         # the anchor label beside it
+      expect(response.body).not_to include(">input<")                 # never the raw part as its own chip
     end
 
     it "does not drop a fresh root-line comment on a removed entity" do

@@ -19,22 +19,25 @@ describe CandidateComments do
       expect(none.card_for_entity(entity)).to eq(whole: [], lines: [])
       expect(none.response_output_lines(endpoint, "200")).to eq(described_class::LineComments.new(fresh: [], outdated: []))
       expect(none.entity_root_lines(entity)).to eq(described_class::LineComments.new(fresh: [], outdated: []))
+      expect(none.endpoint_input_lines(endpoint)).to eq(described_class::LineComments.new(fresh: [], outdated: []))
     end
   end
 
   describe "#threads_for" do
     it "finds threads by scope and identity, sorted by creation time" do
+      input = FactoryBot.create(:comment, :endpoint_input, candidate: candidate, created_at: 3.days.ago)
       note = FactoryBot.create(:comment, :endpoint_scope, candidate: candidate, part: "note", created_at: 2.days.ago)
       whole = FactoryBot.create(:comment, :endpoint_scope, candidate: candidate, created_at: 1.day.ago)
       entity_thread = FactoryBot.create(:comment, :entity_scope, candidate: candidate)
       response_thread = FactoryBot.create(:comment, :response_scope, candidate: candidate)
 
       # every part of the scope when none is named
-      expect(comments.threads_for("endpoint", endpoint: endpoint)).to eq([ note, whole ])
+      expect(comments.threads_for("endpoint", endpoint: endpoint)).to eq([ input, note, whole ])
 
       # narrowed to one part
       expect(comments.threads_for("endpoint", endpoint: endpoint, part: "whole")).to eq([ whole ])
       expect(comments.threads_for("endpoint", endpoint: endpoint, part: "note")).to eq([ note ])
+      expect(comments.threads_for("endpoint", endpoint: endpoint, part: "input")).to eq([ input ])
 
       # other scopes
       expect(comments.threads_for("entity", entity: entity)).to eq([ entity_thread ])
@@ -57,10 +60,11 @@ describe CandidateComments do
       root = FactoryBot.create(:comment, :endpoint_scope, candidate: candidate)
       FactoryBot.create(:comment, candidate: candidate, parent: root, body: "A reply")
       FactoryBot.create(:comment, :endpoint_scope, candidate: candidate, part: "note")
+      FactoryBot.create(:comment, :endpoint_input, candidate: candidate)
       FactoryBot.create(:comment, :response_scope, candidate: candidate)
       FactoryBot.create(:comment, :entity_scope, candidate: candidate)
 
-      expect(comments.sidebar_count(CommentAnchor.for_endpoint(endpoint))).to eq(3)
+      expect(comments.sidebar_count(CommentAnchor.for_endpoint(endpoint))).to eq(4)
       expect(comments.sidebar_count(CommentAnchor.for_endpoint(other_endpoint))).to eq(0)
       expect(comments.sidebar_count(CommentAnchor.for_entity(entity))).to eq(1)
       expect(comments.sidebar_count(CommentAnchor.for_entity(FactoryBot.create(:entity, name: "Task")))).to eq(0)
@@ -72,12 +76,15 @@ describe CandidateComments do
       whole = FactoryBot.create(:comment, :endpoint_scope, candidate: candidate)
       response_whole = FactoryBot.create(:comment, :response_scope, candidate: candidate)
       line = FactoryBot.create(:comment, :response_scope, candidate: candidate, part: "output", line: 2, anchor_snapshot: "x")
+      input_whole = FactoryBot.create(:comment, :endpoint_input, candidate: candidate)
+      input_line = FactoryBot.create(:comment, :endpoint_input, candidate: candidate, line: 1, anchor_snapshot: "x")
       entity_whole = FactoryBot.create(:comment, :entity_scope, candidate: candidate)
       entity_line = FactoryBot.create(:comment, :entity_scope, candidate: candidate, part: "root", line: 0, anchor_snapshot: "x")
 
+      # the card is what the React edit form renders, so input rides along with no extra wiring
       endpoint_card = comments.card_for_endpoint(endpoint)
-      expect(endpoint_card[:whole]).to contain_exactly(whole, response_whole)
-      expect(endpoint_card[:lines]).to eq([ line ])
+      expect(endpoint_card[:whole]).to contain_exactly(whole, response_whole, input_whole)
+      expect(endpoint_card[:lines]).to eq([ input_line, line ])
 
       entity_card = comments.card_for_entity(entity)
       expect(entity_card[:whole]).to eq([ entity_whole ])
@@ -114,6 +121,41 @@ describe CandidateComments do
 
       # identity has to match
       expect(comments.response_output_lines(endpoint, "404").fresh).to eq([])
+    end
+
+    it "splits endpoint input threads against the raw input string" do
+      endpoint.update!(input: "{name:string}")
+
+      second = FactoryBot.create(:comment, :endpoint_input, candidate: candidate, line: 4, anchor_snapshot: "{name:string}")
+      first = FactoryBot.create(:comment, :endpoint_input, candidate: candidate, line: 1, anchor_snapshot: "{name:string}")
+      stale = FactoryBot.create(:comment, :endpoint_input, candidate: candidate, line: 2, anchor_snapshot: "{name:string,legacy:string}")
+
+      input_lines = comments.endpoint_input_lines(endpoint)
+
+      expect(input_lines.fresh).to eq([ first, second ])
+      expect(input_lines.outdated).to eq([ stale ])
+      expect(input_lines.by_line).to eq(1 => [ first ], 4 => [ second ])
+
+      # identity has to match
+      expect(comments.endpoint_input_lines(other_endpoint).fresh).to eq([])
+    end
+
+    it "outdates input threads once the request body is dropped" do
+      thread = FactoryBot.create(:comment, :endpoint_input, candidate: candidate, line: 1, anchor_snapshot: "{name:string}")
+      endpoint.update!(input: "")
+
+      expect(comments.endpoint_input_lines(endpoint).outdated).to eq([ thread ])
+    end
+
+    it "keeps input and response threads in separate buckets" do
+      endpoint.update!(input: "{name:string}")
+      FactoryBot.create(:response, endpoint: endpoint, code: "200", output: "{id:number}")
+
+      input_thread = FactoryBot.create(:comment, :endpoint_input, candidate: candidate, line: 1, anchor_snapshot: "{name:string}")
+      output_thread = FactoryBot.create(:comment, :response_scope, candidate: candidate, part: "output", line: 1, anchor_snapshot: "{id:number}")
+
+      expect(comments.endpoint_input_lines(endpoint).fresh).to eq([ input_thread ])
+      expect(comments.response_output_lines(endpoint, "200").fresh).to eq([ output_thread ])
     end
 
     it "treats every thread as outdated when the anchored text is gone" do
