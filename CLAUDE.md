@@ -38,6 +38,13 @@ version, and a mock server (`TestServerController`) that answers real HTTP
 requests under `/projects/:p/versions/:v/*` with example JSON built from the
 declared response schema.
 
+## Working here
+
+**Design in conversation, then write the code.** No spec document, no plan file,
+no design doc unless one is asked for — the discussion settles the design, and
+the code is the next artifact after it. Anything worth keeping from that
+discussion is a decision record, not a plan.
+
 ## Commands
 
 - `bin/dev` — dev server. Not `bin/rails server`: it also runs the Tailwind and
