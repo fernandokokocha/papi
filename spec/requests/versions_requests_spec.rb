@@ -135,5 +135,13 @@ describe "Version requests", type: :request do
       expect(response.body).not_to include("Resolve thread")
       expect(response.body).not_to include("resolved-thread")
     end
+
+    it "offers the OpenAPI export" do
+      sign_in(user)
+      get project_version_path(project.name, version.name)
+
+      expect(response.body).to include("Export OpenAPI")
+      expect(response.body).to include(project_version_openapi_path(project_name: project.name, version_name: version.name))
+    end
   end
 end

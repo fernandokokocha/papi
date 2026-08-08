@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       resource :rejection, only: [ :create ]
     end
     resources :versions, only: [ :show ], param: :name do
+      resource :openapi, only: [ :show ], controller: "open_api"
       match "*", via: :all, to: "test_server#version", constraints: VersionTestServerConstraint.new
     end
     resources :endpoints, only: [ :show ]

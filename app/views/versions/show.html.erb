@@ -13,6 +13,8 @@
   </div>
 
   <div class="flex items-center gap-3">
+    <%= link_to "Export OpenAPI", project_version_openapi_path(project_name: @project.name, version_name: @version.name), class: "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-sm font-medium px-4 py-2 rounded" %>
+
     <%= link_to "View candidate → #{candidate.name}", project_candidate_path(@project.name, candidate.name), class: "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-sm font-medium px-4 py-2 rounded" %>
 
     <% if @previous_version.order > -1 %>
