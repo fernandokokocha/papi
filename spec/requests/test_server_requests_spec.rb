@@ -29,6 +29,42 @@ describe "Test server", type: :request do
     }.to raise_error(TestServerController::InvalidResponseCode)
   end
 
+  describe "query params" do
+    let!(:search) do
+      FactoryBot.create(:endpoint, version: version, http_verb: "verb_get", path: "/search").tap do |e|
+        FactoryBot.create(:response, endpoint: e, code: "200", output: "{ hits: number }")
+        FactoryBot.create(:endpoint_param, :query, endpoint: e, name: "q", kind: "string", required: true)
+        FactoryBot.create(:endpoint_param, :query, endpoint: e, name: "page", kind: "number", required: false)
+      end
+    end
+
+    it "serves the endpoint when every required param is present" do
+      get "/projects/proj/versions/v1/search", params: { q: "hello" }
+
+      expect(response.status).to eq(200)
+      expect(response.body).to include("hits")
+    end
+
+    it "raises when a required param is missing" do
+      expect {
+        get "/projects/proj/versions/v1/search"
+      }.to raise_error(TestServerController::MissingRequiredParam, /q/)
+    end
+
+    it "accepts any value, since kinds are not checked" do
+      get "/projects/proj/versions/v1/search", params: { q: "" }
+      expect(response.status).to eq(200)
+    end
+
+    it "does not count a route segment as a query param" do
+      FactoryBot.create(:endpoint_param, :query, endpoint: search, name: "version_name", kind: "string", required: true)
+
+      expect {
+        get "/projects/proj/versions/v1/search", params: { q: "hello" }
+      }.to raise_error(TestServerController::MissingRequiredParam, /version_name/)
+    end
+  end
+
   describe "path params" do
     let!(:show) do
       FactoryBot.create(:endpoint, version: version, http_verb: "verb_get", path: "/users/:userId").tap do |e|

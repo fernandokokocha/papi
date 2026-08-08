@@ -27,6 +27,24 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
         updateEndpoint(endpoint.id, {...endpoint, input: newInput})
     }
 
+    const addQueryParam = () => {
+        updateEndpoint(endpoint.id, {...endpoint, queryParams: [...endpoint.queryParams, {name: "", kind: "string", required: false}]})
+    }
+
+    const removeQueryParam = (index) => {
+        const newParams = [
+            ...endpoint.queryParams.slice(0, index),
+            ...endpoint.queryParams.slice(index + 1),
+        ]
+        updateEndpoint(endpoint.id, {...endpoint, queryParams: newParams})
+    }
+
+    const updateQueryParam = (index, param) => {
+        const newParams = [...endpoint.queryParams]
+        newParams[index] = param
+        updateEndpoint(endpoint.id, {...endpoint, queryParams: newParams})
+    }
+
     const updateParamKind = (name, newKind) => {
         updateEndpoint(endpoint.id, {...endpoint, paramKinds: {...endpoint.paramKinds, [name]: newKind}})
     }
@@ -101,6 +119,16 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
                         </div>
                     </>
                 )}
+                <div className={sectionHeader}>Query</div>
+                <div className="px-3 py-2 bg-white border-b border-gray-200 font-mono text-xs text-gray-800">
+                    {endpoint.original_queryParams.length === 0 && <span className="text-xs text-gray-400 italic">—</span>}
+                    {endpoint.original_queryParams.map((p) => (
+                        <div key={p.name} className="flex gap-2">
+                            <span className="w-40 shrink-0 truncate">{p.required ? p.name : `${p.name}?`}</span>
+                            <span className={`primitive ${p.kind}`}>{p.kind}</span>
+                        </div>
+                    ))}
+                </div>
                 <div className={sectionHeader}>Note</div>
                 <div className={contentRow}>{endpoint.original_note || <span className="text-gray-400 italic">—</span>}</div>
                 <StaticEndpointFields input={endpoint.original_input} responses={endpoint.original_responses}/>
@@ -138,6 +166,7 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
                         {endpoint.collision && <span className="text-xs text-red-300">Collision!</span>}
                         {endpoint.no_responses && <span className="text-xs text-red-300">Needs a response</span>}
                         {endpoint.duplicate_params && <span className="text-xs text-red-300">Duplicate param</span>}
+                        {endpoint.bad_query_params && <span className="text-xs text-red-300">Bad query param</span>}
                     </div>
                     <EndpointFields
                         endpoint={endpoint}
@@ -148,6 +177,9 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
                         updateNote={updateNote}
                         updateInput={updateInput}
                         updateParamKind={updateParamKind}
+                        addQueryParam={addQueryParam}
+                        removeQueryParam={removeQueryParam}
+                        updateQueryParam={updateQueryParam}
                         showParams={showParams}
                         responsesToAdd={responsesToAdd}
                         newResponseCode={newResponseCode}

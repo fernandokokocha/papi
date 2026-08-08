@@ -79,13 +79,22 @@ class Endpoint < ApplicationRecord
   end
 
   def path_params
-    stored = params.index_by(&:name)
+    stored = params.select { |param| param.location == "path" }.index_by(&:name)
     param_names.map { |name| stored[name] || EndpointParam.new(name: name, kind: "string") }
+  end
+
+  def query_params
+    params.select { |param| param.location == "query" }.sort_by(&:name)
+  end
+
+  def example_query_string
+    query_params.map { |param| "#{param.name}=#{param.kind}" }.join("&")
   end
 
   def differs_from?(previous)
     previous.path != path ||
       DiffParams::FromParams.new(previous.path_params, path_params).any_changes? ||
+      DiffParams::FromParams.new(previous.query_params, query_params).any_changes? ||
       DiffText::FromNotes.new(previous.note, note).any_changes? ||
       Diff::FromValues.new(previous.parsed_input, parsed_input).any_changes? ||
       DiffResponses::FromResponses.new(previous.responses, responses).any_changes?

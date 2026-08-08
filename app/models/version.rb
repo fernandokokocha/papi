@@ -35,6 +35,7 @@ class Version < ApplicationRecord
         verb: endpoint.verb,
         path: endpoint.path,
         params: endpoint.path_params.map { |param| { name: param.name, kind: param.kind } },
+        query_params: endpoint.query_params.map { |param| { name: param.name, kind: param.kind, required: param.required } },
         note: endpoint.note,
         input: endpoint.input,
         responses: endpoint.responses.sort_by(&:code).map { |r| { code: r.code, note: r.note, output: r.output } }

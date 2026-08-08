@@ -95,6 +95,14 @@ const Form = ({serializedEndpoints, serializedEntities, comments}) => {
                 } else {
                     endpoint.duplicate_params = false;
                 }
+
+                const queryNames = endpoint.queryParams.map((p) => p.name)
+                if (queryNames.some((name) => name.trim() === "") || new Set(queryNames).size !== queryNames.length) {
+                    newNoCollisions = false;
+                    endpoint.bad_query_params = true;
+                } else {
+                    endpoint.bad_query_params = false;
+                }
             })
         setNoCollisions(newNoCollisions)
 
@@ -105,6 +113,9 @@ const Form = ({serializedEndpoints, serializedEntities, comments}) => {
                 verb: endpoint.verb,
                 path: endpoint.path,
                 params: paramsOf(endpoint.path, endpoint.paramKinds),
+                query_params: [...endpoint.queryParams]
+                    .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0))
+                    .map((p) => ({name: p.name, kind: p.kind, required: p.required})),
                 note: endpoint.note,
                 input: serialize(endpoint.input),
                 responses: [...endpoint.responses]
@@ -170,6 +181,7 @@ const Form = ({serializedEndpoints, serializedEntities, comments}) => {
         endpointToRestore.input = JSON.parse(JSON.stringify(endpointToRestore.original_input))
         endpointToRestore.responses = JSON.parse(JSON.stringify(endpointToRestore.original_responses))
         endpointToRestore.paramKinds = {...endpointToRestore.original_paramKinds}
+        endpointToRestore.queryParams = endpointToRestore.original_queryParams.map((p) => ({...p}))
         endpointToRestore.collision = false
 
         validate(newEndpoints, entities)
@@ -187,6 +199,7 @@ const Form = ({serializedEndpoints, serializedEntities, comments}) => {
             verb: newVerb,
             path: newPath,
             paramKinds: {},
+            queryParams: [],
             input: {nodeType: "primitive", value: "nothing"},
             responses: []
         })
@@ -270,6 +283,10 @@ const Form = ({serializedEndpoints, serializedEntities, comments}) => {
             endpointData.paramKinds = kinds
             endpointData.original_paramKinds = {...kinds}
             delete endpointData.params
+
+            endpointData.queryParams = endpointData.query_params
+            endpointData.original_queryParams = endpointData.query_params.map((p) => ({...p}))
+            delete endpointData.query_params
 
             const parsed_input = deserialize(endpointData.input)
             endpointData.input = parsed_input

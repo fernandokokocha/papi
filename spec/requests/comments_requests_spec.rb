@@ -111,13 +111,14 @@ describe "Comments requests", type: :request do
     describe "param-anchored roots" do
       let(:anchor) do
         CommentAnchor.new(scope: "param", part: "whole",
-                          endpoint_path: "/users/:id", endpoint_http_verb: 0, param_name: "id")
+                          endpoint_path: "/users/:id", endpoint_http_verb: 0, param_name: "id", param_location: "path")
       end
 
       def post_param_comment
         post project_candidate_comments_path(project.name, candidate.name),
              params: { comment: { body: "Should this be a slug?", scope: "param", part: "whole",
-                                  endpoint_path: "/users/:id", endpoint_http_verb: "0", param_name: "id" } },
+                                  endpoint_path: "/users/:id", endpoint_http_verb: "0",
+                                  param_name: "id", param_location: "path" } },
              as: :turbo_stream
       end
 
@@ -163,7 +164,7 @@ describe "Comments requests", type: :request do
     describe "param regions on the candidate page" do
       let!(:version) { FactoryBot.create :version, candidate: candidate, project: project, order: 1 }
       let!(:endpoint) { FactoryBot.create :endpoint, version: version, path: "/users/:id", http_verb: "verb_get" }
-      let(:anchor) { CommentAnchor.for_endpoint_param(endpoint, "id") }
+      let(:anchor) { CommentAnchor.for_endpoint_param(endpoint, "id", "path") }
 
       it "makes each param row its own comment region" do
         sign_in(user)

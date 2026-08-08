@@ -1,7 +1,7 @@
 require "digest/md5"
 
 class CommentAnchor
-  IDENTITY_COLUMNS = %i[endpoint_path endpoint_http_verb entity_name response_code param_name].freeze
+  IDENTITY_COLUMNS = %i[endpoint_path endpoint_http_verb entity_name response_code param_name param_location].freeze
   LINE_PARTS = %w[note output root input].freeze
   private_constant :IDENTITY_COLUMNS, :LINE_PARTS
 
@@ -13,9 +13,10 @@ class CommentAnchor
 
   def initialize(scope:, part:, line: nil,
                  endpoint_path: nil, endpoint_http_verb: nil,
-                 entity_name: nil, response_code: nil, param_name: nil)
+                 entity_name: nil, response_code: nil, param_name: nil, param_location: nil)
     @identity = { endpoint_path: endpoint_path, endpoint_http_verb: endpoint_http_verb,
-                  entity_name: entity_name, response_code: response_code, param_name: param_name }
+                  entity_name: entity_name, response_code: response_code,
+                  param_name: param_name, param_location: param_location }
     @scope = scope
     @target = CommentTarget.build(scope, @identity)
     @part = part
@@ -28,6 +29,7 @@ class CommentAnchor
   def entity_name = @identity[:entity_name]
   def response_code = @identity[:response_code]
   def param_name = @identity[:param_name]
+  def param_location = @identity[:param_location]
 
   # The stored path keeps its param names so labels stay readable; identity
   # erases them, so renaming :id to :user_id does not orphan the thread.
@@ -36,7 +38,7 @@ class CommentAnchor
   end
 
   def key
-    [ scope, endpoint_identity_path, endpoint_http_verb, entity_name, response_code, param_name, part, line ]
+    [ scope, endpoint_identity_path, endpoint_http_verb, entity_name, response_code, param_name, param_location, part, line ]
   end
 
   def errors
@@ -65,7 +67,8 @@ class CommentAnchor
       endpoint_http_verb: (params[:endpoint_http_verb] || params["endpoint_http_verb"]).presence&.to_i,
       entity_name: (params[:entity_name] || params["entity_name"]).presence,
       response_code: (params[:response_code] || params["response_code"]).presence,
-      param_name: (params[:param_name] || params["param_name"]).presence
+      param_name: (params[:param_name] || params["param_name"]).presence,
+      param_location: (params[:param_location] || params["param_location"]).presence
     )
   end
 
@@ -97,10 +100,10 @@ class CommentAnchor
         endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb])
   end
 
-  def self.for_endpoint_param(endpoint, param_name)
+  def self.for_endpoint_param(endpoint, param_name, location)
     new(scope: "param", part: "whole",
         endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb],
-        param_name: param_name)
+        param_name: param_name, param_location: location)
   end
 
   def self.sidebar_for(comment)
@@ -116,14 +119,16 @@ class CommentAnchor
     {
       scope: scope, part: part, line: line,
       endpoint_path: endpoint_path, endpoint_http_verb: endpoint_http_verb,
-      entity_name: entity_name, response_code: response_code, param_name: param_name
+      entity_name: entity_name, response_code: response_code,
+      param_name: param_name, param_location: param_location
     }
   end
 
   def without_line
     self.class.new(scope: scope, part: part,
                    endpoint_path: endpoint_path, endpoint_http_verb: endpoint_http_verb,
-                   entity_name: entity_name, response_code: response_code, param_name: param_name)
+                   entity_name: entity_name, response_code: response_code,
+                   param_name: param_name, param_location: param_location)
   end
 
   def current_output(version)

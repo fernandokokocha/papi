@@ -17,3 +17,56 @@ p1v4_tasks_comments_comment_id:
   endpoint: p1v4_tasks_comments
   name: commentId
   kind: number
+
+# ===== query params on GET /users =====
+# v2 introduces pagination, v3 adds a required search and tightens page.
+p1v2_users_list_page:
+  endpoint: p1v2_users_list
+  name: page
+  kind: number
+  location: query
+  required: false
+p1v2_users_list_per_page:
+  endpoint: p1v2_users_list
+  name: per_page
+  kind: number
+  location: query
+  required: false
+
+p1v3_users_list_q:
+  endpoint: p1v3_users_list
+  name: q
+  kind: string
+  location: query
+  required: true
+p1v3_users_list_page:
+  endpoint: p1v3_users_list
+  name: page
+  kind: number
+  location: query
+  required: true
+p1v3_users_list_per_page:
+  endpoint: p1v3_users_list
+  name: per_page
+  kind: number
+  location: query
+  required: false
+
+p1v4_users_list_q:
+  endpoint: p1v4_users_list
+  name: q
+  kind: string
+  location: query
+  required: true
+p1v4_users_list_page:
+  endpoint: p1v4_users_list
+  name: page
+  kind: number
+  location: query
+  required: true
+p1v4_users_list_per_page:
+  endpoint: p1v4_users_list
+  name: per_page
+  kind: number
+  location: query
+  required: false

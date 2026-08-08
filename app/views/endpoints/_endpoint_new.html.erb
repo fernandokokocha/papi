@@ -18,7 +18,11 @@
       </div>
       <% if endpoint.path_params.any? %>
         <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Params</div>
-        <div class="px-3 py-2 bg-white border-b border-gray-200 font-mono text-xs text-gray-800"><%= render "endpoints/params_cell", rows: DiffParams::FromParams.new([], endpoint.path_params).after_rows, side: :after, endpoint: endpoint %></div>
+        <div class="px-3 py-2 bg-white border-b border-gray-200 font-mono text-xs text-gray-800"><%= render "endpoints/params_cell", rows: DiffParams::FromParams.new([], endpoint.path_params).after_rows, side: :after, endpoint: endpoint, location: "path" %></div>
+      <% end %>
+      <% if endpoint.query_params.any? %>
+        <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Query</div>
+        <div class="px-3 py-2 bg-white border-b border-gray-200 font-mono text-xs text-gray-800"><%= render "endpoints/params_cell", rows: DiffParams::FromParams.new([], endpoint.query_params).after_rows, side: :after, endpoint: endpoint, location: "query" %></div>
       <% end %>
       <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Note</div>
       <% note_anchor = CommentAnchor.new(scope: "endpoint", part: "note", endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb]) %>
@@ -38,7 +42,7 @@
             wrapper_class: "" %>
       <%= render "comments/line_threads", anchor: CommentAnchor.for_endpoint_input(endpoint), collapsed: expanded ? [] : input_lines.fresh, outdated: input_lines.outdated, composable: !input_map.nil?, expanded: expanded, wrapper_class: "" %>
       <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Responses</div>
-      <div class="bg-white border-b border-gray-200"><%= render "specs/responses", lines: responses_diff.lines, side: :after, endpoint: endpoint, curl_verb: endpoint.verb, curl_path: endpoint.path, expanded: expanded %></div>
+      <div class="bg-white border-b border-gray-200"><%= render "specs/responses", lines: responses_diff.lines, side: :after, endpoint: endpoint, curl_verb: endpoint.verb, curl_path: endpoint.path, curl_query: endpoint.example_query_string, expanded: expanded %></div>
     </div>
   </div>
 </div>

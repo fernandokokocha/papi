@@ -3,6 +3,7 @@ class TestServerController < ApplicationController
   allow_unauthenticated_access
 
   class InvalidResponseCode < StandardError; end
+  class MissingRequiredParam < StandardError; end
 
   def version
     project = Project.find_by!(name: request.params[:project_name])
@@ -22,6 +23,8 @@ class TestServerController < ApplicationController
   end
 
   def output(endpoint, request)
+    require_query_params(endpoint, request)
+
     desired_response = request.params[:response]
 
     if desired_response.nil?
@@ -33,6 +36,15 @@ class TestServerController < ApplicationController
     response = endpoint.responses.find_by(code: desired_response)
     raise InvalidResponseCode.new("Invalid response code: #{desired_response}") if response.nil?
     response.parsed_output
+  end
+
+  # request.params merges in the route's project_name, version_name and glob, so
+  # a declared param sharing one of those names would look satisfied.
+  def require_query_params(endpoint, request)
+    missing = endpoint.query_params.select(&:required).map(&:name) - request.query_parameters.keys
+    return if missing.empty?
+
+    raise MissingRequiredParam.new("Missing required query params: #{missing.join(", ")}")
   end
 
   # When no response code is requested, serve the first response alphabetically

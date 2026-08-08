@@ -93,8 +93,8 @@ describe CandidateComments do
     it "finds a thread by endpoint identity and param name" do
       thread = FactoryBot.create(:comment, :param_scope, candidate: candidate)
 
-      expect(comments.threads_for("param", endpoint: param_endpoint, param_name: "id")).to eq([ thread ])
-      expect(comments.threads_for("param", endpoint: param_endpoint, param_name: "slug")).to eq([])
+      expect(comments.threads_for("param", endpoint: param_endpoint, param_name: "id", param_location: "path")).to eq([ thread ])
+      expect(comments.threads_for("param", endpoint: param_endpoint, param_name: "slug", param_location: "path")).to eq([])
     end
 
     it "keeps two params on one endpoint apart" do
@@ -103,8 +103,16 @@ describe CandidateComments do
                                   endpoint_path: "/users/:id/:slug", param_name: "slug")
       endpoint = FactoryBot.create(:endpoint, path: "/users/:id/:slug", http_verb: "verb_get")
 
-      expect(comments.threads_for("param", endpoint: endpoint, param_name: "slug")).to eq([ on_slug ])
-      expect(comments.threads_for("param", endpoint: param_endpoint, param_name: "id")).to eq([ on_id ])
+      expect(comments.threads_for("param", endpoint: endpoint, param_name: "slug", param_location: "path")).to eq([ on_slug ])
+      expect(comments.threads_for("param", endpoint: param_endpoint, param_name: "id", param_location: "path")).to eq([ on_id ])
+    end
+
+    it "keeps a path param and a query param of the same name apart" do
+      on_path = FactoryBot.create(:comment, :param_scope, candidate: candidate)
+      on_query = FactoryBot.create(:comment, :param_scope, candidate: candidate, param_location: "query")
+
+      expect(comments.threads_for("param", endpoint: param_endpoint, param_name: "id", param_location: "path")).to eq([ on_path ])
+      expect(comments.threads_for("param", endpoint: param_endpoint, param_name: "id", param_location: "query")).to eq([ on_query ])
     end
 
     # Identity keys on the name, so unlike an endpoint thread a param thread does
@@ -113,7 +121,7 @@ describe CandidateComments do
       FactoryBot.create(:comment, :param_scope, candidate: candidate)
       renamed = FactoryBot.create(:endpoint, path: "/users/:user_id", http_verb: "verb_get")
 
-      expect(comments.threads_for("param", endpoint: renamed, param_name: "user_id")).to eq([])
+      expect(comments.threads_for("param", endpoint: renamed, param_name: "user_id", param_location: "path")).to eq([])
     end
 
     it "counts into the endpoint's card and sidebar count" do

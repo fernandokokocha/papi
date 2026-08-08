@@ -87,6 +87,31 @@ describe Candidate::Create do
     end
   end
 
+  context "with query params" do
+    let(:query_params) {
+      valid_params.deep_merge(version: { endpoints_attributes: [ valid_params[:version][:endpoints_attributes].first.merge(
+        query_params: { "q" => { kind: "string", required: "true" },
+                        "page" => { kind: "number", required: "false" } }
+      ) ] })
+    }
+
+    it "stores them with their location and requiredness, sorted by name" do
+      service = Candidate::Create.new(query_params)
+      service.call
+
+      endpoint = service.candidate.latest_version.endpoints.first
+      expect(endpoint.query_params.map { |p| [ p.name, p.kind, p.required ] })
+        .to eq([ [ "page", "number", false ], [ "q", "string", true ] ])
+    end
+
+    it "keeps them out of the path params" do
+      service = Candidate::Create.new(query_params)
+      service.call
+
+      expect(service.candidate.latest_version.endpoints.first.path_params).to eq([])
+    end
+  end
+
   context "with prior versions" do
     let!(:version1) { FactoryBot.create(:version, project: project, name: "v1") }
     let!(:version2) { FactoryBot.create(:version, project: project, name: "v2") }

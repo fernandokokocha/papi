@@ -39,6 +39,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_07_000001) do
     t.string "entity_name"
     t.string "response_code"
     t.string "param_name"
+    t.string "param_location"
     t.string "part", null: false
     t.integer "line"
     t.text "anchor_snapshot"
@@ -55,10 +56,12 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_07_000001) do
   create_table "endpoint_params", force: :cascade do |t|
     t.string "name", null: false
     t.string "kind", default: "string", null: false
+    t.string "location", default: "path", null: false
+    t.boolean "required", default: true, null: false
     t.integer "endpoint_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["endpoint_id", "name"], name: "index_endpoint_params_on_endpoint_id_and_name", unique: true
+    t.index ["endpoint_id", "location", "name"], name: "index_endpoint_params_on_endpoint_id_and_location_and_name", unique: true
     t.index ["endpoint_id"], name: "index_endpoint_params_on_endpoint_id"
   end
 

@@ -74,6 +74,35 @@ describe DiffParams::FromParams do
     end
   end
 
+  describe "query params" do
+    def query(name, kind, required: false)
+      EndpointParam.new(name: name, kind: kind, location: "query", required: required)
+    end
+
+    it "renders a required param bare and an optional one with a question mark" do
+      diff = DiffParams::FromParams.new([], [ query("q", "string", required: true), query("page", "number") ])
+
+      expect(diff.after_rows.map(&:line)).to eq([
+        Diff::Line.new("q     string", "added", 1),
+        Diff::Line.new("page? number", "added", 1)
+      ])
+    end
+
+    it "marks an optional param becoming required as type_changed" do
+      diff = DiffParams::FromParams.new([ query("page", "number") ], [ query("page", "number", required: true) ])
+
+      expect(diff.any_changes?).to be(true)
+      expect(diff.before_rows.map(&:line)).to eq([ Diff::Line.new("page? number", "type_changed", 1) ])
+      expect(diff.after_rows.map(&:line)).to eq([ Diff::Line.new("page  number", "type_changed", 1) ])
+    end
+
+    it "is unchanged when kind and requiredness both hold" do
+      diff = DiffParams::FromParams.new([ query("page", "number") ], [ query("page", "number") ])
+
+      expect(diff.any_changes?).to be(false)
+    end
+  end
+
   describe "Row#removed?" do
     it "is true only for a param the new side dropped" do
       diff = DiffParams::FromParams.new([ param("id", "number"), param("slug", "string") ], [ param("id", "number") ])

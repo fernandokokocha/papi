@@ -36,6 +36,7 @@ FactoryBot.define do
       endpoint_path { "/users/:id" }
       endpoint_http_verb { 0 }
       param_name { "id" }
+      param_location { "path" }
     end
 
     trait :reply do

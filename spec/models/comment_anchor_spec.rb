@@ -9,7 +9,7 @@ describe CommentAnchor do
     it "returns the logical-identity tuple in column order" do
       a = anchor(scope: "response", part: "output", line: 7,
                  endpoint_path: "/users", endpoint_http_verb: 0, response_code: "200")
-      expect(a.key).to eq([ "response", "/users", 0, nil, "200", nil, "output", 7 ])
+      expect(a.key).to eq([ "response", "/users", 0, nil, "200", nil, nil, "output", 7 ])
     end
   end
 
@@ -52,10 +52,21 @@ describe CommentAnchor do
       expect(a.errors).to include([ :param_name, a_string_including("required") ])
     end
 
-    it "accepts a param anchor carrying its endpoint and name" do
+    it "accepts a param anchor carrying its endpoint, name and location" do
+      a = anchor(scope: "param", part: "whole",
+                 endpoint_path: "/users/:id", endpoint_http_verb: 0, param_name: "id", param_location: "path")
+      expect(a.errors).to eq([])
+    end
+
+    it "requires param_location for a param anchor" do
       a = anchor(scope: "param", part: "whole",
                  endpoint_path: "/users/:id", endpoint_http_verb: 0, param_name: "id")
-      expect(a.errors).to eq([])
+      expect(a.errors).to include([ :param_location, a_string_including("required") ])
+    end
+
+    it "rejects param_location on a non-param anchor" do
+      a = anchor(scope: "entity", part: "whole", entity_name: "User", param_location: "query")
+      expect(a.errors).to include([ :param_location, a_string_including("must be blank") ])
     end
 
     it "forbids param_name on other scopes" do
@@ -131,7 +142,7 @@ describe CommentAnchor do
       expect(anchor_obj.to_columns).to eq(
         scope: "response", part: "output", line: nil,
         endpoint_path: "/users", endpoint_http_verb: 0,
-        entity_name: nil, response_code: "200", param_name: nil
+        entity_name: nil, response_code: "200", param_name: nil, param_location: nil
       )
     end
   end
@@ -219,24 +230,41 @@ describe CommentAnchor do
       endpoint = FactoryBot.build(:endpoint, path: "/users", http_verb: "verb_post")
       built = described_class.for_endpoint_input(endpoint)
 
-      expect(built.key).to eq([ "endpoint", "/users", 1, nil, nil, nil, "input", nil ])
+      expect(built.key).to eq([ "endpoint", "/users", 1, nil, nil, nil, nil, "input", nil ])
     end
   end
 
   describe ".for_endpoint_param" do
-    it "builds the param anchor from an endpoint record and a param name" do
+    it "builds the param anchor from an endpoint record, a param name and a location" do
       endpoint = FactoryBot.build(:endpoint, path: "/users/:id", http_verb: "verb_get")
-      built = described_class.for_endpoint_param(endpoint, "id")
+      built = described_class.for_endpoint_param(endpoint, "id", "path")
 
-      expect(built.key).to eq([ "param", "/users/:", 0, nil, nil, "id", "whole", nil ])
+      expect(built.key).to eq([ "param", "/users/:", 0, nil, nil, "id", "path", "whole", nil ])
     end
 
     it "keeps the raw path but erases the param name from the endpoint identity" do
       endpoint = FactoryBot.build(:endpoint, path: "/users/:id", http_verb: "verb_get")
-      built = described_class.for_endpoint_param(endpoint, "id")
+      built = described_class.for_endpoint_param(endpoint, "id", "path")
 
       expect(built.endpoint_path).to eq("/users/:id")
       expect(built.param_name).to eq("id")
+    end
+
+    it "keys a path param apart from a query param of the same name" do
+      endpoint = FactoryBot.build(:endpoint, path: "/users/:id", http_verb: "verb_get")
+
+      path = described_class.for_endpoint_param(endpoint, "id", "path")
+      query = described_class.for_endpoint_param(endpoint, "id", "query")
+
+      expect(path.key).not_to eq(query.key)
+      expect(path.dom_id).not_to eq(query.dom_id)
+    end
+
+    it "labels a query param with a question mark and a path param with a colon" do
+      endpoint = FactoryBot.build(:endpoint, path: "/users", http_verb: "verb_get")
+
+      expect(described_class.for_endpoint_param(endpoint, "q", "query").label).to eq("GET /users → ?q")
+      expect(described_class.for_endpoint_param(endpoint, "q", "path").label).to eq("GET /users → :q")
     end
   end
 
@@ -244,7 +272,7 @@ describe CommentAnchor do
     it "keeps the identity and drops the line" do
       with_line = anchor(scope: "response", part: "output", endpoint_path: "/users",
                          endpoint_http_verb: 0, response_code: "200", line: 4)
-      expect(with_line.without_line.key).to eq([ "response", "/users", 0, nil, "200", nil, "output", nil ])
+      expect(with_line.without_line.key).to eq([ "response", "/users", 0, nil, "200", nil, nil, "output", nil ])
     end
   end
 

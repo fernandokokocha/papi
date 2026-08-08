@@ -64,13 +64,17 @@ class DesignPreviewController < ApplicationController
   FakeResponse = Struct.new(:code, :note, :parsed_output) do
     def output = parsed_output.serialize
   end
-  FakeEndpoint = Struct.new(:name, :verb, :path, :note, :input, :responses, :path_params) do
+  FakeEndpoint = Struct.new(:name, :verb, :path, :note, :input, :responses, :path_params, :query_params) do
     def http_verb
       "verb_#{verb.downcase}"
     end
 
     def identity_path
       Endpoint.identity_path(path)
+    end
+
+    def example_query_string
+      query_params.map { |param| "#{param.name}=#{param.kind}" }.join("&")
     end
 
     def parsed_input(expanded: false)
@@ -80,6 +84,7 @@ class DesignPreviewController < ApplicationController
 
     def differs_from?(previous)
       DiffParams::FromParams.new(previous.path_params, path_params).any_changes? ||
+        DiffParams::FromParams.new(previous.query_params, query_params).any_changes? ||
         DiffText::FromNotes.new(previous.note, note).any_changes? ||
         Diff::FromValues.new(previous.parsed_input, parsed_input).any_changes? ||
         DiffResponses::FromResponses.new(previous.responses, responses).any_changes?
@@ -103,6 +108,7 @@ class DesignPreviewController < ApplicationController
         FakeResponse.new(200, "Success", parser.parse_value("{id:number,name:string,email:string}")),
         FakeResponse.new(404, "Not found", parser.parse_value("{error:string}"))
       ],
+      [],
       []
     )
     current = FakeEndpoint.new(
@@ -116,7 +122,11 @@ class DesignPreviewController < ApplicationController
         FakeResponse.new(400, "Bad request", parser.parse_value("{error:string,code:number}")),
         FakeResponse.new(404, "Not found", parser.parse_value("{error:string}"))
       ],
-      []
+      [],
+      [
+        EndpointParam.new(name: "q", kind: "string", location: "query", required: true),
+        EndpointParam.new(name: "page", kind: "number", location: "query", required: false)
+      ]
     )
     [ previous, current ]
   end
@@ -130,6 +140,7 @@ class DesignPreviewController < ApplicationController
       "Health check.",
       "",
       [ FakeResponse.new(200, "OK", parser.parse_value("{status:string}")) ],
+      [],
       []
     )
     current = FakeEndpoint.new(
@@ -139,6 +150,7 @@ class DesignPreviewController < ApplicationController
       "Health check.",
       "",
       [ FakeResponse.new(200, "OK", parser.parse_value("{status:string}")) ],
+      [],
       []
     )
     [ previous, current ]
@@ -156,6 +168,7 @@ class DesignPreviewController < ApplicationController
         FakeResponse.new(201, "Created", parser.parse_value("{id:number,name:string,email:string}")),
         FakeResponse.new(422, "Validation failed", parser.parse_value("{error:string}"))
       ],
+      [],
       []
     )
   end
@@ -172,7 +185,8 @@ class DesignPreviewController < ApplicationController
         FakeResponse.new(204, "No content", parser.parse_value("{success:boolean}")),
         FakeResponse.new(404, "Not found", parser.parse_value("{error:string,code:number}"))
       ],
-      [ EndpointParam.new(name: "userId", kind: "number") ]
+      [ EndpointParam.new(name: "userId", kind: "number") ],
+      []
     )
   end
 

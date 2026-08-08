@@ -22,6 +22,24 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
         updateEndpoint(endpoint.id, {...endpoint, input: newInput})
     }
 
+    const addQueryParam = () => {
+        updateEndpoint(endpoint.id, {...endpoint, queryParams: [...endpoint.queryParams, {name: "", kind: "string", required: false}]})
+    }
+
+    const removeQueryParam = (index) => {
+        const newParams = [
+            ...endpoint.queryParams.slice(0, index),
+            ...endpoint.queryParams.slice(index + 1),
+        ]
+        updateEndpoint(endpoint.id, {...endpoint, queryParams: newParams})
+    }
+
+    const updateQueryParam = (index, param) => {
+        const newParams = [...endpoint.queryParams]
+        newParams[index] = param
+        updateEndpoint(endpoint.id, {...endpoint, queryParams: newParams})
+    }
+
     const updateParamKind = (name, newKind) => {
         updateEndpoint(endpoint.id, {...endpoint, paramKinds: {...endpoint.paramKinds, [name]: newKind}})
     }
@@ -106,6 +124,7 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
                         {endpoint.collision && <span className="text-xs text-red-300">Collision!</span>}
                         {endpoint.no_responses && <span className="text-xs text-red-300">Needs a response</span>}
                         {endpoint.duplicate_params && <span className="text-xs text-red-300">Duplicate param</span>}
+                        {endpoint.bad_query_params && <span className="text-xs text-red-300">Bad query param</span>}
                     </div>
                     <EndpointFields
                         endpoint={endpoint}
@@ -116,6 +135,9 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
                         updateNote={updateNote}
                         updateInput={updateInput}
                         updateParamKind={updateParamKind}
+                        addQueryParam={addQueryParam}
+                        removeQueryParam={removeQueryParam}
+                        updateQueryParam={updateQueryParam}
                         showParams={paramsOf(endpoint.path, endpoint.paramKinds).length > 0}
                         responsesToAdd={responsesToAdd}
                         newResponseCode={newResponseCode}

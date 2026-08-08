@@ -34,8 +34,21 @@
       <div class="bg-gray-200 border-l border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Params</div>
     </div>
     <div class="grid grid-cols-2">
-      <div class="px-3 py-2 bg-white font-mono text-xs text-gray-800"><%= render "endpoints/params_cell", rows: params_diff.before_rows, side: :before, endpoint: endpoint %></div>
-      <div class="px-3 py-2 bg-white border-l border-gray-200 font-mono text-xs text-gray-800"><%= render "endpoints/params_cell", rows: params_diff.after_rows, side: :after, endpoint: endpoint %></div>
+      <div class="px-3 py-2 bg-white font-mono text-xs text-gray-800"><%= render "endpoints/params_cell", rows: params_diff.before_rows, side: :before, endpoint: endpoint, location: "path" %></div>
+      <div class="px-3 py-2 bg-white border-l border-gray-200 font-mono text-xs text-gray-800"><%= render "endpoints/params_cell", rows: params_diff.after_rows, side: :after, endpoint: endpoint, location: "path" %></div>
+    </div>
+  <% end %>
+
+  <%# Query %>
+  <% if previous_endpoint.query_params.any? || endpoint.query_params.any? %>
+    <% query_diff = DiffParams::FromParams.new(previous_endpoint.query_params, endpoint.query_params) %>
+    <div class="grid grid-cols-2 border-t border-gray-300">
+      <div class="bg-gray-200 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Query</div>
+      <div class="bg-gray-200 border-l border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Query</div>
+    </div>
+    <div class="grid grid-cols-2">
+      <div class="px-3 py-2 bg-white font-mono text-xs text-gray-800"><%= render "endpoints/params_cell", rows: query_diff.before_rows, side: :before, endpoint: endpoint, location: "query" %></div>
+      <div class="px-3 py-2 bg-white border-l border-gray-200 font-mono text-xs text-gray-800"><%= render "endpoints/params_cell", rows: query_diff.after_rows, side: :after, endpoint: endpoint, location: "query" %></div>
     </div>
   <% end %>
 
@@ -84,7 +97,7 @@
       <% resp_lines = candidate_comments.response_output_lines(endpoint, line.code) %>
       <% resp_map = response_line_index_map(previous_endpoint, endpoint, line.code, expanded: expanded) %>
       <%= render "endpoints/response_cell", line: line, side: :before, region_attr: comment_region_attr(resp_anchor) %>
-      <%= render "endpoints/response_cell", line: line, side: :after, curl_verb: endpoint.verb, curl_path: endpoint.path, region_attr: comment_region_attr(resp_anchor), comments_by_line: expanded ? resp_lines.by_line : {}, line_index_map: resp_map, line_pick_attr: response_line_pick_attr(endpoint, line.code, resp_map) %>
+      <%= render "endpoints/response_cell", line: line, side: :after, curl_verb: endpoint.verb, curl_path: endpoint.path, curl_query: endpoint.example_query_string, region_attr: comment_region_attr(resp_anchor), comments_by_line: expanded ? resp_lines.by_line : {}, line_index_map: resp_map, line_pick_attr: response_line_pick_attr(endpoint, line.code, resp_map) %>
       <%= render "comments/anchor_region",
             anchor: resp_anchor,
             threads: candidate_comments.threads_for("response", endpoint: endpoint, response_code: line.code),

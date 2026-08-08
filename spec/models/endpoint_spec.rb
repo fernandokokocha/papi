@@ -190,3 +190,65 @@ describe Endpoint, "#parsed_input" do
       ]))
   end
 end
+
+describe Endpoint, "#query_params" do
+  let!(:group) { Group.create!(name: "g") }
+  let!(:project) { Project.create!(name: "p", group: group) }
+  let!(:version) { FactoryBot.create(:version, project: project, name: "v1") }
+  let(:endpoint) { FactoryBot.create(:endpoint, version: version, path: "/users/:userId") }
+
+  it "holds only the query rows, sorted by name" do
+    FactoryBot.create(:endpoint_param, :query, endpoint: endpoint, name: "q")
+    FactoryBot.create(:endpoint_param, :query, endpoint: endpoint, name: "page")
+    FactoryBot.create(:endpoint_param, endpoint: endpoint, name: "userId")
+
+    expect(endpoint.reload.query_params.map(&:name)).to eq([ "page", "q" ])
+  end
+
+  it "leaves the path rows to #path_params" do
+    FactoryBot.create(:endpoint_param, :query, endpoint: endpoint, name: "q")
+
+    expect(endpoint.reload.path_params.map(&:name)).to eq([ "userId" ])
+  end
+
+  it "lets a path and a query param share a name" do
+    FactoryBot.create(:endpoint_param, endpoint: endpoint, name: "userId")
+    query = FactoryBot.build(:endpoint_param, :query, endpoint: endpoint, name: "userId")
+
+    expect(query.save).to be(true)
+  end
+end
+
+describe Endpoint, "#example_query_string" do
+  let!(:group) { Group.create!(name: "g") }
+  let!(:project) { Project.create!(name: "p", group: group) }
+  let!(:version) { FactoryBot.create(:version, project: project, name: "v1") }
+  let(:endpoint) { FactoryBot.create(:endpoint, version: version, path: "/tasks") }
+
+  it "offers every query param, optional ones included, with its kind as the value" do
+    FactoryBot.create(:endpoint_param, :query, endpoint: endpoint, name: "q", kind: "string", required: true)
+    FactoryBot.create(:endpoint_param, :query, endpoint: endpoint, name: "page", kind: "number", required: false)
+
+    expect(endpoint.reload.example_query_string).to eq("page=number&q=string")
+  end
+
+  it "is empty when the endpoint takes no query params" do
+    FactoryBot.create(:endpoint_param, endpoint: endpoint, name: "taskId")
+
+    expect(endpoint.reload.example_query_string).to eq("")
+  end
+end
+
+describe EndpointParam, "#label" do
+  it "prefixes a path param with a colon" do
+    expect(EndpointParam.new(name: "userId").label).to eq(":userId")
+  end
+
+  it "leaves a required query param bare" do
+    expect(EndpointParam.new(name: "q", location: "query", required: true).label).to eq("q")
+  end
+
+  it "suffixes an optional query param with a question mark" do
+    expect(EndpointParam.new(name: "page", location: "query", required: false).label).to eq("page?")
+  end
+end

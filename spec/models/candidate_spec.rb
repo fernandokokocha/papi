@@ -11,8 +11,8 @@ describe Candidate do
 
       map = candidate.comment_threads_by_anchor
 
-      expect(map[[ "endpoint", "/users", 0, nil, nil, nil, "whole", nil ]]).to eq([ root ])
-      expect(map[[ "candidate", nil, nil, nil, nil, nil, "whole", nil ]]).to eq([ candidate_level ])
+      expect(map[[ "endpoint", "/users", 0, nil, nil, nil, nil, "whole", nil ]]).to eq([ root ])
+      expect(map[[ "candidate", nil, nil, nil, nil, nil, nil, "whole", nil ]]).to eq([ candidate_level ])
       expect(map.values.flatten).not_to include(reply)
     end
 
@@ -22,7 +22,7 @@ describe Candidate do
 
       map = candidate.comment_threads_by_anchor
 
-      expect(map[[ "candidate", nil, nil, nil, nil, nil, "whole", nil ]]).to eq([ older, newer ])
+      expect(map[[ "candidate", nil, nil, nil, nil, nil, nil, "whole", nil ]]).to eq([ older, newer ])
     end
   end
 

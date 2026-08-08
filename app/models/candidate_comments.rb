@@ -24,10 +24,10 @@ class CandidateComments
     sort_line_buckets
   end
 
-  def threads_for(scope, endpoint: nil, entity: nil, response_code: nil, param_name: nil, part: nil)
+  def threads_for(scope, endpoint: nil, entity: nil, response_code: nil, param_name: nil, param_location: nil, part: nil)
     parts = part ? [ part ] : CommentAnchor.parts_for(scope)
     parts.flat_map do |scope_part|
-      @by_anchor.fetch([ scope, endpoint&.identity_path, verb_of(endpoint), entity&.name, response_code, param_name, scope_part, nil ], [])
+      @by_anchor.fetch([ scope, endpoint&.identity_path, verb_of(endpoint), entity&.name, response_code, param_name, param_location, scope_part, nil ], [])
     end.sort_by(&:created_at)
   end
 

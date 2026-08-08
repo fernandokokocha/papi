@@ -29,7 +29,7 @@ class Candidate::Create
           note: endpoint_attr[:note],
           input: endpoint_attr[:input],
           version: @version,
-          params_attributes: format_params(endpoint_attr[:params]),
+          params_attributes: format_params(endpoint_attr[:params]) + format_query_params(endpoint_attr[:query_params]),
           responses_attributes: format_responses(endpoint_attr[:responses])
         }
       end
@@ -45,7 +45,15 @@ class Candidate::Create
   def format_params(params_hash)
     return [] unless params_hash
     params_hash.to_hash.entries.map do |name, attrs|
-      { name: name, kind: attrs.to_h.with_indifferent_access[:kind].to_s }
+      { name: name, kind: attrs.to_h.with_indifferent_access[:kind].to_s, location: "path", required: true }
+    end
+  end
+
+  def format_query_params(params_hash)
+    return [] unless params_hash
+    params_hash.to_hash.entries.map do |name, attrs|
+      attrs = attrs.to_h.with_indifferent_access
+      { name: name, kind: attrs[:kind].to_s, location: "query", required: attrs[:required] == "true" }
     end
   end
 

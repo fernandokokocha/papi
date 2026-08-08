@@ -38,6 +38,9 @@ const EndpointFields = ({
     updateNote,
     updateInput,
     updateParamKind,
+    addQueryParam,
+    removeQueryParam,
+    updateQueryParam,
     showParams,
     responsesToAdd,
     newResponseCode,
@@ -71,6 +74,40 @@ const EndpointFields = ({
                     </div>
                 </>
             )}
+            <div className={t.sectionHeader}>Query</div>
+            <div className={t.paramsWrapper}>
+                {endpoint.queryParams.map((p, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                        <input
+                            type="text"
+                            value={p.name}
+                            onChange={(e) => updateQueryParam(index, {...p, name: e.target.value})}
+                            className="border border-gray-300 rounded px-2 py-0.5 text-xs font-mono w-40 shrink-0 focus:outline-none focus:ring-1 focus:ring-sky-500 bg-white"
+                        />
+                        <select
+                            value={p.kind}
+                            onChange={(e) => updateQueryParam(index, {...p, kind: e.target.value})}
+                            className={t.responseSelect}
+                        >
+                            {paramKinds.map((k) => (<option key={k} value={k}>{k}</option>))}
+                        </select>
+                        <label className="flex items-center gap-1 text-xs text-gray-600">
+                            <input
+                                type="checkbox"
+                                checked={p.required}
+                                onChange={(e) => updateQueryParam(index, {...p, required: e.target.checked})}
+                            />
+                            required
+                        </label>
+                        <button type="button" onClick={() => removeQueryParam(index)} className="text-xs text-red-500 hover:text-red-700 shrink-0">×</button>
+                        <input type="hidden" name={`version[endpoints_attributes][][query_params][${p.name}][kind]`} value={p.kind}/>
+                        <input type="hidden" name={`version[endpoints_attributes][][query_params][${p.name}][required]`} value={p.required}/>
+                    </div>
+                ))}
+                <div className="pt-1">
+                    <button type="button" onClick={addQueryParam} className={t.addButton}>Add</button>
+                </div>
+            </div>
             <div className={t.sectionHeader}>Note</div>
             <div className={t.noteWrapper}>
                 <textarea

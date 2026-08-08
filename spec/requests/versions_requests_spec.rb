@@ -84,6 +84,20 @@ describe "Version requests", type: :request do
       expect(response.body).to include(":taskId")
     end
 
+    it "renders the query section and offers every query param to the cURL button" do
+      endpoint = FactoryBot.create(:endpoint, version: version, path: "/tasks", http_verb: "verb_get")
+      FactoryBot.create(:endpoint_param, :query, endpoint: endpoint, name: "q", kind: "string", required: true)
+      FactoryBot.create(:endpoint_param, :query, endpoint: endpoint, name: "page", kind: "number", required: false)
+      FactoryBot.create(:response, endpoint: endpoint, code: "200", output: "string")
+
+      sign_in(user)
+      get project_version_path(project.name, version.name)
+
+      expect(response.body).to include(">Query</div>")
+      expect(response.body).to include("page?")
+      expect(response.body).to include(%(data-clipboard-query-value="page=number&amp;q=string"))
+    end
+
     it "omits the params section for an endpoint whose path takes none" do
       endpoint = FactoryBot.create(:endpoint, version: version, path: "/tasks", http_verb: "verb_get")
       FactoryBot.create(:response, endpoint: endpoint, code: "200", output: "string")

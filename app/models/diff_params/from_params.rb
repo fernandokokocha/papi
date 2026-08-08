@@ -36,18 +36,18 @@ class DiffParams::FromParams
 
     return "added" if previous.nil?
     return "removed" if current.nil?
-    previous.kind == current.kind ? "no_change" : "type_changed"
+    previous.kind == current.kind && previous.required == current.required ? "no_change" : "type_changed"
   end
 
   def line(name, param, change)
-    Diff::Line.new("#{padded(name)} #{param.kind}", change, 1)
+    Diff::Line.new("#{padded(param)} #{param.kind}", change, 1)
   end
 
-  def padded(name)
-    ":#{name}".ljust(name_column_width)
+  def padded(param)
+    param.label.ljust(label_column_width)
   end
 
-  def name_column_width
-    @name_column_width ||= @names.map { |name| name.length + 1 }.max
+  def label_column_width
+    @label_column_width ||= (@previous_by_name.values + @by_name.values).map { |param| param.label.length }.max
   end
 end
