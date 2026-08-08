@@ -29,7 +29,13 @@
       <span class="bg-gray-100 text-gray-400 text-sm font-medium px-4 py-2 rounded">→</span>
     <% end %>
 
-    <%= link_to "New candidate", new_project_candidate_path(project_name: @project.name), class: "bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium px-4 py-2 rounded" %>
+    <% if @project.can_create_candidate? %>
+      <%= link_to "Import OpenAPI", new_project_openapi_import_path(project_name: @project.name), class: "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-sm font-medium px-4 py-2 rounded" %>
+      <%= link_to "New candidate", new_project_candidate_path(project_name: @project.name), class: "bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium px-4 py-2 rounded" %>
+    <% else %>
+      <span class="bg-gray-100 text-gray-400 text-sm font-medium px-4 py-2 rounded">Import OpenAPI</span>
+      <span class="bg-gray-100 text-gray-400 text-sm font-medium px-4 py-2 rounded">New candidate</span>
+    <% end %>
   </div>
 </div>
 

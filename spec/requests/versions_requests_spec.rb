@@ -42,6 +42,25 @@ describe "Version requests", type: :request do
       expect(response.body).to include("decider@example.com")
     end
 
+    it "offers both ways into a new candidate" do
+      merged = FactoryBot.create(:candidate, project: project, aasm_state: "merged")
+      merged_version = FactoryBot.create(:version, project: project, candidate: merged, name: "v1", order: 1)
+      sign_in(user)
+      get project_version_path(project.name, merged_version.name)
+
+      expect(response.body).to include(new_project_openapi_import_path(project_name: project.name))
+      expect(response.body).to include(new_project_candidate_path(project_name: project.name))
+    end
+
+    it "grays both of them out while a candidate is open" do
+      sign_in(user)
+      get project_version_path(project.name, version.name)
+
+      expect(response.body).to include("Import OpenAPI")
+      expect(response.body).not_to include(new_project_openapi_import_path(project_name: project.name))
+      expect(response.body).not_to include(new_project_candidate_path(project_name: project.name))
+    end
+
     it "links to the candidate that produced the version" do
       sign_in(user)
       get project_version_path(project.name, version.name)

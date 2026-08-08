@@ -2,6 +2,7 @@ class JSONSchemaParser
   OPENING_BRACKETS = [ "{", "[", "(" ].freeze
   CLOSING_BRACKETS = [ "}", "]", ")" ].freeze
   OPTIONAL_SUFFIX = "?".freeze
+  PRIMITIVE_KINDS = [ "string", "number", "boolean", "null" ].freeze
 
   def initialize(valid_entities = [])
     @valid_entities = valid_entities
@@ -17,14 +18,10 @@ class JSONSchemaParser
     value = raw_value.gsub(/\s+/, "")
     raise RuntimeError.new("Empty value: only a whole value may be empty") if value.empty?
 
-    if value.start_with? "string"
-      Node::Primitive.new(kind: "string")
-    elsif value.start_with? "number"
-      Node::Primitive.new(kind: "number")
-    elsif value.start_with? "boolean"
-      Node::Primitive.new(kind: "boolean")
-    elsif value.start_with? "null"
-      Node::Primitive.new(kind: "null")
+    primitive_kind = PRIMITIVE_KINDS.find { |kind| value.start_with?(kind) }
+
+    if primitive_kind
+      Node::Primitive.new(kind: primitive_kind)
     elsif value[0] == "{"
       parse_object(value)
     elsif value[0] == "["

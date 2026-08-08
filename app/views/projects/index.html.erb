@@ -22,11 +22,15 @@
             <%= link_to latest.name, project_version_path(name: latest.name, project_name: project.name), class: "text-sm font-semibold text-sky-700 underline underline-offset-2 hover:text-sky-900" %>
           <% end %>
         </div>
-        <% if project.can_create_candidate? %>
-          <%= button_to "New candidate", new_project_candidate_path(project_name: project.name), method: :get, class: "bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium px-4 py-2 rounded cursor-pointer" %>
-        <% else %>
-          <button disabled class="bg-gray-100 text-gray-400 text-sm font-medium px-4 py-2 rounded cursor-not-allowed">New candidate</button>
-        <% end %>
+        <div class="flex items-center gap-3">
+          <% if project.can_create_candidate? %>
+            <%= button_to "Import OpenAPI", new_project_openapi_import_path(project_name: project.name), method: :get, class: "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-sm font-medium px-4 py-2 rounded cursor-pointer" %>
+            <%= button_to "New candidate", new_project_candidate_path(project_name: project.name), method: :get, class: "bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium px-4 py-2 rounded cursor-pointer" %>
+          <% else %>
+            <button disabled class="bg-gray-100 text-gray-400 text-sm font-medium px-4 py-2 rounded cursor-not-allowed">Import OpenAPI</button>
+            <button disabled class="bg-gray-100 text-gray-400 text-sm font-medium px-4 py-2 rounded cursor-not-allowed">New candidate</button>
+          <% end %>
+        </div>
       </div>
 
       <div class="view-table">
