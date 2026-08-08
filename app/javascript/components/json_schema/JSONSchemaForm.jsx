@@ -15,7 +15,7 @@ const unusedBranch = (branches) => {
     return {nodeType: "object", attributes: []}
 }
 
-const JSONSchemaForm = ({root, name, update, id, entities, canBeNothing = false}) => {
+const JSONSchemaForm = ({root, name, update, id, entities, excludeTypes = [], canBeNothing = false}) => {
     const serializedRoot = serialize(root);
 
     const removeNode = (e, path) => {
@@ -112,6 +112,7 @@ const JSONSchemaForm = ({root, name, update, id, entities, canBeNothing = false}
                 canBeDeleted={false}
                 canBeNothing={canBeNothing}
                 entities={entities}
+                excludeTypes={excludeTypes}
             />
         </div>
     )

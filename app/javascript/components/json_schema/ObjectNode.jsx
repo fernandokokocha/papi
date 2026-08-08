@@ -26,6 +26,7 @@ const ObjectNode = ({onChange, onDelete, onAdd, onToggleOptional, attributes, pa
                                      canBeDeleted={true}
                                      canBeNothing={false}
                                      entities={entities}
+                                     excludeTypes={excludeTypes}
                     />
                 ))
             }

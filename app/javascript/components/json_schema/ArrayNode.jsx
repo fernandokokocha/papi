@@ -28,6 +28,7 @@ const ArrayNode = ({value, onChange, onDelete, onAdd, onToggleOptional, path, ca
                     canBeDeleted={false}
                     canBeNothing={false}
                     entities={entities}
+                    excludeTypes={excludeTypes}
                 />
             </div>
             ]

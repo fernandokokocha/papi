@@ -33,4 +33,8 @@ class Node::Array
   def expandable?
     value.expandable?
   end
+
+  def entity_names
+    value.entity_names
+  end
 end

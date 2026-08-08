@@ -3,6 +3,7 @@ import EndpointList from "@/components/EndpointList.jsx";
 import EntityList from "@/components/EntityList.jsx";
 import {v4 as uuidv4} from "uuid";
 import deserialize from "@/helpers/deserialize.js";
+import {entityNamesIn} from "@/helpers/entityReferences.js";
 import serialize from "@/helpers/serialize.js";
 import {hasDuplicateParams, identityPath, paramsOf} from "@/helpers/pathParams.js";
 
@@ -39,34 +40,10 @@ const checkEntitiesReferences = (endpoints, entities) => {
 }
 
 const findCustomNameInEndpoints = (endpoints, name) => {
-    let found = false;
-    endpoints.forEach((e) => {
-        found = found || findCustomName(e.input, name)
-        e.responses.forEach((r) => {
-            found = found || findCustomName(r.output, name)
-        })
-    })
-    return found
-}
-
-const findCustomName = (root, name) => {
-    if (root.nodeType === "custom" && root.value === name) {
-        return true;
-    }
-
-    if (root.nodeType === 'object') {
-        let found = false;
-        root.attributes.forEach((oa) => {
-            found = found || findCustomName(oa.value, name)
-        })
-        return found
-    }
-
-    if (root.nodeType === 'array') {
-        return findCustomName(root.value, name)
-    }
-
-    return false;
+    return endpoints.some((endpoint) => (
+        entityNamesIn(endpoint.input).includes(name) ||
+        endpoint.responses.some((r) => entityNamesIn(r.output).includes(name))
+    ))
 }
 
 const Form = ({serializedEndpoints, serializedEntities, comments}) => {

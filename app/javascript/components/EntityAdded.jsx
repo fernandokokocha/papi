@@ -1,7 +1,7 @@
 import React from 'react'
 import JSONSchemaForm from "@/components/json_schema/JSONSchemaForm.jsx";
 
-const EntityAdded = ({entity, updateEntity, removeEntity, entities}) => {
+const EntityAdded = ({entity, updateEntity, removeEntity, entities, excludeTypes}) => {
     const updateRoot = (newRoot) => {
         updateEntity(entity.id, {...entity, root: newRoot})
     }
@@ -31,7 +31,8 @@ const EntityAdded = ({entity, updateEntity, removeEntity, entities}) => {
                             update={updateRoot}
                             root={entity.root}
                             id={entity.id}
-                            entities={[]}
+                            entities={entities}
+                            excludeTypes={excludeTypes}
                         />
                     </div>
                 </div>

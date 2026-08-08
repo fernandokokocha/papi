@@ -23,6 +23,10 @@ class Node::ObjectAttribute
     value.expandable?
   end
 
+  def entity_names
+    value.entity_names
+  end
+
   def ==(other)
     (self.class == other.class) && (self.name == other.name) &&
       (self.optional == other.optional) && (self.value == other.value)

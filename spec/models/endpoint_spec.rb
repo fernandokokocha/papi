@@ -177,14 +177,14 @@ describe Endpoint, "#parsed_input" do
   it "resolves entity references against its own version" do
     entity = FactoryBot.create(:entity, version: version, name: "User", root: "{id:number}")
     endpoint = FactoryBot.create(:endpoint, version: version, input: "User")
-    expect(endpoint.parsed_input).to eq(Node::Entity.new(entity: entity))
+    expect(endpoint.reload.parsed_input).to eq(Node::Entity.new(entity: entity))
   end
 
   it "expands entity references on request" do
     FactoryBot.create(:entity, version: version, name: "User", root: "{id:number}")
     endpoint = FactoryBot.create(:endpoint, version: version, input: "User")
 
-    expect(endpoint.parsed_input(expanded: true))
+    expect(endpoint.reload.parsed_input(expanded: true))
       .to eq(Node::Object.new(object_attributes: [
         Node::ObjectAttribute.new(name: "id", value: Node::Primitive.new(kind: "number"))
       ]))

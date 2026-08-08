@@ -2,7 +2,7 @@ import React from 'react'
 import StaticJSONSchema from "@/components/static_json_schema/StaticJSONSchema.jsx";
 import JSONSchemaForm from "@/components/json_schema/JSONSchemaForm.jsx";
 
-const EntityDiff = ({entity, updateEntity, removeEntity, entities}) => {
+const EntityDiff = ({entity, updateEntity, removeEntity, entities, excludeTypes}) => {
     const updateRoot = (newRoot) => {
         updateEntity(entity.id, {...entity, root: newRoot})
     }
@@ -46,6 +46,7 @@ const EntityDiff = ({entity, updateEntity, removeEntity, entities}) => {
                             root={entity.root}
                             id={entity.id}
                             entities={entities}
+                            excludeTypes={excludeTypes}
                         />
                     </div>
                 </div>

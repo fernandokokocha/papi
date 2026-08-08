@@ -22,4 +22,8 @@ class Node::Nothing
   def expandable?
     false
   end
+
+  def entity_names
+    []
+  end
 end

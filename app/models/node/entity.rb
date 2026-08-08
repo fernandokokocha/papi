@@ -21,6 +21,10 @@ class Node::Entity
     true
   end
 
+  def entity_names
+    [ entity.name ]
+  end
+
   def ==(other)
     (self.class == other.class) && (self.entity == other.entity)
   end

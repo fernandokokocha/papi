@@ -30,6 +30,28 @@ describe Version, "endpoint collisions" do
   end
 end
 
+describe Version, "entity reference circles" do
+  let!(:group) { Group.create!(name: "g") }
+  let!(:project) { Project.create!(name: "p", group: group) }
+
+  def version_with(roots)
+    FactoryBot.build(:version, project: project, name: "v1").tap do |version|
+      roots.each { |name, root| version.entities.build(name: name, root: root) }
+    end
+  end
+
+  it "rejects a circle, which would otherwise hang every diff and example" do
+    version = version_with("Order" => "{customer:Customer}", "Customer" => "{order:Order}")
+
+    expect(version).not_to be_valid
+    expect(version.errors[:entities]).to eq([ "reference each other in a circle: Order → Customer → Order" ])
+  end
+
+  it "accepts entities nested in a chain" do
+    expect(version_with("Address" => "{city:string}", "Customer" => "{address:Address}")).to be_valid
+  end
+end
+
 describe Version, "#existing_endpoints_for_frontend" do
   let!(:group) { Group.create!(name: "g") }
   let!(:project) { Project.create!(name: "p", group: group) }

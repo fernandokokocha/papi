@@ -8,6 +8,7 @@ class Version < ApplicationRecord
 
   validates :name, uniqueness: { scope: :project_id }
   validate :endpoints_are_distinct_to_a_client
+  validate :entity_references_are_acyclic
 
   def self.null_version(project)
     self.new(
@@ -65,5 +66,12 @@ class Version < ApplicationRecord
     return if collisions.empty?
 
     errors.add(:endpoints, "collide: #{collisions.join(', ')}")
+  end
+
+  def entity_references_are_acyclic
+    cycle = EntityReferences.new(entities).cycle
+    return if cycle.nil?
+
+    errors.add(:entities, "reference each other in a circle: #{cycle.join(' → ')}")
   end
 end

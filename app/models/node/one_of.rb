@@ -31,4 +31,8 @@ class Node::OneOf
   def expandable?
     branches.any?(&:expandable?)
   end
+
+  def entity_names
+    branches.flat_map(&:entity_names)
+  end
 end

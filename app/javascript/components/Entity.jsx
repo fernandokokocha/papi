@@ -2,6 +2,7 @@ import React from 'react'
 import EntityDiff from "@/components/EntityDiff.jsx";
 import EntityRemoved from "@/components/EntityRemoved.jsx";
 import EntityAdded from "@/components/EntityAdded.jsx";
+import {namesThatWouldCloseACircle} from "@/helpers/entityReferences.js";
 
 const Entity = ({entity, updateEntity, removeEntity, entities}) => {
     if (entity.type === 'removed') {
@@ -13,12 +14,15 @@ const Entity = ({entity, updateEntity, removeEntity, entities}) => {
         />)
     }
 
+    const excludeTypes = namesThatWouldCloseACircle(entities, entity.name)
+
     if (entity.type === 'new') {
         return (<EntityAdded
             entity={entity}
             updateEntity={updateEntity}
             removeEntity={removeEntity}
-            entities={[]}
+            entities={entities}
+            excludeTypes={excludeTypes}
         />)
     }
 
@@ -26,7 +30,8 @@ const Entity = ({entity, updateEntity, removeEntity, entities}) => {
         entity={entity}
         updateEntity={updateEntity}
         removeEntity={removeEntity}
-        entities={[]}
+        entities={entities}
+        excludeTypes={excludeTypes}
     />)
 }
 

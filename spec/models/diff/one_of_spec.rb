@@ -3,7 +3,7 @@ require "rails_helper"
 describe "OneOf diffs", type: :model do
   def markers = { no_change: ".", added: "+", removed: "-", type_changed: "~", blank: nil }
 
-  def entity(name, root) = Entity.new(name: name, root: root)
+  def entity(name, root) = FakeEntity.new(name, root)
 
   def default_entities = [ entity("Resource", "{a:string}"), entity("Other", "{a:string}") ]
 

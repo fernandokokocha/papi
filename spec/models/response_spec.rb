@@ -21,7 +21,7 @@ describe Response, type: :model do
     it "resolves entity references using the version entities" do
       FactoryBot.create(:entity, version: version, name: "User", root: "{ name: string }")
       response = FactoryBot.create(:response, endpoint: endpoint, code: "200", output: "User")
-      expect(response.parsed_output).to be_a(Node::Entity)
+      expect(response.reload.parsed_output).to be_a(Node::Entity)
     end
   end
 end

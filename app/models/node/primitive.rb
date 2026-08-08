@@ -39,4 +39,8 @@ class Node::Primitive
   def expandable?
     false
   end
+
+  def entity_names
+    []
+  end
 end

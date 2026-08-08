@@ -45,4 +45,8 @@ class Node::Object
   def expandable?
     object_attributes.any? { |oa| oa.value.expandable? }
   end
+
+  def entity_names
+    object_attributes.flat_map(&:entity_names)
+  end
 end

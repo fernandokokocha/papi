@@ -1,7 +1,7 @@
 require "rails_helper"
 
 describe Node::OneOf, type: :model do
-  def attachment = Entity.new(name: "Attachment", root: "{id:number,url:string}")
+  def attachment = FakeEntity.new("Attachment", "{id:number,url:string}")
 
   def parse(source) = JSONSchemaParser.new([ attachment ]).parse_value(source)
 
