@@ -1,14 +1,11 @@
 @import "tailwindcss";
 
-/* Let the current-card band (.anchor-active) bleed past the centered container
-   to the window's right edge without spawning a horizontal scrollbar. `clip`
-   (not `hidden`) keeps the sticky card/sidebar headers working. */
+/* ── Sidebar & current-card highlight ── */
+
 body {
   overflow-x: clip;
 }
 
-/* Sidebar collapse animation: folds horizontally (width 14rem → 0) and clips
-   its content, rather than fading — so it never reveals the card behind it. */
 .sidebar-collapsed {
   width: 0;
   margin-right: 0;
@@ -16,20 +13,14 @@ body {
   pointer-events: none;
 }
 
-/* Current-card highlight (scroll-spy). The active endpoint/entity card gets a
-   soft sky band. Margin cancels padding so it bleeds outward — the card never
-   changes width or height as the band tracks the viewport (no reflow/jitter). */
 .anchor-active {
   background-color: var(--color-sky-200);
-  /* Bleeds to both window edges (clipped by body overflow-x: clip). */
   margin: -1rem -100vw;
   padding: 1rem 100vw;
   border-radius: 0.75rem;
   transition: background-color 300ms ease;
 }
 
-/* Flash fired only when a card is reached via a sidebar-link click: a brighter
-   pulse that settles back to the resting band. */
 .anchor-flash {
   animation: anchor-flash 1s ease-out;
 }
@@ -41,14 +32,12 @@ body {
   .anchor-flash { animation: none; }
 }
 
-/* Sidebar link for the current card. Soft sky pill; keeps the link's own
-   annotation color (added/removed/changed) so it doesn't fight those hues. */
 .sidebar-link-active {
   background-color: var(--color-sky-100);
   font-weight: 600;
 }
 
-/* ── Spec display styles (shared between old and v2 design) ── */
+/* ── Spec display styles ── */
 
 .line {
     font-family: monospace;
@@ -108,10 +97,6 @@ select:has(option[value="object"]:checked)  { background: sandybrown; }
 select:has(option[value="array"]:checked)   { background: yellow; }
 select:has(option[value="oneOf"]:checked)   { background: aquamarine; }
 
-/* Custom entity types fall through the built-in cases above, so default the
-   editor's type <select> to violet — matching the static `span.custom` token.
-   The built-in rules above out-specify this and win for their own types;
-   "nothing" is restored to white below. */
 .json-schema select { background: violet; }
 .json-schema select:has(option[value="nothing"]:checked) { background: white; }
 
@@ -133,12 +118,8 @@ select:has(option[value="oneOf"]:checked)   { background: aquamarine; }
     margin-left: 20px;
 }
 
-/* ── Endpoint diff cards (candidate form) ──────────────────────────────
-   Two side-by-side cards whose sections line up row-by-row. A shared CSS
-   subgrid gives both columns one set of row tracks, so every gray label
-   row stays a constant (content) height while only the white body rows
-   stretch to match the taller column. Each card has 9 stacked rows:
-   header + four (label, body) section pairs. */
+/* ── Endpoint diff cards ── */
+
 .endpoint-diff {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -155,10 +136,8 @@ select:has(option[value="oneOf"]:checked)   { background: aquamarine; }
 .endpoint-diff-card:first-child { grid-column: 1; }
 .endpoint-diff-card:last-child  { grid-column: 2; }
 
-/* ── Entity diff cards (candidate form) ──────────────────────────────
-   The same subgrid, over an entity card's two rows: header + schema body.
-   The editable column is taller (it carries the "new attribute" row), and
-   without shared row tracks its neighbour would stop short of it. */
+/* ── Entity diff cards ── */
+
 .entity-diff {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -175,12 +154,8 @@ select:has(option[value="oneOf"]:checked)   { background: aquamarine; }
 .entity-diff-card:first-child { grid-column: 1; }
 .entity-diff-card:last-child  { grid-column: 2; }
 
-/* ── Schema editor controls (candidate form) ──────────────────────────────
-   Small inline affordances inside the monospace schema tree. Kept compact so
-   they don't disturb the tree's rhythm, but with enough weight/contrast to
-   read as interactive. */
+/* ── Schema editor controls ── */
 
-/* Remove-node "×": small round red chip that fills in on hover. */
 .json-schema .node-delete {
   margin-left: 4px;
   width: 16px;
@@ -205,13 +180,7 @@ select:has(option[value="oneOf"]:checked)   { background: aquamarine; }
   border-color: var(--color-red-600);
 }
 
-/* Add-attribute: a small, self-contained "form" chip (dashed so it reads as a
-   blank to fill), with a named text field and a clear clickable "+". Inline-
-   flex keeps it content-sized so it never grows to fill the row. */
 .json-schema .object-new-attribute {
-  /* Block-level so it always sits on its own line under the opening "{"
-     (even when the object is empty), but width: fit-content keeps the chip
-     shrink-wrapped to its contents rather than spanning the row. */
   display: flex;
   width: fit-content;
   align-items: center;
@@ -259,9 +228,8 @@ select:has(option[value="oneOf"]:checked)   { background: aquamarine; }
   cursor: not-allowed;
 }
 
-/* Inline thread anchor highlight: outlines the element(s) the thread refers to
-   on hover. Outline instead of background avoids layout shifts and stays visible
-   over row tints (emerald/red/amber). */
+/* ── Comment mode ── */
+
 .anchor-highlight {
   outline: 2px solid var(--color-sky-400);
   outline-offset: -2px;
@@ -280,15 +248,12 @@ select:has(option[value="oneOf"]:checked)   { background: aquamarine; }
 }
 body.commenting .comment-pin { display: block; }
 body.commenting, body.commenting * { cursor: none; }
-/* threads, the open compose, and the toolbar stay normally interactive */
 body.commenting .anchor-strip, body.commenting .anchor-strip * { cursor: auto; }
 body.commenting [data-comment-toolbar], body.commenting [data-comment-toolbar] * { cursor: auto; }
 body.commenting [data-comment-exempt], body.commenting [data-comment-exempt] * { cursor: auto; }
 body.commenting .anchor-strip textarea, body.commenting [data-comment-exempt] textarea { cursor: text; }
-/* in comment mode, in-card controls don't fire — a click means "comment here" */
-body.commenting [data-action*="endpoint#"] { pointer-events: none; }
+body.commenting [data-action*="expandable#"] { pointer-events: none; }
 
-/* Line picker (comment mode): hovered and picked rows in a pickable tree */
 .line-pick-highlight {
   background-color: var(--color-sky-100);
   outline: 2px solid var(--color-sky-400);
@@ -302,24 +267,17 @@ body.commenting [data-action*="endpoint#"] { pointer-events: none; }
   border-radius: 0.25rem;
 }
 
-/* Global "hide comments" (Display toolbox toggle): pull every thread and inline
-   comment card out of layout so the diff reads clean and response bodies stay
-   selectable. [data-comment-form] also covers a picked inline compose form,
-   which gets moved under its JSON row (outside .anchor-strip) while open.
-   Sidebar 💬 counts aren't .anchor-strip, so they stay visible. */
+/* ── Comment display ── */
+
 body.comments-hidden .anchor-strip,
 body.comments-hidden .inline-line-comment,
 body.comments-hidden .candidate-conversation,
 body.comments-hidden [data-comment-form] { display: none; }
 
-/* A comment strip with no thread yet (just its composer) takes no vertical
-   space, so toggling comments never shifts a comment-free card. Spacing returns
-   the moment a thread exists — :has() re-evaluates live, no reload needed. */
 .anchor-strip:not(:has(.comment-thread)) { margin-top: 0; gap: 0; }
 
-/* Projects page Table ⇄ Timeline switch (view_toggle_controller sets
-   data-view on the wrapper). CSS drives both view visibility and the active
-   segmented-pill styling. */
+/* ── Projects page view toggle ── */
+
 [data-view="table"] .view-timeline { display: none; }
 [data-view="timeline"] .view-table { display: none; }
 
@@ -330,8 +288,8 @@ body.comments-hidden [data-comment-form] { display: none; }
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
 }
 
-/* Read-only line comments in the edit form: dimmed until the form is edited,
-   then given the amber "outdated" treatment (they will be outdated after save). */
+/* ── Edit-form line comments ── */
+
 .card-comments .line-threads-edited-note {
   display: none;
 }
@@ -343,4 +301,3 @@ body.comments-hidden [data-comment-form] { display: none; }
 .card-comments.edited .line-threads-edited-note {
   display: block;
 }
-
