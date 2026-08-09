@@ -86,7 +86,12 @@ class DesignPreviewController < ApplicationController
         DiffResponses::FromResponses.new(previous.responses, responses).any_changes?
     end
   end
-  FakeEntity = Struct.new(:name, :parsed_root) do
+  FakeEntity = Struct.new(:name, :root) do
+    def parsed_root(expanded: false)
+      value = JSONSchemaParser.new([]).parse_value(root)
+      expanded ? value.expand : value
+    end
+
     def differs_from?(previous)
       Diff::FromValues.new(previous.parsed_root, parsed_root).any_changes?
     end
@@ -187,26 +192,22 @@ class DesignPreviewController < ApplicationController
   end
 
   def diff_entities
-    parser = JSONSchemaParser.new([])
-    previous = FakeEntity.new("User", parser.parse_value("{id:number,name:string,email:string}"))
-    current  = FakeEntity.new("User", parser.parse_value("{id:number,name:string,email:string,role:string}"))
+    previous = FakeEntity.new("User", "{id:number,name:string,email:string}")
+    current  = FakeEntity.new("User", "{id:number,name:string,email:string,role:string}")
     [ previous, current ]
   end
 
   def unchanged_entities
-    parser = JSONSchemaParser.new([])
-    previous = FakeEntity.new("Tag", parser.parse_value("{id:number,label:string}"))
-    current  = FakeEntity.new("Tag", parser.parse_value("{id:number,label:string}"))
+    previous = FakeEntity.new("Tag", "{id:number,label:string}")
+    current  = FakeEntity.new("Tag", "{id:number,label:string}")
     [ previous, current ]
   end
 
   def new_entity
-    parser = JSONSchemaParser.new([])
-    FakeEntity.new("PaginationMeta", parser.parse_value("{page:number,per_page:number,total:number}"))
+    FakeEntity.new("PaginationMeta", "{page:number,per_page:number,total:number}")
   end
 
   def removed_entity
-    parser = JSONSchemaParser.new([])
-    FakeEntity.new("LegacyToken", parser.parse_value("{token:string,expires_at:string}"))
+    FakeEntity.new("LegacyToken", "{token:string,expires_at:string}")
   end
 end

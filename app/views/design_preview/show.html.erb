@@ -90,14 +90,10 @@
 <div class="bg-white rounded mt-4 p-6 flex flex-col gap-5 border border-gray-200">
   <p class="text-gray-900 font-semibold text-lg">Entities</p>
   <div class="flex flex-col gap-2">
-    <% diff = Diff::FromValues.new(@unchanged_entities[0].parsed_root, @unchanged_entities[1].parsed_root) %>
-    <%= render "versions/entity_diff", entity: @unchanged_entities[1], previous_entity: @unchanged_entities[0], diff: diff %>
-    <% diff = Diff::FromValues.new(@diff_entities[0].parsed_root, @diff_entities[1].parsed_root) %>
-    <%= render "versions/entity_diff", entity: @diff_entities[1], previous_entity: @diff_entities[0], diff: diff %>
-    <% diff = @new_entity.parsed_root.to_diff(:no_change) %>
-    <%= render "versions/entity_added", entity: @new_entity, diff: diff %>
-    <% diff = @removed_entity.parsed_root.to_diff(:no_change) %>
-    <%= render "versions/entity_removed", entity: @removed_entity, diff: diff %>
+    <%= render "versions/entity_diff", entity: @unchanged_entities[1], previous_entity: @unchanged_entities[0], expanded: false %>
+    <%= render "versions/entity_diff", entity: @diff_entities[1], previous_entity: @diff_entities[0], expanded: false %>
+    <%= render "versions/entity_added", entity: @new_entity, expanded: false %>
+    <%= render "versions/entity_removed", entity: @removed_entity, expanded: false %>
   </div>
 </div>
 

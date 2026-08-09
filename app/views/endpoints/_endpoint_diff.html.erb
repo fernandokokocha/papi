@@ -14,13 +14,7 @@
     <div class="<%= header_class %> border-l border-white/20 text-white px-4 py-3 text-sm font-mono flex items-center justify-between">
       <%= render "endpoints/verb_path", verb: endpoint.verb, path: endpoint.path %>
       <div class="flex items-center gap-2 ml-4">
-        <% if expandable %>
-          <% if expanded %>
-            <button type="button" data-action="endpoint#collapse" class="text-xs bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 px-2.5 py-0.5 rounded cursor-pointer leading-none">Collapse</button>
-          <% else %>
-            <button type="button" data-action="endpoint#expand" class="text-xs bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 px-2.5 py-0.5 rounded cursor-pointer leading-none">Expand</button>
-          <% end %>
-        <% end %>
+        <%= render "shared/expand_button", expandable: expandable, expanded: expanded %>
       </div>
     </div>
   </div>

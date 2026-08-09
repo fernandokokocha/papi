@@ -24,6 +24,7 @@ class EndpointsController < ApplicationController
       return
     end
 
+    previous_version = @version.diff_base
     previous_endpoint = previous_version &&
       Endpoint.find_by_identity(previous_version, @endpoint.path, Endpoint.http_verbs[@endpoint.http_verb])
 
@@ -43,10 +44,5 @@ class EndpointsController < ApplicationController
 
   def parse_expanded(expanded)
     expanded != "false"
-  end
-
-  def previous_version
-    return @version.candidate.base_version unless @version.project
-    @version.previous
   end
 end

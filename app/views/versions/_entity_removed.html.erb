@@ -1,11 +1,15 @@
+<% diff = entity.parsed_root(expanded: expanded).to_diff(:no_change) %>
+<% entity_lines = candidate_comments.entity_root_lines(entity) %>
+
 <div class="grid grid-cols-2 gap-2">
   <div>
     <div class="border border-red-200 rounded-lg">
-      <div class="sticky top-0 z-10 rounded-t-lg bg-red-700 text-white px-4 py-2 text-sm font-mono">
+      <div class="sticky top-0 z-10 rounded-t-lg bg-red-700 text-white px-4 py-2 text-sm font-mono flex items-center justify-between">
         <%= entity.name %>
+        <%= render "shared/expand_button", expandable: entity.parsed_root.expandable?, expanded: expanded %>
       </div>
       <div class="pl-2 py-2 bg-red-50 border-b border-red-200"><%= render "specs/json", diff: diff %></div>
     </div>
   </div>
-  <div></div>
+  <%= render "comments/line_threads", anchor: CommentAnchor.for_entity_root(entity), collapsed: entity_lines.fresh, outdated: entity_lines.outdated, composable: false, expanded: expanded, wrapper_class: "col-start-1 mt-3" %>
 </div>

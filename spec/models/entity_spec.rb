@@ -48,6 +48,23 @@ describe Entity, "nested references" do
   end
 end
 
+describe Entity, "#parsed_root expanded" do
+  let!(:group) { Group.create!(name: "g") }
+  let!(:project) { Project.create!(name: "p", group: group) }
+  let!(:version) { FactoryBot.create(:version, project: project, name: "v1") }
+
+  it "swaps a reference for the referenced root, and leaves the reference inside it alone" do
+    FactoryBot.create(:entity, version: version, name: "Address", root: "{city:string}")
+    FactoryBot.create(:entity, version: version, name: "Customer", root: "{address:Address}")
+    order = FactoryBot.create(:entity, version: version, name: "Order", root: "{customer:Customer}")
+
+    customer = order.reload.parsed_root(expanded: true).object_attributes.first.value
+
+    expect(customer).to be_a(Node::Object)
+    expect(customer.object_attributes.first.value).to be_a(Node::Entity)
+  end
+end
+
 describe Entity, "#to_lines" do
   let!(:group) { Group.create!(name: "g") }
   let!(:project) { Project.create!(name: "p", group: group) }

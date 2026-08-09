@@ -1,6 +1,9 @@
+<% diff = Diff::FromValues.new(previous_entity.parsed_root(expanded: expanded), entity.parsed_root(expanded: expanded)) %>
 <% changed = entity.differs_from?(previous_entity) %>
 <% border_class = changed ? "border-amber-200" : "border-gray-200" %>
 <% header_class = changed ? "bg-amber-600" : "bg-violet-800" %>
+<% entity_lines = candidate_comments.entity_root_lines(entity) %>
+<% entity_map = entity_line_index_map(previous_entity, entity, expanded: expanded) %>
 
 <div class="grid grid-cols-2 gap-2">
   <div>
@@ -13,10 +16,12 @@
   </div>
   <div>
     <div class="border <%= border_class %> rounded-lg">
-      <div class="sticky top-0 z-10 rounded-t-lg <%= header_class %> text-white px-4 py-2 text-sm font-mono">
+      <div class="sticky top-0 z-10 rounded-t-lg <%= header_class %> text-white px-4 py-2 text-sm font-mono flex items-center justify-between">
         <%= entity.name %>
+        <%= render "shared/expand_button", expandable: [ previous_entity, entity ].any? { |e| e.parsed_root.expandable? }, expanded: expanded %>
       </div>
-      <div <%= local_assigns[:line_pick_attr] %> class="pl-2 py-2 bg-white border-b border-gray-200"><%= render "specs/json", diff: diff.after, comments_by_line: local_assigns[:comments_by_line] || {}, line_index_map: local_assigns[:line_index_map] %></div>
+      <div <%= entity_line_pick_attr(entity, entity_map) %> class="pl-2 py-2 bg-white border-b border-gray-200"><%= render "specs/json", diff: diff.after, comments_by_line: expanded ? entity_lines.by_line : {}, line_index_map: entity_map %></div>
     </div>
   </div>
+  <%= render "comments/line_threads", anchor: CommentAnchor.for_entity_root(entity), collapsed: expanded ? [] : entity_lines.fresh, outdated: entity_lines.outdated, composable: !entity_map.nil?, expanded: expanded, wrapper_class: "col-start-2 mt-3" %>
 </div>

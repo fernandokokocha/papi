@@ -8,9 +8,10 @@ class Entity < ApplicationRecord
 
   scope :sort_by_name, -> { order([ :name ]) }
 
-  def parsed_root
+  def parsed_root(expanded: false)
     parser = JSONSchemaParser.new(version.entities)
-    parser.parse_value(root)
+    value = parser.parse_value(root)
+    expanded ? value.expand : value
   end
 
   def to_lines

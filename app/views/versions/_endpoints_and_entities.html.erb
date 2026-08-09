@@ -67,21 +67,21 @@
           <% endpoint_anchor = CommentAnchor.new(scope: "endpoint", part: "whole", endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb]) %>
           <div id="endpoint-<%= endpoint.page_url %>" <%= comment_region_attr(endpoint_anchor) %> data-sidebar-target="card" class="scroll-mt-6 rounded-xl">
             <% if endpoint.annotation == "unchanged" || endpoint.annotation == "changed" %>
-              <div data-controller="endpoint"
-                   data-endpoint-target="container"
-                   data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, candidate: @candidate&.name) %>">
+              <div data-controller="expandable"
+                   data-expandable-target="container"
+                   data-expandable-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, candidate: @candidate&.name) %>">
                 <%= render "endpoints/endpoint_diff", endpoint: endpoint, previous_endpoint: endpoint.previous, expanded: false %>
               </div>
             <% elsif endpoint.annotation == "added" %>
-              <div data-controller="endpoint"
-                   data-endpoint-target="container"
-                   data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, kind: 'new', candidate: @candidate&.name) %>">
+              <div data-controller="expandable"
+                   data-expandable-target="container"
+                   data-expandable-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, kind: 'new', candidate: @candidate&.name) %>">
                 <%= render "endpoints/endpoint_new", endpoint: endpoint, expanded: false %>
               </div>
             <% elsif endpoint.annotation == "removed" %>
-              <div data-controller="endpoint"
-                   data-endpoint-target="container"
-                   data-endpoint-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, kind: 'removed', candidate: @candidate&.name) %>">
+              <div data-controller="expandable"
+                   data-expandable-target="container"
+                   data-expandable-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, kind: 'removed', candidate: @candidate&.name) %>">
                 <%= render "endpoints/endpoint_removed", endpoint: endpoint, expanded: false %>
               </div>
             <% end %>
@@ -100,24 +100,29 @@
         <% @categorized_entities.each do |entity| %>
           <% entity_anchor = CommentAnchor.new(scope: "entity", part: "whole", entity_name: entity.name) %>
           <div id="entity-<%= entity.name %>" <%= comment_region_attr(entity_anchor) %> data-sidebar-target="card" class="scroll-mt-6 rounded-xl">
-            <% entity_lines = candidate_comments.entity_root_lines(entity) %>
-            <% entity_expanded = entity.annotation != "removed" %>
-            <% entity_map = entity_line_index_map(entity) %>
             <% if entity.annotation == "unchanged" || entity.annotation == "changed" %>
-              <% diff = Diff::FromValues.new(entity.previous.parsed_root, entity.parsed_root) %>
-              <%= render "versions/entity_diff", entity: entity, previous_entity: entity.previous, diff: diff, comments_by_line: entity_expanded ? entity_lines.by_line : {}, line_index_map: entity_map, line_pick_attr: entity_line_pick_attr(entity, entity_map) %>
+              <div data-controller="expandable"
+                   data-expandable-target="container"
+                   data-expandable-url-value="<%= project_entity_path(project_name: @project.name, id: entity.id, candidate: @candidate&.name) %>">
+                <%= render "versions/entity_diff", entity: entity, previous_entity: entity.previous, expanded: false %>
+              </div>
             <% elsif entity.annotation == "added" %>
-              <% diff = entity.parsed_root.to_diff(:no_change) %>
-              <%= render "versions/entity_added", entity: entity, diff: diff, comments_by_line: entity_expanded ? entity_lines.by_line : {}, line_index_map: entity_map, line_pick_attr: entity_line_pick_attr(entity, entity_map) %>
+              <div data-controller="expandable"
+                   data-expandable-target="container"
+                   data-expandable-url-value="<%= project_entity_path(project_name: @project.name, id: entity.id, kind: 'new', candidate: @candidate&.name) %>">
+                <%= render "versions/entity_added", entity: entity, expanded: false %>
+              </div>
             <% elsif entity.annotation == "removed" %>
-              <% diff = entity.parsed_root.to_diff(:no_change) %>
-              <%= render "versions/entity_removed", entity: entity, diff: diff %>
+              <div data-controller="expandable"
+                   data-expandable-target="container"
+                   data-expandable-url-value="<%= project_entity_path(project_name: @project.name, id: entity.id, kind: 'removed', candidate: @candidate&.name) %>">
+                <%= render "versions/entity_removed", entity: entity, expanded: false %>
+              </div>
             <% end %>
             <%= render "comments/anchor_region",
                   anchor: entity_anchor,
                   threads: candidate_comments.threads_for("entity", entity: entity),
                   wrapper_class: entity.annotation == "removed" ? "mt-3 w-1/2 pr-1" : "mt-3 w-1/2 ml-auto pl-1" %>
-            <%= render "comments/line_threads", anchor: CommentAnchor.for_entity_root(entity), collapsed: entity_expanded ? [] : entity_lines.fresh, outdated: entity_lines.outdated, composable: !entity_map.nil?, expanded: true, wrapper_class: entity.annotation == "removed" ? "mt-3 w-1/2 pr-1" : "mt-3 w-1/2 ml-auto pl-1" %>
           </div>
         <% end %>
       </div>

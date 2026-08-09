@@ -28,6 +28,11 @@ class Version < ApplicationRecord
     project.versions.find_by(order: order + 1)
   end
 
+  def diff_base
+    return candidate.base_version unless project
+    previous
+  end
+
   def existing_endpoints_for_frontend
     endpoints.map do |endpoint|
       {

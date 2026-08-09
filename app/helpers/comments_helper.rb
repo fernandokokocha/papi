@@ -49,15 +49,15 @@ module CommentsHelper
     ExpandedLineIndex.new(lines, endpoint.version.entities).to_a
   end
 
-  def entity_line_index_map(entity)
+  def entity_line_index_map(previous_entity, entity, expanded:)
     return nil unless @candidate
-    return nil if entity.annotation == "removed"
 
+    after_value = entity.parsed_root(expanded: expanded)
     lines =
-      if entity.previous
-        Diff::FromValues.new(entity.previous.parsed_root, entity.parsed_root).after
+      if previous_entity
+        Diff::FromValues.new(previous_entity.parsed_root(expanded: expanded), after_value).after
       else
-        entity.parsed_root.to_diff(:no_change)
+        after_value.to_diff(:no_change)
       end
     ExpandedLineIndex.new(lines, entity.version.entities).to_a
   end

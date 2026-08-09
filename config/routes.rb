@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       match "*", via: :all, to: "test_server#version", constraints: VersionTestServerConstraint.new
     end
     resources :endpoints, only: [ :show ]
+    resources :entities, only: [ :show ]
   end
 
   get "design-preview" => "design_preview#show"
