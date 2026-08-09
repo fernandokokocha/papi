@@ -30,10 +30,10 @@ class OpenAPI::Import
       @candidate = Candidate.create!(candidate_attributes)
       version = Version.create!(version_attributes)
 
-      raise OpenAPI::Invalid, "There is nothing to review: this document is the spec papi already holds" if unchanged?(version)
+      raise OpenAPI::Invalid, "There is nothing to review: this document is the spec Papi already holds" if unchanged?(version)
     end
   rescue ActiveRecord::RecordInvalid => e
-    raise OpenAPI::Invalid, "papi cannot hold this document: #{e.record.errors.full_messages.to_sentence}"
+    raise OpenAPI::Invalid, "Papi cannot hold this document: #{e.record.errors.full_messages.to_sentence}"
   end
 
   private
@@ -172,7 +172,7 @@ class OpenAPI::Import
 
   # The editor refuses to submit an endpoint with no responses, so an import
   # must not leave one behind. An operation answering only "default" or "2XX"
-  # keeps that response under a code papi can hold — imprecise, and the whole
+  # keeps that response under a code Papi can hold — imprecise, and the whole
   # endpoint would be unusable otherwise.
   def responses(declared)
     keyed = declared.filter_map { |code, response| response(code, response) if code.match?(STATUS_CODE) }
@@ -195,7 +195,7 @@ class OpenAPI::Import
     nothing_to_declare?(declared) ? "" : declared.serialize
   end
 
-  # papi has no map type, so additionalProperties arrives as an object with no
+  # Papi has no map type, so additionalProperties arrives as an object with no
   # attributes. A whole value says that better as nothing — which is a whole
   # value only: nested, and at an entity root, `{}` has to stand.
   def nothing_to_declare?(node)

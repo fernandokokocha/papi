@@ -1,7 +1,7 @@
 require "rails_helper"
 
 # Importing and exporting is not a round trip and never asserts identity. This
-# reads the other way round: the exported document is the report of what papi
+# reads the other way round: the exported document is the report of what Papi
 # kept, and every difference from the source below is an agreed loss.
 describe "Importing an OpenAPI document and exporting it back" do
   let(:group) { FactoryBot.create(:group) }
@@ -171,7 +171,7 @@ describe "Importing an OpenAPI document and exporting it back" do
     OpenAPI::Export.new(service.candidate.latest_version.reload).call
   end
 
-  it "keeps the paths, the schemas and nothing papi cannot hold" do
+  it "keeps the paths, the schemas and nothing Papi cannot hold" do
     expect(exported).to eq({
       "openapi" => "3.1.0",
       # info is synthesized: the project and the published version, never the
@@ -187,7 +187,7 @@ describe "Importing an OpenAPI document and exporting it back" do
               { "name" => "page", "in" => "query", "required" => false, "schema" => { "type" => "number" } }
             ],
             "responses" => {
-              # 2XX and default are gone: papi keys a response by status code.
+              # 2XX and default are gone: Papi keys a response by status code.
               "200" => {
                 "description" => "The customers",
                 "content" => {
@@ -216,10 +216,10 @@ describe "Importing an OpenAPI document and exporting it back" do
             }
           }
         },
-        # customer-id is not a name papi can spell, so it is renamed.
+        # customer-id is not a name Papi can spell, so it is renamed.
         "/customers/{customer_id}" => {
           # An endpoint the editor could not open is worse than an imprecise
-          # code, so the only response papi could not key became a 200.
+          # code, so the only response Papi could not key became a 200.
           "delete" => {
             "parameters" => [
               { "name" => "customer_id", "in" => "path", "required" => true, "schema" => { "type" => "number" } }

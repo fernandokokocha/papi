@@ -11,7 +11,7 @@
   <p class="text-sm text-gray-600 mb-6">
     The document becomes a new candidate on top of <span class="font-semibold text-gray-900"><%= @project.latest_version.name.presence || "an empty project" %></span>,
     replacing the whole spec — anything the file leaves out reads as a removal in the diff.
-    What papi cannot express is dropped: security schemes, header params, formats, examples and tags.
+    What Papi cannot express is dropped: security schemes, header params, formats, examples and tags.
   </p>
 
   <%= form_with url: project_openapi_import_path(project_name: @project.name), method: :post, html: { multipart: true } do |f| %>

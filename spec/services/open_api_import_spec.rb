@@ -77,7 +77,7 @@ describe OpenAPI::Import do
     expect(endpoint(service, "GET /users").responses.first.note).to eq("The users")
   end
 
-  it "writes an OpenAPI path template the way papi writes a path" do
+  it "writes an OpenAPI path template the way Papi writes a path" do
     service = import(paths: { "/users/{id}/orders/{order_id}" => { "get" => {} } })
 
     expect(version(service).endpoints.map(&:path)).to eq([ "/users/:id/orders/:order_id" ])
@@ -98,7 +98,7 @@ describe OpenAPI::Import do
     expect(version(service).endpoints.map(&:path)).to eq([ "/files/:name" ])
   end
 
-  it "imports every verb papi knows and skips the rest" do
+  it "imports every verb Papi knows and skips the rest" do
     operations = OpenAPI::Import::VERBS.keys.index_with { {} }.merge("head" => {}, "options" => {}, "trace" => {})
     service = import(paths: { "/users" => operations })
 
@@ -135,7 +135,7 @@ describe OpenAPI::Import do
     expect(endpoint(service, "POST /users").input).to eq("string")
   end
 
-  it "declares no input for a body papi cannot read" do
+  it "declares no input for a body Papi cannot read" do
     service = import(paths: { "/uploads" => { "post" => {
       "requestBody" => { "content" => { "multipart/form-data" => { "schema" => { "type" => "string" } } } }
     } } })
@@ -186,7 +186,7 @@ describe OpenAPI::Import do
     ])
   end
 
-  it "skips a response papi cannot key by status code" do
+  it "skips a response Papi cannot key by status code" do
     service = import(paths: { "/users" => { "get" => { "responses" => {
       "200" => { "description" => "OK" },
       "2XX" => { "description" => "Fine" },
@@ -196,8 +196,8 @@ describe OpenAPI::Import do
     expect(endpoint(service, "GET /users").responses.map(&:code)).to eq([ "200" ])
   end
 
-  describe "an operation with no response papi can key" do
-    it "keeps the default under a code papi can hold, so the endpoint is usable" do
+  describe "an operation with no response Papi can key" do
+    it "keeps the default under a code Papi can hold, so the endpoint is usable" do
       service = import(paths: { "/users" => { "delete" => { "responses" => {
         "default" => { "description" => "Whatever happened", "content" => { "application/json" => { "schema" => { "type" => "string" } } } }
       } } } })
@@ -221,7 +221,7 @@ describe OpenAPI::Import do
     end
   end
 
-  describe "a body papi has no type for" do
+  describe "a body Papi has no type for" do
     def map_schema
       { "type" => "object", "additionalProperties" => { "type" => "integer" } }
     end

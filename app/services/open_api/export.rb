@@ -1,6 +1,6 @@
 class OpenAPI::Export
   # 3.0 cannot express (string|number|null) — its nullable: true is not a union
-  # member. 3.2 adds nothing papi uses and is strictly compatible with 3.1, so
+  # member. 3.2 adds nothing Papi uses and is strictly compatible with 3.1, so
   # declaring 3.1 only widens the tooling that accepts the document.
   SPEC_VERSION = "3.1.0"
   MEDIA_TYPE = "application/json"

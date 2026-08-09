@@ -16,7 +16,7 @@ describe OpenAPI::ImportSchema do
     expect(value({ "type" => "integer", "format" => "int64" })).to eq("number")
   end
 
-  it "falls back to a string for a type papi cannot express" do
+  it "falls back to a string for a type Papi cannot express" do
     expect(value({ "type" => "file" })).to eq("string")
     expect(value({})).to eq("string")
   end
