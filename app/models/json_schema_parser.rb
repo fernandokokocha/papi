@@ -18,10 +18,8 @@ class JSONSchemaParser
     value = raw_value.gsub(/\s+/, "")
     raise RuntimeError.new("Empty value: only a whole value may be empty") if value.empty?
 
-    primitive_kind = PRIMITIVE_KINDS.find { |kind| value.start_with?(kind) }
-
-    if primitive_kind
-      Node::Primitive.new(kind: primitive_kind)
+    if PRIMITIVE_KINDS.include?(value)
+      Node::Primitive.new(kind: value)
     elsif value[0] == "{"
       parse_object(value)
     elsif value[0] == "["

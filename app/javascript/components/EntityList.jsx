@@ -2,7 +2,7 @@ import React from 'react'
 import Entity from "@/components/Entity.jsx";
 import CardComments from "@/components/CardComments.jsx";
 
-const EntityList = ({entities, updateEntity, removeEntity, addEntity, addEntityDisabled, newEntity, updateNewEntity, comments, edited}) => {
+const EntityList = ({entities, updateEntity, removeEntity, addEntity, entityError, newEntity, updateNewEntity, comments, edited}) => {
     return (
         <>
             <div className="text-xl font-semibold text-black uppercase tracking-wide mb-3 mt-8">Entities</div>
@@ -40,17 +40,17 @@ const EntityList = ({entities, updateEntity, removeEntity, addEntity, addEntityD
                             <button
                                 type="button"
                                 onClick={addEntity}
-                                disabled={addEntityDisabled}
-                                className={addEntityDisabled
+                                disabled={!!entityError}
+                                className={entityError
                                     ? "text-xs bg-white/20 text-white/50 px-3 py-1 rounded cursor-not-allowed"
                                     : "text-xs bg-white text-emerald-700 hover:bg-emerald-50 px-3 py-1 rounded cursor-pointer font-medium"}
                             >
                                 Add
                             </button>
                         </div>
-                        {addEntityDisabled && (
+                        {entityError && (
                             <div className="px-3 py-2 bg-emerald-50 text-xs text-red-600 border-t border-emerald-200">
-                                This entity already exists
+                                {entityError}
                             </div>
                         )}
                     </div>

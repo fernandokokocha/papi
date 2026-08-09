@@ -20,17 +20,15 @@ const isNewEndpointColliding = (verb, path, e) => {
     return newEndpointColliding;
 }
 
-const isNewEntityColliding = (newEntity, entities) => {
-    let newEntityColliding = false
-    entities.filter((entity) => (entity.type !== 'removed'))
-        .forEach((entity) => {
-            const collidingWithNewEntity = (entity.name === newEntity)
-            if (collidingWithNewEntity) {
-                newEntityColliding = true
-            }
-        })
+const newEntityError = (newEntity, entities) => {
+    if (!/^[A-Z]/.test(newEntity)) {
+        return "An entity name must start with an uppercase letter"
+    }
 
-    return newEntityColliding;
+    const colliding = entities.filter((entity) => (entity.type !== 'removed'))
+        .some((entity) => (entity.name === newEntity))
+
+    return colliding ? "This entity already exists" : null
 }
 
 const checkEntitiesReferences = (endpoints, entities) => {
@@ -59,14 +57,14 @@ const Form = ({serializedEndpoints, serializedEntities, comments}) => {
     const [newVerb, setNewVerb] = useState("verb_get")
     const [addEndpointDisabled, setAddEndpointDisabled] = useState(() => isNewEndpointColliding(newVerb, newPath, endpoints))
     const [newEntity, setNewEntity] = useState("MyResource")
-    const [addEntityDisabled, setAddEntityDisabled] = useState(() => isNewEntityColliding(newEntity, entities))
+    const [entityError, setEntityError] = useState(() => newEntityError(newEntity, entities))
 
     const validateNewEndpoint = (verb, path, e) => {
         setAddEndpointDisabled(isNewEndpointColliding(verb, path, e))
     }
 
     const validateNewEntity = (newEntity, entities) => {
-        setAddEntityDisabled(isNewEntityColliding(newEntity, entities))
+        setEntityError(newEntityError(newEntity, entities))
     }
 
     const validate = (endpointsToSend, entitiesToSend) => {
@@ -219,7 +217,7 @@ const Form = ({serializedEndpoints, serializedEntities, comments}) => {
         newEntities.push({
             type: "new",
             id: uuidv4(),
-            root: {nodeType: "primitive", value: "nothing"},
+            root: {nodeType: "primitive", value: "string"},
             name: newEntity,
             collision: false,
             is_referenced: false,
@@ -359,7 +357,7 @@ const Form = ({serializedEndpoints, serializedEntities, comments}) => {
                 newEntity={newEntity}
                 updateNewEntity={updateNewEntity}
                 addEntity={addEntity}
-                addEntityDisabled={addEntityDisabled}
+                entityError={entityError}
                 comments={commentsMap.entities}
                 edited={anyChanges}
             />

@@ -90,7 +90,7 @@ class OpenAPI::Import
   # Node::Entity refers to an Entity record, so the entities exist before any
   # schema is read and are filled in once every reference can be resolved.
   def entities
-    @entities ||= schemas.keys.to_h { |name| [ name, Entity.new(name: entity_name(name)) ] }
+    @entities ||= schemas.keys.to_h { |name| [ name, Entity.new(name: capitalized(name)) ] }
   end
 
   def schemas
@@ -101,10 +101,8 @@ class OpenAPI::Import
     entities.each { |name, entity| entity.root = node(schemas.fetch(name)).serialize }.values
   end
 
-  # JSONSchemaParser matches a primitive with start_with?, so a component named
-  # numberOfItems would read back as the primitive number.
-  def entity_name(name)
-    name.start_with?(*JSONSchemaParser::PRIMITIVE_KINDS) ? name.sub(/\A./, &:upcase) : name
+  def capitalized(name)
+    name.sub(/\A./, &:upcase)
   end
 
   def endpoints

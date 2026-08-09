@@ -96,7 +96,6 @@ no grammar library, and these are simplifications, not oversights — per
 "simplicity over correctness", a malformed spec may raise a bare `RuntimeError`
 rather than be diagnosed:
 
-- primitives are matched with `start_with?`, so `stringify` parses as `string`;
 - `split_by_comma` tracks only `{}` depth, which suffices because a comma can
   never appear inside `[]` or `()` without braces around it;
 - an attribute's name is everything before its first `:`.
@@ -104,9 +103,15 @@ rather than be diagnosed:
 **There are two implementations and they must agree.** Ruby parses for diffing,
 validation and the mock server; the React editor parses on every keystroke via
 `app/javascript/helpers/{deserialize,serialize}.js`. A grammar change means
-touching both sides and both sets of specs. The JS side calls an entity
-reference `custom` because it cannot resolve names client-side, and it matches
-primitives exactly where Ruby matches by prefix.
+touching both sides and both sets of specs. Both match a primitive by exact
+name — Ruby used to match by prefix, which read an entity named `numberOfItems`
+back as `number`. The JS side calls an entity reference `custom` because it
+cannot resolve names client-side.
+
+**An entity name starts with an uppercase letter.** `Form.jsx` blocks the Add
+button otherwise and `OpenAPI::Import` capitalizes every component name, but no
+model validates it — a lowercase name parses fine, so this is convention, not
+correctness.
 
 **Entities nest to any depth; only cycles are banned.** `Order` may reference
 `Customer`, which references `Address`, and so on — there is no depth limit.

@@ -182,14 +182,30 @@ describe JSONSchemaParser, type: :model do
       expect { parser.parse_value("User") }.to raise_error(RuntimeError, "Unknown value: User")
     end
 
+    it "does not read a name merely starting with a primitive kind as that primitive" do
+      expect { parser.parse_value("numberOfItems") }.to raise_error(RuntimeError, "Unknown value: numberOfItems")
+      expect { parser.parse_value("stringify") }.to raise_error(RuntimeError, "Unknown value: stringify")
+      expect { parser.parse_value("nullable") }.to raise_error(RuntimeError, "Unknown value: nullable")
+    end
+
     describe "with some valid entities" do
       let(:user_entity) { OpenStruct.new({ name: "User" }) }
-      let(:valid_entities) { [ user_entity ] }
+      let(:count_entity) { OpenStruct.new({ name: "numberOfItems" }) }
+      let(:valid_entities) { [ user_entity, count_entity ] }
       subject(:parser) { JSONSchemaParser.new(valid_entities) }
 
       it "can parse entity" do
         actual = parser.parse_value(user_entity.name)
         expected = Node::Entity.new(entity: user_entity)
+
+        expect(actual).to eq(expected)
+      end
+
+      it "can parse an entity whose name starts with a primitive kind" do
+        actual = parser.parse_value("{count:numberOfItems}")
+        expected = Node::Object.new(object_attributes: [
+          Node::ObjectAttribute.new(name: "count", value: Node::Entity.new(entity: count_entity))
+        ])
 
         expect(actual).to eq(expected)
       end

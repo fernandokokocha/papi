@@ -265,14 +265,14 @@ describe OpenAPI::Import do
     expect(endpoint(service, "GET /customers").responses.first.output).to eq("[Customer]")
   end
 
-  it "renames a component the parser would read as a primitive" do
-    components = { "schemas" => { "numberOfItems" => { "type" => "integer" } } }
+  it "capitalizes every component name" do
+    components = { "schemas" => { "numberOfItems" => { "type" => "integer" }, "customer" => { "type" => "object", "properties" => { "id" => { "type" => "string" } } } } }
     paths = { "/counts" => { "get" => { "responses" => {
       "200" => { "description" => "ok", "content" => { "application/json" => { "schema" => { "$ref" => "#/components/schemas/numberOfItems" } } } }
     } } } }
     service = import(paths: paths, components: components)
 
-    expect(version(service).entities.map(&:name)).to eq([ "NumberOfItems" ])
+    expect(version(service).entities.map(&:name)).to eq([ "Customer", "NumberOfItems" ])
     expect(endpoint(service, "GET /counts").responses.first.output).to eq("NumberOfItems")
   end
 
