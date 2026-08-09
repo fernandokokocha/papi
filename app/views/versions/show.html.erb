@@ -40,7 +40,6 @@
 </div>
 
 <%= render "versions/endpoints_and_entities" do %>
-  <%# Version column headers %>
   <div class="grid grid-cols-2 gap-2 mb-6">
     <div class="bg-white border border-gray-200 rounded-lg p-4">
       <% if @previous_version.present? && @previous_version.order > -1 %>

@@ -17,10 +17,6 @@ class DesignPreviewController < ApplicationController
 
   private
 
-  # In-memory comment threads — one per kind — so the design page previews the
-  # real comments/thread partial. Unsaved records: Pundit still infers
-  # CommentPolicy, and resolve? (author == candidate.author) is false for the
-  # unauthenticated preview, so no id-dependent action routes are hit.
   def preview_comments
     author   = User.new(id: 1, email_address: "one@example.com")
     reviewer = User.new(id: 2, email_address: "two@example.com")

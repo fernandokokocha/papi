@@ -63,19 +63,15 @@ describe CandidateComments do
       entity_thread = FactoryBot.create(:comment, :entity_scope, candidate: candidate)
       response_thread = FactoryBot.create(:comment, :response_scope, candidate: candidate)
 
-      # every part of the scope when none is named
       expect(comments.threads_for("endpoint", endpoint: endpoint)).to eq([ input, note, whole ])
 
-      # narrowed to one part
       expect(comments.threads_for("endpoint", endpoint: endpoint, part: "whole")).to eq([ whole ])
       expect(comments.threads_for("endpoint", endpoint: endpoint, part: "note")).to eq([ note ])
       expect(comments.threads_for("endpoint", endpoint: endpoint, part: "input")).to eq([ input ])
 
-      # other scopes
       expect(comments.threads_for("entity", entity: entity)).to eq([ entity_thread ])
       expect(comments.threads_for("response", endpoint: endpoint, response_code: "200")).to eq([ response_thread ])
 
-      # identity has to match
       expect(comments.threads_for("endpoint", endpoint: other_endpoint)).to eq([])
       expect(comments.threads_for("response", endpoint: endpoint, response_code: "404")).to eq([])
     end
@@ -185,18 +181,14 @@ describe CandidateComments do
       response_lines = comments.response_output_lines(endpoint, "200")
       entity_lines = comments.entity_root_lines(entity)
 
-      # a snapshot matching the current text is fresh, ordered by line
       expect(response_lines.fresh).to eq([ first, second ])
       expect(entity_lines.fresh).to eq([ entity_line ])
 
-      # anything else outdated, whatever the text changed to
       expect(response_lines.outdated).to eq([ stale ])
       expect(entity_lines.outdated).to eq([ entity_stale ])
 
-      # fresh threads indexed by line for inline rendering
       expect(response_lines.by_line).to eq(2 => [ first ], 5 => [ second ])
 
-      # identity has to match
       expect(comments.response_output_lines(endpoint, "404").fresh).to eq([])
     end
 
@@ -213,7 +205,6 @@ describe CandidateComments do
       expect(input_lines.outdated).to eq([ stale ])
       expect(input_lines.by_line).to eq(1 => [ first ], 4 => [ second ])
 
-      # identity has to match
       expect(comments.endpoint_input_lines(other_endpoint).fresh).to eq([])
     end
 

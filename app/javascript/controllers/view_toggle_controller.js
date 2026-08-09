@@ -1,8 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Page-level Table ⇄ Timeline switch for the projects history. Sets
-// data-view on the wrapper (CSS drives visibility + active tab styling)
-// and remembers the choice in localStorage.
 export default class extends Controller {
   static values = { default: String }
 

@@ -185,7 +185,6 @@ describe CommentAnchor do
 
   describe "#kind" do
     it "names the coarse kind, preferring line over part over scope" do
-      # the scope names it
       expect(anchor(scope: "candidate", part: "whole", line: nil,
                     endpoint_path: nil, endpoint_http_verb: nil,
                     entity_name: nil, response_code: nil).kind).to eq(:conversation)
@@ -202,17 +201,14 @@ describe CommentAnchor do
                     endpoint_path: "/users/:id", endpoint_http_verb: 0,
                     entity_name: nil, response_code: nil, param_name: "id").kind).to eq(:param)
 
-      # a note part beats the scope
       expect(anchor(scope: "endpoint", part: "note", line: nil,
                     endpoint_path: "/users", endpoint_http_verb: 0,
                     entity_name: nil, response_code: nil).kind).to eq(:note)
 
-      # so does an input part
       expect(anchor(scope: "endpoint", part: "input", line: nil,
                     endpoint_path: "/users", endpoint_http_verb: 0,
                     entity_name: nil, response_code: nil).kind).to eq(:input)
 
-      # a line beats both
       expect(anchor(scope: "endpoint", part: "note", line: 3,
                     endpoint_path: "/users", endpoint_http_verb: 0,
                     entity_name: nil, response_code: nil).kind).to eq(:line)
@@ -308,28 +304,24 @@ describe CommentAnchor do
     end
 
     it "raises when the target is missing — nothing validates that an anchor's target exists" do
-      # the response is missing
       expect {
         anchor(scope: "response", part: "output", line: nil,
                endpoint_path: "/users", endpoint_http_verb: 0,
                entity_name: nil, response_code: "404").current_output(version)
       }.to raise_error(NoMethodError)
 
-      # the endpoint is missing
       expect {
         anchor(scope: "response", part: "output", line: nil,
                endpoint_path: "/nope", endpoint_http_verb: 0,
                entity_name: nil, response_code: "200").current_output(version)
       }.to raise_error(NoMethodError)
 
-      # the entity is missing
       expect {
         anchor(scope: "entity", part: "root", line: nil,
                endpoint_path: nil, endpoint_http_verb: nil,
                entity_name: "Nope", response_code: nil).current_output(version)
       }.to raise_error(NoMethodError)
 
-      # the endpoint behind an input anchor is missing
       expect {
         anchor(scope: "endpoint", part: "input", line: nil,
                endpoint_path: "/nope", endpoint_http_verb: 0,

@@ -1,9 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Copies a cURL command for a single response to the clipboard.
-// Reads verb/path/response/query from data-clipboard-*-value. Builds base URL
-// from window.location, targets a specific response code via ?response=, and
-// appends the endpoint's declared query params with their kinds as placeholders.
 export default class extends Controller {
   static values = { verb: String, path: String, response: String, query: String }
 

@@ -11,7 +11,6 @@ const FROM_HTTP_VERB = {
     verb_delete: "DELETE",
 }
 
-// Solid filled badge — for light backgrounds and against colored card headers.
 const SOLID = {
     GET: "bg-blue-500 text-white",
     POST: "bg-emerald-500 text-white",
@@ -20,7 +19,6 @@ const SOLID = {
     DELETE: "bg-red-500 text-white",
 }
 
-// Editable <select> sitting inside a dark/colored card header.
 const SELECT = {
     GET: "bg-blue-600 text-white border-blue-400",
     POST: "bg-emerald-600 text-white border-emerald-400",

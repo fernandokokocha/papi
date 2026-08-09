@@ -1,11 +1,5 @@
 import { Controller } from "@hotwired/stimulus"
 
-// Toggles the quick-access sidebar and runs scroll-spy: continuously marks the
-// endpoint/entity card whose top has reached the top of the viewport, mirroring
-// it on the matching sidebar link. Clicking a sidebar link pins (and flashes)
-// that card until the user scrolls again — so cards near the bottom that can't
-// reach the top of the viewport still select cleanly.
-// Persists collapsed state in localStorage so it survives navigations.
 export default class extends Controller {
   static targets = ["aside", "showButton", "link", "card"]
   static storageKey = "papi.sidebar.collapsed"

@@ -20,8 +20,6 @@ class DiffResponses::FromResponses
     before_output = output_value(before)
     after_output = output_value(after)
 
-    # Only changed/unchanged responses need a line-level diff; added and
-    # removed are rendered wholesale (all green / all red).
     if before.nil?
       state = :added
       note_diff = output_diff = nil
