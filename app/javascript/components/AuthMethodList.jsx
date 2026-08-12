@@ -1,21 +1,26 @@
 import React from 'react'
 import AuthMethod from "@/components/AuthMethod.jsx";
+import CardComments from "@/components/CardComments.jsx";
 
-const AuthMethodList = ({authMethods, updateAuthMethod, removeAuthMethod, addAuthMethod, authMethodError, newAuthMethod, updateNewAuthMethod}) => {
+const AuthMethodList = ({authMethods, updateAuthMethod, removeAuthMethod, addAuthMethod, authMethodError, newAuthMethod, updateNewAuthMethod, comments, edited}) => {
     return (
         <>
             <div className="text-xl font-semibold text-black uppercase tracking-wide mb-3 mt-8">Auth</div>
 
             <div className="flex flex-col gap-6">
-                {authMethods.map((authMethod) => (
-                    <div key={authMethod.id}>
-                        <AuthMethod
-                            authMethod={authMethod}
-                            updateAuthMethod={updateAuthMethod}
-                            removeAuthMethod={removeAuthMethod}
-                        />
-                    </div>
-                ))}
+                {authMethods.map((authMethod) => {
+                    const key = authMethod.type === 'new' ? null : authMethod.original_name
+                    return (
+                        <div key={authMethod.id}>
+                            <AuthMethod
+                                authMethod={authMethod}
+                                updateAuthMethod={updateAuthMethod}
+                                removeAuthMethod={removeAuthMethod}
+                            />
+                            <CardComments html={key && comments[key]} edited={edited} />
+                        </div>
+                    )
+                })}
             </div>
 
             <div className="text-xl font-semibold text-black uppercase tracking-wide mb-3 mt-8">Add Auth Method</div>

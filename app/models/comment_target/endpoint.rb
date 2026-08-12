@@ -9,7 +9,7 @@ class CommentTarget::Endpoint
   end
 
   def scope = "endpoint"
-  def parts = %w[whole note input]
+  def parts = %w[whole note input auth]
   def required = %i[endpoint_path endpoint_http_verb]
   def label_segments = [ "#{Endpoint.verb_word(http_verb)} #{path}" ]
 

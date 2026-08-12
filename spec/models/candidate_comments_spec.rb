@@ -232,4 +232,43 @@ describe CandidateComments do
       expect(comments.response_output_lines(endpoint, "200").outdated).to eq([ orphan ])
     end
   end
+
+  describe "auth methods" do
+    let(:auth_method) { FactoryBot.create(:auth_method, name: "UserToken", kind: "bearer") }
+    let(:other_method) { FactoryBot.create(:auth_method, name: "AdminBasic", kind: "basic") }
+
+    it "attaches a thread to the method it names" do
+      thread = FactoryBot.create(:comment, :auth_method_scope, candidate: candidate)
+
+      expect(comments.threads_for("auth_method", auth_method: auth_method, part: "whole")).to eq([ thread ])
+    end
+
+    it "keeps another method's threads apart" do
+      FactoryBot.create(:comment, :auth_method_scope, candidate: candidate)
+
+      expect(comments.threads_for("auth_method", auth_method: other_method, part: "whole")).to eq([])
+    end
+
+    it "builds the method's comment card" do
+      FactoryBot.create(:comment, :auth_method_scope, candidate: candidate)
+
+      expect(comments.card_for_auth_method(auth_method)[:whole].size).to eq(1)
+    end
+
+    it "counts a method's threads in the sidebar" do
+      FactoryBot.create(:comment, :auth_method_scope, candidate: candidate)
+
+      expect(comments.sidebar_count(CommentAnchor.for_auth_method(auth_method))).to eq(1)
+    end
+
+    # A thread on an endpoint's auth row belongs to the endpoint's card, not the
+    # method's — it is about this endpoint's choice, not about the method itself.
+    it "files a thread on an endpoint's auth row under the endpoint" do
+      thread = FactoryBot.create(:comment, :endpoint_auth, candidate: candidate)
+
+      expect(comments.threads_for("endpoint", endpoint: endpoint, part: "auth")).to eq([ thread ])
+      expect(comments.card_for_endpoint(endpoint)[:whole]).to eq([ thread ])
+      expect(comments.card_for_auth_method(auth_method)[:whole]).to eq([])
+    end
+  end
 end

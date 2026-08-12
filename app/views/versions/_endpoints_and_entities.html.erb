@@ -63,7 +63,8 @@
              data-sidebar-target="link"
              class="flex items-center gap-1.5 px-2 py-1 rounded text-sm <%= tint %> hover:bg-gray-50 hover:text-sky-700">
             <span class="min-w-0 truncate"><%= auth_method.name %></span>
-            <span class="ml-auto shrink-0 font-mono text-xs text-gray-400"><%= auth_method.kind %></span>
+            <% sidebar_anchor = CommentAnchor.for_auth_method(auth_method) %>
+            <span id="<%= sidebar_count_dom_id(sidebar_anchor) %>" class="ml-auto shrink-0"><%= render "comments/count_badge", count: candidate_comments.sidebar_count(sidebar_anchor) %></span>
           </a>
         <% end %>
       </div>
@@ -154,7 +155,8 @@
       <div class="text-xl font-semibold text-black uppercase tracking-wide mb-6 mt-8">Auth</div>
       <div class="flex flex-col gap-10">
         <% @comparison.auth_methods.each do |auth_method| %>
-          <div id="auth-<%= auth_method.name %>" data-sidebar-target="card" class="scroll-mt-6 rounded-xl">
+          <% auth_anchor = CommentAnchor.for_auth_method(auth_method) %>
+          <div id="auth-<%= auth_method.name %>" <%= comment_region_attr(auth_anchor) %> data-sidebar-target="card" class="scroll-mt-6 rounded-xl">
             <% if auth_method.annotation == "unchanged" || auth_method.annotation == "changed" %>
               <%= render "versions/auth_method_diff", auth_method: auth_method, previous_auth_method: auth_method.previous %>
             <% elsif auth_method.annotation == "added" %>
@@ -162,6 +164,10 @@
             <% elsif auth_method.annotation == "removed" %>
               <%= render "versions/auth_method_removed", auth_method: auth_method %>
             <% end %>
+            <%= render "comments/anchor_region",
+                  anchor: auth_anchor,
+                  threads: candidate_comments.threads_for("auth_method", auth_method: auth_method, part: "whole"),
+                  wrapper_class: auth_method.annotation == "removed" ? "mt-3 w-1/2 pr-1" : "mt-3 w-1/2 ml-auto pl-1" %>
           </div>
         <% end %>
       </div>

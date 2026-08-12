@@ -64,7 +64,7 @@ const findCustomNameInEndpoints = (endpoints, name) => {
 
 const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, comments}) => {
     const commentsMap = React.useMemo(
-        () => (comments ? JSON.parse(comments) : {endpoints: {}, entities: {}}),
+        () => (comments ? JSON.parse(comments) : {endpoints: {}, entities: {}, auth_methods: {}}),
         [comments]
     )
     const [entities, setEntities] = useState([]);
@@ -471,6 +471,8 @@ const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, c
                 authMethodError={authMethodError}
                 newAuthMethod={newAuthMethod}
                 updateNewAuthMethod={updateNewAuthMethod}
+                comments={commentsMap.auth_methods}
+                edited={anyChanges}
             />
         </>
     )

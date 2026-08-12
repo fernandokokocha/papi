@@ -1,5 +1,6 @@
 <% notes_diff = DiffText::FromNotes.new(previous_auth_method.note, auth_method.note) %>
 <% kind_change = previous_auth_method.kind == auth_method.kind ? "no_change" : "type_changed" %>
+<% note_anchor = CommentAnchor.new(scope: "auth_method", part: "note", auth_method_name: auth_method.name) %>
 <% changed = auth_method.differs_from?(previous_auth_method) %>
 <% border_class = changed ? "border-amber-200" : "border-gray-200" %>
 <% header_class = changed ? "bg-amber-600" : "bg-slate-700" %>
@@ -13,7 +14,7 @@
       <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Kind</div>
       <div class="px-3 py-2 bg-white font-mono text-xs text-gray-800"><div class="line <%= kind_change %>"><%= previous_auth_method.kind %></div></div>
       <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Note</div>
-      <div class="px-3 py-2 bg-white border-b border-gray-200 text-sm text-gray-700"><%= render "specs/text", diff: notes_diff.before %></div>
+      <div <%= comment_region_attr(note_anchor) %> class="px-3 py-2 bg-white border-b border-gray-200 text-sm text-gray-700"><%= render "specs/text", diff: notes_diff.before %></div>
     </div>
   </div>
   <div>
@@ -24,7 +25,11 @@
       <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Kind</div>
       <div class="px-3 py-2 bg-white font-mono text-xs text-gray-800"><div class="line <%= kind_change %>"><%= auth_method.kind %></div></div>
       <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Note</div>
-      <div class="px-3 py-2 bg-white border-b border-gray-200 text-sm text-gray-700"><%= render "specs/text", diff: notes_diff.after %></div>
+      <div <%= comment_region_attr(note_anchor) %> class="px-3 py-2 bg-white border-b border-gray-200 text-sm text-gray-700"><%= render "specs/text", diff: notes_diff.after %></div>
     </div>
   </div>
+  <%= render "comments/anchor_region",
+        anchor: note_anchor,
+        threads: candidate_comments.threads_for("auth_method", auth_method: auth_method, part: "note"),
+        wrapper_class: "col-start-2 mt-3" %>
 </div>

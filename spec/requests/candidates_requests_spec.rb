@@ -264,7 +264,7 @@ describe "Candidates requests", type: :request do
       sign_in(admin)
       get edit_project_candidate_path(project.name, candidate.name)
 
-      expect(CGI.unescapeHTML(response.body)).to include(%({"endpoints":{},"entities":{}}))
+      expect(CGI.unescapeHTML(response.body)).to include(%({"endpoints":{},"entities":{},"auth_methods":{}}))
     end
 
     it "does not accept if regular user from the group" do

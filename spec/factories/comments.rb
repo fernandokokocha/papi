@@ -24,6 +24,18 @@ FactoryBot.define do
       entity_name { "User" }
     end
 
+    trait :auth_method_scope do
+      add_attribute(:scope) { "auth_method" }
+      auth_method_name { "UserToken" }
+    end
+
+    trait :endpoint_auth do
+      add_attribute(:scope) { "endpoint" }
+      part { "auth" }
+      endpoint_path { "/users" }
+      endpoint_http_verb { 0 }
+    end
+
     trait :response_scope do
       add_attribute(:scope) { "response" }
       endpoint_path { "/users" }

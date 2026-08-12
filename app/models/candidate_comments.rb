@@ -17,6 +17,7 @@ class CandidateComments
     @by_anchor = {}
     @endpoint_cards = {}
     @entity_cards = {}
+    @auth_method_cards = {}
     @response_lines = {}
     @entity_lines = {}
     @input_lines = {}
@@ -24,10 +25,10 @@ class CandidateComments
     sort_line_buckets
   end
 
-  def threads_for(scope, endpoint: nil, entity: nil, response_code: nil, param_name: nil, param_location: nil, part: nil)
+  def threads_for(scope, endpoint: nil, entity: nil, auth_method: nil, response_code: nil, param_name: nil, param_location: nil, part: nil)
     parts = part ? [ part ] : CommentAnchor.parts_for(scope)
     parts.flat_map do |scope_part|
-      @by_anchor.fetch([ scope, endpoint&.identity_path, verb_of(endpoint), entity&.name, response_code, param_name, param_location, scope_part, nil ], [])
+      @by_anchor.fetch([ scope, endpoint&.identity_path, verb_of(endpoint), entity&.name, response_code, param_name, param_location, auth_method&.name, scope_part, nil ], [])
     end.sort_by(&:created_at)
   end
 
@@ -37,6 +38,10 @@ class CandidateComments
 
   def card_for_entity(entity)
     @entity_cards.fetch(entity.name, EMPTY_CARD)
+  end
+
+  def card_for_auth_method(auth_method)
+    @auth_method_cards.fetch(auth_method.name, EMPTY_CARD)
   end
 
   def sidebar_count(anchor)
@@ -79,6 +84,8 @@ class CandidateComments
     when "entity"
       into_card(@entity_cards, comment.entity_name, comment)
       (@entity_lines[comment.entity_name] ||= []) << comment if comment.part == "root" && comment.line
+    when "auth_method"
+      into_card(@auth_method_cards, comment.auth_method_name, comment)
     end
   end
 
@@ -90,13 +97,15 @@ class CandidateComments
   def card_for_anchor(anchor)
     if anchor.scope == "entity"
       @entity_cards.fetch(anchor.entity_name, EMPTY_CARD)
+    elsif anchor.scope == "auth_method"
+      @auth_method_cards.fetch(anchor.auth_method_name, EMPTY_CARD)
     else
       @endpoint_cards.fetch([ anchor.endpoint_identity_path, anchor.endpoint_http_verb ], EMPTY_CARD)
     end
   end
 
   def sort_line_buckets
-    (@endpoint_cards.values + @entity_cards.values).each do |card|
+    (@endpoint_cards.values + @entity_cards.values + @auth_method_cards.values).each do |card|
       card[:lines].sort_by! { |comment| [ comment.line, comment.created_at ] }
     end
     (@response_lines.values + @entity_lines.values + @input_lines.values).each do |list|

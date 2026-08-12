@@ -12,6 +12,7 @@ module CommentsHelper
     param:        { label: "Param",        bg: "bg-teal-50/60",    rail: "border-l-teal-500",    chip: "bg-teal-100 text-teal-700 border-teal-200" },
     endpoint:     { label: "Endpoint",     bg: "bg-sky-50/60",     rail: "border-l-sky-600",     chip: "bg-sky-100 text-sky-700 border-sky-200" },
     entity:       { label: "Entity",       bg: "bg-violet-50/60",  rail: "border-l-violet-600",  chip: "bg-violet-100 text-violet-700 border-violet-200" },
+    auth:         { label: "Auth",         bg: "bg-stone-50/60",   rail: "border-l-stone-500",   chip: "bg-stone-100 text-stone-700 border-stone-200" },
     conversation: { label: "Conversation", bg: "bg-blue-50/60",    rail: "border-l-blue-600",    chip: "bg-blue-100 text-blue-700 border-blue-200" }
   }.freeze
 
@@ -101,8 +102,8 @@ module CommentsHelper
     tag.attributes("data-line-pick": anchor.dom_id, "data-line-pick-label": anchor.label)
   end
 
-  def card_comments_data(endpoints, entities)
-    data = { endpoints: {}, entities: {} }
+  def card_comments_data(endpoints, entities, auth_methods)
+    data = { endpoints: {}, entities: {}, auth_methods: {} }
 
     endpoints.each do |endpoint|
       threads = candidate_comments.card_for_endpoint(endpoint)
@@ -113,6 +114,11 @@ module CommentsHelper
       threads = candidate_comments.card_for_entity(entity)
       next if threads[:whole].empty? && threads[:lines].empty?
       data[:entities][entity.name] = render("comments/card_comments", threads: threads)
+    end
+    auth_methods.each do |auth_method|
+      threads = candidate_comments.card_for_auth_method(auth_method)
+      next if threads[:whole].empty? && threads[:lines].empty?
+      data[:auth_methods][auth_method.name] = render("comments/card_comments", threads: threads)
     end
     data.to_json
   end

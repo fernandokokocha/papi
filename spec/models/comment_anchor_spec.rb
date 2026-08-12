@@ -9,7 +9,7 @@ describe CommentAnchor do
     it "returns the logical-identity tuple in column order" do
       a = anchor(scope: "response", part: "output", line: 7,
                  endpoint_path: "/users", endpoint_http_verb: 0, response_code: "200")
-      expect(a.key).to eq([ "response", "/users", 0, nil, "200", nil, nil, "output", 7 ])
+      expect(a.key).to eq([ "response", "/users", 0, nil, "200", nil, nil, nil, "output", 7 ])
     end
   end
 
@@ -142,7 +142,8 @@ describe CommentAnchor do
       expect(anchor_obj.to_columns).to eq(
         scope: "response", part: "output", line: nil,
         endpoint_path: "/users", endpoint_http_verb: 0,
-        entity_name: nil, response_code: "200", param_name: nil, param_location: nil
+        entity_name: nil, response_code: "200", param_name: nil, param_location: nil,
+        auth_method_name: nil
       )
     end
   end
@@ -221,12 +222,59 @@ describe CommentAnchor do
     end
   end
 
+  describe ".for_auth_method" do
+    it "builds the whole-card anchor from an auth method record" do
+      built = described_class.for_auth_method(AuthMethod.new(name: "UserToken", kind: "bearer"))
+
+      expect(built.key).to eq([ "auth_method", nil, nil, nil, nil, nil, nil, "UserToken", "whole", nil ])
+      expect(built.label).to eq("UserToken")
+      expect(built.kind).to eq(:auth)
+    end
+
+    it "rejects a part that is not legal for the scope" do
+      a = anchor(scope: "auth_method", part: "root", auth_method_name: "UserToken")
+
+      expect(a.errors).to include([ :part, a_string_including("not valid") ])
+    end
+
+    it "requires the method name" do
+      a = anchor(scope: "auth_method", part: "whole")
+
+      expect(a.errors).to include([ :auth_method_name, a_string_including("required") ])
+    end
+
+    it "refuses identity columns belonging to another scope" do
+      a = anchor(scope: "auth_method", part: "whole", auth_method_name: "UserToken", entity_name: "User")
+
+      expect(a.errors).to include([ :entity_name, a_string_including("must be blank") ])
+    end
+  end
+
+  describe ".for_endpoint_auth" do
+    it "builds the auth part of an endpoint anchor" do
+      endpoint = FactoryBot.build(:endpoint, path: "/users/:id", http_verb: "verb_get")
+      built = described_class.for_endpoint_auth(endpoint)
+
+      expect(built.key).to eq([ "endpoint", "/users/:", 0, nil, nil, nil, nil, nil, "auth", nil ])
+      expect(built.kind).to eq(:auth)
+    end
+
+    # The auth row holds one value, so a line number would address nothing.
+    it "refuses a line, since auth is not a text part" do
+      endpoint = FactoryBot.build(:endpoint, path: "/users", http_verb: "verb_get")
+      a = anchor(scope: "endpoint", part: "auth", line: 2,
+                 endpoint_path: endpoint.path, endpoint_http_verb: 0)
+
+      expect(a.errors).to include([ :line, a_string_including("text part") ])
+    end
+  end
+
   describe ".for_endpoint_input" do
     it "builds the line-part anchor from an endpoint record" do
       endpoint = FactoryBot.build(:endpoint, path: "/users", http_verb: "verb_post")
       built = described_class.for_endpoint_input(endpoint)
 
-      expect(built.key).to eq([ "endpoint", "/users", 1, nil, nil, nil, nil, "input", nil ])
+      expect(built.key).to eq([ "endpoint", "/users", 1, nil, nil, nil, nil, nil, "input", nil ])
     end
   end
 
@@ -235,7 +283,7 @@ describe CommentAnchor do
       endpoint = FactoryBot.build(:endpoint, path: "/users/:id", http_verb: "verb_get")
       built = described_class.for_endpoint_param(endpoint, "id", "path")
 
-      expect(built.key).to eq([ "param", "/users/:", 0, nil, nil, "id", "path", "whole", nil ])
+      expect(built.key).to eq([ "param", "/users/:", 0, nil, nil, "id", "path", nil, "whole", nil ])
     end
 
     it "keeps the raw path but erases the param name from the endpoint identity" do
@@ -268,7 +316,7 @@ describe CommentAnchor do
     it "keeps the identity and drops the line" do
       with_line = anchor(scope: "response", part: "output", endpoint_path: "/users",
                          endpoint_http_verb: 0, response_code: "200", line: 4)
-      expect(with_line.without_line.key).to eq([ "response", "/users", 0, nil, "200", nil, nil, "output", nil ])
+      expect(with_line.without_line.key).to eq([ "response", "/users", 0, nil, "200", nil, nil, nil, "output", nil ])
     end
   end
 
