@@ -20,8 +20,8 @@ class EntitiesController < ApplicationController
       return
     end
 
-    previous_version = @version.diff_base
-    previous_entity = previous_version && previous_version.entities.find_by(name: @entity.name)
+    base_version = @project.versions.find_by(name: params[:base])
+    previous_entity = base_version && base_version.entities.find_by(name: @entity.name)
 
     unless previous_entity
       render partial: "versions/entity_added", layout: false, locals: { entity: @entity, expanded: expanded }

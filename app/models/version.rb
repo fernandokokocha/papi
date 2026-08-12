@@ -28,9 +28,12 @@ class Version < ApplicationRecord
     project.versions.find_by(order: order + 1)
   end
 
-  def diff_base
-    return candidate.base_version unless project
-    previous
+  def earlier_versions
+    project.versions.where(self.class.arel_table[:order].lt(order)).order(order: :desc)
+  end
+
+  def earlier_version!(name)
+    earlier_versions.find_by!(name: name)
   end
 
   def existing_endpoints_for_frontend

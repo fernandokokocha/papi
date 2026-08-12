@@ -42,10 +42,15 @@
 <%= render "versions/endpoints_and_entities" do %>
   <div class="grid grid-cols-2 gap-2 mb-6">
     <div class="bg-white border border-gray-200 rounded-lg p-4">
-      <% if @previous_version.present? && @previous_version.order > -1 %>
-        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Previous</div>
-        <div class="text-lg font-semibold text-gray-900"><%= @previous_version.name %></div>
-        <div class="text-sm text-gray-500"><%= @previous_version.created_at.strftime("%Y-%m-%d") %></div>
+      <% if @comparison.before.order > -1 %>
+        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Compared with</div>
+        <%= form_with url: project_version_path(project_name: @project.name, name: @version.name), method: :get do %>
+          <%= select_tag :base,
+                options_for_select(@version.earlier_versions.map(&:name), @comparison.before.name),
+                onchange: "this.form.requestSubmit()",
+                class: "border border-gray-300 rounded px-2 py-1 bg-white text-lg font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-sky-500" %>
+        <% end %>
+        <div class="text-sm text-gray-500"><%= @comparison.before.created_at.strftime("%Y-%m-%d") %></div>
       <% else %>
         <div class="text-sm text-gray-400 italic">No previous version</div>
       <% end %>

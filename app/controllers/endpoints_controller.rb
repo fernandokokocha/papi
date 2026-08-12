@@ -24,9 +24,9 @@ class EndpointsController < ApplicationController
       return
     end
 
-    previous_version = @version.diff_base
-    previous_endpoint = previous_version &&
-      Endpoint.find_by_identity(previous_version, @endpoint.path, Endpoint.http_verbs[@endpoint.http_verb])
+    base_version = @project.versions.find_by(name: params[:base])
+    previous_endpoint = base_version &&
+      Endpoint.find_by_identity(base_version, @endpoint.path, Endpoint.http_verbs[@endpoint.http_verb])
 
     unless previous_endpoint
       respond_to do |format|

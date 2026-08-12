@@ -3,11 +3,7 @@ class CandidatesController < ApplicationController
     @project = Project.find_by!(name: params[:project_name])
     @candidate = Candidate.find_by!(name: params[:name], project: @project)
     authorize @candidate
-    @version = @candidate.latest_version
-    @previous_version = @candidate.base_version || Version.null_version(@project)
-
-    @categorized_endpoints = Version::CategorizeByName.new(@previous_version.endpoints, @version.endpoints).call
-    @categorized_entities = Version::CategorizeByName.new(@previous_version.entities, @version.entities).call
+    @comparison = Comparison.for_candidate(@candidate)
   end
 
   def new
@@ -22,8 +18,7 @@ class CandidatesController < ApplicationController
     @candidate.created_at = Time.zone.now
     @candidate.updated_at = Time.zone.now
     @candidate.base_version = @project.latest_version
-    @categorized_endpoints = []
-    @categorized_entities = []
+    @comparison = Comparison.none
 
     @version = @candidate.base_version.amoeba_dup
     @version.order = 1
@@ -53,10 +48,7 @@ class CandidatesController < ApplicationController
     authorize @candidate
 
     @version = @candidate.latest_version
-    @previous_version = @candidate.base_version || Version.null_version(@project)
-
-    @categorized_endpoints = Version::CategorizeByName.new(@previous_version.endpoints, @version.endpoints).call
-    @categorized_entities = Version::CategorizeByName.new(@previous_version.entities, @version.entities).call
+    @comparison = Comparison.for_candidate(@candidate)
   end
 
   def update

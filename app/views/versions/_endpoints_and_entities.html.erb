@@ -14,10 +14,10 @@
             class="absolute -left-10 top-0 bg-white border border-gray-200 hover:bg-gray-50 text-gray-500 hover:text-sky-700 rounded-lg p-2 shadow-sm"
             title="Hide quick access">«</button>
     <div class="max-h-screen overflow-x-hidden overflow-y-auto bg-white border border-gray-200 rounded-lg p-2">
-    <% if @categorized_endpoints.any? %>
+    <% if @comparison.endpoints.any? %>
       <div>
         <div class="text-xs font-bold uppercase tracking-wide text-gray-700 mb-1">Endpoints</div>
-        <% @categorized_endpoints.group_by(&:path).each_with_index do |(path, group), i| %>
+        <% @comparison.endpoints.group_by(&:path).each_with_index do |(path, group), i| %>
           <div class="<%= "mt-1 pt-1 border-t border-gray-200" if i > 0 %>">
             <% group.each do |endpoint| %>
               <% tint = { "added" => "bg-emerald-50 text-emerald-700", "removed" => "bg-red-50 text-red-700", "changed" => "bg-amber-50 text-amber-700" }[endpoint.annotation] || "text-gray-700" %>
@@ -36,10 +36,10 @@
       </div>
     <% end %>
 
-    <% if @categorized_entities.any? %>
-      <div class="<%= "mt-2 pt-2 border-t border-gray-200" if @categorized_endpoints.any? %>">
+    <% if @comparison.entities.any? %>
+      <div class="<%= "mt-2 pt-2 border-t border-gray-200" if @comparison.endpoints.any? %>">
         <div class="text-xs font-bold uppercase tracking-wide text-gray-700 mb-1">Entities</div>
-        <% @categorized_entities.each do |entity| %>
+        <% @comparison.entities.each do |entity| %>
           <% tint = { "added" => "bg-emerald-50 text-emerald-700 font-semibold", "removed" => "bg-red-50 text-red-700 font-semibold", "changed" => "bg-amber-50 text-amber-700 font-semibold" }[entity.annotation] || "text-gray-700" %>
           <a href="<%= "#entity-#{entity.name}" %>"
              title="<%= entity.name %>"
@@ -60,16 +60,16 @@
       <%= yield %>
     <% end %>
 
-    <% if @categorized_endpoints.any? %>
+    <% if @comparison.endpoints.any? %>
       <div class="text-xl font-semibold text-black uppercase tracking-wide mb-6">Endpoints</div>
       <div class="flex flex-col gap-10">
-        <% @categorized_endpoints.each do |endpoint| %>
+        <% @comparison.endpoints.each do |endpoint| %>
           <% endpoint_anchor = CommentAnchor.new(scope: "endpoint", part: "whole", endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb]) %>
           <div id="endpoint-<%= endpoint.page_url %>" <%= comment_region_attr(endpoint_anchor) %> data-sidebar-target="card" class="scroll-mt-6 rounded-xl">
             <% if endpoint.annotation == "unchanged" || endpoint.annotation == "changed" %>
               <div data-controller="expandable"
                    data-expandable-target="container"
-                   data-expandable-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, candidate: @candidate&.name) %>">
+                   data-expandable-url-value="<%= project_endpoint_path(project_name: @project.name, id: endpoint.id, base: @comparison.before.name, candidate: @candidate&.name) %>">
                 <%= render "endpoints/endpoint_diff", endpoint: endpoint, previous_endpoint: endpoint.previous, expanded: false %>
               </div>
             <% elsif endpoint.annotation == "added" %>
@@ -94,16 +94,16 @@
       </div>
     <% end %>
 
-    <% if @categorized_entities.any? %>
+    <% if @comparison.entities.any? %>
       <div class="text-xl font-semibold text-black uppercase tracking-wide mb-6 mt-8">Entities</div>
       <div class="flex flex-col gap-10">
-        <% @categorized_entities.each do |entity| %>
+        <% @comparison.entities.each do |entity| %>
           <% entity_anchor = CommentAnchor.new(scope: "entity", part: "whole", entity_name: entity.name) %>
           <div id="entity-<%= entity.name %>" <%= comment_region_attr(entity_anchor) %> data-sidebar-target="card" class="scroll-mt-6 rounded-xl">
             <% if entity.annotation == "unchanged" || entity.annotation == "changed" %>
               <div data-controller="expandable"
                    data-expandable-target="container"
-                   data-expandable-url-value="<%= project_entity_path(project_name: @project.name, id: entity.id, candidate: @candidate&.name) %>">
+                   data-expandable-url-value="<%= project_entity_path(project_name: @project.name, id: entity.id, base: @comparison.before.name, candidate: @candidate&.name) %>">
                 <%= render "versions/entity_diff", entity: entity, previous_entity: entity.previous, expanded: false %>
               </div>
             <% elsif entity.annotation == "added" %>

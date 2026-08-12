@@ -155,7 +155,7 @@ describe "Endpoints requests", type: :request do
       renamed = FactoryBot.create(:endpoint, version: next_version, path: "/user/:user_id", http_verb: "verb_get", note: "after")
 
       sign_in(user)
-      get project_endpoint_path(project.name, renamed.id, expanded: true)
+      get project_endpoint_path(project.name, renamed.id, base: "v1", expanded: true)
 
       expect(response.body).to include("/user/:id")
       expect(response.body).to include("/user/:user_id")

@@ -5,8 +5,6 @@ class VersionsController < ApplicationController
     authorize @version
     @previous_version = @version.previous
     @next_version = @version.next
-
-    @categorized_endpoints = Version::CategorizeByName.new(@previous_version.endpoints, @version.endpoints).call
-    @categorized_entities = Version::CategorizeByName.new(@previous_version.entities, @version.entities).call
+    @comparison = Comparison.for_version(@version, params[:base])
   end
 end
