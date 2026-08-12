@@ -15,11 +15,26 @@ class OpenAPI::Export
       "info" => { "title" => @version.project.name, "version" => @version.name },
       "paths" => paths
     }
-    document["components"] = { "schemas" => schemas } if @version.entities.any?
+    document["components"] = components if components.any?
     document
   end
 
   private
+
+  def components
+    result = {}
+    result["securitySchemes"] = security_schemes if @version.auth_methods.any?
+    result["schemas"] = schemas if @version.entities.any?
+    result
+  end
+
+  def security_schemes
+    @version.auth_methods.to_h do |auth_method|
+      scheme = { "type" => "http", "scheme" => auth_method.kind }
+      scheme["description"] = auth_method.note if auth_method.note.present?
+      [ auth_method.name, scheme ]
+    end
+  end
 
   def paths
     @version.endpoints.group_by { |endpoint| templated_path(endpoint.path) }.transform_values do |endpoints|
@@ -38,6 +53,7 @@ class OpenAPI::Export
 
     operation = {}
     operation["summary"] = endpoint.note if endpoint.note.present?
+    operation["security"] = [ { endpoint.auth => [] } ] if endpoint.auth.present?
     operation["parameters"] = parameters if parameters.any?
     operation["requestBody"] = { "required" => true, "content" => content(input) } unless nothing?(input)
     operation["responses"] = responses if responses.any?

@@ -12,6 +12,7 @@ class OpenAPI::Import
   FALLBACK_CODE = "200"
   TEMPLATED_SEGMENT = /\A\{([^{}]+)\}\z/
   PARAM_KINDS = { "integer" => "number", "number" => "number", "boolean" => "boolean" }.freeze
+  HTTP_SCHEMES = { "bearer" => "bearer", "basic" => "basic" }.freeze
   NOTE_SEPARATOR = " — "
 
   attr_reader :candidate
@@ -72,7 +73,8 @@ class OpenAPI::Import
   # the no_change it is.
   def unchanged?(version)
     categorized = Version::CategorizeByName.new(base_version.endpoints, version.endpoints).call +
-      Version::CategorizeByName.new(base_version.entities, version.entities).call
+      Version::CategorizeByName.new(base_version.entities, version.entities).call +
+      Version::CategorizeByName.new(base_version.auth_methods, version.auth_methods).call
 
     categorized.all? { |record| record.annotation == "unchanged" }
   end
@@ -83,8 +85,41 @@ class OpenAPI::Import
       name: "#{@candidate.name}-v1",
       order: 1,
       endpoints: endpoints,
-      entities: rooted_entities
+      entities: rooted_entities,
+      auth_methods: auth_methods
     }
+  end
+
+  # Papi holds only HTTP bearer and basic. An apiKey, oauth2, openIdConnect or
+  # mutualTLS scheme is dropped, and every operation asking for it reads as
+  # requiring no auth rather than as requiring something Papi cannot describe.
+  def auth_methods
+    @auth_methods ||= security_schemes.filter_map do |name, scheme|
+      next unless scheme.is_a?(Hash) && scheme["type"] == "http"
+
+      kind = HTTP_SCHEMES[scheme["scheme"].to_s.downcase]
+      next if kind.nil?
+
+      AuthMethod.new(name: name, kind: kind, note: scheme["description"].to_s)
+    end
+  end
+
+  def security_schemes
+    document.dig("components", "securitySchemes") || {}
+  end
+
+  def held_scheme_names
+    @held_scheme_names ||= auth_methods.map(&:name)
+  end
+
+  # An operation's own security replaces the document's, and Papi keeps one
+  # method per endpoint, so the first requirement it can hold is the one kept.
+  def auth_for(operation)
+    declared = operation["security"] || document["security"] || []
+    return "" unless declared.is_a?(Array)
+
+    requirement = declared.find { |entry| entry.is_a?(Hash) && held_scheme_names.include?(entry.keys.first) }
+    requirement ? requirement.keys.first : ""
   end
 
   # Node::Entity refers to an Entity record, so the entities exist before any
@@ -143,6 +178,7 @@ class OpenAPI::Import
       path: path,
       http_verb: http_verb,
       note: note(operation),
+      auth: auth_for(operation),
       input: body(operation.dig("requestBody", "content")),
       params: params(shared_params + (operation["parameters"] || [])),
       responses: responses(operation["responses"] || {})

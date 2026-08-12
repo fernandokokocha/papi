@@ -183,6 +183,9 @@ describe "Importing an OpenAPI document and exporting it back" do
           # head is gone; operationId, tags and the header param with it.
           "get" => {
             "summary" => "List customers — Ordered by signup date",
+            # The document's root security reaches every operation: Papi has no
+            # version-wide default, so each endpoint states it for itself.
+            "security" => [ { "bearerAuth" => [] } ],
             "parameters" => [
               { "name" => "page", "in" => "query", "required" => false, "schema" => { "type" => "number" } }
             ],
@@ -200,6 +203,7 @@ describe "Importing an OpenAPI document and exporting it back" do
           },
           "post" => {
             "summary" => "Register a customer",
+            "security" => [ { "bearerAuth" => [] } ],
             "requestBody" => {
               "required" => true,
               "content" => {
@@ -221,12 +225,14 @@ describe "Importing an OpenAPI document and exporting it back" do
           # An endpoint the editor could not open is worse than an imprecise
           # code, so the only response Papi could not key became a 200.
           "delete" => {
+            "security" => [ { "bearerAuth" => [] } ],
             "parameters" => [
               { "name" => "customer_id", "in" => "path", "required" => true, "schema" => { "type" => "number" } }
             ],
             "responses" => { "200" => { "description" => "Gone, one way or another" } }
           },
           "get" => {
+            "security" => [ { "bearerAuth" => [] } ],
             "parameters" => [
               { "name" => "customer_id", "in" => "path", "required" => true, "schema" => { "type" => "number" } }
             ],
@@ -243,11 +249,17 @@ describe "Importing an OpenAPI document and exporting it back" do
         "/uploads" => {
           # The multipart body is not JSON, so the endpoint declares no input.
           "post" => {
+            "security" => [ { "bearerAuth" => [] } ],
             "responses" => { "204" => { "description" => "Stored" } }
           }
         }
       },
       "components" => {
+        # type: http with a bearer or basic scheme is all Papi holds; the
+        # scheme's own name survives, since it is what clients were told.
+        "securitySchemes" => {
+          "bearerAuth" => { "type" => "http", "scheme" => "bearer" }
+        },
         "schemas" => {
           "Address" => {
             "type" => "object",

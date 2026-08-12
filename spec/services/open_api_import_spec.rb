@@ -5,9 +5,10 @@ describe OpenAPI::Import do
   let(:user) { FactoryBot.create(:user, group: group) }
   let(:project) { FactoryBot.create(:project, name: "Shop", group: group) }
 
-  def import(paths: {}, components: nil, openapi: "3.1.0")
+  def import(paths: {}, components: nil, security: nil, openapi: "3.1.0")
     document = { "openapi" => openapi, "info" => { "title" => "Shop", "version" => "1" }, "paths" => paths }
     document["components"] = components if components
+    document["security"] = security if security
 
     service = OpenAPI::Import.new(project, document.to_json, author: user)
     service.call
@@ -274,6 +275,105 @@ describe OpenAPI::Import do
 
     expect(version(service).entities.map(&:name)).to eq([ "Customer", "NumberOfItems" ])
     expect(endpoint(service, "GET /counts").responses.first.output).to eq("NumberOfItems")
+  end
+
+  describe "security schemes" do
+    def schemes(**declared)
+      { "securitySchemes" => declared }
+    end
+
+    def guarded_paths(security = nil)
+      operation = { "responses" => {} }
+      operation["security"] = security if security
+      { "/users" => { "get" => operation } }
+    end
+
+    it "imports HTTP bearer and basic as auth methods" do
+      components = schemes(
+        "bearerAuth" => { "type" => "http", "scheme" => "bearer", "description" => "From POST /sessions" },
+        "basicAuth" => { "type" => "http", "scheme" => "basic" }
+      )
+      service = import(paths: guarded_paths, components: components)
+
+      expect(version(service).auth_methods.map { |m| [ m.name, m.kind, m.note ] }).to eq([
+        [ "basicAuth", "basic", "" ],
+        [ "bearerAuth", "bearer", "From POST /sessions" ]
+      ])
+    end
+
+    it "reads a scheme name case-insensitively, as the RFC does" do
+      components = schemes("token" => { "type" => "http", "scheme" => "Bearer" })
+      service = import(paths: guarded_paths, components: components)
+
+      expect(version(service).auth_methods.sole.kind).to eq("bearer")
+    end
+
+    it "drops every scheme type Papi has no shape for" do
+      components = schemes(
+        "apiKey" => { "type" => "apiKey", "name" => "X-Api-Key", "in" => "header" },
+        "oauth" => { "type" => "oauth2", "flows" => {} },
+        "openId" => { "type" => "openIdConnect", "openIdConnectUrl" => "https://example.com" },
+        "tls" => { "type" => "mutualTLS" },
+        "digest" => { "type" => "http", "scheme" => "digest" }
+      )
+      service = import(paths: guarded_paths, components: components)
+
+      expect(version(service).auth_methods).to be_empty
+    end
+
+    it "takes the operation's own requirement" do
+      components = schemes("bearerAuth" => { "type" => "http", "scheme" => "bearer" })
+      service = import(paths: guarded_paths([ { "bearerAuth" => [] } ]), components: components)
+
+      expect(endpoint(service, "GET /users").auth).to eq("bearerAuth")
+    end
+
+    it "falls back to the document's requirement when an operation states none" do
+      components = schemes("bearerAuth" => { "type" => "http", "scheme" => "bearer" })
+      service = import(paths: guarded_paths, components: components, security: [ { "bearerAuth" => [] } ])
+
+      expect(endpoint(service, "GET /users").auth).to eq("bearerAuth")
+    end
+
+    # security: [] is how a document exempts one operation from its root
+    # requirement, and it has to beat the fallback rather than be ignored.
+    it "lets an operation opt out of the document's requirement" do
+      components = schemes("bearerAuth" => { "type" => "http", "scheme" => "bearer" })
+      service = import(paths: guarded_paths([]), components: components, security: [ { "bearerAuth" => [] } ])
+
+      expect(endpoint(service, "GET /users").auth).to eq("")
+    end
+
+    # Papi holds one method per endpoint, so an OR of two is narrowed to the
+    # first, and an endpoint asking only for a dropped scheme reads as public.
+    it "keeps the first requirement it can hold" do
+      components = schemes(
+        "apiKey" => { "type" => "apiKey", "name" => "X-Api-Key", "in" => "header" },
+        "bearerAuth" => { "type" => "http", "scheme" => "bearer" }
+      )
+      security = [ { "apiKey" => [] }, { "bearerAuth" => [] } ]
+      service = import(paths: guarded_paths(security), components: components)
+
+      expect(endpoint(service, "GET /users").auth).to eq("bearerAuth")
+    end
+
+    it "leaves an endpoint open when its only scheme was dropped" do
+      components = schemes("apiKey" => { "type" => "apiKey", "name" => "X-Api-Key", "in" => "header" })
+      service = import(paths: guarded_paths([ { "apiKey" => [] } ]), components: components)
+
+      expect(endpoint(service, "GET /users").auth).to eq("")
+    end
+
+    it "opens a candidate for a document that only adds an auth method" do
+      merged = FactoryBot.create(:candidate, project: project, name: "rc1", order: 1)
+      released = FactoryBot.create(:version, candidate: merged, project: project, name: "v1", order: 1)
+      FactoryBot.create(:endpoint, version: released, path: "/users", http_verb: "verb_get")
+      merged.merge!
+
+      components = schemes("bearerAuth" => { "type" => "http", "scheme" => "bearer" })
+
+      expect { import(paths: guarded_paths, components: components) }.not_to raise_error
+    end
   end
 
   it "refuses a document whose entities refer to each other in a circle" do

@@ -143,9 +143,38 @@ describe OpenAPI::Export do
     })
   end
 
-  it "omits components from a version with no entities" do
+  it "omits components from a version with no entities and no auth methods" do
     FactoryBot.create(:endpoint, version: version, path: "/users")
 
     expect(document).not_to have_key("components")
+  end
+
+  it "publishes auth methods as HTTP security schemes" do
+    FactoryBot.create(:auth_method, version: version, name: "UserToken", kind: "bearer",
+                                    note: "Token from POST /sessions")
+    FactoryBot.create(:auth_method, version: version, name: "AdminBasic", kind: "basic")
+    FactoryBot.create(:endpoint, version: version, path: "/users")
+
+    expect(document["components"]["securitySchemes"]).to eq({
+      "AdminBasic" => { "type" => "http", "scheme" => "basic" },
+      "UserToken" => { "type" => "http", "scheme" => "bearer", "description" => "Token from POST /sessions" }
+    })
+  end
+
+  it "names the endpoint's method as its security requirement" do
+    FactoryBot.create(:auth_method, version: version, name: "UserToken", kind: "bearer")
+    FactoryBot.create(:endpoint, version: version, path: "/users", auth: "UserToken")
+
+    expect(document["paths"]["/users"]["get"]["security"]).to eq([ { "UserToken" => [] } ])
+  end
+
+  # No root-level security is exported, so an operation with no requirement of
+  # its own already reads as public. An empty list would say the same thing twice.
+  it "leaves an endpoint that declares no auth without a security key" do
+    FactoryBot.create(:auth_method, version: version, name: "UserToken", kind: "bearer")
+    FactoryBot.create(:endpoint, version: version, path: "/users", auth: "")
+
+    expect(document["paths"]["/users"]["get"]).not_to have_key("security")
+    expect(document).not_to have_key("security")
   end
 end
