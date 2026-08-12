@@ -25,4 +25,8 @@ class Comparison
   def entities
     @entities ||= Version::CategorizeByName.new(before.entities, after.entities).call
   end
+
+  def auth_methods
+    @auth_methods ||= Version::CategorizeByName.new(before.auth_methods, after.auth_methods).call
+  end
 end

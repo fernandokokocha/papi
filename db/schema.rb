@@ -10,7 +10,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_07_000001) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_12_000001) do
+  create_table "auth_methods", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "kind", default: "bearer", null: false
+    t.string "note", default: "", null: false
+    t.integer "version_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["version_id", "name"], name: "index_auth_methods_on_version_id_and_name", unique: true
+    t.index ["version_id"], name: "index_auth_methods_on_version_id"
+  end
+
   create_table "candidates", force: :cascade do |t|
     t.string "name"
     t.integer "order"
@@ -71,6 +82,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_07_000001) do
     t.integer "version_id", null: false
     t.string "note"
     t.string "input", default: "", null: false
+    t.string "auth", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["version_id"], name: "index_endpoints_on_version_id"
@@ -144,6 +156,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_07_000001) do
     t.index ["project_id"], name: "index_versions_on_project_id"
   end
 
+  add_foreign_key "auth_methods", "versions"
   add_foreign_key "candidates", "projects"
   add_foreign_key "candidates", "users", column: "author_id"
   add_foreign_key "candidates", "users", column: "decided_by_id"

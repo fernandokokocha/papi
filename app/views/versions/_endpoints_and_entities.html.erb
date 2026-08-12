@@ -52,6 +52,22 @@
         <% end %>
       </div>
     <% end %>
+
+    <% if @comparison.auth_methods.any? %>
+      <div class="<%= "mt-2 pt-2 border-t border-gray-200" if @comparison.endpoints.any? || @comparison.entities.any? %>">
+        <div class="text-xs font-bold uppercase tracking-wide text-gray-700 mb-1">Auth</div>
+        <% @comparison.auth_methods.each do |auth_method| %>
+          <% tint = { "added" => "bg-emerald-50 text-emerald-700 font-semibold", "removed" => "bg-red-50 text-red-700 font-semibold", "changed" => "bg-amber-50 text-amber-700 font-semibold" }[auth_method.annotation] || "text-gray-700" %>
+          <a href="<%= "#auth-#{auth_method.name}" %>"
+             title="<%= auth_method.name %>"
+             data-sidebar-target="link"
+             class="flex items-center gap-1.5 px-2 py-1 rounded text-sm <%= tint %> hover:bg-gray-50 hover:text-sky-700">
+            <span class="min-w-0 truncate"><%= auth_method.name %></span>
+            <span class="ml-auto shrink-0 font-mono text-xs text-gray-400"><%= auth_method.kind %></span>
+          </a>
+        <% end %>
+      </div>
+    <% end %>
     </div>
   </aside>
 
@@ -129,6 +145,23 @@
                   anchor: entity_anchor,
                   threads: candidate_comments.threads_for("entity", entity: entity),
                   wrapper_class: entity.annotation == "removed" ? "mt-3 w-1/2 pr-1" : "mt-3 w-1/2 ml-auto pl-1" %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <% if @comparison.auth_methods.any? %>
+      <div class="text-xl font-semibold text-black uppercase tracking-wide mb-6 mt-8">Auth</div>
+      <div class="flex flex-col gap-10">
+        <% @comparison.auth_methods.each do |auth_method| %>
+          <div id="auth-<%= auth_method.name %>" data-sidebar-target="card" class="scroll-mt-6 rounded-xl">
+            <% if auth_method.annotation == "unchanged" || auth_method.annotation == "changed" %>
+              <%= render "versions/auth_method_diff", auth_method: auth_method, previous_auth_method: auth_method.previous %>
+            <% elsif auth_method.annotation == "added" %>
+              <%= render "versions/auth_method_added", auth_method: auth_method %>
+            <% elsif auth_method.annotation == "removed" %>
+              <%= render "versions/auth_method_removed", auth_method: auth_method %>
+            <% end %>
           </div>
         <% end %>
       </div>

@@ -8,18 +8,32 @@ class TestServerController < ApplicationController
   def version
     project = Project.find_by!(name: request.params[:project_name])
     version = Version.find_by!(project: project, name: request.params[:version_name])
-    # authorize
     endpoint = Endpoint.from_version_request(request, version)
+    return if refuse_unauthorized(endpoint)
+
     render json: output(endpoint, request).to_example_json
   end
 
   def candidate
     project = Project.find_by!(name: request.params[:project_name])
     candidate = Candidate.find_by!(name: request.params[:candidate_name], project: project)
-    # authorize
     version = candidate.latest_version
     endpoint = Endpoint.from_candidate_request(request, version)
+    return if refuse_unauthorized(endpoint)
+
     render json: output(endpoint, request).to_example_json
+  end
+
+  # A 401 is declared behaviour, not a malformed request, so it is answered
+  # rather than raised the way a bad response code or a missing param is.
+  def refuse_unauthorized(endpoint)
+    auth_method = endpoint.auth_method
+    return false if auth_method.nil?
+    return false if auth_method.satisfied_by?(request.headers["Authorization"])
+
+    response.headers["WWW-Authenticate"] = auth_method.challenge
+    render json: { error: "#{auth_method.name} required" }, status: :unauthorized
+    true
   end
 
   def output(endpoint, request)

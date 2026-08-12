@@ -113,6 +113,16 @@
   </div>
 </div>
 
+<div class="bg-white rounded mt-4 p-6 flex flex-col gap-5 border border-gray-200">
+  <p class="text-gray-900 font-semibold text-lg">Auth methods</p>
+  <div class="flex flex-col gap-2">
+    <%= render "versions/auth_method_diff", auth_method: @unchanged_auth_methods[1], previous_auth_method: @unchanged_auth_methods[0] %>
+    <%= render "versions/auth_method_diff", auth_method: @diff_auth_methods[1], previous_auth_method: @diff_auth_methods[0] %>
+    <%= render "versions/auth_method_added", auth_method: @new_auth_method %>
+    <%= render "versions/auth_method_removed", auth_method: @removed_auth_method %>
+  </div>
+</div>
+
 <div class="bg-white rounded mt-4 p-6 border border-gray-200">
   <p class="text-gray-900 font-semibold text-lg mb-1">Comment cards</p>
   <p class="text-gray-500 text-sm mb-5">One thread per kind, rendered from the real <span class="font-mono text-xs bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded">comments/thread</span> partial — includes a reply and a resolved thread.</p>

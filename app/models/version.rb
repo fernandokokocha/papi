@@ -3,8 +3,10 @@ class Version < ApplicationRecord
   belongs_to :candidate
   has_many :endpoints, -> { order([ :path, :http_verb ]) }, dependent: :destroy
   has_many :entities, -> { order([ :name ]) }, dependent: :destroy
+  has_many :auth_methods, -> { order([ :name ]) }, dependent: :destroy
   accepts_nested_attributes_for :endpoints
   accepts_nested_attributes_for :entities
+  accepts_nested_attributes_for :auth_methods
 
   validates :name, uniqueness: { scope: :project_id }
   validate :endpoints_are_distinct_to_a_client
@@ -42,6 +44,7 @@ class Version < ApplicationRecord
         http_verb: endpoint.http_verb,
         verb: endpoint.verb,
         path: endpoint.path,
+        auth: endpoint.auth,
         params: endpoint.path_params.map { |param| { name: param.name, kind: param.kind } },
         query_params: endpoint.query_params.map { |param| { name: param.name, kind: param.kind, required: param.required } },
         note: endpoint.note,
@@ -56,6 +59,16 @@ class Version < ApplicationRecord
       {
         name: entity.name,
         root: entity.root
+      }
+    end.to_json
+  end
+
+  def existing_auth_methods_for_frontend
+    auth_methods.map do |auth_method|
+      {
+        name: auth_method.name,
+        kind: auth_method.kind,
+        note: auth_method.note
       }
     end.to_json
   end

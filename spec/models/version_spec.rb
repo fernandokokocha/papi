@@ -67,7 +67,7 @@ describe Version, "#existing_endpoints_for_frontend" do
     FactoryBot.create(:response, endpoint: endpoint, code: "200", output: "string", note: "ok")
 
     expect(version.reload.existing_endpoints_for_frontend).to eq(
-      '[{"http_verb":"verb_get","verb":"GET","path":"/tasks/:taskId",' \
+      '[{"http_verb":"verb_get","verb":"GET","path":"/tasks/:taskId","auth":"",' \
       '"params":[{"name":"taskId","kind":"number"}],"query_params":[],"note":"One task","input":"",' \
       '"responses":[{"code":"200","note":"ok","output":"string"}]}]'
     )
@@ -87,5 +87,14 @@ describe Version, "#existing_endpoints_for_frontend" do
     FactoryBot.create(:response, endpoint: endpoint, code: "200", output: "string", note: "ok")
 
     expect(version.reload.existing_endpoints_for_frontend).to include('"params":[{"name":"taskId","kind":"string"}]')
+  end
+
+  it "serializes an auth method the way Form.jsx rebuilds it" do
+    FactoryBot.create(:auth_method, version: version, name: "UserToken", kind: "bearer",
+                                    note: "Token from POST /sessions")
+
+    expect(version.reload.existing_auth_methods_for_frontend).to eq(
+      '[{"name":"UserToken","kind":"bearer","note":"Token from POST /sessions"}]'
+    )
   end
 end

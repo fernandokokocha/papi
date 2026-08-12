@@ -46,10 +46,14 @@ const EndpointFields = ({
     newResponseCode,
     setNewResponseCode,
     entities,
+    authMethods,
+    updateAuth,
     theme,
 }) => {
     const t = themes[theme]
     const params = paramsOf(endpoint.path, endpoint.paramKinds)
+    const available = authMethods.filter((authMethod) => (authMethod.type !== 'removed'))
+    const chosen = available.find((authMethod) => (authMethod.name === endpoint.auth))
 
     return (
         <>
@@ -106,6 +110,23 @@ const EndpointFields = ({
                 ))}
                 <div className="pt-1">
                     <button type="button" onClick={addQueryParam} className={t.addButton}>Add</button>
+                </div>
+            </div>
+            <div className={t.sectionHeader}>Auth</div>
+            <div className={t.paramsWrapper}>
+                <div className="flex items-center gap-2">
+                    <select
+                        value={endpoint.auth}
+                        onChange={(e) => updateAuth(e.target.value)}
+                        className={t.responseSelect}
+                    >
+                        <option value="">none</option>
+                        {available.map((authMethod) => (
+                            <option key={authMethod.name} value={authMethod.name}>{authMethod.name}</option>
+                        ))}
+                    </select>
+                    {chosen && <span className="font-mono text-xs text-gray-500">{chosen.kind}</span>}
+                    <input type="hidden" name="version[endpoints_attributes][][auth]" value={endpoint.auth}/>
                 </div>
             </div>
             <div className={t.sectionHeader}>Note</div>

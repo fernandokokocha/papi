@@ -11,6 +11,7 @@ class Candidate::Update
       @version = @candidate.versions.last
       @version.endpoints.destroy_all
       @version.entities.destroy_all
+      @version.auth_methods.destroy_all
 
       params[:version][:endpoints_attributes] = params[:version][:endpoints_attributes].map do |endpoint_attr|
         {
@@ -18,6 +19,7 @@ class Candidate::Update
           http_verb: endpoint_attr[:http_verb],
           note: endpoint_attr[:note],
           input: endpoint_attr[:input],
+          auth: endpoint_attr[:auth].to_s,
           version: @version,
           params_attributes: format_params(endpoint_attr[:params]) + format_query_params(endpoint_attr[:query_params]),
           responses_attributes: format_responses(endpoint_attr[:responses])

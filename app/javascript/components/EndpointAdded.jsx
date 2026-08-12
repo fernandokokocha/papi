@@ -5,7 +5,11 @@ import {httpStatusCodes} from "@/helpers/values.js";
 import {verbSelectClass} from "@/helpers/verbColors.js";
 import {paramsOf} from "@/helpers/pathParams.js";
 
-const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
+const EndpointAdded = ({endpoint, remove, updateEndpoint, entities, authMethods}) => {
+    const updateAuth = (newAuth) => {
+        updateEndpoint(endpoint.id, {...endpoint, auth: newAuth})
+    }
+
     const updateVerb = (newVerb) => {
         updateEndpoint(endpoint.id, {...endpoint, http_verb: newVerb})
     }
@@ -143,6 +147,8 @@ const EndpointAdded = ({endpoint, remove, updateEndpoint, entities}) => {
                         newResponseCode={newResponseCode}
                         setNewResponseCode={setNewResponseCode}
                         entities={entities}
+                        authMethods={authMethods}
+                        updateAuth={updateAuth}
                         theme="emerald"
                     />
                 </div>

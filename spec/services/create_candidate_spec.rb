@@ -19,7 +19,7 @@ describe Candidate::Create do
         endpoints_attributes: [
           { path: "/",
             http_verb: "verb_get",
-            auth: "bearer",
+            auth: "UserToken",
             input: "{query:string}",
             responses: { "200" => { note: "ok", output: "User" } }
           }
@@ -27,6 +27,12 @@ describe Candidate::Create do
         entities_attributes: [
           { name: "User",
             root: "{ name: string }"
+          }
+        ],
+        auth_methods_attributes: [
+          { name: "UserToken",
+            kind: "bearer",
+            note: "Token from POST /sessions"
           }
         ]
       }
@@ -66,6 +72,18 @@ describe Candidate::Create do
     it "persists the endpoint input schema" do
       subject.call
       expect(Endpoint.last.input).to eq("{query:string}")
+    end
+
+    it "persists the version's auth methods" do
+      subject.call
+      auth_method = Version.last.auth_methods.find_by(name: "UserToken")
+      expect(auth_method.kind).to eq("bearer")
+      expect(auth_method.note).to eq("Token from POST /sessions")
+    end
+
+    it "persists the auth method an endpoint chose" do
+      subject.call
+      expect(Endpoint.last.auth_method.name).to eq("UserToken")
     end
 
     it "persists the kind chosen for each path param" do

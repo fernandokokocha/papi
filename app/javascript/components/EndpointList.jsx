@@ -17,6 +17,7 @@ const EndpointList = ({
                           addEndpointDisabled,
                           comments,
                           edited,
+                          authMethods,
                       }) => {
 
     return (
@@ -36,6 +37,7 @@ const EndpointList = ({
                                 restore={restoreEndpoint}
                                 updateEndpoint={updateEndpoint}
                                 entities={entities}
+                                authMethods={authMethods}
                             />
                             <CardComments html={key && comments[key]} edited={edited} />
                         </div>

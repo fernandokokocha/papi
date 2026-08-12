@@ -74,6 +74,10 @@ class Endpoint < ApplicationRecord
     expanded ? value.expand : value
   end
 
+  def auth_method
+    version.auth_methods.find_by(name: auth)
+  end
+
   def param_names
     path.scan(PARAM_TOKEN).flatten
   end
@@ -95,6 +99,7 @@ class Endpoint < ApplicationRecord
     previous.path != path ||
       DiffParams::FromParams.new(previous.path_params, path_params).any_changes? ||
       DiffParams::FromParams.new(previous.query_params, query_params).any_changes? ||
+      DiffAuth::FromAuth.new(previous.auth_method, auth_method).any_changes? ||
       DiffText::FromNotes.new(previous.note, note).any_changes? ||
       Diff::FromValues.new(previous.parsed_input, parsed_input).any_changes? ||
       DiffResponses::FromResponses.new(previous.responses, responses).any_changes?

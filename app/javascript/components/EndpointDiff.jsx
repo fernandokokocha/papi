@@ -10,7 +10,11 @@ import {paramsOf} from "@/helpers/pathParams.js";
 const sectionHeader = "bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide"
 const contentRow = "px-3 py-2 bg-white border-b border-gray-200 text-sm text-gray-700"
 
-const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
+const EndpointDiff = ({endpoint, remove, updateEndpoint, entities, authMethods}) => {
+    const updateAuth = (newAuth) => {
+        updateEndpoint(endpoint.id, {...endpoint, auth: newAuth})
+    }
+
     const updateVerb = (newVerb) => {
         updateEndpoint(endpoint.id, {...endpoint, http_verb: newVerb})
     }
@@ -129,6 +133,10 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
                         </div>
                     ))}
                 </div>
+                <div className={sectionHeader}>Auth</div>
+                <div className="px-3 py-2 bg-white border-b border-gray-200 font-mono text-xs text-gray-800">
+                    {endpoint.original_auth || <span className="text-gray-400 italic">none</span>}
+                </div>
                 <div className={sectionHeader}>Note</div>
                 <div className={contentRow}>{endpoint.original_note || <span className="text-gray-400 italic">—</span>}</div>
                 <StaticEndpointFields input={endpoint.original_input} responses={endpoint.original_responses}/>
@@ -185,6 +193,8 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities}) => {
                         newResponseCode={newResponseCode}
                         setNewResponseCode={setNewResponseCode}
                         entities={entities}
+                        authMethods={authMethods}
+                        updateAuth={updateAuth}
                         theme="sky"
                     />
             </div>

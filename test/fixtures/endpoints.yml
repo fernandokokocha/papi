@@ -74,6 +74,7 @@ p1v3_users_list:
   http_verb: verb_get
   path: /users
   version: project1v3
+  auth: UserToken
   note: "List users with pagination"
 p1v3_users_create:
   http_verb: verb_post
@@ -85,17 +86,20 @@ p1v3_users_get:
   http_verb: verb_get
   path: /users/me
   version: project1v3
+  auth: UserToken
   note: "Get the current user"
 p1v3_users_update:
   http_verb: verb_patch
   path: /users/me
   version: project1v3
+  auth: UserToken
   note: "Update the current user's fields"
   input: "{name:string}"
 p1v3_users_delete:
   http_verb: verb_delete
   path: /users/me
   version: project1v3
+  auth: UserToken
   note: "Delete the current user"
   input: "{reason:string,confirm:boolean}"
 p1v3_sessions_create:
@@ -108,26 +112,31 @@ p1v3_sessions_delete:
   http_verb: verb_delete
   path: /sessions
   version: project1v3
+  auth: UserToken
   note: "Log out the current session"
 p1v3_tasks_list:
   http_verb: verb_get
   path: /tasks
   version: project1v3
+  auth: UserToken
   note: "List tasks with pagination"
 p1v3_tasks_create:
   http_verb: verb_post
   path: /tasks
   version: project1v3
+  auth: UserToken
   note: "Create a new task"
 p1v3_tasks_get:
   http_verb: verb_get
   path: /tasks/next
   version: project1v3
+  auth: UserToken
   note: "Get the next pending task"
 p1v3_tasks_show:
   http_verb: verb_get
   path: /tasks/:taskId
   version: project1v3
+  auth: UserToken
   note: "Get one task by id"
 
 # ===== v4 =====
@@ -135,6 +144,7 @@ p1v4_users_list:
   http_verb: verb_get
   path: /users
   version: project1v4
+  auth: AdminBasic
   note: "List users with pagination"
 p1v4_users_create:
   http_verb: verb_post
@@ -146,11 +156,13 @@ p1v4_users_get:
   http_verb: verb_get
   path: /users/me
   version: project1v4
+  auth: UserToken
   note: "Get the current user"
 p1v4_users_update:
   http_verb: verb_patch
   path: /users/me
   version: project1v4
+  auth: UserToken
   note: "Update the current user's fields"
   input: "{name?:string,avatar_url?:string}"
 p1v4_sessions_create:
@@ -163,27 +175,32 @@ p1v4_sessions_delete:
   http_verb: verb_delete
   path: /sessions
   version: project1v4
+  auth: UserToken
   note: "Log out the current session"
 p1v4_tasks_list:
   http_verb: verb_get
   path: /tasks
   version: project1v4
+  auth: UserToken
   note: "List tasks with pagination"
 p1v4_tasks_create:
   http_verb: verb_post
   path: /tasks
   version: project1v4
+  auth: UserToken
   note: "Create a new task"
   input: "{title:string,assignee_id:(number|null)}"
 p1v4_tasks_get:
   http_verb: verb_get
   path: /tasks/next
   version: project1v4
+  auth: UserToken
   note: "Get the next pending task"
 p1v4_tasks_complete:
   http_verb: verb_post
   path: /tasks/complete-next
   version: project1v4
+  auth: UserToken
   note: "Mark the next pending task as complete"
 p1v4_tasks_show:
   http_verb: verb_get
@@ -194,6 +211,7 @@ p1v4_tasks_comments:
   http_verb: verb_get
   path: /tasks/:taskId/comments/:commentId
   version: project1v4
+  auth: UserToken
   note: "Get one comment on a task"
 
 # ===== bulk fixtures =====

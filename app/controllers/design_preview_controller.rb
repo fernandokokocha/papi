@@ -12,6 +12,11 @@ class DesignPreviewController < ApplicationController
     @new_entity = new_entity
     @removed_entity = removed_entity
 
+    @diff_auth_methods = diff_auth_methods
+    @unchanged_auth_methods = unchanged_auth_methods
+    @new_auth_method = new_auth_method
+    @removed_auth_method = removed_auth_method
+
     @preview_comments = preview_comments
   end
 
@@ -60,9 +65,13 @@ class DesignPreviewController < ApplicationController
   FakeResponse = Struct.new(:code, :note, :parsed_output) do
     def output = parsed_output.serialize
   end
-  FakeEndpoint = Struct.new(:name, :verb, :path, :note, :input, :responses, :path_params, :query_params) do
+  FakeEndpoint = Struct.new(:name, :verb, :path, :note, :input, :responses, :path_params, :query_params, :auth_method) do
     def http_verb
       "verb_#{verb.downcase}"
+    end
+
+    def auth
+      auth_method ? auth_method.name : ""
     end
 
     def identity_path
@@ -81,6 +90,7 @@ class DesignPreviewController < ApplicationController
     def differs_from?(previous)
       DiffParams::FromParams.new(previous.path_params, path_params).any_changes? ||
         DiffParams::FromParams.new(previous.query_params, query_params).any_changes? ||
+        DiffAuth::FromAuth.new(previous.auth_method, auth_method).any_changes? ||
         DiffText::FromNotes.new(previous.note, note).any_changes? ||
         Diff::FromValues.new(previous.parsed_input, parsed_input).any_changes? ||
         DiffResponses::FromResponses.new(previous.responses, responses).any_changes?
@@ -110,7 +120,8 @@ class DesignPreviewController < ApplicationController
         FakeResponse.new(404, "Not found", parser.parse_value("{error:string}"))
       ],
       [],
-      []
+      [],
+      AuthMethod.new(name: "UserToken", kind: "bearer")
     )
     current = FakeEndpoint.new(
       "GET /users",
@@ -127,7 +138,8 @@ class DesignPreviewController < ApplicationController
       [
         EndpointParam.new(name: "q", kind: "string", location: "query", required: true),
         EndpointParam.new(name: "page", kind: "number", location: "query", required: false)
-      ]
+      ],
+      AuthMethod.new(name: "AdminBasic", kind: "basic")
     )
     [ previous, current ]
   end
@@ -170,7 +182,8 @@ class DesignPreviewController < ApplicationController
         FakeResponse.new(422, "Validation failed", parser.parse_value("{error:string}"))
       ],
       [],
-      []
+      [],
+      AuthMethod.new(name: "UserToken", kind: "bearer")
     )
   end
 
@@ -187,7 +200,8 @@ class DesignPreviewController < ApplicationController
         FakeResponse.new(404, "Not found", parser.parse_value("{error:string,code:number}"))
       ],
       [ EndpointParam.new(name: "userId", kind: "number") ],
-      []
+      [],
+      AuthMethod.new(name: "UserToken", kind: "bearer")
     )
   end
 
@@ -209,5 +223,25 @@ class DesignPreviewController < ApplicationController
 
   def removed_entity
     FakeEntity.new("LegacyToken", "{token:string,expires_at:string}")
+  end
+
+  def diff_auth_methods
+    previous = AuthMethod.new(name: "UserToken", kind: "bearer", note: "Token from POST /sessions")
+    current = AuthMethod.new(name: "UserToken", kind: "basic", note: "Token from POST /sessions\nExpires after 24 hours.")
+    [ previous, current ]
+  end
+
+  def unchanged_auth_methods
+    previous = AuthMethod.new(name: "AdminBasic", kind: "basic", note: "Operator credentials.")
+    current = AuthMethod.new(name: "AdminBasic", kind: "basic", note: "Operator credentials.")
+    [ previous, current ]
+  end
+
+  def new_auth_method
+    AuthMethod.new(name: "ServiceToken", kind: "bearer", note: "Machine-to-machine calls.")
+  end
+
+  def removed_auth_method
+    AuthMethod.new(name: "LegacyKey", kind: "basic", note: "Retired in favour of UserToken.")
   end
 end

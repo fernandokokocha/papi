@@ -1,0 +1,14 @@
+<div class="grid grid-cols-2 gap-2">
+  <div></div>
+  <div>
+    <div class="border border-emerald-200 rounded-lg">
+      <div class="sticky top-0 z-10 rounded-t-lg bg-emerald-700 text-white px-4 py-2 text-sm font-mono">
+        <%= auth_method.name %>
+      </div>
+      <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Kind</div>
+      <div class="px-3 py-2 bg-white font-mono text-xs text-gray-800"><div class="line added"><%= auth_method.kind %></div></div>
+      <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Note</div>
+      <div class="px-3 py-2 bg-white border-b border-gray-200 text-sm text-gray-700"><%= auth_method.note %></div>
+    </div>
+  </div>
+</div>

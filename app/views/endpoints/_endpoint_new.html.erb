@@ -18,6 +18,11 @@
         <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Query</div>
         <div class="px-3 py-2 bg-white border-b border-gray-200 font-mono text-xs text-gray-800"><%= render "endpoints/params_cell", rows: DiffParams::FromParams.new([], endpoint.query_params).after_rows, side: :after, endpoint: endpoint, location: "query" %></div>
       <% end %>
+      <% if endpoint.auth.present? %>
+        <% auth_line = DiffAuth::FromAuth.new(nil, endpoint.auth_method).after_line %>
+        <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Auth</div>
+        <div class="px-3 py-2 bg-white border-b border-gray-200 font-mono text-xs text-gray-800"><div class="line <%= auth_line.change %>"><%= auth_line.whole_line %></div></div>
+      <% end %>
       <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Note</div>
       <% note_anchor = CommentAnchor.new(scope: "endpoint", part: "note", endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb]) %>
       <div <%= comment_region_attr(note_anchor) %> class="px-3 py-2 bg-white border-b border-gray-200 text-sm text-gray-700"><%= endpoint.note %></div>

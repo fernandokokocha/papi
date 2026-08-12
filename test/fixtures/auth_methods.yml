@@ -1,0 +1,18 @@
+# ===== v3 =====
+p1v3_user_token:
+  name: UserToken
+  kind: bearer
+  version: project1v3
+  note: "Bearer token from POST /sessions"
+
+# ===== v4 =====
+p1v4_user_token:
+  name: UserToken
+  kind: bearer
+  version: project1v4
+  note: "Bearer token from POST /sessions. Expires after 24 hours."
+p1v4_admin_basic:
+  name: AdminBasic
+  kind: basic
+  version: project1v4
+  note: "Operator credentials, for the admin-only endpoints"

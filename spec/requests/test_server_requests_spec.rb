@@ -29,6 +29,72 @@ describe "Test server", type: :request do
     }.to raise_error(TestServerController::InvalidResponseCode)
   end
 
+  describe "auth" do
+    let!(:guarded) do
+      FactoryBot.create(:auth_method, version: version, name: "UserToken", kind: "bearer")
+      FactoryBot.create(:endpoint, version: version, http_verb: "verb_get", path: "/me", auth: "UserToken").tap do |e|
+        FactoryBot.create(:response, endpoint: e, code: "200", output: "{ id: number }")
+      end
+    end
+
+    it "serves an endpoint whose declared scheme is present" do
+      get "/projects/proj/versions/v1/me", headers: { "Authorization" => "Bearer anything-at-all" }
+
+      expect(response.status).to eq(200)
+      expect(response.body).to include("id")
+    end
+
+    it "refuses a request that sends no Authorization header" do
+      get "/projects/proj/versions/v1/me"
+
+      expect(response.status).to eq(401)
+      expect(response.parsed_body["error"]).to eq("UserToken required")
+      expect(response.headers["WWW-Authenticate"]).to eq("Bearer")
+    end
+
+    it "refuses the wrong scheme" do
+      get "/projects/proj/versions/v1/me", headers: { "Authorization" => "Basic anything-at-all" }
+
+      expect(response.status).to eq(401)
+    end
+
+    it "refuses a scheme with nothing after it" do
+      get "/projects/proj/versions/v1/me", headers: { "Authorization" => "Bearer " }
+
+      expect(response.status).to eq(401)
+    end
+
+    it "leaves an endpoint that declares no auth open" do
+      get "/projects/proj/versions/v1/users"
+
+      expect(response.status).to eq(200)
+    end
+
+    it "guards a candidate's mock the same way" do
+      candidate = FactoryBot.create(:candidate, project: project, name: "rc1")
+      draft = FactoryBot.create(:version, project: nil, candidate: candidate, name: "rc1-v1")
+      FactoryBot.create(:auth_method, version: draft, name: "UserToken", kind: "bearer")
+      drafted = FactoryBot.create(:endpoint, version: draft, http_verb: "verb_get", path: "/me", auth: "UserToken")
+      FactoryBot.create(:response, endpoint: drafted, code: "200", output: "{ id: number }")
+
+      get "/projects/proj/candidates/rc1/me"
+      expect(response.status).to eq(401)
+
+      get "/projects/proj/candidates/rc1/me", headers: { "Authorization" => "Bearer t" }
+      expect(response.status).to eq(200)
+    end
+
+    it "checks basic against its own scheme" do
+      FactoryBot.create(:auth_method, version: version, name: "AdminBasic", kind: "basic")
+      admin = FactoryBot.create(:endpoint, version: version, http_verb: "verb_get", path: "/admin", auth: "AdminBasic")
+      FactoryBot.create(:response, endpoint: admin, code: "200", output: "{ ok: boolean }")
+
+      get "/projects/proj/versions/v1/admin", headers: { "Authorization" => "Basic dXNlcjpwYXNz" }
+
+      expect(response.status).to eq(200)
+    end
+  end
+
   describe "query params" do
     let!(:search) do
       FactoryBot.create(:endpoint, version: version, http_verb: "verb_get", path: "/search").tap do |e|
