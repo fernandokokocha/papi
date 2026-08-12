@@ -1,0 +1,41 @@
+<div class="mb-6">
+  <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1"><%= @project.name %></div>
+  <h1 class="text-2xl font-semibold text-gray-900 flex items-center gap-2">
+    <%= render "endpoints/verb_badge", verb: @endpoint.verb %>
+    <span class="font-mono"><%= @endpoint.path %></span>
+  </h1>
+  <div class="text-sm text-gray-500 mt-1"><%= pluralize(@milestones.size, "milestone") %></div>
+</div>
+
+<% if @milestones.empty? %>
+  <div class="bg-white border border-gray-200 rounded-lg p-8 text-center text-gray-500">
+    No published history yet — this endpoint is new in a candidate.
+  </div>
+<% else %>
+  <div class="flex flex-col gap-10">
+    <% @milestones.each do |milestone| %>
+      <div>
+        <%= render "shared/milestone_header", milestone: milestone, project: @project %>
+        <% if milestone.kind == :changed %>
+          <div data-controller="expandable"
+               data-expandable-target="container"
+               data-expandable-url-value="<%= project_endpoint_path(project_name: @project.name, id: milestone.after.id, base: milestone.before.version.name) %>">
+            <%= render "endpoints/endpoint_diff", endpoint: milestone.after, previous_endpoint: milestone.before, expanded: false %>
+          </div>
+        <% elsif milestone.kind == :added %>
+          <div data-controller="expandable"
+               data-expandable-target="container"
+               data-expandable-url-value="<%= project_endpoint_path(project_name: @project.name, id: milestone.after.id, kind: 'new') %>">
+            <%= render "endpoints/endpoint_new", endpoint: milestone.after, expanded: false %>
+          </div>
+        <% else %>
+          <div data-controller="expandable"
+               data-expandable-target="container"
+               data-expandable-url-value="<%= project_endpoint_path(project_name: @project.name, id: milestone.before.id, kind: 'removed') %>">
+            <%= render "endpoints/endpoint_removed", endpoint: milestone.before, expanded: false %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

@@ -1,0 +1,23 @@
+<% style = {
+  added:   { dot: "bg-emerald-500", chip: "bg-emerald-50 text-emerald-700 border-emerald-200", label: "Added" },
+  changed: { dot: "bg-amber-400",   chip: "bg-amber-50 text-amber-700 border-amber-200",       label: "Changed" },
+  removed: { dot: "bg-red-400",     chip: "bg-red-50 text-red-700 border-red-200",             label: "Removed" }
+}[milestone.kind] %>
+<% candidate = milestone.version.candidate %>
+
+<div class="mb-3">
+  <div class="flex items-center gap-3">
+    <span class="w-2 h-2 rounded-full shrink-0 <%= style[:dot] %>"></span>
+    <%= link_to milestone.version.name, project_version_path(project_name: project.name, name: milestone.version.name), class: "text-lg font-semibold text-sky-700" %>
+    <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full border <%= style[:chip] %>"><%= style[:label] %></span>
+    <% if milestone.before && milestone.kind == :changed %>
+      <span class="text-xs text-gray-400 whitespace-nowrap">since <%= milestone.before.version.name %></span>
+    <% end %>
+    <span class="ml-auto text-xs text-gray-400 whitespace-nowrap"><%= milestone.version.created_at.strftime("%Y-%m-%d") %></span>
+  </div>
+  <div class="ml-5 text-sm text-gray-500">
+    <%= candidate.author&.email_address || "Someone" %>
+    <span class="text-gray-400">·</span>
+    <%= link_to candidate.name, project_candidate_path(project.name, candidate.name), class: "font-semibold text-sky-700" %>
+  </div>
+</div>

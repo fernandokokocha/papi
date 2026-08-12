@@ -66,6 +66,9 @@
         <% @comparison.endpoints.each do |endpoint| %>
           <% endpoint_anchor = CommentAnchor.new(scope: "endpoint", part: "whole", endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb]) %>
           <div id="endpoint-<%= endpoint.page_url %>" <%= comment_region_attr(endpoint_anchor) %> data-sidebar-target="card" class="scroll-mt-6 rounded-xl">
+            <div class="flex <%= endpoint.annotation == "removed" ? "justify-start" : "justify-end" %> mb-1">
+              <%= link_to "History", project_endpoint_history_path(project_name: @project.name, endpoint_id: endpoint.id), class: "text-xs text-gray-500 hover:text-sky-700" %>
+            </div>
             <% if endpoint.annotation == "unchanged" || endpoint.annotation == "changed" %>
               <div data-controller="expandable"
                    data-expandable-target="container"
@@ -100,6 +103,9 @@
         <% @comparison.entities.each do |entity| %>
           <% entity_anchor = CommentAnchor.new(scope: "entity", part: "whole", entity_name: entity.name) %>
           <div id="entity-<%= entity.name %>" <%= comment_region_attr(entity_anchor) %> data-sidebar-target="card" class="scroll-mt-6 rounded-xl">
+            <div class="flex <%= entity.annotation == "removed" ? "justify-start" : "justify-end" %> mb-1">
+              <%= link_to "History", project_entity_history_path(project_name: @project.name, entity_id: entity.id), class: "text-xs text-gray-500 hover:text-sky-700" %>
+            </div>
             <% if entity.annotation == "unchanged" || entity.annotation == "changed" %>
               <div data-controller="expandable"
                    data-expandable-target="container"

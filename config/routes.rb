@@ -20,8 +20,12 @@ Rails.application.routes.draw do
       resource :openapi, only: [ :show ], controller: "open_api"
       match "*", via: :all, to: "test_server#version", constraints: VersionTestServerConstraint.new
     end
-    resources :endpoints, only: [ :show ]
-    resources :entities, only: [ :show ]
+    resources :endpoints, only: [ :show ] do
+      resource :history, only: [ :show ], controller: "endpoint_histories"
+    end
+    resources :entities, only: [ :show ] do
+      resource :history, only: [ :show ], controller: "entity_histories"
+    end
   end
 
   get "design-preview" => "design_preview#show"
