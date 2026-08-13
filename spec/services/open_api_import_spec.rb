@@ -445,4 +445,60 @@ describe OpenAPI::Import do
 
     expect { import(paths: paths) rescue nil }.not_to change(Candidate, :count)
   end
+
+  # Descriptions come back as notes on the property they described. One-of
+  # branches are the exception: importing reorders and dedups them, so a branch
+  # index would not name the branch that lands.
+  it "reads a property description back as a note on that property" do
+    service = import(paths: { "/users" => { "post" => {
+      "requestBody" => { "content" => { "application/json" => { "schema" => {
+        "type" => "object",
+        "description" => "Everything here is trimmed.",
+        "properties" => {
+          "email" => { "type" => "string", "description" => "Lowercased on write." },
+          "tags" => { "type" => "array", "items" => { "type" => "string", "description" => "Free-form." } }
+        }
+      } } } },
+      "responses" => {} } } })
+
+    notes = endpoint(service, "POST /users").schema_notes
+
+    expect(notes.map { |note| [ note.segments, note.body ] }).to match_array([
+      [ [], "Everything here is trimmed." ],
+      [ [ "email" ], "Lowercased on write." ],
+      [ [ "tags", nil ], "Free-form." ]
+    ])
+  end
+
+  it "reads a component's property descriptions back as notes on the entity" do
+    service = import(
+      paths: { "/users" => { "get" => { "responses" => { "200" => {
+        "description" => "ok",
+        "content" => { "application/json" => { "schema" => { "$ref" => "#/components/schemas/User" } } }
+      } } } } },
+      components: { "schemas" => { "User" => {
+        "type" => "object",
+        "properties" => { "id" => { "type" => "integer", "description" => "Opaque; never parse it." } }
+      } } }
+    )
+
+    entity = version(service).entities.find { |e| e.name == "User" }
+
+    expect(entity.schema_notes.map { |note| [ note.segments, note.body ] }).to eq([ [ [ "id" ], "Opaque; never parse it." ] ])
+  end
+
+  it "reads a response body's description back as a note on the response" do
+    service = import(paths: { "/users" => { "get" => { "responses" => { "200" => {
+      "description" => "ok",
+      "content" => { "application/json" => { "schema" => {
+        "type" => "object",
+        "properties" => { "id" => { "type" => "integer", "description" => "Stable across renames." } }
+      } } }
+    } } } } })
+
+    response = endpoint(service, "GET /users").responses.first
+
+    expect(response.note).to eq("ok")
+    expect(response.schema_notes.map { |note| [ note.segments, note.body ] }).to eq([ [ [ "id" ], "Stable across renames." ] ])
+  end
 end

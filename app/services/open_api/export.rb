@@ -55,7 +55,7 @@ class OpenAPI::Export
     operation["summary"] = endpoint.note if endpoint.note.present?
     operation["security"] = [ { endpoint.auth => [] } ] if endpoint.auth.present?
     operation["parameters"] = parameters if parameters.any?
-    operation["requestBody"] = { "required" => true, "content" => content(input) } unless nothing?(input)
+    operation["requestBody"] = { "required" => true, "content" => content(input, endpoint) } unless nothing?(input)
     operation["responses"] = responses if responses.any?
     operation
   end
@@ -76,7 +76,7 @@ class OpenAPI::Export
       output = response.parsed_output
 
       object = { "description" => description(response) }
-      object["content"] = content(output) unless nothing?(output)
+      object["content"] = content(output, response) unless nothing?(output)
       [ response.code, object ]
     end
   end
@@ -85,12 +85,16 @@ class OpenAPI::Export
     response.note.presence || Rack::Utils::HTTP_STATUS_CODES.fetch(response.code.to_i, response.code)
   end
 
-  def content(node)
-    { MEDIA_TYPE => { "schema" => OpenAPI::ExportSchema.new(node).call } }
+  def content(node, notable)
+    { MEDIA_TYPE => { "schema" => OpenAPI::ExportSchema.new(node, notes_of(notable)).call } }
+  end
+
+  def notes_of(notable)
+    notable.schema_notes.to_h { |note| [ note.segments, note.body ] }
   end
 
   def schemas
-    @version.entities.to_h { |entity| [ entity.name, OpenAPI::ExportSchema.new(entity.parsed_root).call ] }
+    @version.entities.to_h { |entity| [ entity.name, OpenAPI::ExportSchema.new(entity.parsed_root, notes_of(entity)).call ] }
   end
 
   def nothing?(node)

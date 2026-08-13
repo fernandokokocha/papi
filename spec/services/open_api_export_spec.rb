@@ -177,4 +177,35 @@ describe OpenAPI::Export do
     expect(document["paths"]["/users"]["get"]).not_to have_key("security")
     expect(document).not_to have_key("security")
   end
+
+  # A note's path is a property reference, so it exports with no resolving.
+  it "hangs a schema note on the property it addresses" do
+    entity = Entity.create!(version: version, name: "User", root: "{id:number,tags:[string]}")
+    entity.schema_notes.create!(path: '["id"]', body: "Opaque; never parse it.")
+    entity.schema_notes.create!(path: '["tags",null]', body: "Lowercased on write.")
+
+    schema = document.dig("components", "schemas", "User")
+
+    expect(schema.dig("properties", "id", "description")).to eq("Opaque; never parse it.")
+    expect(schema.dig("properties", "tags", "items", "description")).to eq("Lowercased on write.")
+  end
+
+  it "describes a one-of branch and the whole body by path" do
+    endpoint = FactoryBot.create(:endpoint, version: version, path: "/sessions",
+                                            http_verb: "verb_post", input: "{name:(string|null)}")
+    endpoint.schema_notes.create!(path: '[]', body: "Everything here is trimmed.")
+    endpoint.schema_notes.create!(path: '["name",1]', body: "Null means the user never set one.")
+
+    schema = document.dig("paths", "/sessions", "post", "requestBody", "content", "application/json", "schema")
+
+    expect(schema["description"]).to eq("Everything here is trimmed.")
+    expect(schema.dig("properties", "name", "oneOf", 1, "description")).to eq("Null means the user never set one.")
+  end
+
+  it "leaves a schema alone when its notable has no notes" do
+    Entity.create!(version: version, name: "Error", root: "{code:number}")
+
+    expect(document.dig("components", "schemas", "Error")).not_to have_key("description")
+    expect(document.dig("components", "schemas", "Error", "properties", "code")).not_to have_key("description")
+  end
 end

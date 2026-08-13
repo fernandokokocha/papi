@@ -9,13 +9,23 @@ class OpenAPI::ImportSchema
   }.freeze
   UNTYPED_KIND = "string"
 
-  def initialize(schema, entities = {}, schemas = {})
+  # Descriptions are collected as the walk goes, keyed by the same path a note
+  # stores. One-of branches are left out on purpose: one_of flattens, dedups and
+  # reorders them, so a branch index here would not name the branch that lands.
+  attr_reader :notes
+
+  def initialize(schema, entities = {}, schemas = {}, notes = {}, path = [])
     @schema = schema
     @entities = entities
     @schemas = schemas
+    @notes = notes
+    @path = path
   end
 
   def call
+    note = @schema["description"]
+    @notes[@path] = note if note.present?
+
     @schema["nullable"] ? with_null(typed) : typed
   end
 
@@ -47,14 +57,14 @@ class OpenAPI::ImportSchema
   def object
     required = @schema["required"] || []
     attributes = (@schema["properties"] || {}).map do |name, value|
-      Node::ObjectAttribute.new(name: name, value: node_for(value), optional: !required.include?(name))
+      Node::ObjectAttribute.new(name: name, value: node_for(value, name), optional: !required.include?(name))
     end
 
     Node::Object.new(object_attributes: attributes)
   end
 
   def array
-    Node::Array.new(value: node_for(@schema["items"] || {}))
+    Node::Array.new(value: node_for(@schema["items"] || {}, nil))
   end
 
   # An enum without a type still has one — the type of the values it lists.
@@ -120,7 +130,10 @@ class OpenAPI::ImportSchema
     node.serialize if node.is_a?(Node::Primitive) || node.is_a?(Node::Entity)
   end
 
-  def node_for(schema)
-    self.class.new(schema, @entities, @schemas).call
+  # A branch, an allOf merge and a nullable wrapper all rebuild the tree, so
+  # they walk without a path and their descriptions are dropped.
+  def node_for(schema, segment = :none)
+    path = segment == :none ? nil : @path + [ segment ]
+    self.class.new(schema, @entities, @schemas, path ? @notes : {}, path || []).call
   end
 end

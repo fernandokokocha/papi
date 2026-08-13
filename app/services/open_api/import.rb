@@ -133,7 +133,11 @@ class OpenAPI::Import
   end
 
   def rooted_entities
-    entities.each { |name, entity| entity.root = node(schemas.fetch(name)).serialize }.values
+    entities.each do |name, entity|
+      root, notes = node(schemas.fetch(name))
+      entity.root = root.serialize
+      entity.schema_notes = notes
+    end.values
   end
 
   def capitalized(name)
@@ -174,12 +178,15 @@ class OpenAPI::Import
   end
 
   def endpoint(path, http_verb, operation, shared_params)
+    input, input_notes = body(operation.dig("requestBody", "content"))
+
     Endpoint.new(
       path: path,
       http_verb: http_verb,
       note: note(operation),
       auth: auth_for(operation),
-      input: body(operation.dig("requestBody", "content")),
+      input: input,
+      schema_notes: input_notes,
       params: params(shared_params + (operation["parameters"] || [])),
       responses: responses(operation["responses"] || {})
     )
@@ -216,17 +223,21 @@ class OpenAPI::Import
   end
 
   def response(code, declared)
-    Response.new(code: code, note: declared["description"].to_s, output: body(declared["content"]))
+    output, notes = body(declared["content"])
+
+    Response.new(code: code, note: declared["description"].to_s, output: output, schema_notes: notes)
   end
 
   def body(content)
-    return "" if content.nil?
+    return [ "", [] ] if content.nil?
 
     _type, media = content.find { |type, _body| type.split(";").first.strip == MEDIA_TYPE }
-    return "" if media.nil? || media["schema"].nil?
+    return [ "", [] ] if media.nil? || media["schema"].nil?
 
-    declared = node(media["schema"])
-    nothing_to_declare?(declared) ? "" : declared.serialize
+    declared, notes = node(media["schema"])
+    return [ "", [] ] if nothing_to_declare?(declared)
+
+    [ declared.serialize, notes ]
   end
 
   # Papi has no map type, so additionalProperties arrives as an object with no
@@ -237,6 +248,11 @@ class OpenAPI::Import
   end
 
   def node(schema)
-    OpenAPI::ImportSchema.new(schema, entities, schemas).call
+    importer = OpenAPI::ImportSchema.new(schema, entities, schemas)
+    [ importer.call, schema_notes(importer.notes) ]
+  end
+
+  def schema_notes(collected)
+    collected.map { |path, body| SchemaNote.new(path: SchemaNote.serialize_path(path), body: body) }
   end
 end
