@@ -64,6 +64,7 @@ class DesignPreviewController < ApplicationController
 
   FakeResponse = Struct.new(:code, :note, :parsed_output) do
     def output = parsed_output.serialize
+    def schema_notes = []
   end
   FakeEndpoint = Struct.new(:name, :verb, :path, :note, :input, :responses, :path_params, :query_params, :auth_method) do
     def http_verb
@@ -77,6 +78,8 @@ class DesignPreviewController < ApplicationController
     def identity_path
       Endpoint.identity_path(path)
     end
+
+    def schema_notes = []
 
     def example_query_string
       query_params.map { |param| "#{param.name}=#{param.kind}" }.join("&")
@@ -97,6 +100,8 @@ class DesignPreviewController < ApplicationController
     end
   end
   FakeEntity = Struct.new(:name, :root) do
+    def schema_notes = []
+
     def parsed_root(expanded: false)
       value = JSONSchemaParser.new([]).parse_value(root)
       expanded ? value.expand : value

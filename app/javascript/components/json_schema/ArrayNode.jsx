@@ -2,7 +2,7 @@ import React from 'react'
 import Value from "@/components/json_schema/Value.jsx";
 import TypeSelect from "@/components/json_schema/TypeSelect.jsx";
 
-const ArrayNode = ({value, onChange, onDelete, onAdd, onToggleOptional, path, canBeDeleted, canBeNothing, entities, excludeTypes}) => {
+const ArrayNode = ({value, onChange, onDelete, onAdd, onToggleOptional, path, canBeDeleted, canBeNothing, entities, excludeTypes, notes, updateNotes}) => {
     return (
         <div className="array">
             <TypeSelect
@@ -13,7 +13,7 @@ const ArrayNode = ({value, onChange, onDelete, onAdd, onToggleOptional, path, ca
                 path={path}
                 canBeDeleted={canBeDeleted}
                 canBeNothing={canBeNothing}
-                entities={entities}
+                entities={entities} notes={notes} updateNotes={updateNotes}
                 excludeTypes={excludeTypes}
             />
             [
@@ -27,7 +27,7 @@ const ArrayNode = ({value, onChange, onDelete, onAdd, onToggleOptional, path, ca
                     path={path.concat(null)}
                     canBeDeleted={false}
                     canBeNothing={false}
-                    entities={entities}
+                    entities={entities} notes={notes} updateNotes={updateNotes}
                     excludeTypes={excludeTypes}
                 />
             </div>

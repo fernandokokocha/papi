@@ -1,11 +1,12 @@
 <% comments_by_line = local_assigns[:comments_by_line] || {} %>
+<% notes_by_row = local_assigns[:notes_by_row] || {} %>
 <% if diff.empty? %>
   -
 <% else %>
   <% line_index_map = local_assigns[:line_index_map] %>
   <% diff.each.with_index do |diff_line, i| %>
     <% comment_line = line_index_map ? line_index_map[i] : i %>
-    <div class="line <%= diff_line.change %>" <%= line_index_attr(line_index_map, i) %>><%= render_type(diff_line) %></div>
+    <div class="line <%= diff_line.change %>" <%= line_index_attr(line_index_map, i) %>><%= render_type(diff_line) %><%= schema_note_badge(notes_by_row[i]) %></div>
     <% (comments_by_line[comment_line] || []).each do |comment| %>
       <%= render "comments/inline_line_comment", comment: comment %>
     <% end %>

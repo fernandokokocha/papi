@@ -15,7 +15,7 @@ const unusedBranch = (branches) => {
     return {nodeType: "object", attributes: []}
 }
 
-const JSONSchemaForm = ({root, name, update, id, entities, excludeTypes = [], canBeNothing = false}) => {
+const JSONSchemaForm = ({root, name, update, id, entities, excludeTypes = [], canBeNothing = false, notes, updateNotes, notesName}) => {
     const serializedRoot = serialize(root);
 
     const removeNode = (e, path) => {
@@ -102,6 +102,12 @@ const JSONSchemaForm = ({root, name, update, id, entities, excludeTypes = [], ca
                    name={name}
                    value={serializedRoot}>
             </input>
+            {notesName && (notes || []).map((note, index) => (
+                <React.Fragment key={JSON.stringify(note.path)}>
+                    <input type="hidden" name={`${notesName}[${index}][path]`} value={JSON.stringify(note.path)}/>
+                    <input type="hidden" name={`${notesName}[${index}][body]`} value={note.body}/>
+                </React.Fragment>
+            ))}
             <Value
                 root={root}
                 onChange={changeType}
@@ -113,6 +119,8 @@ const JSONSchemaForm = ({root, name, update, id, entities, excludeTypes = [], ca
                 canBeNothing={canBeNothing}
                 entities={entities}
                 excludeTypes={excludeTypes}
+                notes={notes}
+                updateNotes={updateNotes}
             />
         </div>
     )

@@ -13,6 +13,9 @@
       tint = ""
     end
     curl_path = local_assigns[:curl_path]
+    record = side == :before ? line.before_response : line.after_response
+    previous_record = side == :before ? nil : line.before_response
+    notes_by_row = schema_notes_by_row(record, previous_record, body)
   %>
   <div <%= local_assigns[:region_attr] %> class="py-1 <%= tint %>">
     <div class="flex items-start gap-2">
@@ -41,7 +44,7 @@
                 class="shrink-0 text-xs bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 px-2 py-0.5 rounded cursor-pointer leading-none">Copy cURL</button>
       <% end %>
     </div>
-    <div <%= local_assigns[:line_pick_attr] %> class="font-mono text-xs text-gray-800 mt-1"><%= render "specs/json", diff: body, comments_by_line: local_assigns[:comments_by_line] || {}, line_index_map: local_assigns[:line_index_map] %></div>
+    <div <%= local_assigns[:line_pick_attr] %> class="font-mono text-xs text-gray-800 mt-1"><%= render "specs/json", diff: body, comments_by_line: local_assigns[:comments_by_line] || {}, line_index_map: local_assigns[:line_index_map], notes_by_row: notes_by_row %></div>
   </div>
 <% else %>
   <div <%= local_assigns[:region_attr] %>></div>

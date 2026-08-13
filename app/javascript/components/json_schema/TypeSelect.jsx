@@ -1,6 +1,7 @@
 import React from 'react'
+import NodeNote from "@/components/json_schema/NodeNote.jsx";
 
-const TypeSelect = ({value, onChange, onDelete, path, canBeDeleted, canBeNothing, entities, excludeTypes = []}) => {
+const TypeSelect = ({value, onChange, onDelete, path, canBeDeleted, canBeNothing, entities, excludeTypes = [], notes, updateNotes}) => {
     let types = ["string", "number", "boolean", "null", "object", "array", "oneOf"]
     if (canBeNothing) types.unshift("nothing")
     types = types.filter((type) => !excludeTypes.includes(type))
@@ -29,6 +30,7 @@ const TypeSelect = ({value, onChange, onDelete, path, canBeDeleted, canBeNothing
                 )) }
             </select>
             {canBeDeleted && <button type="button" className="node-delete" aria-label="Remove" onClick={(e) => onDelete(e, path)}>×</button>}
+            <NodeNote notes={notes} updateNotes={updateNotes} path={path}/>
         </>
     )
 }

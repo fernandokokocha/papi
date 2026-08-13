@@ -4,7 +4,7 @@
     <% resp_anchor = CommentAnchor.new(scope: "response", part: "whole", endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb], response_code: line.code) %>
     <% resp_lines = candidate_comments.response_output_lines(endpoint, line.code) %>
     <% resp_map = side == :after ? response_line_index_map(nil, endpoint, line.code, expanded: expanded) : nil %>
-    <%= render "endpoints/response_cell", line: line, side: side, curl_verb: local_assigns[:curl_verb], curl_path: local_assigns[:curl_path], curl_query: local_assigns[:curl_query], region_attr: comment_region_attr(resp_anchor), comments_by_line: expanded ? resp_lines.by_line : {}, line_index_map: resp_map, line_pick_attr: response_line_pick_attr(endpoint, line.code, resp_map) %>
+    <%= render "endpoints/response_cell", line: line, side: side, curl_verb: local_assigns[:curl_verb], curl_path: local_assigns[:curl_path], curl_query: local_assigns[:curl_query], region_attr: comment_region_attr(resp_anchor), comments_by_line: expanded ? resp_lines.by_line : {}, line_index_map: resp_map, line_pick_attr: response_line_pick_attr(endpoint, line.code, resp_map), expanded: expanded %>
     <%= render "comments/anchor_region",
           anchor: resp_anchor,
           threads: candidate_comments.threads_for("response", endpoint: endpoint, response_code: line.code),

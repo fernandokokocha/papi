@@ -8,7 +8,7 @@
         <%= entity.name %>
         <%= render "shared/expand_button", expandable: entity.parsed_root.expandable?, expanded: expanded %>
       </div>
-      <div class="pl-2 py-2 bg-red-50 border-b border-red-200"><%= render "specs/json", diff: diff %></div>
+      <div class="pl-2 py-2 bg-red-50 border-b border-red-200"><%= render "specs/json", diff: diff, notes_by_row: schema_notes_by_row(entity, nil, diff) %></div>
     </div>
   </div>
   <%= render "comments/line_threads", anchor: CommentAnchor.for_entity_root(entity), collapsed: entity_lines.fresh, outdated: entity_lines.outdated, composable: false, expanded: expanded, wrapper_class: "col-start-1 mt-3" %>

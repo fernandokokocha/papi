@@ -29,14 +29,16 @@ class DiffResponses::FromResponses
     else
       note_diff = DiffText::FromNotes.new(before.note, after.note)
       output_diff = Diff::FromValues.new(before_output, after_output)
-      state = note_diff.any_changes? || output_diff.any_changes? ? :changed : :no_change
+      notes_differ = SchemaNote.differ?(before.schema_notes, after.schema_notes)
+      state = note_diff.any_changes? || output_diff.any_changes? || notes_differ ? :changed : :no_change
     end
 
     DiffResponses::ResponseDiff.new(
       code: code, state: state, note_diff: note_diff, output_diff: output_diff,
       before_present: !before.nil?, after_present: !after.nil?,
       before_output: before_output, after_output: after_output,
-      before_note: before&.note, after_note: after&.note
+      before_note: before&.note, after_note: after&.note,
+      before_response: before, after_response: after
     )
   end
 

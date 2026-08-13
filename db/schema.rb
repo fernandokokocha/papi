@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_12_000001) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_13_000001) do
   create_table "auth_methods", force: :cascade do |t|
     t.string "name", null: false
     t.string "kind", default: "bearer", null: false
@@ -123,6 +123,17 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_12_000001) do
     t.datetime "updated_at", null: false
     t.index ["endpoint_id", "code"], name: "index_responses_on_endpoint_id_and_code", unique: true
     t.index ["endpoint_id"], name: "index_responses_on_endpoint_id"
+  end
+
+  create_table "schema_notes", force: :cascade do |t|
+    t.string "notable_type", null: false
+    t.integer "notable_id", null: false
+    t.string "path", null: false
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["notable_type", "notable_id", "path"], name: "index_schema_notes_on_notable_type_and_notable_id_and_path", unique: true
+    t.index ["notable_type", "notable_id"], name: "index_schema_notes_on_notable"
   end
 
   create_table "sessions", force: :cascade do |t|

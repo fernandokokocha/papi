@@ -2,14 +2,14 @@ import React, {useState} from 'react'
 import TypeSelect from "@/components/json_schema/TypeSelect.jsx";
 import ObjectAttribute from "@/components/json_schema/ObjectAttribute.jsx";
 
-const ObjectNode = ({onChange, onDelete, onAdd, onToggleOptional, attributes, path, canBeDeleted, canBeNothing, entities, excludeTypes}) => {
+const ObjectNode = ({onChange, onDelete, onAdd, onToggleOptional, attributes, path, canBeDeleted, canBeNothing, entities, excludeTypes, notes, updateNotes}) => {
     const [newName, setNewName] = useState("new")
 
     const addDisabled = attributes.some(({name}) => name === newName)
 
     return (
         <div className="object">
-            <TypeSelect value="object" onChange={onChange} onDelete={onDelete} path={path} canBeDeleted={canBeDeleted} canBeNothing={canBeNothing} entities={entities} excludeTypes={excludeTypes}/>
+            <TypeSelect value="object" onChange={onChange} onDelete={onDelete} path={path} canBeDeleted={canBeDeleted} canBeNothing={canBeNothing} entities={entities} notes={notes} updateNotes={updateNotes} excludeTypes={excludeTypes}/>
             {"{"}
 
             {
@@ -25,7 +25,7 @@ const ObjectNode = ({onChange, onDelete, onAdd, onToggleOptional, attributes, pa
                                      path={path.concat(name)}
                                      canBeDeleted={true}
                                      canBeNothing={false}
-                                     entities={entities}
+                                     entities={entities} notes={notes} updateNotes={updateNotes}
                                      excludeTypes={excludeTypes}
                     />
                 ))

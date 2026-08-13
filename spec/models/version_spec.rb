@@ -69,7 +69,8 @@ describe Version, "#existing_endpoints_for_frontend" do
     expect(version.reload.existing_endpoints_for_frontend).to eq(
       '[{"http_verb":"verb_get","verb":"GET","path":"/tasks/:taskId","auth":"",' \
       '"params":[{"name":"taskId","kind":"number"}],"query_params":[],"note":"One task","input":"",' \
-      '"responses":[{"code":"200","note":"ok","output":"string"}]}]'
+      '"schema_notes":[],' \
+      '"responses":[{"code":"200","note":"ok","output":"string","schema_notes":[]}]}]'
     )
   end
 

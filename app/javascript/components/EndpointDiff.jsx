@@ -23,6 +23,18 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities, authMethods})
         updateEndpoint(endpoint.id, {...endpoint, path: newPath})
     }
 
+
+    const updateNotes = (schemaNotes) => {
+        updateEndpoint(endpoint.id, {...endpoint, schema_notes: schemaNotes})
+    }
+
+    const updateResponseNotes = (code, schemaNotes) => {
+        const newResponses = endpoint.responses.map((r) => (
+            r.code === code ? {...r, schema_notes: schemaNotes} : r
+        ))
+        updateEndpoint(endpoint.id, {...endpoint, responses: newResponses})
+    }
+
     const updateNote = (newNote) => {
         updateEndpoint(endpoint.id, {...endpoint, note: newNote})
     }
@@ -183,6 +195,8 @@ const EndpointDiff = ({endpoint, remove, updateEndpoint, entities, authMethods})
                         updateResponseNote={updateResponseNote}
                         updateResponseOutput={updateResponseOutput}
                         updateNote={updateNote}
+                        updateNotes={updateNotes}
+                        updateResponseNotes={updateResponseNotes}
                         updateInput={updateInput}
                         updateParamKind={updateParamKind}
                         addQueryParam={addQueryParam}

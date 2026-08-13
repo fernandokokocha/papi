@@ -7,6 +7,13 @@ import deserialize from "@/helpers/deserialize.js";
 import {entityNamesIn} from "@/helpers/entityReferences.js";
 import serialize from "@/helpers/serialize.js";
 import {hasDuplicateParams, identityPath, paramsOf} from "@/helpers/pathParams.js";
+import {pathKey} from "@/helpers/schemaNotes.js";
+
+// Both sides rebuild this string to decide whether anything changed, so the key
+// order and the note order have to match Version#notes_for_frontend exactly.
+const sortedNotes = (notes) => [...(notes || [])]
+    .sort((a, b) => (pathKey(a.path) < pathKey(b.path) ? -1 : pathKey(a.path) > pathKey(b.path) ? 1 : 0))
+    .map((note) => ({path: note.path, body: note.body}))
 
 const isNewEndpointColliding = (verb, path, e) => {
     let newEndpointColliding = false
@@ -142,9 +149,10 @@ const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, c
                     .map((p) => ({name: p.name, kind: p.kind, required: p.required})),
                 note: endpoint.note,
                 input: serialize(endpoint.input),
+                schema_notes: sortedNotes(endpoint.schema_notes),
                 responses: [...endpoint.responses]
                     .sort((a, b) => Number(a.code) - Number(b.code))
-                    .map((r) => ({code: r.code, note: r.note, output: serialize(r.output)})),
+                    .map((r) => ({code: r.code, note: r.note, output: serialize(r.output), schema_notes: sortedNotes(r.schema_notes)})),
             })))
 
         if (serializedEndpointsToSend !== serializedEndpoints) {
@@ -156,7 +164,8 @@ const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, c
             .filter((entity) => (entity.type !== 'removed'))
             .map((entity) => ({
                 name: entity.name,
-                root: serialize(entity.root)
+                root: serialize(entity.root),
+                schema_notes: sortedNotes(entity.schema_notes)
             })))
         if (serializedEntitiesToSend !== serializedEntities) {
             setAnyChanges(true)
@@ -378,8 +387,8 @@ const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, c
             endpointData.input = parsed_input
             endpointData.original_input = parsed_input
 
-            const editable = endpointData.responses.map((r) => ({code: r.code, note: r.note, output: deserialize(r.output)}))
-            const original = endpointData.responses.map((r) => ({code: r.code, note: r.note, output: deserialize(r.output)}))
+            const editable = endpointData.responses.map((r) => ({code: r.code, note: r.note, output: deserialize(r.output), schema_notes: r.schema_notes}))
+            const original = endpointData.responses.map((r) => ({code: r.code, note: r.note, output: deserialize(r.output), schema_notes: r.schema_notes}))
             endpointData.responses = editable
             endpointData.original_responses = original
         })

@@ -49,7 +49,8 @@ class Version < ApplicationRecord
         query_params: endpoint.query_params.map { |param| { name: param.name, kind: param.kind, required: param.required } },
         note: endpoint.note,
         input: endpoint.input,
-        responses: endpoint.responses.sort_by(&:code).map { |r| { code: r.code, note: r.note, output: r.output } }
+        schema_notes: notes_for_frontend(endpoint),
+        responses: endpoint.responses.sort_by(&:code).map { |r| { code: r.code, note: r.note, output: r.output, schema_notes: notes_for_frontend(r) } }
       }
     end.to_json
   end
@@ -58,7 +59,8 @@ class Version < ApplicationRecord
     entities.map do |entity|
       {
         name: entity.name,
-        root: entity.root
+        root: entity.root,
+        schema_notes: notes_for_frontend(entity)
       }
     end.to_json
   end
@@ -71,6 +73,10 @@ class Version < ApplicationRecord
         note: auth_method.note
       }
     end.to_json
+  end
+
+  def notes_for_frontend(record)
+    record.schema_notes.sort_by(&:path).map { |note| { path: note.segments, body: note.body } }
   end
 
   def to_param

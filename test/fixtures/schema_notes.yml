@@ -1,0 +1,14 @@
+p1v3_user_id:    { notable: p1v3_user (Entity), path: '["id"]', body: "Opaque. Don't parse it, and don't assume ids are ordered — they are only unique." }
+p1v4_user_id:    { notable: p1v4_user (Entity), path: '["id"]', body: "Opaque. Don't parse it, and don't assume ids are ordered — they are only unique." }
+
+p1v3_user_email: { notable: p1v3_user (Entity), path: '["email"]', body: "Lowercased on write. Globally unique." }
+p1v4_user_email: { notable: p1v4_user (Entity), path: '["email"]', body: "Lowercased on write. Unique per project, not globally, so the same address can appear in two projects." }
+
+p1v3_session_token:      { notable: p1v3_session (Entity), path: '["token"]', body: "Shown once, at creation. There is no endpoint that reads it back." }
+p1v4_session_expires_at: { notable: p1v4_session (Entity), path: '["expires_at"]', body: "Absolute, not a duration. A token past this instant is rejected with 401." }
+
+p1v3_attachments_list_body: { notable: p1v3_attachments_list_200 (Response), path: '[null]', body: "Ordered newest first. Paging is by cursor, not offset." }
+p1v4_attachments_list_body: { notable: p1v4_attachments_list_200 (Response), path: '[null]', body: "Ordered newest first. Paging is by cursor, not offset." }
+
+p1v3_sessions_create_email: { notable: p1v3_sessions_create (Endpoint), path: '["email"]', body: "Matched case-insensitively, unlike everywhere else in the API." }
+p1v4_sessions_create_email: { notable: p1v4_sessions_create (Endpoint), path: '["email"]', body: "Matched case-insensitively, unlike everywhere else in the API." }

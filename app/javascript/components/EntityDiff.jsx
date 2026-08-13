@@ -7,6 +7,10 @@ const EntityDiff = ({entity, updateEntity, removeEntity, entities, excludeTypes}
         updateEntity(entity.id, {...entity, root: newRoot})
     }
 
+    const updateNotes = (schema_notes) => {
+        updateEntity(entity.id, {...entity, schema_notes})
+    }
+
     return (
         <div className="entity-diff" key={entity.id}>
             {/* Left — original read-only */}
@@ -44,6 +48,9 @@ const EntityDiff = ({entity, updateEntity, removeEntity, entities, excludeTypes}
                         id={entity.id}
                         entities={entities}
                         excludeTypes={excludeTypes}
+                        notes={entity.schema_notes}
+                        updateNotes={updateNotes}
+                        notesName="version[entities_attributes][][schema_notes_attributes]"
                     />
                 </div>
             </div>

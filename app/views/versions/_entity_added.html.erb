@@ -10,7 +10,7 @@
         <%= entity.name %>
         <%= render "shared/expand_button", expandable: entity.parsed_root.expandable?, expanded: expanded %>
       </div>
-      <div <%= entity_line_pick_attr(entity, entity_map) %> class="pl-2 py-2 bg-emerald-50 border-b border-emerald-200"><%= render "specs/json", diff: diff, comments_by_line: expanded ? entity_lines.by_line : {}, line_index_map: entity_map %></div>
+      <div <%= entity_line_pick_attr(entity, entity_map) %> class="pl-2 py-2 bg-emerald-50 border-b border-emerald-200"><%= render "specs/json", diff: diff, comments_by_line: expanded ? entity_lines.by_line : {}, line_index_map: entity_map, notes_by_row: schema_notes_by_row(entity, nil, diff) %></div>
     </div>
   </div>
   <%= render "comments/line_threads", anchor: CommentAnchor.for_entity_root(entity), collapsed: expanded ? [] : entity_lines.fresh, outdated: entity_lines.outdated, composable: !entity_map.nil?, expanded: expanded, wrapper_class: "col-start-2 mt-3" %>

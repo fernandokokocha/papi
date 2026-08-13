@@ -32,7 +32,7 @@
       <div class="bg-gray-200 border-t border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Input</div>
       <% input_anchor = CommentAnchor.new(scope: "endpoint", part: "input", endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb]) %>
       <% input_lines = candidate_comments.endpoint_input_lines(endpoint) %>
-      <div <%= comment_region_attr(input_anchor) %> class="px-3 py-2 bg-white border-b border-gray-200 font-mono text-xs text-gray-800"><%= render "specs/json", diff: input_diff, comments_by_line: expanded ? input_lines.by_line : {} %></div>
+      <div <%= comment_region_attr(input_anchor) %> class="px-3 py-2 bg-white border-b border-gray-200 font-mono text-xs text-gray-800"><%= render "specs/json", diff: input_diff, comments_by_line: expanded ? input_lines.by_line : {}, notes_by_row: schema_notes_by_row(endpoint, nil, input_diff) %></div>
       <%= render "comments/anchor_region",
             anchor: input_anchor,
             threads: candidate_comments.threads_for("endpoint", endpoint: endpoint, part: "input"),

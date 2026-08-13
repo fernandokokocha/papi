@@ -1,7 +1,7 @@
 import React from 'react'
 import Value from "@/components/json_schema/Value.jsx";
 
-const ObjectAttribute = ({name, optional, value, onChange, onDelete, onAdd, onToggleOptional, path, canBeDeleted, canBeNothing, entities, excludeTypes}) => {
+const ObjectAttribute = ({name, optional, value, onChange, onDelete, onAdd, onToggleOptional, path, canBeDeleted, canBeNothing, entities, excludeTypes, notes, updateNotes}) => {
     const toggleClass = optional
         ? "bg-sky-600 text-white border border-sky-600"
         : "bg-white text-gray-500 border border-gray-300 hover:bg-gray-50"
@@ -23,7 +23,7 @@ const ObjectAttribute = ({name, optional, value, onChange, onDelete, onAdd, onTo
             path={path}
             canBeDeleted={canBeDeleted}
             canBeNothing={canBeNothing}
-            entities={entities}
+            entities={entities} notes={notes} updateNotes={updateNotes}
             excludeTypes={excludeTypes}
         />
         </div>

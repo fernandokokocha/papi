@@ -4,7 +4,7 @@ import ArrayNode from "@/components/json_schema/ArrayNode.jsx";
 import OneOfNode from "@/components/json_schema/OneOfNode.jsx";
 import PrimitiveNode from "@/components/json_schema/PrimitiveNode.jsx";
 
-const Value = ({root, onChange, onDelete, onAdd, onToggleOptional, path, canBeDeleted, canBeNothing, entities, excludeTypes}) => {
+const Value = ({root, onChange, onDelete, onAdd, onToggleOptional, path, canBeDeleted, canBeNothing, entities, excludeTypes, notes, updateNotes}) => {
     if (root.nodeType === "object") {
         return <ObjectNode
             onChange={onChange}
@@ -15,7 +15,7 @@ const Value = ({root, onChange, onDelete, onAdd, onToggleOptional, path, canBeDe
             path={path}
             canBeDeleted={canBeDeleted}
             canBeNothing={canBeNothing}
-            entities={entities}
+            entities={entities} notes={notes} updateNotes={updateNotes}
             excludeTypes={excludeTypes}
         />
     }
@@ -30,7 +30,7 @@ const Value = ({root, onChange, onDelete, onAdd, onToggleOptional, path, canBeDe
             path={path}
             canBeDeleted={canBeDeleted}
             canBeNothing={canBeNothing}
-            entities={entities}
+            entities={entities} notes={notes} updateNotes={updateNotes}
             excludeTypes={excludeTypes}
         />
     }
@@ -45,7 +45,7 @@ const Value = ({root, onChange, onDelete, onAdd, onToggleOptional, path, canBeDe
             path={path}
             canBeDeleted={canBeDeleted}
             canBeNothing={canBeNothing}
-            entities={entities}
+            entities={entities} notes={notes} updateNotes={updateNotes}
             excludeTypes={excludeTypes}
         />
     }
@@ -59,7 +59,7 @@ const Value = ({root, onChange, onDelete, onAdd, onToggleOptional, path, canBeDe
             path={path}
             canBeDeleted={canBeDeleted}
             canBeNothing={canBeNothing}
-            entities={entities}
+            entities={entities} notes={notes} updateNotes={updateNotes}
             excludeTypes={excludeTypes}
         />
     )

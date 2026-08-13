@@ -62,6 +62,76 @@ body {
     background: white;
 }
 
+.line-note {
+    position: relative;
+    display: inline-block;
+    margin-left: 7px;
+    line-height: 15px;
+    vertical-align: top;
+    cursor: help;
+}
+
+.line-note-badge {
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    margin-top: 1px;
+    border-radius: 999px;
+    background: var(--color-cyan-600);
+    color: white;
+    font-family: sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 13px;
+    text-align: center;
+    vertical-align: top;
+}
+
+.line-note-badge.added   { background: var(--color-emerald-600); }
+.line-note-badge.changed { background: var(--color-amber-600); }
+.line-note-badge.removed { background: var(--color-red-600); }
+
+.line-note:hover .line-note-badge {
+    filter: brightness(0.8);
+}
+
+.line-note-card {
+    width: 20rem;
+    padding: 6px 9px;
+    border: 1px solid var(--color-cyan-200);
+    border-left: 3px solid var(--color-cyan-500);
+    border-radius: 4px;
+    background: white;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.10);
+    color: var(--color-gray-700);
+    font-family: sans-serif;
+    font-size: 12px;
+    line-height: 1.45;
+    white-space: normal;
+}
+
+.line-note-body {
+    display: none;
+    position: absolute;
+    top: 15px;
+    left: 0;
+    z-index: 30;
+}
+
+.line-note:hover .line-note-body {
+    display: block;
+}
+
+/* A changed note's before and after, tinted like the schema lines beside it */
+.note-was, .note-now {
+    display: block;
+    padding: 3px 6px;
+    border-radius: 3px;
+}
+
+.note-was { background: lightpink; }
+.note-now { background: #D1FFBD; margin-top: 4px; }
+
 .notes-container {
     display: flex;
     flex: 1;
@@ -319,3 +389,83 @@ body.comments-hidden [data-comment-form] { display: none; }
 .card-comments.edited .line-threads-edited-note {
   display: block;
 }
+
+/* ── Note affordance in the schema editor ── */
+
+.node-note {
+    position: relative;
+    display: inline-block;
+}
+
+.node-note-badge {
+    width: 15px;
+    height: 15px;
+    margin-left: 4px;
+    border: 1px solid var(--color-gray-300);
+    border-radius: 999px;
+    background: white;
+    color: var(--color-gray-400);
+    font-family: sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 13px;
+    cursor: pointer;
+}
+
+.node-note-badge:hover {
+    border-color: var(--color-cyan-500);
+    color: var(--color-cyan-600);
+}
+
+.node-note-badge.has-note {
+    border-color: var(--color-cyan-600);
+    background: var(--color-cyan-600);
+    color: white;
+}
+
+.node-note-editor {
+    position: fixed;
+    z-index: 60;
+    display: block;
+    width: 22rem;
+    padding: 8px;
+    border: 1px solid var(--color-cyan-200);
+    border-left: 3px solid var(--color-cyan-500);
+    border-radius: 6px;
+    background: white;
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.10);
+    white-space: normal;
+}
+
+.node-note-editor textarea {
+    width: 100%;
+    padding: 6px 8px;
+    border: 1px solid var(--color-gray-300);
+    border-radius: 4px;
+    font-family: sans-serif;
+    font-size: 12px;
+    resize: vertical;
+}
+
+.node-note-hint {
+    display: block;
+    margin-top: 4px;
+    color: var(--color-gray-400);
+    font-family: sans-serif;
+    font-size: 11px;
+}
+
+.node-note-done {
+    margin-top: 6px;
+    padding: 3px 10px;
+    border: none;
+    border-radius: 4px;
+    background: var(--color-cyan-600);
+    color: white;
+    font-family: sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.node-note-done:hover { background: var(--color-cyan-700); }

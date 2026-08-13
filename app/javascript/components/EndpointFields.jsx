@@ -34,8 +34,10 @@ const EndpointFields = ({
     addResponse,
     removeResponse,
     updateResponseNote,
+    updateResponseNotes,
     updateResponseOutput,
     updateNote,
+    updateNotes,
     updateInput,
     updateParamKind,
     addQueryParam,
@@ -148,6 +150,9 @@ const EndpointFields = ({
                     id={`${endpoint.id}-input`}
                     entities={entities}
                     canBeNothing={true}
+                    notes={endpoint.schema_notes}
+                    updateNotes={updateNotes}
+                    notesName="version[endpoints_attributes][][schema_notes]"
                 />
             </div>
             <div className={t.sectionHeader}>Responses</div>
@@ -173,6 +178,9 @@ const EndpointFields = ({
                                 id={`${endpoint.id}-${r.code}`}
                                 entities={entities}
                                 canBeNothing={true}
+                                notes={r.schema_notes}
+                                updateNotes={(schemaNotes) => updateResponseNotes(r.code, schemaNotes)}
+                                notesName={`version[endpoints_attributes][][responses][${r.code}][schema_notes]`}
                             />
                         </div>
                     </div>

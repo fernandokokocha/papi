@@ -17,6 +17,8 @@ class Endpoint < ApplicationRecord
   belongs_to :version
   has_many :responses, dependent: :delete_all
   has_many :params, class_name: "EndpointParam", dependent: :delete_all
+  has_many :schema_notes, as: :notable, dependent: :delete_all
+  accepts_nested_attributes_for :schema_notes
 
   scope :sort_by_name, -> { order([ :path, :http_verb ]) }
 
@@ -101,6 +103,7 @@ class Endpoint < ApplicationRecord
       DiffParams::FromParams.new(previous.query_params, query_params).any_changes? ||
       DiffAuth::FromAuth.new(previous.auth_method, auth_method).any_changes? ||
       DiffText::FromNotes.new(previous.note, note).any_changes? ||
+      SchemaNote.differ?(previous.schema_notes, schema_notes) ||
       Diff::FromValues.new(previous.parsed_input, parsed_input).any_changes? ||
       DiffResponses::FromResponses.new(previous.responses, responses).any_changes?
   end

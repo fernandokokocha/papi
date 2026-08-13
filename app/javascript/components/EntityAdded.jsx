@@ -6,6 +6,10 @@ const EntityAdded = ({entity, updateEntity, removeEntity, entities, excludeTypes
         updateEntity(entity.id, {...entity, root: newRoot})
     }
 
+    const updateNotes = (schema_notes) => {
+        updateEntity(entity.id, {...entity, schema_notes})
+    }
+
     return (
         <div className="grid grid-cols-2 gap-2" key={entity.id}>
             <div></div>
@@ -33,6 +37,9 @@ const EntityAdded = ({entity, updateEntity, removeEntity, entities, excludeTypes
                             id={entity.id}
                             entities={entities}
                             excludeTypes={excludeTypes}
+                            notes={entity.schema_notes}
+                            updateNotes={updateNotes}
+                            notesName="version[entities_attributes][][schema_notes_attributes]"
                         />
                     </div>
                 </div>

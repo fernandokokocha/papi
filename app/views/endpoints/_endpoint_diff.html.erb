@@ -6,12 +6,12 @@
 <% header_class = changed ? "bg-amber-600" : "bg-sky-900" %>
 <% expandable = [ previous_endpoint, endpoint ].any? { |e| e.parsed_input.expandable? || e.responses.any? { |r| r.parsed_output.expandable? } } %>
 
-<div class="border <%= border_class %> rounded-lg overflow-hidden">
+<div class="border <%= border_class %> rounded-lg">
   <div class="grid grid-cols-2 sticky top-0 z-10">
-    <div class="<%= header_class %> text-white px-4 py-3 text-sm font-mono flex items-center">
+    <div class="<%= header_class %> rounded-tl-lg text-white px-4 py-3 text-sm font-mono flex items-center">
       <%= render "endpoints/verb_path", verb: previous_endpoint.verb, path: previous_endpoint.path %>
     </div>
-    <div class="<%= header_class %> border-l border-white/20 text-white px-4 py-3 text-sm font-mono flex items-center justify-between">
+    <div class="<%= header_class %> rounded-tr-lg border-l border-white/20 text-white px-4 py-3 text-sm font-mono flex items-center justify-between">
       <%= render "endpoints/verb_path", verb: endpoint.verb, path: endpoint.path %>
       <div class="flex items-center gap-2 ml-4">
         <%= render "shared/expand_button", expandable: expandable, expanded: expanded %>
@@ -81,8 +81,8 @@
     <div class="bg-gray-200 border-l border-gray-300 px-3 py-1.5 text-xs font-semibold text-black uppercase tracking-wide">Input</div>
   </div>
   <div class="grid grid-cols-2">
-    <div <%= comment_region_attr(input_anchor) %> class="px-3 py-2 bg-white font-mono text-xs text-gray-800"><%= render "specs/json", diff: input_diff.before %></div>
-    <div <%= comment_region_attr(input_anchor) %> <%= endpoint_input_line_pick_attr(endpoint, input_map) %> class="px-3 py-2 bg-white border-l border-gray-200 font-mono text-xs text-gray-800"><%= render "specs/json", diff: input_diff.after, comments_by_line: expanded ? input_lines.by_line : {}, line_index_map: input_map %></div>
+    <div <%= comment_region_attr(input_anchor) %> class="px-3 py-2 bg-white font-mono text-xs text-gray-800"><%= render "specs/json", diff: input_diff.before, notes_by_row: schema_notes_by_row(previous_endpoint, nil, input_diff.before) %></div>
+    <div <%= comment_region_attr(input_anchor) %> <%= endpoint_input_line_pick_attr(endpoint, input_map) %> class="px-3 py-2 bg-white border-l border-gray-200 font-mono text-xs text-gray-800"><%= render "specs/json", diff: input_diff.after, comments_by_line: expanded ? input_lines.by_line : {}, line_index_map: input_map, notes_by_row: schema_notes_by_row(endpoint, previous_endpoint, input_diff.after) %></div>
     <%= render "comments/anchor_region",
           anchor: input_anchor,
           threads: candidate_comments.threads_for("endpoint", endpoint: endpoint, part: "input"),
@@ -101,8 +101,8 @@
       <% resp_anchor = CommentAnchor.new(scope: "response", part: "whole", endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb], response_code: line.code) %>
       <% resp_lines = candidate_comments.response_output_lines(endpoint, line.code) %>
       <% resp_map = response_line_index_map(previous_endpoint, endpoint, line.code, expanded: expanded) %>
-      <%= render "endpoints/response_cell", line: line, side: :before, region_attr: comment_region_attr(resp_anchor) %>
-      <%= render "endpoints/response_cell", line: line, side: :after, curl_verb: endpoint.verb, curl_path: endpoint.path, curl_query: endpoint.example_query_string, region_attr: comment_region_attr(resp_anchor), comments_by_line: expanded ? resp_lines.by_line : {}, line_index_map: resp_map, line_pick_attr: response_line_pick_attr(endpoint, line.code, resp_map) %>
+      <%= render "endpoints/response_cell", line: line, side: :before, region_attr: comment_region_attr(resp_anchor), expanded: expanded %>
+      <%= render "endpoints/response_cell", line: line, side: :after, curl_verb: endpoint.verb, curl_path: endpoint.path, curl_query: endpoint.example_query_string, region_attr: comment_region_attr(resp_anchor), comments_by_line: expanded ? resp_lines.by_line : {}, line_index_map: resp_map, line_pick_attr: response_line_pick_attr(endpoint, line.code, resp_map), expanded: expanded %>
       <%= render "comments/anchor_region",
             anchor: resp_anchor,
             threads: candidate_comments.threads_for("response", endpoint: endpoint, response_code: line.code),

@@ -7,7 +7,7 @@ const namedType = (branch) => {
     return null
 }
 
-const OneOfNode = ({branches, onChange, onDelete, onAdd, onToggleOptional, path, canBeDeleted, canBeNothing, entities, excludeTypes = []}) => {
+const OneOfNode = ({branches, onChange, onDelete, onAdd, onToggleOptional, path, canBeDeleted, canBeNothing, entities, excludeTypes = [], notes, updateNotes}) => {
     const takenTypes = branches.map(namedType).filter(Boolean)
 
     const excludedFor = (branch) => {
@@ -25,7 +25,7 @@ const OneOfNode = ({branches, onChange, onDelete, onAdd, onToggleOptional, path,
                 path={path}
                 canBeDeleted={canBeDeleted}
                 canBeNothing={canBeNothing}
-                entities={entities}
+                entities={entities} notes={notes} updateNotes={updateNotes}
                 excludeTypes={excludeTypes}
             />
             (
@@ -41,7 +41,7 @@ const OneOfNode = ({branches, onChange, onDelete, onAdd, onToggleOptional, path,
                             path={path.concat(index)}
                             canBeDeleted={branches.length > 2}
                             canBeNothing={false}
-                            entities={entities}
+                            entities={entities} notes={notes} updateNotes={updateNotes}
                             excludeTypes={excludedFor(branch)}
                         />
                     </div>

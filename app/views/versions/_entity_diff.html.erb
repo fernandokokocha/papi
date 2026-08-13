@@ -11,7 +11,7 @@
       <div class="sticky top-0 z-10 rounded-t-lg <%= header_class %> text-white px-4 py-2 text-sm font-mono">
         <%= previous_entity.name %>
       </div>
-      <div class="pl-2 py-2 bg-white border-b border-gray-200"><%= render "specs/json", diff: diff.before %></div>
+      <div class="pl-2 py-2 bg-white border-b border-gray-200"><%= render "specs/json", diff: diff.before, notes_by_row: schema_notes_by_row(previous_entity, nil, diff.before) %></div>
     </div>
   </div>
   <div>
@@ -20,7 +20,7 @@
         <%= entity.name %>
         <%= render "shared/expand_button", expandable: [ previous_entity, entity ].any? { |e| e.parsed_root.expandable? }, expanded: expanded %>
       </div>
-      <div <%= entity_line_pick_attr(entity, entity_map) %> class="pl-2 py-2 bg-white border-b border-gray-200"><%= render "specs/json", diff: diff.after, comments_by_line: expanded ? entity_lines.by_line : {}, line_index_map: entity_map %></div>
+      <div <%= entity_line_pick_attr(entity, entity_map) %> class="pl-2 py-2 bg-white border-b border-gray-200"><%= render "specs/json", diff: diff.after, comments_by_line: expanded ? entity_lines.by_line : {}, line_index_map: entity_map, notes_by_row: schema_notes_by_row(entity, previous_entity, diff.after) %></div>
     </div>
   </div>
   <%= render "comments/line_threads", anchor: CommentAnchor.for_entity_root(entity), collapsed: expanded ? [] : entity_lines.fresh, outdated: entity_lines.outdated, composable: !entity_map.nil?, expanded: expanded, wrapper_class: "col-start-2 mt-3" %>
