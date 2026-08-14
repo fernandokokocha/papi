@@ -52,6 +52,8 @@
       <% end %>
     </div>
   </div>
+
+  <%= render "versions/release_notes", version: @comparison.after %>
 <% end %>
 
 <section class="mt-10 candidate-conversation" data-comment-exempt>

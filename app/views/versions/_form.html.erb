@@ -5,17 +5,39 @@
   <%= hidden_field(:version, :order) %>
   <%= hidden_field(:version, :name) %>
 
+  <% base_version = @candidate.base_version || Version.null_version(@project) %>
   <div class="grid grid-cols-2 gap-2 mb-6">
     <div class="bg-white border border-gray-200 rounded-lg p-4">
-      <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Base Version</div>
-      <div class="text-lg font-semibold text-gray-900"><%= @candidate.base_version.name %></div>
-      <div class="text-sm text-gray-500"><%= @candidate.base_version.created_at.strftime("%Y-%m-%d") %></div>
+      <% if base_version.order > -1 %>
+        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Base Version</div>
+        <div class="text-lg font-semibold text-gray-900"><%= base_version.name %></div>
+        <div class="text-sm text-gray-500"><%= base_version.created_at.strftime("%Y-%m-%d") %></div>
+      <% else %>
+        <div class="text-sm text-gray-400 italic">No base version</div>
+      <% end %>
     </div>
     <div class="bg-white border border-gray-200 rounded-lg p-4">
       <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">New Version</div>
       <div class="text-lg font-semibold text-gray-900"><%= @version.name %></div>
       <div class="text-sm text-gray-500"><%= @version.created_at.strftime("%Y-%m-%d") %></div>
     </div>
+  </div>
+
+  <div class="w-1/2 ml-auto pl-1 mb-6">
+    <div class="bg-white border border-gray-200 rounded-lg p-4">
+      <%= label_tag "version_release_notes", "Release Notes", class: "block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2" %>
+      <%= text_area :version, :release_notes, rows: 5,
+            placeholder: "Describe this version — what changed, why, and anything a consumer should know.",
+            class: "w-full bg-white border border-gray-300 rounded-lg p-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500" %>
+    </div>
+    <% release_notes_threads = candidate_comments.threads_for("release_notes") %>
+    <% if release_notes_threads.any? %>
+      <div class="flex flex-col gap-2 mt-3">
+        <% release_notes_threads.each do |thread| %>
+          <%= render "comments/thread", comment: thread, read_only: true %>
+        <% end %>
+      </div>
+    <% end %>
   </div>
 
   <div

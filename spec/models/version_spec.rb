@@ -99,3 +99,21 @@ describe Version, "#existing_endpoints_for_frontend" do
     )
   end
 end
+
+describe Version, "release notes" do
+  let(:version) { FactoryBot.create(:version, name: "v1", release_notes: "Adds the search endpoint.") }
+
+  it "starts a duplicate empty, because notes describe one version's change and not the next" do
+    copy = version.reload.amoeba_dup
+
+    expect(copy.release_notes).to eq("")
+  end
+
+  it "leaves the original's notes alone when the duplicate is saved" do
+    copy = version.reload.amoeba_dup
+    copy.name = "v2"
+    copy.save!
+
+    expect(version.reload.release_notes).to eq("Adds the search endpoint.")
+  end
+end

@@ -85,6 +85,7 @@ class Version < ApplicationRecord
 
   amoeba do
     enable
+    set release_notes: ""
   end
 
   private

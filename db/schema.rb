@@ -160,6 +160,7 @@ ActiveRecord::Schema[8.0].define(version: 2026_08_13_000001) do
     t.string "name", null: false
     t.integer "order", null: false
     t.integer "project_id"
+    t.text "release_notes", default: "", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "candidate_id"

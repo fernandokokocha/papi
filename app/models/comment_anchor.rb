@@ -80,6 +80,10 @@ class CommentAnchor
     new(scope: "candidate", part: "whole")
   end
 
+  def self.for_release_notes
+    new(scope: "release_notes", part: "whole")
+  end
+
   def self.for_endpoint(endpoint)
     new(scope: "endpoint", part: "whole",
         endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb])
@@ -120,7 +124,9 @@ class CommentAnchor
   end
 
   def self.sidebar_for(comment)
-    if comment.scope == "entity"
+    if comment.scope == "release_notes"
+      for_release_notes
+    elsif comment.scope == "entity"
       new(scope: "entity", part: "whole", entity_name: comment.entity_name)
     elsif comment.scope == "auth_method"
       new(scope: "auth_method", part: "whole", auth_method_name: comment.auth_method_name)
@@ -173,11 +179,12 @@ class CommentAnchor
     return :input if part == "input"
     return :auth if part == "auth"
     case scope
-    when "endpoint"    then :endpoint
-    when "entity"      then :entity
-    when "response"    then :response
-    when "param"       then :param
-    when "auth_method" then :auth
+    when "endpoint"      then :endpoint
+    when "entity"        then :entity
+    when "response"      then :response
+    when "param"         then :param
+    when "auth_method"   then :auth
+    when "release_notes" then :release_notes
     else :conversation
     end
   end

@@ -387,4 +387,27 @@ describe CommentAnchor do
       expect(post_anchor.current_output(version)).to eq("{name:string,email:string}")
     end
   end
+
+  describe ".for_release_notes" do
+    it "identifies the one region the notes occupy, with nothing to key on" do
+      built = described_class.for_release_notes
+
+      expect(built.key).to eq([ "release_notes", nil, nil, nil, nil, nil, nil, nil, "whole", nil ])
+      expect(built.errors).to eq([])
+      expect(built.kind).to eq(:release_notes)
+      expect(built.label).to eq("")
+    end
+
+    it "takes no line, because prose has no line the next edit leaves in place" do
+      a = anchor(scope: "release_notes", part: "whole", line: 2)
+
+      expect(a.errors).to include([ :line, a_string_including("requires a text part") ])
+    end
+
+    it "refuses identity columns borrowed from another scope" do
+      a = anchor(scope: "release_notes", part: "whole", entity_name: "User")
+
+      expect(a.errors).to include([ :entity_name, a_string_including("must be blank") ])
+    end
+  end
 end

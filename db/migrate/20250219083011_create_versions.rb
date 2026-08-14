@@ -4,6 +4,7 @@ class CreateVersions < ActiveRecord::Migration[8.0]
       t.string :name, null: false
       t.integer :order, null: false
       t.references :project, null: true, foreign_key: true
+      t.text :release_notes, null: false, default: ""
 
       t.timestamps
     end

@@ -258,6 +258,17 @@ describe "Candidates requests", type: :request do
       expect(body).to include("verb_post /users")
     end
 
+    it "renders a project's first candidate, which has nothing to be based on" do
+      first_candidate = FactoryBot.create(:candidate, name: "rc1", project: project, base_version: nil)
+      FactoryBot.create(:version, project: project, candidate: first_candidate, name: "v1", order: 1)
+
+      sign_in(admin)
+      get edit_project_candidate_path(project.name, first_candidate.name)
+
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("No base version")
+    end
+
     it "sends an empty comments map for a candidate with no comments" do
       FactoryBot.create(:version, project: project, candidate: candidate, name: "v1", order: 1)
 

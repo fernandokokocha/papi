@@ -18,6 +18,7 @@ class CandidateComments
     @endpoint_cards = {}
     @entity_cards = {}
     @auth_method_cards = {}
+    @release_notes_card = { whole: [], lines: [] }
     @response_lines = {}
     @entity_lines = {}
     @input_lines = {}
@@ -86,6 +87,8 @@ class CandidateComments
       (@entity_lines[comment.entity_name] ||= []) << comment if comment.part == "root" && comment.line
     when "auth_method"
       into_card(@auth_method_cards, comment.auth_method_name, comment)
+    when "release_notes"
+      @release_notes_card[:whole] << comment
     end
   end
 
@@ -95,7 +98,9 @@ class CandidateComments
   end
 
   def card_for_anchor(anchor)
-    if anchor.scope == "entity"
+    if anchor.scope == "release_notes"
+      @release_notes_card
+    elsif anchor.scope == "entity"
       @entity_cards.fetch(anchor.entity_name, EMPTY_CARD)
     elsif anchor.scope == "auth_method"
       @auth_method_cards.fetch(anchor.auth_method_name, EMPTY_CARD)
