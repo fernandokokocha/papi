@@ -10,7 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2026_08_13_000001) do
+ActiveRecord::Schema[8.0].define(version: 2026_08_14_000001) do
+  create_table "approvals", force: :cascade do |t|
+    t.integer "candidate_id", null: false
+    t.integer "user_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["candidate_id", "user_id"], name: "index_approvals_on_candidate_id_and_user_id", unique: true
+    t.index ["candidate_id"], name: "index_approvals_on_candidate_id"
+    t.index ["user_id"], name: "index_approvals_on_user_id"
+  end
+
   create_table "auth_methods", force: :cascade do |t|
     t.string "name", null: false
     t.string "kind", default: "bearer", null: false

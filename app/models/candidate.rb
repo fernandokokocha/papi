@@ -4,6 +4,8 @@ class Candidate < ApplicationRecord
   belongs_to :project
   has_many :versions
   has_many :comments
+  has_many :approvals, dependent: :destroy
+  has_many :approvers, through: :approvals, source: :user
   belongs_to :base_version, class_name: "Version", foreign_key: "base_version_id", optional: true
   belongs_to :author, class_name: "User", optional: true
   belongs_to :decided_by, class_name: "User", optional: true
@@ -21,6 +23,10 @@ class Candidate < ApplicationRecord
 
   def to_param
     name
+  end
+
+  def approved_by?(user)
+    approvals.any? { |approval| approval.user_id == user.id }
   end
 
   def comment_threads_by_anchor

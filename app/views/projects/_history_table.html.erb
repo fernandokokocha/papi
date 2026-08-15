@@ -8,6 +8,7 @@
       <th class="px-3 py-2">Proposed</th>
       <th class="px-3 py-2">Decided</th>
       <th class="px-3 py-2">💬</th>
+      <th class="px-3 py-2">👍</th>
       <th class="px-3 py-2 text-right">Date</th>
     </tr>
   </thead>
@@ -34,6 +35,7 @@
         <td class="px-3 py-2.5 text-gray-500"><%= candidate.author&.email_address || "—" %></td>
         <td class="px-3 py-2.5 text-gray-500"><%= candidate.decided_by&.email_address || "—" %></td>
         <td class="px-3 py-2.5 text-gray-500"><%= candidate.comments.size %></td>
+        <td class="px-3 py-2.5 text-gray-500"><%= candidate.approvals.size %></td>
         <td class="px-3 py-2.5 text-right text-xs text-gray-500"><%= candidate.created_at.strftime("%Y-%m-%d") %></td>
       </tr>
     <% end %>

@@ -16,10 +16,21 @@
         <%= " · " if @candidate.author %><%= @candidate.merged? ? "Merged" : "Rejected" %> by <%= @candidate.decided_by.email_address %>
       <% end %>
     </div>
+    <% if @candidate.approvals.any? %>
+      <div class="flex items-center gap-2 mt-2">
+        <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold px-2.5 py-1 rounded-full">👍 <%= @candidate.approvals.size %></span>
+        <span class="text-sm text-gray-500">Approved by <%= @candidate.approvers.map(&:email_address).join(", ") %></span>
+      </div>
+    <% end %>
   </div>
 
   <% if @candidate.open? %>
     <div class="flex items-center gap-3">
+      <% if @candidate.approved_by?(Current.user) %>
+        <%= button_to "Approved ✓", project_candidate_approval_path(@project.name, @candidate.name), method: :delete, class: "bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 text-sm font-medium px-4 py-2 rounded cursor-pointer" %>
+      <% elsif policy(Approval.new(candidate: @candidate, user: Current.user)).create? %>
+        <%= button_to "👍 Approve", project_candidate_approval_path(@project.name, @candidate.name), class: "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-sm font-medium px-4 py-2 rounded cursor-pointer" %>
+      <% end %>
       <%= button_to "Edit", edit_project_candidate_path(@project.name, @candidate.name), method: :get, class: "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-sm font-medium px-4 py-2 rounded cursor-pointer" %>
       <%= button_to "Reject", project_candidate_rejection_path(@project.name, @candidate.name), class: "bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-4 py-2 rounded cursor-pointer" %>
       <%= button_to "Merge", project_candidate_merge_path(@project.name, @candidate.name), class: "bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-medium px-4 py-2 rounded cursor-pointer" %>

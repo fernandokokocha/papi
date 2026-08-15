@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       match "*", via: :all, to: "test_server#candidate", constraints: CandidateTestServerConstraint.new
       resource :merge, only: [ :create ]
       resource :rejection, only: [ :create ]
+      resource :approval, only: [ :create, :destroy ]
     end
     resources :versions, only: [ :show ], param: :name do
       resource :openapi, only: [ :show ], controller: "open_api"
