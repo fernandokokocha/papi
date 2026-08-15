@@ -425,6 +425,44 @@ p1v4_invites_pending:
   version: project1v4
   note: "List pending invites"
 
+# --- partial updates ---
+p1v3_attachments_update:
+  http_verb: verb_patch
+  path: /attachments/:attachmentId
+  version: project1v3
+  note: "Rename an attachment"
+  input: "{filename:string}"
+p1v4_attachments_update:
+  http_verb: verb_patch
+  path: /attachments/:attachmentId
+  version: project1v4
+  note: "Rename an attachment"
+  input: "{filename:string}"
+p1v3_labels_update:
+  http_verb: verb_patch
+  path: /labels/:labelId
+  version: project1v3
+  note: "Update a label's name or colour"
+  input: "{name?:string,color?:string}"
+p1v4_labels_update:
+  http_verb: verb_patch
+  path: /labels/:labelId
+  version: project1v4
+  note: "Update a label's name or colour"
+  input: "{name?:string,color?:string}"
+p1v3_notifications_update:
+  http_verb: verb_patch
+  path: /notifications/:notificationId
+  version: project1v3
+  note: "Mark a notification as read"
+  input: "{read:boolean}"
+p1v4_notifications_update:
+  http_verb: verb_patch
+  path: /notifications/:notificationId
+  version: project1v4
+  note: "Mark a notification as read"
+  input: "{read:boolean}"
+
 # --- v4-only additions ---
 p1v4_audit_logs_list:
   http_verb: verb_get

@@ -1,0 +1,30 @@
+<div class="rounded-lg border border-gray-200 bg-white">
+  <div class="sticky top-0 z-10 flex items-center rounded-t-lg border-b border-gray-200 bg-gray-50 px-3 py-0.5">
+    <%= render "endpoints/verb_badge", verb: endpoint.verb %>
+    <span class="whitespace-pre font-mono text-[13px] font-medium text-gray-900"> <%= endpoint.path %></span>
+  </div>
+
+  <div class="flex flex-col gap-4 p-4">
+    <div>
+      <div class="mb-1 text-xs uppercase tracking-wide text-gray-400">Note</div>
+      <div class="text-sm text-gray-700"><%= endpoint.note %></div>
+    </div>
+
+    <div>
+      <div class="mb-1 text-xs uppercase tracking-wide text-gray-400">Input</div>
+      <div class="font-mono text-xs text-gray-700"><%= endpoint.input.presence || "–" %></div>
+    </div>
+
+    <div>
+      <div class="mb-1 text-xs uppercase tracking-wide text-gray-400">Responses</div>
+      <div class="flex flex-col gap-2">
+        <% endpoint.responses.each do |response| %>
+          <div>
+            <div class="text-sm text-gray-700"><%= response.code %> <%= response.note %></div>
+            <div class="font-mono text-xs text-gray-700"><%= response.output.presence || "–" %></div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
