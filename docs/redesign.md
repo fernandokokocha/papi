@@ -32,7 +32,7 @@ step 33.
 ### Endpoint card — unchanged
 
 1. ~~Card shell + header row (verb badge, path)~~ — done
-2. Section bands — NOTE / INPUT / RESPONSES
+2. ~~Section bands — NOTE / INPUT / RESPONSES~~ — done
 3. Response row — status code + description
 4. Schema block — monospace lines, indentation, syntax colours
 
@@ -94,30 +94,3 @@ step 33.
 34. Page background, content width, vertical rhythm
 35. Topbar identity — logo, user, log out
 36. Sticky behaviour
-
-## Settled
-
-**1 · Card shell.** Two panels per card, one per version, 8px apart on the page
-background — the gap is what makes it read as two versions rather than one
-split card. Each panel carries its own sticky header, so a path whose param was
-renamed still shows both spellings. Header is a grey strip with a hairline
-rule, not a fill: the element that repeats forty times is not the loudest thing
-on screen.
-
-Verb chips are tinted rather than filled, at 12px in a 52px shared width so the
-paths line up down the page — `DELETE` sets that width, and every other verb is
-padded up to it. PATCH took amber and PUT took violet, diverging from Swagger
-UI's palette, because Swagger's PUT-orange and PATCH-teal are indistinguishable
-at low saturation. Path is 13px mono, with a real space before it so selecting
-the header copies `GET /attachments`.
-
-The card cannot use `overflow-hidden` for its rounded corners — an
-`overflow-hidden` ancestor kills `position: sticky` in its descendants, so the
-header rounds its own top corners instead.
-
-Colour in the header encodes identity (the verb), where GitHub's file header
-spends its only colour on change. That is a deliberate exception: the verb is
-the main scanning key in an API doc in a way a filename never is.
-
-Deferred from this step: how much the card should contrast with the page waits
-for step 34, when there is real content inside it to judge against.

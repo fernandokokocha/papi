@@ -1,4 +1,10 @@
-<div class="grid grid-cols-2 gap-2">
-  <%= render "endpoints/card_side", endpoint: endpoint.previous %>
-  <%= render "endpoints/card_side", endpoint: endpoint %>
+<% fold_id = "fold_#{endpoint.id}" %>
+
+<div class="group">
+  <input type="checkbox" id="<%= fold_id %>" class="sr-only">
+
+  <div class="grid grid-cols-2 gap-2">
+    <%= render "endpoints/card_side", endpoint: endpoint.previous, fold_id: fold_id %>
+    <%= render "endpoints/card_side", endpoint: endpoint, fold_id: fold_id %>
+  </div>
 </div>
