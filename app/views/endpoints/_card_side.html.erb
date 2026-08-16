@@ -21,11 +21,14 @@
       <div class="px-3 py-2 font-mono text-xs text-gray-700"><%= endpoint.input.presence || "–" %></div>
 
       <%= render "endpoints/section_band", label: "Responses" %>
-      <div class="flex flex-col gap-2 px-3 py-2">
+      <div class="divide-y divide-gray-200">
         <% endpoint.responses.each do |response| %>
-          <div>
-            <div class="text-sm text-gray-700"><%= response.code %> <%= response.note %></div>
-            <div class="font-mono text-xs text-gray-700"><%= response.output.presence || "–" %></div>
+          <div class="px-3 py-2">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex items-center justify-center rounded bg-gray-100 px-1.5 py-1 font-mono text-[12px] font-bold leading-none text-gray-700 ring-1 ring-inset ring-gray-300"><%= response.code %></span>
+              <span class="text-[13px] text-gray-600"><%= response.note %></span>
+            </div>
+            <div class="mt-1 font-mono text-xs text-gray-700"><%= response.output.presence || "–" %></div>
           </div>
         <% end %>
       </div>

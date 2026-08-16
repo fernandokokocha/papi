@@ -33,7 +33,7 @@ step 33.
 
 1. ~~Card shell + header row (verb badge, path)~~ — done
 2. ~~Section bands — NOTE / INPUT / RESPONSES~~ — done
-3. Response row — status code + description
+3. ~~Response row — status code + description~~ — done
 4. Schema block — monospace lines, indentation, syntax colours
 
 ### Endpoint card — changed
