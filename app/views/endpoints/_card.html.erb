@@ -1,32 +1,50 @@
 <% fold_id = "fold_#{endpoint.id}" %>
+<% removed = endpoint.annotation == "removed" %>
 <% columns = endpoint.previous ? 2 : 1 %>
-<% previous = endpoint.previous || Endpoint.null_endpoint(endpoint.version) %>
-<% diff = DiffEndpoint::FromEndpoints.new(previous, endpoint) %>
+<% null = Endpoint.null_endpoint(endpoint.version) %>
+<% previous = removed ? endpoint : (endpoint.previous || null) %>
+<% current = removed ? null : endpoint %>
+<% side = removed ? :first : :last %>
+<% diff = DiffEndpoint::FromEndpoints.new(previous, current) %>
 <% path_params = diff.path_params.pairs %>
 <% query_params = diff.query_params.pairs %>
-<% show_auth = previous.auth.present? || endpoint.auth.present? %>
-<% sides = [ previous, endpoint ].last(columns) %>
-<% added = columns == 1 %>
+<% show_auth = previous.auth.present? || current.auth.present? %>
+<% sides = [ previous, current ].public_send(side, columns) %>
+<% added = columns == 1 && !removed %>
 <% changed = diff.any_changes? %>
 <% header_tint = if added
      "border-emerald-700 bg-emerald-700 text-white"
+   elsif removed
+     "border-rose-700 bg-rose-700 text-white"
    elsif changed
      "border-amber-400 bg-amber-100 text-gray-900"
    else
      "border-slate-300 bg-slate-100 text-gray-900"
    end %>
-<% tints = !added %>
-<% col = added ? "col-start-2" : "" %>
-<% edge = added ? "col-start-2 border-x-2 border-emerald-500 bg-white shadow-sm" : "border-x border-slate-300 bg-white shadow-sm" %>
-<% edge_bottom = added ? "rounded-b-xl border-b-2 border-emerald-500" : "rounded-b-xl border-b border-slate-300" %>
+<% tints = columns == 2 %>
+<% col = if added then "col-start-2" elsif removed then "col-start-1" else "" end %>
+<% edge = if added
+     "col-start-2 border-x-2 border-emerald-500 bg-white shadow-sm"
+   elsif removed
+     "col-start-1 border-x-2 border-rose-500 bg-white shadow-sm"
+   else
+     "border-x border-slate-300 bg-white shadow-sm"
+   end %>
+<% edge_bottom = if added
+     "rounded-b-xl border-b-2 border-emerald-500"
+   elsif removed
+     "rounded-b-xl border-b-2 border-rose-500"
+   else
+     "rounded-b-xl border-b border-slate-300"
+   end %>
 
 <div class="group">
   <input type="checkbox" id="<%= fold_id %>" class="sr-only">
 
-  <div class="sticky top-0 z-10 grid grid-cols-2 gap-x-2">
-    <% sides.each do |side| %>
+  <div class="sticky top-0 z-10 grid grid-cols-2 gap-x-2 bg-slate-200">
+    <% sides.each do |record| %>
       <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl <%= col %> <%= header_tint %>">
-        <span class="truncate font-mono text-[13px] font-medium"><%= render "endpoints/verb_badge", verb: side.verb %> <%= side.path %></span>
+        <span class="truncate font-mono text-[13px] font-medium"><%= render "endpoints/verb_badge", verb: record.verb %> <%= record.path %></span>
 
         <label for="<%= fold_id %>"
                class="ml-auto flex h-5 w-5 shrink-0 cursor-pointer select-none items-center justify-center rounded opacity-60 hover:bg-black/10 hover:opacity-100">
@@ -45,25 +63,25 @@
         <% { "Params" => path_params, "Query" => query_params }.each do |label, pairs| %>
           <% next if pairs.empty? %>
           <% columns.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: label %></div><% end %>
-          <% [ pairs.map(&:first), pairs.map(&:last) ].last(columns).each do |rows| %>
+          <% [ pairs.map(&:first), pairs.map(&:last) ].public_send(side, columns).each do |rows| %>
             <div class="<%= edge %> px-3 py-2"><%= render "endpoints/params", rows: rows, tints: tints %></div>
           <% end %>
         <% end %>
 
         <% if show_auth %>
           <% columns.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Auth" %></div><% end %>
-          <% [ [ previous, diff.auth.before_line ], [ endpoint, diff.auth.after_line ] ].last(columns).each do |side, line| %>
+          <% [ [ previous, diff.auth.before_line ], [ current, diff.auth.after_line ] ].public_send(side, columns).each do |record, line| %>
             <div class="<%= edge %> px-3 py-2">
               <div class="grid grid-cols-[max-content_1fr]">
-                <div class="border-l-2 border-transparent pl-1.5 pr-5 font-mono text-[12px] leading-[18px] text-gray-900 <%= change_tint(line.change) if tints %>"><%= side.auth.presence || "—" %></div>
-                <div class="pr-2 font-mono text-[12px] leading-[18px] text-gray-500 <%= change_tint(line.change) if tints %>"><%= side.auth_method&.kind %></div>
+                <div class="border-l-2 border-transparent pl-1.5 pr-5 font-mono text-[12px] leading-[18px] text-gray-900 <%= change_tint(line.change) if tints %>"><%= record.auth.presence || "—" %></div>
+                <div class="pr-2 font-mono text-[12px] leading-[18px] text-gray-500 <%= change_tint(line.change) if tints %>"><%= record.auth_method&.kind %></div>
               </div>
             </div>
           <% end %>
         <% end %>
 
         <% columns.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Note" %></div><% end %>
-        <% [ diff.note.before, diff.note.after ].last(columns).each do |lines| %>
+        <% [ diff.note.before, diff.note.after ].public_send(side, columns).each do |lines| %>
           <div class="<%= edge %> px-3 py-2">
             <% lines.each do |line| %>
               <div class="min-h-[20px] border-l-2 border-transparent pl-1.5 pr-2 text-sm leading-[20px] text-gray-700 <%= change_tint(line.change) if tints %>"><%= line.whole_line %></div>
@@ -72,14 +90,14 @@
         <% end %>
 
         <% columns.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Input" %></div><% end %>
-        <% [ diff.input.before, diff.input.after ].last(columns).each do |lines| %>
+        <% [ diff.input.before, diff.input.after ].public_send(side, columns).each do |lines| %>
           <div class="<%= edge %> px-3 py-2"><%= render "endpoints/schema", lines: lines, tints: tints %></div>
         <% end %>
 
         <% columns.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Responses" %></div><% end %>
         <% diff.responses.lines.each_with_index do |response, index| %>
           <% last = index == diff.responses.lines.size - 1 %>
-          <% [ response.before_response, response.after_response ].last(columns).each do |record| %>
+          <% [ response.before_response, response.after_response ].public_send(side, columns).each do |record| %>
             <div class="<%= edge %> px-3 pt-2">
               <% if index > 0 %><div class="mb-2 h-px bg-gray-200"></div><% end %>
               <% if record %>
@@ -90,7 +108,7 @@
               <% end %>
             </div>
           <% end %>
-          <% [ [ response.before_response, response.output_diff&.before ], [ response.after_response, response.output_diff&.after ] ].last(columns).each do |record, lines| %>
+          <% [ [ response.before_response, response.output_diff&.before ], [ response.after_response, response.output_diff&.after ] ].public_send(side, columns).each do |record, lines| %>
             <div class="<%= edge %> px-3 pb-2 pt-2 <%= edge_bottom if last %>">
               <% if record %>
                 <%= render "endpoints/schema", lines: lines || record.parsed_output.to_diff(response.state), tints: tints %>

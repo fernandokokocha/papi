@@ -46,7 +46,7 @@ step 36.
 ### Whole-card states
 
 9. ~~Endpoint added~~
-10. Endpoint removed
+10. ~~Endpoint removed~~
 11. Response added / removed inside a changed card
 
 ### Affordances

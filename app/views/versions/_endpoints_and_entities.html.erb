@@ -1,5 +1,5 @@
 <div class="flex flex-col gap-4">
-  <% @comparison.endpoints.reject { |endpoint| endpoint.annotation == "removed" }.each do |endpoint| %>
+  <% @comparison.endpoints.each do |endpoint| %>
     <%= render "endpoints/card", endpoint: endpoint %>
   <% end %>
 </div>
