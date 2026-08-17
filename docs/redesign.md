@@ -35,7 +35,7 @@ step 34.
 2. ~~Section bands~~ — done
 3. ~~Response row — status code + description~~ — done
 4. Schema block — monospace lines, indentation, syntax colours
-5. Params, Query and Auth sections
+5. ~~Params, Query and Auth sections~~ — done
 
 ### Endpoint card — changed
 

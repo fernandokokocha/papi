@@ -1,0 +1,6 @@
+<div class="grid grid-cols-[max-content_1fr] gap-x-5">
+  <% params.each do |param| %>
+    <div class="font-mono text-[12px] leading-[18px] text-gray-900"><%= param.label %></div>
+    <div class="font-mono text-[12px] leading-[18px] text-gray-500"><%= param.kind %></div>
+  <% end %>
+</div>

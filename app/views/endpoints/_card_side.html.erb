@@ -1,7 +1,6 @@
 <div class="rounded-lg border border-gray-300 bg-white">
   <div class="sticky top-0 z-10 flex items-center rounded-t-lg border-b border-gray-300 bg-gray-50 px-1 py-1 transition-[border-radius,border-bottom-width] duration-200 ease-out group-has-[>input:checked]:rounded-b-lg group-has-[>input:checked]:border-b-0">
-    <%= render "endpoints/verb_badge", verb: endpoint.verb %>
-    <span class="whitespace-pre font-mono text-[13px] font-medium text-gray-900"> <%= endpoint.path %></span>
+    <span class="font-mono text-[13px] font-medium text-gray-900"><%= render "endpoints/verb_badge", verb: endpoint.verb %> <%= endpoint.path %></span>
 
     <label for="<%= fold_id %>"
            class="ml-auto flex h-5 w-5 shrink-0 cursor-pointer select-none items-center justify-center rounded text-gray-500 hover:bg-gray-200 hover:text-gray-900">
@@ -14,6 +13,24 @@
 
   <div class="grid grid-rows-[1fr] transition-[grid-template-rows] duration-200 ease-out group-has-[>input:checked]:grid-rows-[0fr]">
     <div class="overflow-hidden">
+      <% if endpoint.path_params.any? %>
+        <%= render "endpoints/section_band", label: "Params" %>
+        <div class="px-3 py-2"><%= render "endpoints/params", params: endpoint.path_params %></div>
+      <% end %>
+
+      <% if endpoint.query_params.any? %>
+        <%= render "endpoints/section_band", label: "Query" %>
+        <div class="px-3 py-2"><%= render "endpoints/params", params: endpoint.query_params %></div>
+      <% end %>
+
+      <% if endpoint.auth.present? %>
+        <%= render "endpoints/section_band", label: "Auth" %>
+        <div class="grid grid-cols-[max-content_1fr] gap-x-5 px-3 py-2">
+          <div class="font-mono text-[12px] leading-[18px] text-gray-900"><%= endpoint.auth %></div>
+          <div class="font-mono text-[12px] leading-[18px] text-gray-500"><%= endpoint.auth_method.kind %></div>
+        </div>
+      <% end %>
+
       <%= render "endpoints/section_band", label: "Note" %>
       <div class="px-3 py-2 text-sm text-gray-700"><%= endpoint.note %></div>
 
