@@ -97,21 +97,30 @@
         <% columns.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Responses" %></div><% end %>
         <% diff.responses.lines.each_with_index do |response, index| %>
           <% last = index == diff.responses.lines.size - 1 %>
+          <% gone = tints && response.state == :removed %>
+          <% framed = gone || (tints && response.state == :added) %>
+          <% frame = gone ? "bg-rose-50" : "bg-emerald-50" %>
+          <% tag_tint = gone ? "text-rose-800" : "text-emerald-800" %>
           <% [ response.before_response, response.after_response ].public_send(side, columns).each do |record| %>
             <div class="<%= edge %> px-3 pt-2">
               <% if index > 0 %><div class="mb-2 h-px bg-gray-200"></div><% end %>
               <% if record %>
-                <div class="flex items-center gap-2">
+                <div class="flex items-center gap-2 <%= "#{frame} rounded-t-md px-2 py-1.5" if framed %>">
                   <span class="inline-flex items-center justify-center rounded bg-gray-100 px-1.5 py-1 font-mono text-[12px] font-bold leading-none text-gray-700 ring-1 ring-inset ring-gray-300"><%= response.code %></span>
                   <span class="text-[13px] text-gray-600"><%= record.note %></span>
+                  <% if framed %>
+                    <span class="ml-auto text-[10px] font-bold uppercase leading-none tracking-[0.08em] <%= tag_tint %>"><%= gone ? "removed" : "added" %></span>
+                  <% end %>
                 </div>
               <% end %>
             </div>
           <% end %>
           <% [ [ response.before_response, response.output_diff&.before ], [ response.after_response, response.output_diff&.after ] ].public_send(side, columns).each do |record, lines| %>
-            <div class="<%= edge %> px-3 pb-2 pt-2 <%= edge_bottom if last %>">
+            <div class="<%= edge %> px-3 pb-2 <%= framed ? "pt-0" : "pt-2" %> <%= edge_bottom if last %>">
               <% if record %>
-                <%= render "endpoints/schema", lines: lines || record.parsed_output.to_diff(response.state), tints: tints %>
+                <div class="<%= "#{frame} rounded-b-md px-2 pb-2" if framed %>">
+                  <%= render "endpoints/schema", lines: lines || record.parsed_output.to_diff(response.state), tints: tints && !framed %>
+                </div>
               <% end %>
             </div>
           <% end %>

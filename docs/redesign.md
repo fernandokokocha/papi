@@ -47,7 +47,7 @@ step 36.
 
 9. ~~Endpoint added~~
 10. ~~Endpoint removed~~
-11. Response added / removed inside a changed card
+11. ~~Response added / removed inside a changed card~~
 
 ### Affordances
 
