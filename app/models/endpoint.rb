@@ -27,6 +27,10 @@ class Endpoint < ApplicationRecord
 
   validate :path_params_are_unique
 
+  def self.null_endpoint(version)
+    new(version: version, path: "", input: "")
+  end
+
   def self.verb_word(http_verb)
     key = http_verbs.key(http_verb)
     key && VERB_TRANSLATIONS[key.to_sym]

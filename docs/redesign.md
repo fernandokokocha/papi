@@ -20,12 +20,12 @@ One commit per settled step, so `git log` is the record of what is done.
 
 The version page goes first. Its guts live in `versions/_endpoints_and_entities`,
 which `candidates/show` also renders, so most of the candidate page comes with
-it. Steps 27–35 in particular are shared.
+it. Steps 28–36 in particular are shared.
 
 While the rebuild is in progress the version and candidate request specs are
 red. Every red example is a content assertion for something not yet rebuilt, so
 that list doubles as the check that nothing was dropped. It reaches zero at
-step 35.
+step 36.
 
 ## Steps
 
@@ -45,54 +45,55 @@ step 35.
 
 ### Whole-card states
 
-9. Endpoint added
+9. ~~Endpoint added~~
 10. Endpoint removed
+11. Response added / removed inside a changed card
 
 ### Affordances
 
-11. Expand / collapse
-12. History link
-13. Copy cURL
+12. Expand / collapse
+13. History link
+14. Copy cURL
 
 ### Entity cards
 
-14. unchanged
-15. changed
-16. added
-17. removed
+15. unchanged
+16. changed
+17. added
+18. removed
 
 ### Auth cards
 
-18. unchanged
-19. changed
-20. added
-21. removed
+19. unchanged
+20. changed
+21. added
+22. removed
 
 ### Page level
 
-22. Version identity — project, name, date, proposed/merged by
-23. Comparison control — "Compared with" select + Current
-24. Release notes
-25. Version navigation — ← →, View candidate
-26. Actions — Export OpenAPI, Import OpenAPI, New candidate
+23. Version identity — project, name, date, proposed/merged by
+24. Comparison control — "Compared with" select + Current
+25. Release notes
+26. Version navigation — ← →, View candidate
+27. Actions — Export OpenAPI, Import OpenAPI, New candidate
 
 ### Sidebar
 
-27. Shell + collapse toggle
-28. Endpoint list — verb badges, paths, path grouping, truncation
-29. Entities and Auth sections
-30. Scroll-spy active state
+28. Shell + collapse toggle
+29. Endpoint list — verb badges, paths, path grouping, truncation
+30. Entities and Auth sections
+31. Scroll-spy active state
 
 ### Comment layer
 
-31. Count badges — sidebar and card
-32. Line note badges + hover cards
-33. Card-level threads
-34. Reply and resolve
-35. Comment / Display toolbar
+32. Count badges — sidebar and card
+33. Line note badges + hover cards
+34. Card-level threads
+35. Reply and resolve
+36. Comment / Display toolbar
 
 ### Shell
 
-36. Page background, content width, vertical rhythm
-37. Topbar identity — logo, user, log out
-38. Sticky behaviour
+37. Page background, content width, vertical rhythm
+38. Topbar identity — logo, user, log out
+39. Sticky behaviour
