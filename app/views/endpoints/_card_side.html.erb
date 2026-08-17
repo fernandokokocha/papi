@@ -18,7 +18,7 @@
       <div class="px-3 py-2 text-sm text-gray-700"><%= endpoint.note %></div>
 
       <%= render "endpoints/section_band", label: "Input" %>
-      <div class="px-3 py-2 font-mono text-xs text-gray-700"><%= endpoint.input.presence || "–" %></div>
+      <div class="px-3 py-2"><%= render "endpoints/schema", node: endpoint.parsed_input %></div>
 
       <%= render "endpoints/section_band", label: "Responses" %>
       <div class="divide-y divide-gray-200">
@@ -28,7 +28,7 @@
               <span class="inline-flex items-center justify-center rounded bg-gray-100 px-1.5 py-1 font-mono text-[12px] font-bold leading-none text-gray-700 ring-1 ring-inset ring-gray-300"><%= response.code %></span>
               <span class="text-[13px] text-gray-600"><%= response.note %></span>
             </div>
-            <div class="mt-1 font-mono text-xs text-gray-700"><%= response.output.presence || "–" %></div>
+            <div class="mt-2"><%= render "endpoints/schema", node: response.parsed_output %></div>
           </div>
         <% end %>
       </div>
