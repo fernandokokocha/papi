@@ -5,7 +5,12 @@
 } %>
 <div class="grid grid-cols-[max-content_1fr]">
   <% rows.each do |row| %>
-    <div class="border-l-2 border-transparent pl-1.5 pr-5 font-mono text-[12px] leading-[18px] text-gray-900 <%= change_tint(row.line.change) %>"><%= row.line.pre_type.rstrip %></div>
-    <div class="pr-2 font-mono text-[12px] leading-[18px] <%= change_tint(row.line.change) %>"><span class="rounded px-1 ring-1 ring-inset <%= type_tint[row.line.class_name] %>"><%= row.line.type %></span></div>
+    <% if row %>
+      <div class="whitespace-pre border-l-2 border-transparent pl-1.5 pr-5 font-mono text-[12px] leading-[18px] text-gray-900 <%= change_tint(row.line.change) %>"><%= row.line.pre_type %></div>
+      <div class="pr-2 font-mono text-[12px] leading-[18px] <%= change_tint(row.line.change) %>"><span class="rounded px-1 ring-1 ring-inset <%= type_tint[row.line.class_name] %>"><%= row.line.type %></span></div>
+    <% else %>
+      <div class="h-[18px]"></div>
+      <div></div>
+    <% end %>
   <% end %>
 </div>

@@ -9,12 +9,19 @@ class DiffParams::FromParams
     @names = (previous_params.map(&:name) + params.map(&:name)).uniq
   end
 
+  def pairs
+    @names.map do |name|
+      change = change_for(name)
+      [ row(name, @previous_by_name[name], change), row(name, @by_name[name], change) ]
+    end
+  end
+
   def before_rows
-    rows(@previous_by_name)
+    pairs.map(&:first).compact
   end
 
   def after_rows
-    rows(@by_name)
+    pairs.map(&:last).compact
   end
 
   def any_changes?
@@ -23,11 +30,8 @@ class DiffParams::FromParams
 
   private
 
-  def rows(by_name)
-    @names.filter_map do |name|
-      param = by_name[name]
-      Row.new(name: name, line: line(name, param, change_for(name))) if param
-    end
+  def row(name, param, change)
+    Row.new(name: name, line: line(name, param, change)) if param
   end
 
   def change_for(name)

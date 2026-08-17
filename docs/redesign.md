@@ -41,7 +41,7 @@ step 35.
 ### Endpoint card — changed
 
 7. ~~Line tints — added / removed / type_changed~~
-8. Two-column alignment and the changed-card treatment
+8. ~~Two-column alignment and the changed-card treatment~~
 
 ### Whole-card states
 

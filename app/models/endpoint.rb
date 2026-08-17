@@ -98,14 +98,7 @@ class Endpoint < ApplicationRecord
   end
 
   def differs_from?(previous)
-    previous.path != path ||
-      DiffParams::FromParams.new(previous.path_params, path_params).any_changes? ||
-      DiffParams::FromParams.new(previous.query_params, query_params).any_changes? ||
-      DiffAuth::FromAuth.new(previous.auth_method, auth_method).any_changes? ||
-      DiffText::FromNotes.new(previous.note, note).any_changes? ||
-      SchemaNote.differ?(previous.schema_notes, schema_notes) ||
-      Diff::FromValues.new(previous.parsed_input, parsed_input).any_changes? ||
-      DiffResponses::FromResponses.new(previous.responses, responses).any_changes?
+    DiffEndpoint::FromEndpoints.new(previous, self).any_changes?
   end
 
   def self.from_version_request(request, version)

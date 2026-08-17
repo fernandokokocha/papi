@@ -1,24 +1,92 @@
 <% fold_id = "fold_#{endpoint.id}" %>
 <% previous = endpoint.previous %>
-<% path_params_diff = DiffParams::FromParams.new(previous.path_params, endpoint.path_params) %>
-<% query_params_diff = DiffParams::FromParams.new(previous.query_params, endpoint.query_params) %>
-<% auth_diff = DiffAuth::FromAuth.new(previous.auth_method, endpoint.auth_method) %>
+<% diff = DiffEndpoint::FromEndpoints.new(previous, endpoint) %>
+<% path_params = diff.path_params.pairs %>
+<% query_params = diff.query_params.pairs %>
 <% show_auth = previous.auth.present? || endpoint.auth.present? %>
-<% note_diff = DiffText::FromNotes.new(previous.note, endpoint.note) %>
-<% input_diff = Diff::FromValues.new(previous.parsed_input, endpoint.parsed_input) %>
-<% responses_diff = DiffResponses::FromResponses.new(previous.responses, endpoint.responses) %>
+<% sides = [ previous, endpoint ] %>
+<% changed = diff.any_changes? %>
+<% header_tint = changed ? "border-amber-400 bg-amber-100" : "border-slate-300 bg-slate-100" %>
+<% edge = "border-x border-slate-300 bg-white shadow-sm" %>
 
 <div class="group">
   <input type="checkbox" id="<%= fold_id %>" class="sr-only">
 
-  <div class="grid grid-cols-2 gap-2">
-    <%= render "endpoints/card_side", endpoint: previous, fold_id: fold_id, side: :before,
-          path_param_rows: path_params_diff.before_rows, query_param_rows: query_params_diff.before_rows,
-          auth_line: auth_diff.before_line, show_auth: show_auth, note_lines: note_diff.before,
-          input_lines: input_diff.before, responses_diff: responses_diff %>
-    <%= render "endpoints/card_side", endpoint: endpoint, fold_id: fold_id, side: :after,
-          path_param_rows: path_params_diff.after_rows, query_param_rows: query_params_diff.after_rows,
-          auth_line: auth_diff.after_line, show_auth: show_auth, note_lines: note_diff.after,
-          input_lines: input_diff.after, responses_diff: responses_diff %>
+  <div class="sticky top-0 z-10 grid grid-cols-2 gap-x-2">
+    <% sides.each do |side| %>
+      <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl <%= header_tint %>">
+        <span class="truncate font-mono text-[13px] font-medium text-gray-900"><%= render "endpoints/verb_badge", verb: side.verb %> <%= side.path %></span>
+
+        <label for="<%= fold_id %>"
+               class="ml-auto flex h-5 w-5 shrink-0 cursor-pointer select-none items-center justify-center rounded text-gray-500 hover:bg-gray-200 hover:text-gray-900">
+          <svg class="h-3.5 w-3.5 transition-transform duration-200 ease-out group-has-[>input:checked]:-rotate-90" viewBox="0 0 20 20"
+               fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </label>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="grid grid-rows-[1fr] transition-[grid-template-rows] duration-200 ease-out group-has-[>input:checked]:grid-rows-[0fr]">
+    <div class="overflow-hidden">
+      <div class="grid grid-cols-2 gap-x-2">
+        <% { "Params" => path_params, "Query" => query_params }.each do |label, pairs| %>
+          <% next if pairs.empty? %>
+          <% 2.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: label %></div><% end %>
+          <% [ pairs.map(&:first), pairs.map(&:last) ].each do |rows| %>
+            <div class="<%= edge %> px-3 py-2"><%= render "endpoints/params", rows: rows %></div>
+          <% end %>
+        <% end %>
+
+        <% if show_auth %>
+          <% 2.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Auth" %></div><% end %>
+          <% [ [ previous, diff.auth.before_line ], [ endpoint, diff.auth.after_line ] ].each do |side, line| %>
+            <div class="<%= edge %> px-3 py-2">
+              <div class="grid grid-cols-[max-content_1fr]">
+                <div class="border-l-2 border-transparent pl-1.5 pr-5 font-mono text-[12px] leading-[18px] text-gray-900 <%= change_tint(line.change) %>"><%= side.auth.presence || "—" %></div>
+                <div class="pr-2 font-mono text-[12px] leading-[18px] text-gray-500 <%= change_tint(line.change) %>"><%= side.auth_method&.kind %></div>
+              </div>
+            </div>
+          <% end %>
+        <% end %>
+
+        <% 2.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Note" %></div><% end %>
+        <% [ diff.note.before, diff.note.after ].each do |lines| %>
+          <div class="<%= edge %> px-3 py-2">
+            <% lines.each do |line| %>
+              <div class="min-h-[20px] border-l-2 border-transparent pl-1.5 pr-2 text-sm leading-[20px] text-gray-700 <%= change_tint(line.change) %>"><%= line.whole_line %></div>
+            <% end %>
+          </div>
+        <% end %>
+
+        <% 2.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Input" %></div><% end %>
+        <% [ diff.input.before, diff.input.after ].each do |lines| %>
+          <div class="<%= edge %> px-3 py-2"><%= render "endpoints/schema", lines: lines %></div>
+        <% end %>
+
+        <% 2.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Responses" %></div><% end %>
+        <% diff.responses.lines.each_with_index do |response, index| %>
+          <% last = index == diff.responses.lines.size - 1 %>
+          <% [ response.before_response, response.after_response ].each do |record| %>
+            <div class="<%= edge %> px-3 pt-2 <%= "border-t border-gray-200" if index > 0 %>">
+              <% if record %>
+                <div class="flex items-center gap-2">
+                  <span class="inline-flex items-center justify-center rounded bg-gray-100 px-1.5 py-1 font-mono text-[12px] font-bold leading-none text-gray-700 ring-1 ring-inset ring-gray-300"><%= response.code %></span>
+                  <span class="text-[13px] text-gray-600"><%= record.note %></span>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+          <% [ [ response.before_response, response.output_diff&.before ], [ response.after_response, response.output_diff&.after ] ].each do |record, lines| %>
+            <div class="<%= edge %> px-3 pb-2 pt-2 <%= "rounded-b-xl border-b border-slate-300" if last %>">
+              <% if record %>
+                <%= render "endpoints/schema", lines: lines || record.parsed_output.to_diff(response.state) %>
+              <% end %>
+            </div>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
   </div>
 </div>
