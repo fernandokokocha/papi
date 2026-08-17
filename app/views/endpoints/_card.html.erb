@@ -1,10 +1,24 @@
 <% fold_id = "fold_#{endpoint.id}" %>
+<% previous = endpoint.previous %>
+<% path_params_diff = DiffParams::FromParams.new(previous.path_params, endpoint.path_params) %>
+<% query_params_diff = DiffParams::FromParams.new(previous.query_params, endpoint.query_params) %>
+<% auth_diff = DiffAuth::FromAuth.new(previous.auth_method, endpoint.auth_method) %>
+<% show_auth = previous.auth.present? || endpoint.auth.present? %>
+<% note_diff = DiffText::FromNotes.new(previous.note, endpoint.note) %>
+<% input_diff = Diff::FromValues.new(previous.parsed_input, endpoint.parsed_input) %>
+<% responses_diff = DiffResponses::FromResponses.new(previous.responses, endpoint.responses) %>
 
 <div class="group">
   <input type="checkbox" id="<%= fold_id %>" class="sr-only">
 
   <div class="grid grid-cols-2 gap-2">
-    <%= render "endpoints/card_side", endpoint: endpoint.previous, fold_id: fold_id %>
-    <%= render "endpoints/card_side", endpoint: endpoint, fold_id: fold_id %>
+    <%= render "endpoints/card_side", endpoint: previous, fold_id: fold_id, side: :before,
+          path_param_rows: path_params_diff.before_rows, query_param_rows: query_params_diff.before_rows,
+          auth_line: auth_diff.before_line, show_auth: show_auth, note_lines: note_diff.before,
+          input_lines: input_diff.before, responses_diff: responses_diff %>
+    <%= render "endpoints/card_side", endpoint: endpoint, fold_id: fold_id, side: :after,
+          path_param_rows: path_params_diff.after_rows, query_param_rows: query_params_diff.after_rows,
+          auth_line: auth_diff.after_line, show_auth: show_auth, note_lines: note_diff.after,
+          input_lines: input_diff.after, responses_diff: responses_diff %>
   </div>
 </div>

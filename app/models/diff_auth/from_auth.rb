@@ -1,5 +1,6 @@
 class DiffAuth::FromAuth
   NONE = "none".freeze
+  NO_CHANGE = "no_change".freeze
 
   def initialize(previous_auth_method, auth_method)
     @previous = previous_auth_method
@@ -7,15 +8,15 @@ class DiffAuth::FromAuth
   end
 
   def before_line
-    Diff::Line.new(label(@previous), change, 1)
+    Diff::Line.new(label(@previous), @previous.nil? ? NO_CHANGE : change, 1)
   end
 
   def after_line
-    Diff::Line.new(label(@current), change, 1)
+    Diff::Line.new(label(@current), @current.nil? ? NO_CHANGE : change, 1)
   end
 
   def any_changes?
-    change != "no_change"
+    change != NO_CHANGE
   end
 
   private
@@ -25,11 +26,11 @@ class DiffAuth::FromAuth
   end
 
   def compute_change
-    return "no_change" if @previous.nil? && @current.nil?
+    return NO_CHANGE if @previous.nil? && @current.nil?
     return "added" if @previous.nil?
     return "removed" if @current.nil?
 
-    @current.same_contract_as?(@previous) ? "no_change" : "type_changed"
+    @current.same_contract_as?(@previous) ? NO_CHANGE : "type_changed"
   end
 
   def label(auth_method)

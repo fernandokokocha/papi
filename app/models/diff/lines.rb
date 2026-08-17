@@ -42,6 +42,10 @@ class Diff::Lines
     @lines.any? { |line| line.change != :no_change && line.change != :blank }
   end
 
+  def nothing?
+    @lines.all? { |line| line.change == :blank }
+  end
+
   def print
     @lines.each do |line|
       puts "#{line.indent} #{line.whole_line} (#{line.change})"

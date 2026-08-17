@@ -37,20 +37,22 @@ describe DiffAuth::FromAuth do
   end
 
   describe "the rendered lines" do
-    it "marks an endpoint that gained auth as added on both sides" do
+    it "marks an endpoint that gained auth as added, leaving the absent side alone" do
       diff = DiffAuth::FromAuth.new(nil, auth("UserToken", "bearer"))
 
       expect(diff.before_line.whole_line).to eq("none")
+      expect(diff.before_line.change).to eq("no_change")
       expect(diff.after_line.whole_line).to eq("UserToken bearer")
       expect(diff.after_line.change).to eq("added")
     end
 
-    it "marks an endpoint that lost auth as removed" do
+    it "marks an endpoint that lost auth as removed, leaving the absent side alone" do
       diff = DiffAuth::FromAuth.new(auth("UserToken", "bearer"), nil)
 
       expect(diff.before_line.whole_line).to eq("UserToken bearer")
-      expect(diff.after_line.whole_line).to eq("none")
       expect(diff.before_line.change).to eq("removed")
+      expect(diff.after_line.whole_line).to eq("none")
+      expect(diff.after_line.change).to eq("no_change")
     end
 
     it "marks a swapped method as type_changed on both sides" do

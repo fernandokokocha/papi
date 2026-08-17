@@ -1,11 +1,11 @@
-<% tint = {
+<% type_tint = {
   "string" => "bg-green-50 text-green-700 ring-green-200",
   "number" => "bg-blue-50 text-blue-700 ring-blue-200",
   "boolean" => "bg-orange-50 text-orange-800 ring-orange-200"
 } %>
-<div class="grid grid-cols-[max-content_1fr] gap-x-5">
-  <% params.each do |param| %>
-    <div class="font-mono text-[12px] leading-[18px] text-gray-900"><%= param.label %></div>
-    <div class="font-mono text-[12px] leading-[18px]"><span class="rounded px-1 ring-1 ring-inset <%= tint[param.kind] %>"><%= param.kind %></span></div>
+<div class="grid grid-cols-[max-content_1fr]">
+  <% rows.each do |row| %>
+    <div class="border-l-2 border-transparent pl-1.5 pr-5 font-mono text-[12px] leading-[18px] text-gray-900 <%= change_tint(row.line.change) %>"><%= row.line.pre_type.rstrip %></div>
+    <div class="pr-2 font-mono text-[12px] leading-[18px] <%= change_tint(row.line.change) %>"><span class="rounded px-1 ring-1 ring-inset <%= type_tint[row.line.class_name] %>"><%= row.line.type %></span></div>
   <% end %>
 </div>

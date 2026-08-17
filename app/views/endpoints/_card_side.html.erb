@@ -13,39 +13,52 @@
 
   <div class="grid grid-rows-[1fr] transition-[grid-template-rows] duration-200 ease-out group-has-[>input:checked]:grid-rows-[0fr]">
     <div class="overflow-hidden">
-      <% if endpoint.path_params.any? %>
+      <% if path_param_rows.any? %>
         <%= render "endpoints/section_band", label: "Params" %>
-        <div class="px-3 py-2"><%= render "endpoints/params", params: endpoint.path_params %></div>
+        <div class="px-3 py-2"><%= render "endpoints/params", rows: path_param_rows %></div>
       <% end %>
 
-      <% if endpoint.query_params.any? %>
+      <% if query_param_rows.any? %>
         <%= render "endpoints/section_band", label: "Query" %>
-        <div class="px-3 py-2"><%= render "endpoints/params", params: endpoint.query_params %></div>
+        <div class="px-3 py-2"><%= render "endpoints/params", rows: query_param_rows %></div>
       <% end %>
 
-      <% if endpoint.auth.present? %>
+      <% if show_auth %>
         <%= render "endpoints/section_band", label: "Auth" %>
-        <div class="grid grid-cols-[max-content_1fr] gap-x-5 px-3 py-2">
-          <div class="font-mono text-[12px] leading-[18px] text-gray-900"><%= endpoint.auth %></div>
-          <div class="font-mono text-[12px] leading-[18px] text-gray-500"><%= endpoint.auth_method.kind %></div>
+        <div class="px-3 py-2">
+          <div class="grid grid-cols-[max-content_1fr]">
+            <div class="border-l-2 border-transparent pl-1.5 pr-5 font-mono text-[12px] leading-[18px] text-gray-900 <%= change_tint(auth_line.change) %>"><%= endpoint.auth.presence || "—" %></div>
+            <div class="pr-2 font-mono text-[12px] leading-[18px] text-gray-500 <%= change_tint(auth_line.change) %>"><%= endpoint.auth_method&.kind %></div>
+          </div>
         </div>
       <% end %>
 
       <%= render "endpoints/section_band", label: "Note" %>
-      <div class="px-3 py-2 text-sm text-gray-700"><%= endpoint.note %></div>
+      <div class="px-3 py-2">
+        <% note_lines.each do |line| %>
+          <div class="min-h-[20px] border-l-2 border-transparent pl-1.5 pr-2 text-sm leading-[20px] text-gray-700 <%= change_tint(line.change) %>"><%= line.whole_line %></div>
+        <% end %>
+      </div>
 
       <%= render "endpoints/section_band", label: "Input" %>
-      <div class="px-3 py-2"><%= render "endpoints/schema", node: endpoint.parsed_input %></div>
+      <div class="px-3 py-2"><%= render "endpoints/schema", lines: input_lines %></div>
 
       <%= render "endpoints/section_band", label: "Responses" %>
       <div class="divide-y divide-gray-200">
-        <% endpoint.responses.each do |response| %>
+        <% responses_diff.lines.each do |response| %>
+          <% next unless side == :before ? response.before_present? : response.after_present? %>
+          <% record = side == :before ? response.before_response : response.after_response %>
+          <% output_lines = if response.output_diff
+               side == :before ? response.output_diff.before : response.output_diff.after
+             else
+               record.parsed_output.to_diff(response.state)
+             end %>
           <div class="px-3 py-2">
             <div class="flex items-center gap-2">
               <span class="inline-flex items-center justify-center rounded bg-gray-100 px-1.5 py-1 font-mono text-[12px] font-bold leading-none text-gray-700 ring-1 ring-inset ring-gray-300"><%= response.code %></span>
-              <span class="text-[13px] text-gray-600"><%= response.note %></span>
+              <span class="text-[13px] text-gray-600"><%= record.note %></span>
             </div>
-            <div class="mt-2"><%= render "endpoints/schema", node: response.parsed_output %></div>
+            <div class="mt-2"><%= render "endpoints/schema", lines: output_lines %></div>
           </div>
         <% end %>
       </div>
