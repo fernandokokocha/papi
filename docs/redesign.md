@@ -20,12 +20,12 @@ One commit per settled step, so `git log` is the record of what is done.
 
 The version page goes first. Its guts live in `versions/_endpoints_and_entities`,
 which `candidates/show` also renders, so most of the candidate page comes with
-it. Steps 26–34 in particular are shared.
+it. Steps 27–35 in particular are shared.
 
 While the rebuild is in progress the version and candidate request specs are
 red. Every red example is a content assertion for something not yet rebuilt, so
 that list doubles as the check that nothing was dropped. It reaches zero at
-step 34.
+step 35.
 
 ## Steps
 
@@ -34,64 +34,65 @@ step 34.
 1. ~~Card shell + header row (verb badge, path)~~ — done
 2. ~~Section bands~~ — done
 3. ~~Response row — status code + description~~ — done
-4. Schema block — monospace lines, indentation, syntax colours
+4. ~~Schema block — monospace lines, indentation~~ — done
 5. ~~Params, Query and Auth sections~~ — done
+6. Syntax colours
 
 ### Endpoint card — changed
 
-6. Line tints — added / removed / type_changed
-7. Two-column alignment and the changed-card treatment
+7. Line tints — added / removed / type_changed
+8. Two-column alignment and the changed-card treatment
 
 ### Whole-card states
 
-8. Endpoint added
-9. Endpoint removed
+9. Endpoint added
+10. Endpoint removed
 
 ### Affordances
 
-10. Expand / collapse
-11. History link
-12. Copy cURL
+11. Expand / collapse
+12. History link
+13. Copy cURL
 
 ### Entity cards
 
-13. unchanged
-14. changed
-15. added
-16. removed
+14. unchanged
+15. changed
+16. added
+17. removed
 
 ### Auth cards
 
-17. unchanged
-18. changed
-19. added
-20. removed
+18. unchanged
+19. changed
+20. added
+21. removed
 
 ### Page level
 
-21. Version identity — project, name, date, proposed/merged by
-22. Comparison control — "Compared with" select + Current
-23. Release notes
-24. Version navigation — ← →, View candidate
-25. Actions — Export OpenAPI, Import OpenAPI, New candidate
+22. Version identity — project, name, date, proposed/merged by
+23. Comparison control — "Compared with" select + Current
+24. Release notes
+25. Version navigation — ← →, View candidate
+26. Actions — Export OpenAPI, Import OpenAPI, New candidate
 
 ### Sidebar
 
-26. Shell + collapse toggle
-27. Endpoint list — verb badges, paths, path grouping, truncation
-28. Entities and Auth sections
-29. Scroll-spy active state
+27. Shell + collapse toggle
+28. Endpoint list — verb badges, paths, path grouping, truncation
+29. Entities and Auth sections
+30. Scroll-spy active state
 
 ### Comment layer
 
-30. Count badges — sidebar and card
-31. Line note badges + hover cards
-32. Card-level threads
-33. Reply and resolve
-34. Comment / Display toolbar
+31. Count badges — sidebar and card
+32. Line note badges + hover cards
+33. Card-level threads
+34. Reply and resolve
+35. Comment / Display toolbar
 
 ### Shell
 
-35. Page background, content width, vertical rhythm
-36. Topbar identity — logo, user, log out
-37. Sticky behaviour
+36. Page background, content width, vertical rhythm
+37. Topbar identity — logo, user, log out
+38. Sticky behaviour

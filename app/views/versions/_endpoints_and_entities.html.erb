@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-3">
+<div class="flex flex-col gap-4">
   <% @comparison.endpoints.select(&:previous).each do |endpoint| %>
     <%= render "endpoints/card", endpoint: endpoint %>
   <% end %>
