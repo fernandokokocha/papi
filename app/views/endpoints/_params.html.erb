@@ -1,6 +1,11 @@
+<% tint = {
+  "string" => "bg-green-50 text-green-700 ring-green-200",
+  "number" => "bg-blue-50 text-blue-700 ring-blue-200",
+  "boolean" => "bg-orange-50 text-orange-800 ring-orange-200"
+} %>
 <div class="grid grid-cols-[max-content_1fr] gap-x-5">
   <% params.each do |param| %>
     <div class="font-mono text-[12px] leading-[18px] text-gray-900"><%= param.label %></div>
-    <div class="font-mono text-[12px] leading-[18px] text-gray-500"><%= param.kind %></div>
+    <div class="font-mono text-[12px] leading-[18px]"><span class="rounded px-1 ring-1 ring-inset <%= tint[param.kind] %>"><%= param.kind %></span></div>
   <% end %>
 </div>

@@ -36,7 +36,7 @@ step 35.
 3. ~~Response row — status code + description~~ — done
 4. ~~Schema block — monospace lines, indentation~~ — done
 5. ~~Params, Query and Auth sections~~ — done
-6. Syntax colours
+6. ~~Syntax colours~~
 
 ### Endpoint card — changed
 

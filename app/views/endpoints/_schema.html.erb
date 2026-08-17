@@ -1,10 +1,17 @@
 <% lines = node.to_diff("no_change") %>
+<% tint = {
+  "string" => "bg-green-400/15 text-green-200",
+  "number" => "bg-blue-400/20 text-blue-200",
+  "boolean" => "bg-orange-400/15 text-orange-200",
+  "null" => "bg-red-400/15 text-red-200",
+  "custom" => "bg-purple-400/20 text-purple-200"
+} %>
 <% if lines.empty? %>
   <div class="font-mono text-[12px] leading-[18px] text-gray-400">–</div>
 <% else %>
   <div class="rounded-md bg-slate-600 px-2.5 py-2">
     <% lines.each do |line| %>
-      <div class="whitespace-pre font-mono text-[12px] leading-[18px] text-slate-50"><%= "  " * line.indent %><%= line.whole_line %></div>
+      <div class="whitespace-pre font-mono text-[12px] leading-[18px] text-slate-200"><%= "  " * line.indent %><%= line.pre_type %><% if line.type %><span class="rounded px-1 <%= tint[line.class_name] %>"><%= line.type %></span><% end %></div>
     <% end %>
   </div>
 <% end %>
