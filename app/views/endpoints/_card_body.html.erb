@@ -21,6 +21,11 @@
    else
      "border-slate-300 bg-slate-100 text-gray-900"
    end %>
+<% header_affordance = if added || removed
+     "opacity-90 hover:bg-white/25 hover:opacity-100"
+   else
+     "opacity-60 hover:bg-black/10 hover:opacity-100"
+   end %>
 <% tints = columns == 2 %>
 <% col = if added then "col-start-2" elsif removed then "col-start-1" else "" end %>
 <% edge = if added
@@ -54,7 +59,7 @@
         <% if index == sides.size - 1 %>
           <%= link_to project_endpoint_history_path(project_name: project_name, endpoint_id: endpoint.id),
                       title: "History",
-                      class: "flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-60 hover:bg-black/10 hover:opacity-100" do %>
+                      class: "flex h-5 w-5 shrink-0 items-center justify-center rounded #{header_affordance}" do %>
             <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
               <circle cx="10" cy="10" r="7" />
               <path d="M10 6v4l2.5 2" stroke-linecap="round" stroke-linejoin="round" />
@@ -67,7 +72,7 @@
         <% end %>
 
         <label for="<%= fold_id %>"
-               class="flex h-5 w-5 shrink-0 cursor-pointer select-none items-center justify-center rounded opacity-60 hover:bg-black/10 hover:opacity-100">
+               class="flex h-5 w-5 shrink-0 cursor-pointer select-none items-center justify-center rounded <%= header_affordance %>">
           <svg class="h-3.5 w-3.5 transition-transform duration-200 ease-out group-has-[>input:checked]:-rotate-90" viewBox="0 0 20 20"
                fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
@@ -132,6 +137,7 @@
         <% expandable = expandable_by_code[response.code] %>
         <% records = [ response.before_response, response.after_response ].public_send(side, columns) %>
         <% chip_at = records.rindex(&:present?) %>
+        <% curl_at = (records.size - 1 if !removed && records.last) %>
         <% records.each_with_index do |record, column| %>
           <div class="<%= edge %> px-3 pt-2">
             <% if index > 0 %><div class="mb-2 h-px bg-gray-200"></div><% end %>
@@ -139,14 +145,17 @@
               <div class="flex items-center gap-2 <%= "#{frame} rounded-t-md px-2 py-1.5" if framed %>">
                 <span class="inline-flex items-center justify-center rounded bg-gray-100 px-1.5 py-1 font-mono text-[12px] font-bold leading-none text-gray-700 ring-1 ring-inset ring-gray-300"><%= response.code %></span>
                 <span class="truncate text-[13px] text-gray-600"><%= record.note %></span>
-                <% if framed %>
-                  <span class="ml-auto text-[10px] font-bold uppercase leading-none tracking-[0.08em] <%= tag_tint %>"><%= gone ? "removed" : "added" %></span>
-                <% end %>
-                <% if expandable && column == chip_at %>
-                  <div class="<%= "ml-auto" unless framed %>">
+                <div class="ml-auto flex items-center gap-2">
+                  <% if framed %>
+                    <span class="text-[10px] font-bold uppercase leading-none tracking-[0.08em] <%= tag_tint %>"><%= gone ? "removed" : "added" %></span>
+                  <% end %>
+                  <% if column == curl_at %>
+                    <%= render "endpoints/copy_curl", verb: current.verb, path: current.path, query: current.example_query_string, code: response.code %>
+                  <% end %>
+                  <% if expandable && column == chip_at %>
                     <%= render "endpoints/ref_toggle", expanded: expanded.include?(response.code), url: toggle_url.(toggled.(response.code)) %>
-                  </div>
-                <% end %>
+                  <% end %>
+                </div>
               </div>
             <% end %>
           </div>

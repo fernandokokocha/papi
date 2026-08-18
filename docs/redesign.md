@@ -53,7 +53,7 @@ step 36.
 
 12. ~~Expand / collapse~~
 13. ~~History link~~
-14. Copy cURL
+14. ~~Copy cURL~~
 
 ### Entity cards
 
