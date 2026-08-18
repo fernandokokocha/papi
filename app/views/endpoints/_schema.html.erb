@@ -14,7 +14,7 @@
       <% number += 1 unless line.change == :blank %>
       <div class="flex min-h-[18px] border-l-2 border-transparent pr-2.5 <%= change_tint(line.change) if tints %>">
         <span class="w-8 shrink-0 select-none pr-2 text-right font-mono text-[11px] leading-[18px] text-slate-400"><%= number unless line.change == :blank %></span>
-        <span class="whitespace-pre font-mono text-[12px] leading-[18px] text-slate-700"><%= "  " * line.indent %><%= line.pre_type %><% if line.type %><span class="rounded px-1 ring-1 ring-inset <%= type_tint[line.class_name] %>"><%= line.type %></span><% end %></span>
+        <span class="whitespace-pre font-mono text-[12px] leading-[18px] text-slate-700"><%= "  " * line.indent %><%= line.pre_type %><% if line.class_name == "custom" %><a href="#entity-<%= line.type %>" class="rounded px-1 ring-1 ring-inset <%= type_tint[line.class_name] %> hover:bg-violet-200 hover:text-violet-900"><%= line.type %></a><% elsif line.type %><span class="rounded px-1 ring-1 ring-inset <%= type_tint[line.class_name] %>"><%= line.type %></span><% end %></span>
       </div>
     <% end %>
   </div>

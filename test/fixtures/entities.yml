@@ -132,3 +132,8 @@ p1v4_audit_log:
   name: AuditLog
   version: project1v4
   root: "{id:number,action:string,actor_id:(number|string|null),created_at:string}"
+
+p1v3_legacy_token:
+  name: LegacyToken
+  version: project1v3
+  root: "{token:string,expires_at:string,scope:string}"

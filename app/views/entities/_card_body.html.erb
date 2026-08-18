@@ -1,19 +1,47 @@
 <% fold_id = "fold_entity_#{entity.id}" %>
 <% previous = entity.previous %>
-<% diff = Diff::FromValues.new(previous.parsed_root(expanded: expanded), entity.parsed_root(expanded: expanded)) %>
-<% expandable = [ previous, entity ].any? { |e| e.parsed_root.expandable? } %>
+<% added = entity.annotation == "added" %>
+<% removed = entity.annotation == "removed" %>
+<% changed = entity.annotation == "changed" %>
+<% expandable = [ previous, entity ].compact.any? { |e| e.parsed_root.expandable? } %>
 <% toggle_url = project_entity_card_path(project_name: project_name, entity_id: entity.id, base: base, annotation: entity.annotation, expanded: !expanded) %>
+<% header_tint = if added
+     "border-emerald-700 bg-emerald-700 text-white"
+   elsif removed
+     "border-rose-700 bg-rose-700 text-white"
+   elsif changed
+     "border-amber-400 bg-amber-100 text-gray-900"
+   else
+     "border-violet-300 bg-violet-100 text-violet-900"
+   end %>
+<% header_affordance = if added || removed
+     "opacity-90 hover:bg-white/25 hover:opacity-100"
+   else
+     "opacity-60 hover:bg-black/10 hover:opacity-100"
+   end %>
+<% edge = if added
+     "border-x-2 border-b-2 border-emerald-500"
+   elsif removed
+     "border-x-2 border-b-2 border-rose-500"
+   elsif changed
+     "border-x border-b border-amber-400"
+   else
+     "border-x border-b border-violet-300"
+   end %>
+<% col = if added then "col-start-2" elsif removed then "col-start-1" else "" end %>
+<% records = if added then [ entity ] elsif removed then [ entity ] else [ previous, entity ] end %>
+<% columns = records.size %>
 
 <div class="sticky top-0 z-10 grid grid-cols-2 gap-x-2 bg-slate-200">
-  <% [ previous, entity ].each_with_index do |record, index| %>
-    <div class="flex items-center gap-3 rounded-t-xl border border-violet-300 bg-violet-100 px-2 py-2 text-violet-900 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl">
+  <% records.each_with_index do |record, index| %>
+    <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl <%= col %> <%= header_tint %>">
       <span class="truncate font-mono text-[13px] font-medium"><%= record.name %></span>
 
       <div class="ml-auto flex items-center gap-2">
-        <% if index == 1 %>
+        <% if index == columns - 1 %>
           <%= link_to project_entity_history_path(project_name: project_name, entity_id: entity.id),
                       title: "History",
-                      class: "flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-60 hover:bg-violet-900/10 hover:opacity-100" do %>
+                      class: "flex h-5 w-5 shrink-0 items-center justify-center rounded #{header_affordance}" do %>
             <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
               <circle cx="10" cy="10" r="7" />
               <path d="M10 6v4l2.5 2" stroke-linecap="round" stroke-linejoin="round" />
@@ -26,7 +54,7 @@
         <% end %>
 
         <label for="<%= fold_id %>"
-               class="flex h-5 w-5 shrink-0 cursor-pointer select-none items-center justify-center rounded opacity-60 hover:bg-violet-900/10 hover:opacity-100">
+               class="flex h-5 w-5 shrink-0 cursor-pointer select-none items-center justify-center rounded <%= header_affordance %>">
           <svg class="h-3.5 w-3.5 transition-transform duration-200 ease-out group-has-[>input:checked]:-rotate-90" viewBox="0 0 20 20"
                fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
             <path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
@@ -40,9 +68,15 @@
 <div class="grid grid-rows-[1fr] transition-[grid-template-rows] duration-200 ease-out group-has-[>input:checked]:grid-rows-[0fr]">
   <div class="overflow-hidden">
     <div class="grid grid-cols-2 gap-x-2">
-      <% [ diff.before, diff.after ].each do |lines| %>
-        <div class="rounded-b-xl border-x border-b border-violet-300 bg-white px-3 py-2 shadow-sm">
-          <%= render "endpoints/schema", lines: lines, tints: true %>
+      <% columns_of_lines = if columns == 1
+           [ entity.parsed_root(expanded: expanded).to_diff(:no_change) ]
+         else
+           diff = Diff::FromValues.new(previous.parsed_root(expanded: expanded), entity.parsed_root(expanded: expanded))
+           [ diff.before, diff.after ]
+         end %>
+      <% columns_of_lines.each do |lines| %>
+        <div class="rounded-b-xl bg-white px-3 py-2 shadow-sm <%= col %> <%= edge %>">
+          <%= render "endpoints/schema", lines: lines, tints: columns == 2 %>
         </div>
       <% end %>
     </div>

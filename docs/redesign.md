@@ -58,9 +58,9 @@ step 36.
 ### Entity cards
 
 15. ~~unchanged~~
-16. changed
-17. added
-18. removed
+16. ~~changed~~
+17. ~~added~~
+18. ~~removed~~
 
 ### Auth cards
 
