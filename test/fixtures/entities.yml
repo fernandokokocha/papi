@@ -60,7 +60,7 @@ p1v4_session:
 p1v4_task:
   name: Task
   version: project1v4
-  root: "{id:number,title:string,status:string,assignee_id:(number|null)}"
+  root: "{id:number,title:string,status:string,assignee:(User|null)}"
 
 # ===== bulk fixtures =====
 p1v3_project:
@@ -102,7 +102,7 @@ p1v4_project:
 p1v4_comment:
   name: Comment
   version: project1v4
-  root: "{id:number,body:string,author_id:number,task_id?:number}"
+  root: "{id:number,body:string,author:User,task?:Task}"
 p1v4_notification:
   name: Notification
   version: project1v4

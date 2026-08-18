@@ -9,9 +9,10 @@ class Response < ApplicationRecord
 
   validates :code, uniqueness: { scope: :endpoint_id }
 
-  def parsed_output
+  def parsed_output(expanded: false)
     parser = JSONSchemaParser.new(endpoint.version.entities)
-    parser.parse_whole_value(output)
+    value = parser.parse_whole_value(output)
+    expanded ? value.expand : value
   end
 
   def serialize

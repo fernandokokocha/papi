@@ -51,7 +51,7 @@ step 36.
 
 ### Affordances
 
-12. Expand / collapse
+12. ~~Expand / collapse~~
 13. History link
 14. Copy cURL
 

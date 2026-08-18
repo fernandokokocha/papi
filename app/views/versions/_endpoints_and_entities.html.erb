@@ -1,5 +1,5 @@
 <div class="flex flex-col gap-4">
   <% @comparison.endpoints.each do |endpoint| %>
-    <%= render "endpoints/card", endpoint: endpoint %>
+    <%= render "endpoints/card", endpoint: endpoint, base: @comparison.before.name, project_name: @project.name %>
   <% end %>
 </div>

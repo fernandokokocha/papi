@@ -21,7 +21,7 @@ class Entity < ApplicationRecord
   end
 
   def to_lines
-    parsed_root.to_diff(:no_change).lines
+    parsed_root(expanded: true).to_diff(:no_change).lines
   end
 
   def sort_name

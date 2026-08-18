@@ -23,6 +23,7 @@ Rails.application.routes.draw do
     end
     resources :endpoints, only: [ :show ] do
       resource :history, only: [ :show ], controller: "endpoint_histories"
+      resource :card, only: [ :show ], controller: "endpoint_cards"
     end
     resources :entities, only: [ :show ] do
       resource :history, only: [ :show ], controller: "entity_histories"

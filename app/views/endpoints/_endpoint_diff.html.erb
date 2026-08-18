@@ -1,6 +1,6 @@
 <% notes_diff = DiffText::FromNotes.new(previous_endpoint.note, endpoint.note) %>
 <% input_diff = Diff::FromValues.new(previous_endpoint.parsed_input(expanded: expanded), endpoint.parsed_input(expanded: expanded)) %>
-<% responses_diff = DiffResponses::FromResponses.new(previous_endpoint.responses, endpoint.responses, expanded: expanded) %>
+<% responses_diff = DiffResponses::FromResponses.new(previous_endpoint.responses, endpoint.responses, expanded: expanded ? (previous_endpoint.responses + endpoint.responses).map(&:code) : []) %>
 <% changed = endpoint.differs_from?(previous_endpoint) %>
 <% border_class = changed ? "border-amber-200" : "border-gray-200" %>
 <% header_class = changed ? "bg-amber-600" : "bg-sky-900" %>

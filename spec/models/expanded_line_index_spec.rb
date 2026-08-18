@@ -42,6 +42,16 @@ describe ExpandedLineIndex, type: :model do
     expect(indexes(Diff::FromValues.new(before, after).after)).to eq([ 0, 1, 2, 3, 4, 9, nil, 10 ])
   end
 
+  it "counts a reference nested inside a reference, since expansion goes all the way down" do
+    nesting = Version.new
+    address = nesting.entities.build(name: "Address", root: "{city:string}")
+    customer = nesting.entities.build(name: "Customer", root: "{name:string,address:Address}")
+    entities = [ address, customer ]
+    value = JSONSchemaParser.new(entities).parse_value("{owner:Customer,count:number}")
+
+    expect(indexes(value.to_diff(:no_change), entities)).to eq([ 0, 1, 9, 10 ])
+  end
+
   it "uses the current size of an entity whose root gained a field" do
     new_user = Entity.new(name: "User", root: "{id:number,email:string,name:string,avatar_url:string}", version: version)
     value = JSONSchemaParser.new([ new_user ]).parse_value("{total:number,items:[User]}")

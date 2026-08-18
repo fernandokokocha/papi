@@ -1,7 +1,7 @@
 class DiffResponses::FromResponses
   attr_reader :lines
 
-  def initialize(responses1, responses2, expanded: false)
+  def initialize(responses1, responses2, expanded: [])
     @expanded = expanded
     by_code1 = responses1.index_by(&:code)
     by_code2 = responses2.index_by(&:code)
@@ -17,8 +17,8 @@ class DiffResponses::FromResponses
   private
 
   def build_line(code, before, after)
-    before_output = output_value(before)
-    after_output = output_value(after)
+    before_output = output_value(before, code)
+    after_output = output_value(after, code)
 
     if before.nil?
       state = :added
@@ -42,9 +42,8 @@ class DiffResponses::FromResponses
     )
   end
 
-  def output_value(response)
+  def output_value(response, code)
     return Node::Nothing.new if response.nil?
-    value = response.parsed_output
-    @expanded ? value.expand : value
+    response.parsed_output(expanded: @expanded.include?(code))
   end
 end

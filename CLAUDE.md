@@ -122,12 +122,16 @@ the one failure mode simplicity-over-correctness does not cover. The editor
 won't offer a cycle-forming name at any depth (`helpers/entityReferences.js`),
 so the validation is a backstop.
 
-**Expansion, unlike nesting, stops after one level.** These are different
-questions — arbitrary depth is *stored*, one level is *rendered*.
-`Node::Entity#expand` returns `parsed_root` without expanding it, so a nested
-reference shows as a leaf name. That is load-bearing, not an oversight:
-`ExpandedLineIndex#rows_for` counts a reference as its root's line count, and
-expanding deeper would shift every comment anchor below it.
+**Expansion goes all the way down.** `Node::Entity#expand` returns
+`parsed_root.expand`, so a reference becomes its entity's body and every
+reference inside that body is replaced too, down to primitives. Nothing bounds
+the recursion but `Version#entity_references_are_acyclic` — a circle recurses
+forever rather than raising, which is the other reason cycles are banned.
+
+`ExpandedLineIndex#rows_for` has to agree with it. It counts a collapsed
+reference as `Entity#to_lines`, which is expanded for exactly that reason, so
+the index a comment anchors to survives expanding the block above it. Change one
+and the other has to move with it.
 
 ## Diff
 

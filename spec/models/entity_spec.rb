@@ -53,15 +53,17 @@ describe Entity, "#parsed_root expanded" do
   let!(:project) { Project.create!(name: "p", group: group) }
   let!(:version) { FactoryBot.create(:version, project: project, name: "v1") }
 
-  it "swaps a reference for the referenced root, and leaves the reference inside it alone" do
+  it "swaps every reference for its root, however deeply nested" do
     FactoryBot.create(:entity, version: version, name: "Address", root: "{city:string}")
     FactoryBot.create(:entity, version: version, name: "Customer", root: "{address:Address}")
     order = FactoryBot.create(:entity, version: version, name: "Order", root: "{customer:Customer}")
 
     customer = order.reload.parsed_root(expanded: true).object_attributes.first.value
+    address = customer.object_attributes.first.value
 
     expect(customer).to be_a(Node::Object)
-    expect(customer.object_attributes.first.value).to be_a(Node::Entity)
+    expect(address).to be_a(Node::Object)
+    expect(address.object_attributes.first.value).to be_a(Node::Primitive)
   end
 end
 
@@ -70,13 +72,13 @@ describe Entity, "#to_lines" do
   let!(:project) { Project.create!(name: "p", group: group) }
   let!(:version) { FactoryBot.create(:version, project: project, name: "v1") }
 
-  # Expansion stays one level deep: ExpandedLineIndex counts a referenced entity
-  # as the lines of its own root, so a name nested inside that root has to stay a
-  # single line or every comment anchor below it shifts.
-  it "renders a nested reference as one line, not as its expansion" do
-    FactoryBot.create(:entity, version: version, name: "Customer", root: "{id:string,name:string}")
+  it "renders the rows a reference stands for once expanded, all the way down" do
+    FactoryBot.create(:entity, version: version, name: "Address", root: "{city:string}")
+    FactoryBot.create(:entity, version: version, name: "Customer", root: "{name:string,address:Address}")
     order = FactoryBot.create(:entity, version: version, name: "Order", root: "{customer:Customer}")
 
-    expect(order.reload.to_lines.map(&:whole_line)).to eq([ "{", "customer: Customer", "}" ])
+    expect(order.reload.to_lines.map(&:whole_line)).to eq(
+      [ "{", "customer:", "{", "name: string", "address:", "{", "city: string", "}", "}", "}" ]
+    )
   end
 end

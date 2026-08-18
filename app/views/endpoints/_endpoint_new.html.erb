@@ -1,4 +1,4 @@
-<% responses_diff = DiffResponses::FromResponses.new([], endpoint.responses, expanded: expanded) %>
+<% responses_diff = DiffResponses::FromResponses.new([], endpoint.responses, expanded: expanded ? endpoint.responses.map(&:code) : []) %>
 <% input_diff = endpoint.parsed_input(expanded: expanded).to_diff(:added) %>
 <div class="grid grid-cols-2 gap-2">
   <div></div>

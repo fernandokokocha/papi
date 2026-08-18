@@ -1,0 +1,155 @@
+<% fold_id = "fold_#{endpoint.id}" %>
+<% removed = endpoint.annotation == "removed" %>
+<% columns = endpoint.previous ? 2 : 1 %>
+<% null = Endpoint.null_endpoint(endpoint.version) %>
+<% previous = removed ? endpoint : (endpoint.previous || null) %>
+<% current = removed ? null : endpoint %>
+<% side = removed ? :first : :last %>
+<% diff = DiffEndpoint::FromEndpoints.new(previous, current, expanded: expanded) %>
+<% path_params = diff.path_params.pairs %>
+<% query_params = diff.query_params.pairs %>
+<% show_auth = previous.auth.present? || current.auth.present? %>
+<% sides = [ previous, current ].public_send(side, columns) %>
+<% added = columns == 1 && !removed %>
+<% changed = endpoint.annotation == "changed" %>
+<% header_tint = if added
+     "border-emerald-700 bg-emerald-700 text-white"
+   elsif removed
+     "border-rose-700 bg-rose-700 text-white"
+   elsif changed
+     "border-amber-400 bg-amber-100 text-gray-900"
+   else
+     "border-slate-300 bg-slate-100 text-gray-900"
+   end %>
+<% tints = columns == 2 %>
+<% col = if added then "col-start-2" elsif removed then "col-start-1" else "" end %>
+<% edge = if added
+     "col-start-2 border-x-2 border-emerald-500 bg-white shadow-sm"
+   elsif removed
+     "col-start-1 border-x-2 border-rose-500 bg-white shadow-sm"
+   else
+     "border-x border-slate-300 bg-white shadow-sm"
+   end %>
+<% edge_bottom = if added
+     "rounded-b-xl border-b-2 border-emerald-500"
+   elsif removed
+     "rounded-b-xl border-b-2 border-rose-500"
+   else
+     "rounded-b-xl border-b border-slate-300"
+   end %>
+
+<% toggle_url = ->(keys) { project_endpoint_card_path(project_name: project_name, endpoint_id: endpoint.id, base: base, annotation: endpoint.annotation, expanded: keys.join(",")) } %>
+<% toggled = ->(key) { expanded.include?(key) ? expanded - [ key ] : expanded + [ key ] } %>
+<% input_expandable = [ previous, current ].any? { |e| e.parsed_input.expandable? } %>
+<% expandable_by_code = diff.responses.lines.to_h { |r| [ r.code, [ r.before_response, r.after_response ].compact.any? { |x| x.parsed_output.expandable? } ] } %>
+<% expandable_keys = ([ [ "input", input_expandable ] ] + expandable_by_code.to_a).select(&:last).map(&:first) %>
+<% all_expanded = (expandable_keys - expanded).empty? %>
+
+<div class="sticky top-0 z-10 grid grid-cols-2 gap-x-2 bg-slate-200">
+  <% sides.each_with_index do |record, index| %>
+    <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl <%= col %> <%= header_tint %>">
+      <span class="truncate font-mono text-[13px] font-medium"><%= render "endpoints/verb_badge", verb: record.verb %> <%= record.path %></span>
+
+      <div class="ml-auto flex items-center gap-2">
+        <% if expandable_keys.any? && index == sides.size - 1 %>
+          <%= render "endpoints/ref_toggle", expanded: all_expanded, url: toggle_url.(all_expanded ? [] : expandable_keys) %>
+        <% end %>
+
+        <label for="<%= fold_id %>"
+               class="flex h-5 w-5 shrink-0 cursor-pointer select-none items-center justify-center rounded opacity-60 hover:bg-black/10 hover:opacity-100">
+          <svg class="h-3.5 w-3.5 transition-transform duration-200 ease-out group-has-[>input:checked]:-rotate-90" viewBox="0 0 20 20"
+               fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </label>
+      </div>
+    </div>
+  <% end %>
+</div>
+
+<div class="grid grid-rows-[1fr] transition-[grid-template-rows] duration-200 ease-out group-has-[>input:checked]:grid-rows-[0fr]">
+  <div class="overflow-hidden">
+    <div class="grid grid-cols-2 gap-x-2">
+      <% { "Params" => path_params, "Query" => query_params }.each do |label, pairs| %>
+        <% next if pairs.empty? %>
+        <% columns.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: label, toggle: nil %></div><% end %>
+        <% [ pairs.map(&:first), pairs.map(&:last) ].public_send(side, columns).each do |rows| %>
+          <div class="<%= edge %> px-3 py-2"><%= render "endpoints/params", rows: rows, tints: tints %></div>
+        <% end %>
+      <% end %>
+
+      <% if show_auth %>
+        <% columns.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Auth", toggle: nil %></div><% end %>
+        <% [ [ previous, diff.auth.before_line ], [ current, diff.auth.after_line ] ].public_send(side, columns).each do |record, line| %>
+          <div class="<%= edge %> px-3 py-2">
+            <div class="grid grid-cols-[max-content_1fr]">
+              <div class="border-l-2 border-transparent pl-1.5 pr-5 font-mono text-[12px] leading-[18px] text-gray-900 <%= change_tint(line.change) if tints %>"><%= record.auth.presence || "—" %></div>
+              <div class="pr-2 font-mono text-[12px] leading-[18px] text-gray-500 <%= change_tint(line.change) if tints %>"><%= record.auth_method&.kind %></div>
+            </div>
+          </div>
+        <% end %>
+      <% end %>
+
+      <% columns.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Note", toggle: nil %></div><% end %>
+      <% [ diff.note.before, diff.note.after ].public_send(side, columns).each do |lines| %>
+        <div class="<%= edge %> px-3 py-2">
+          <% lines.each do |line| %>
+            <div class="min-h-[20px] border-l-2 border-transparent pl-1.5 pr-2 text-sm leading-[20px] text-gray-700 <%= change_tint(line.change) if tints %>"><%= line.whole_line %></div>
+          <% end %>
+        </div>
+      <% end %>
+
+      <% columns.times do |index| %>
+        <div class="<%= edge %>">
+          <%= render "endpoints/section_band", label: "Input",
+                     toggle: (if input_expandable && index == columns - 1
+                                render "endpoints/ref_toggle", expanded: expanded.include?("input"), url: toggle_url.(toggled.("input"))
+                              end) %>
+        </div>
+      <% end %>
+      <% [ diff.input.before, diff.input.after ].public_send(side, columns).each do |lines| %>
+        <div class="<%= edge %> px-3 py-2"><%= render "endpoints/schema", lines: lines, tints: tints %></div>
+      <% end %>
+
+      <% columns.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Responses", toggle: nil %></div><% end %>
+      <% diff.responses.lines.each_with_index do |response, index| %>
+        <% last = index == diff.responses.lines.size - 1 %>
+        <% gone = tints && response.state == :removed %>
+        <% framed = gone || (tints && response.state == :added) %>
+        <% frame = gone ? "bg-rose-50" : "bg-emerald-50" %>
+        <% tag_tint = gone ? "text-rose-800" : "text-emerald-800" %>
+        <% expandable = expandable_by_code[response.code] %>
+        <% records = [ response.before_response, response.after_response ].public_send(side, columns) %>
+        <% chip_at = records.rindex(&:present?) %>
+        <% records.each_with_index do |record, column| %>
+          <div class="<%= edge %> px-3 pt-2">
+            <% if index > 0 %><div class="mb-2 h-px bg-gray-200"></div><% end %>
+            <% if record %>
+              <div class="flex items-center gap-2 <%= "#{frame} rounded-t-md px-2 py-1.5" if framed %>">
+                <span class="inline-flex items-center justify-center rounded bg-gray-100 px-1.5 py-1 font-mono text-[12px] font-bold leading-none text-gray-700 ring-1 ring-inset ring-gray-300"><%= response.code %></span>
+                <span class="truncate text-[13px] text-gray-600"><%= record.note %></span>
+                <% if framed %>
+                  <span class="ml-auto text-[10px] font-bold uppercase leading-none tracking-[0.08em] <%= tag_tint %>"><%= gone ? "removed" : "added" %></span>
+                <% end %>
+                <% if expandable && column == chip_at %>
+                  <div class="<%= "ml-auto" unless framed %>">
+                    <%= render "endpoints/ref_toggle", expanded: expanded.include?(response.code), url: toggle_url.(toggled.(response.code)) %>
+                  </div>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+        <% [ [ response.before_response, response.output_diff&.before ], [ response.after_response, response.output_diff&.after ] ].public_send(side, columns).each do |record, lines| %>
+          <div class="<%= edge %> px-3 pb-2 <%= framed ? "pt-0" : "pt-2" %> <%= edge_bottom if last %>">
+            <% if record %>
+              <div class="<%= "#{frame} rounded-b-md px-2 pb-2" if framed %>">
+                <%= render "endpoints/schema", lines: lines || record.parsed_output(expanded: expanded.include?(response.code)).to_diff(response.state), tints: tints && !framed %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+</div>

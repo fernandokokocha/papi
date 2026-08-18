@@ -1,7 +1,8 @@
 class DiffEndpoint::FromEndpoints
-  def initialize(previous, endpoint)
+  def initialize(previous, endpoint, expanded: [])
     @previous = previous
     @endpoint = endpoint
+    @expanded = expanded
   end
 
   def path_params
@@ -21,11 +22,18 @@ class DiffEndpoint::FromEndpoints
   end
 
   def input
-    @input ||= Diff::FromValues.new(@previous.parsed_input, @endpoint.parsed_input)
+    @input ||= Diff::FromValues.new(
+      @previous.parsed_input(expanded: input_expanded?),
+      @endpoint.parsed_input(expanded: input_expanded?)
+    )
   end
 
   def responses
-    @responses ||= DiffResponses::FromResponses.new(@previous.responses, @endpoint.responses)
+    @responses ||= DiffResponses::FromResponses.new(@previous.responses, @endpoint.responses, expanded: @expanded)
+  end
+
+  def input_expanded?
+    @expanded.include?("input")
   end
 
   def path_renamed?

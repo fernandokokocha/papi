@@ -14,7 +14,7 @@ class Node::Entity
   end
 
   def expand
-    entity.parsed_root
+    entity.parsed_root.expand
   end
 
   def expandable?

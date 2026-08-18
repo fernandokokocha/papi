@@ -62,8 +62,9 @@ class DesignPreviewController < ApplicationController
     [ conversation, endpoint, note, response, line, entity, param ]
   end
 
-  FakeResponse = Struct.new(:code, :note, :parsed_output) do
-    def output = parsed_output.serialize
+  FakeResponse = Struct.new(:code, :note, :value) do
+    def parsed_output(expanded: false) = expanded ? value.expand : value
+    def output = value.serialize
     def schema_notes = []
   end
   FakeEndpoint = Struct.new(:name, :verb, :path, :note, :input, :responses, :path_params, :query_params, :auth_method) do
