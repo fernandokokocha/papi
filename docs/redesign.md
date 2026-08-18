@@ -52,7 +52,7 @@ step 36.
 ### Affordances
 
 12. ~~Expand / collapse~~
-13. History link
+13. ~~History link~~
 14. Copy cURL
 
 ### Entity cards
@@ -97,3 +97,9 @@ step 36.
 37. Page background, content width, vertical rhythm
 38. Topbar identity — logo, user, log out
 39. Sticky behaviour
+
+### History page
+
+40. Milestone cards — the version-page card, compared against `milestone.before`
+41. Milestone header — version, kind, since, date, author, candidate
+42. Page header — project, endpoint or entity identity, count, empty state

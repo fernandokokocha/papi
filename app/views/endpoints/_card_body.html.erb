@@ -51,6 +51,17 @@
       <span class="truncate font-mono text-[13px] font-medium"><%= render "endpoints/verb_badge", verb: record.verb %> <%= record.path %></span>
 
       <div class="ml-auto flex items-center gap-2">
+        <% if index == sides.size - 1 %>
+          <%= link_to project_endpoint_history_path(project_name: project_name, endpoint_id: endpoint.id),
+                      title: "History",
+                      class: "flex h-5 w-5 shrink-0 items-center justify-center rounded opacity-60 hover:bg-black/10 hover:opacity-100" do %>
+            <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+              <circle cx="10" cy="10" r="7" />
+              <path d="M10 6v4l2.5 2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          <% end %>
+        <% end %>
+
         <% if expandable_keys.any? && index == sides.size - 1 %>
           <%= render "endpoints/ref_toggle", expanded: all_expanded, url: toggle_url.(all_expanded ? [] : expandable_keys) %>
         <% end %>
