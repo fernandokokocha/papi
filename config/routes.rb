@@ -27,6 +27,7 @@ Rails.application.routes.draw do
     end
     resources :entities, only: [ :show ] do
       resource :history, only: [ :show ], controller: "entity_histories"
+      resource :card, only: [ :show ], controller: "entity_cards"
     end
   end
 

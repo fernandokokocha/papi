@@ -1,0 +1,7 @@
+<div class="group" data-controller="expandable">
+  <input type="checkbox" id="fold_entity_<%= entity.id %>" class="sr-only">
+
+  <div data-expandable-target="container">
+    <%= render "entities/card_body", entity: entity, expanded: false, base: base, project_name: project_name %>
+  </div>
+</div>

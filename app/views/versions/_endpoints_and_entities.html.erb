@@ -1,5 +1,21 @@
-<div class="flex flex-col gap-4">
-  <% @comparison.endpoints.each do |endpoint| %>
-    <%= render "endpoints/card", endpoint: endpoint, base: @comparison.before.name, project_name: @project.name %>
+<div class="flex flex-col gap-8">
+  <% unchanged_entities = @comparison.entities.select { |entity| entity.annotation == "unchanged" } %>
+
+  <% if @comparison.endpoints.any? %>
+    <div class="flex flex-col gap-4">
+      <%= render "versions/section_heading", label: "Endpoints" %>
+      <% @comparison.endpoints.each do |endpoint| %>
+        <%= render "endpoints/card", endpoint: endpoint, base: @comparison.before.name, project_name: @project.name %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if unchanged_entities.any? %>
+    <div class="flex flex-col gap-4">
+      <%= render "versions/section_heading", label: "Entities" %>
+      <% unchanged_entities.each do |entity| %>
+        <%= render "entities/card", entity: entity, base: @comparison.before.name, project_name: @project.name %>
+      <% end %>
+    </div>
   <% end %>
 </div>
