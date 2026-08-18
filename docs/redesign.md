@@ -64,10 +64,10 @@ step 36.
 
 ### Auth cards
 
-19. unchanged
-20. changed
-21. added
-22. removed
+19. ~~unchanged~~
+20. ~~changed~~
+21. ~~added~~
+22. ~~removed~~
 
 ### Page level
 

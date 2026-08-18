@@ -97,10 +97,11 @@
       <% if show_auth %>
         <% columns.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Auth", toggle: nil %></div><% end %>
         <% [ [ previous, diff.auth.before_line ], [ current, diff.auth.after_line ] ].public_send(side, columns).each do |record, line| %>
+          <% auth_method = record.auth_method %>
           <div class="<%= edge %> px-3 py-2">
             <div class="grid grid-cols-[max-content_1fr]">
-              <div class="border-l-2 border-transparent pl-1.5 pr-5 font-mono text-[12px] leading-[18px] text-gray-900 <%= change_tint(line.change) if tints %>"><%= record.auth.presence || "—" %></div>
-              <div class="pr-2 font-mono text-[12px] leading-[18px] text-gray-500 <%= change_tint(line.change) if tints %>"><%= record.auth_method&.kind %></div>
+              <div class="border-l-2 border-transparent pl-1.5 pr-5 font-mono text-[12px] leading-[18px] text-gray-900 <%= change_tint(line.change) if tints %>"><% if auth_method %><a href="#auth-<%= auth_method.name %>" class="rounded bg-slate-200 px-1 text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-slate-300 hover:text-slate-900"><%= auth_method.name %></a><% else %><%= record.auth.presence || "—" %><% end %></div>
+              <div class="pr-2 font-mono text-[12px] leading-[18px] text-gray-500 <%= change_tint(line.change) if tints %>"><%= auth_method&.kind %></div>
             </div>
           </div>
         <% end %>

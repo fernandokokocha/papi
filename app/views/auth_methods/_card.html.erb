@@ -1,0 +1,91 @@
+<% fold_id = "fold_auth_#{auth_method.id}" %>
+<% previous = auth_method.previous %>
+<% added = auth_method.annotation == "added" %>
+<% removed = auth_method.annotation == "removed" %>
+<% changed = auth_method.annotation == "changed" %>
+<% records = added || removed ? [ auth_method ] : [ previous, auth_method ] %>
+<% columns = records.size %>
+<% tints = columns == 2 %>
+<% notes = DiffText::FromNotes.new(previous&.note, auth_method.note) %>
+<% kind_change = changed && previous.kind != auth_method.kind ? "type_changed" : "no_change" %>
+<% header_tint = if added
+     "border-emerald-700 bg-emerald-700 text-white"
+   elsif removed
+     "border-rose-700 bg-rose-700 text-white"
+   elsif changed
+     "border-amber-400 bg-amber-100 text-gray-900"
+   else
+     "border-sky-300 bg-sky-100 text-sky-900"
+   end %>
+<% header_affordance = if added || removed
+     "opacity-90 hover:bg-white/25 hover:opacity-100"
+   else
+     "opacity-60 hover:bg-black/10 hover:opacity-100"
+   end %>
+<% col = if added then "col-start-2" elsif removed then "col-start-1" else "" end %>
+<% edge = if added
+     "border-x-2 border-emerald-500"
+   elsif removed
+     "border-x-2 border-rose-500"
+   elsif changed
+     "border-x border-amber-400"
+   else
+     "border-x border-sky-300"
+   end %>
+<% edge_bottom = if added
+     "rounded-b-xl border-b-2 border-emerald-500"
+   elsif removed
+     "rounded-b-xl border-b-2 border-rose-500"
+   elsif changed
+     "rounded-b-xl border-b border-amber-400"
+   else
+     "rounded-b-xl border-b border-sky-300"
+   end %>
+
+<div id="auth-<%= auth_method.name %>" class="group scroll-mt-4">
+  <input type="checkbox" id="<%= fold_id %>" class="sr-only">
+
+  <div class="sticky top-0 z-10 grid grid-cols-2 gap-x-2 bg-slate-200">
+    <% records.each_with_index do |record, index| %>
+      <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl <%= col %> <%= header_tint %>">
+        <span class="truncate font-mono text-[13px] font-medium"><%= record.name %></span>
+
+        <div class="ml-auto flex items-center gap-2">
+          <label for="<%= fold_id %>"
+                 class="flex h-5 w-5 shrink-0 cursor-pointer select-none items-center justify-center rounded <%= header_affordance %>">
+            <svg class="h-3.5 w-3.5 transition-transform duration-200 ease-out group-has-[>input:checked]:-rotate-90" viewBox="0 0 20 20"
+                 fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </label>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="grid grid-rows-[1fr] transition-[grid-template-rows] duration-200 ease-out group-has-[>input:checked]:grid-rows-[0fr]">
+    <div class="overflow-hidden">
+      <div class="grid grid-cols-2 gap-x-2">
+        <% columns.times do %>
+          <div class="bg-white shadow-sm <%= col %> <%= edge %>"><%= render "endpoints/section_band", label: "Kind", toggle: nil %></div>
+        <% end %>
+        <% records.each do |record| %>
+          <div class="bg-white px-3 py-2 shadow-sm <%= col %> <%= edge %>">
+            <div class="border-l-2 border-transparent pl-1.5 font-mono text-[12px] leading-[18px] text-gray-900 <%= change_tint(kind_change) if tints %>"><%= record.kind %></div>
+          </div>
+        <% end %>
+
+        <% columns.times do %>
+          <div class="bg-white shadow-sm <%= col %> <%= edge %>"><%= render "endpoints/section_band", label: "Note", toggle: nil %></div>
+        <% end %>
+        <% (tints ? [ notes.before, notes.after ] : [ notes.after ]).each do |lines| %>
+          <div class="bg-white px-3 py-2 shadow-sm <%= col %> <%= edge %> <%= edge_bottom %>">
+            <% lines.each do |line| %>
+              <div class="min-h-[20px] border-l-2 border-transparent pl-1.5 pr-2 text-sm leading-[20px] text-gray-700 <%= change_tint(line.change) if tints %>"><%= line.whole_line %></div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>

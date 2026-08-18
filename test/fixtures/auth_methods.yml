@@ -16,3 +16,20 @@ p1v4_admin_basic:
   kind: basic
   version: project1v4
   note: "Operator credentials, for the admin-only endpoints"
+
+# ===== unchanged / removed, so all four card states show on v4 =====
+p1v3_service_key:
+  name: ServiceKey
+  kind: bearer
+  version: project1v3
+  note: "Machine-to-machine token, issued out of band"
+p1v4_service_key:
+  name: ServiceKey
+  kind: bearer
+  version: project1v4
+  note: "Machine-to-machine token, issued out of band"
+p1v3_legacy_basic:
+  name: LegacyBasic
+  kind: basic
+  version: project1v3
+  note: "Username and password, retired in favour of ServiceKey"

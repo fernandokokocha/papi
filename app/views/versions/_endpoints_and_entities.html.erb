@@ -1,6 +1,4 @@
 <div class="flex flex-col gap-8">
-  <% entities = @comparison.entities %>
-
   <% if @comparison.endpoints.any? %>
     <div class="flex flex-col gap-4">
       <%= render "versions/section_heading", label: "Endpoints" %>
@@ -10,11 +8,20 @@
     </div>
   <% end %>
 
-  <% if entities.any? %>
+  <% if @comparison.entities.any? %>
     <div class="flex flex-col gap-4">
       <%= render "versions/section_heading", label: "Entities" %>
-      <% entities.each do |entity| %>
+      <% @comparison.entities.each do |entity| %>
         <%= render "entities/card", entity: entity, base: @comparison.before.name, project_name: @project.name %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <% if @comparison.auth_methods.any? %>
+    <div class="flex flex-col gap-4">
+      <%= render "versions/section_heading", label: "Auth" %>
+      <% @comparison.auth_methods.each do |auth_method| %>
+        <%= render "auth_methods/card", auth_method: auth_method %>
       <% end %>
     </div>
   <% end %>
