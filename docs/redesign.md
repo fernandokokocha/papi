@@ -25,7 +25,8 @@ it. Steps 28–36 in particular are shared.
 While the rebuild is in progress the version and candidate request specs are
 red. Every red example is a content assertion for something not yet rebuilt, so
 that list doubles as the check that nothing was dropped. It reaches zero at
-step 36.
+step 46, once two examples asserting Import OpenAPI on the version page are
+deleted — that page no longer carries it.
 
 ## Steps
 
@@ -103,3 +104,22 @@ step 36.
 40. Milestone cards — the version-page card, compared against `milestone.before`
 41. Milestone header — version, kind, since, date, author, candidate
 42. Page header — project, endpoint or entity identity, count, empty state
+
+### Candidate page
+
+43. Identity — project, name, state chip, proposed / decided by
+44. Approvals — count, approvers, the approve toggle
+45. Comparison rail and actions — Edit, Reject, Merge; View version when merged
+46. Conversation — candidate-level threads and the compose form
+
+### Minor pages
+
+47. Projects list — project rows, latest version, entry points
+48. Project history — the Table / Activity toggle
+49. Auth — log in, forgot password, reset password
+50. Small forms — new project, import OpenAPI
+
+### Last
+
+51. Candidate form — the schema editor
+52. `/design-preview`, rebuilt from what landed
