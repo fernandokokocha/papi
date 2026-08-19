@@ -10,6 +10,10 @@ project1v2:
   project: project1
   candidate: candidate2
   created_at: 2025-02-14 11:30:00
+  release_notes: |-
+    Tasks arrive: /tasks, /tasks/next and /tasks/complete-next, all behind the user token.
+
+    Commented endpoints now carry a note, so the mock server answers with something readable.
 project1v3:
   name: v3
   order: 3
@@ -22,3 +26,9 @@ project1v4:
   project: project1
   candidate: candidate4
   created_at: 2025-04-05 08:15:00
+  release_notes: |-
+    Pagination lands on /users and /tasks. Both take page and per_page; both answer with the same envelope.
+
+    name and avatar_url on a user are nullable from here on. The mobile team asked for this so an incomplete profile stops being an error case.
+
+    AdminBasic is new and guards /users only. Nothing else changed hands.

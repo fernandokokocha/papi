@@ -30,27 +30,40 @@
   </header>
 
   <div class="border-t border-slate-300">
-    <div class="mx-auto grid max-w-7xl grid-cols-2 gap-x-2 px-6">
-      <div class="flex items-center gap-3 border-r border-slate-300 px-2 py-2.5">
-        <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Compared with</span>
-        <% if @comparison.before.order > -1 %>
-          <%= form_with url: project_version_path(project_name: @project.name, name: @version.name), method: :get do %>
-            <%= select_tag :base,
-                  options_for_select(@version.earlier_versions.map(&:name), @comparison.before.name),
-                  onchange: "this.form.requestSubmit()",
-                  class: "cursor-pointer rounded-md border border-slate-400 bg-white px-2 py-1 font-mono text-[13px] font-bold text-slate-900 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-sky-400" %>
+    <div class="mx-auto max-w-7xl px-6">
+      <div class="grid grid-cols-2 gap-x-2">
+        <div class="flex items-center gap-3 border-r border-slate-300 px-2 py-2.5">
+          <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Compared with</span>
+          <% if @comparison.before.order > -1 %>
+            <%= form_with url: project_version_path(project_name: @project.name, name: @version.name), method: :get do %>
+              <%= select_tag :base,
+                    options_for_select(@version.earlier_versions.map(&:name), @comparison.before.name),
+                    onchange: "this.form.requestSubmit()",
+                    class: "cursor-pointer rounded-md border border-slate-400 bg-white px-2 py-1 font-mono text-[13px] font-bold text-slate-900 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-sky-400" %>
+            <% end %>
+            <span class="ml-auto pr-2 text-[12px] text-slate-500"><%= @comparison.before.created_at.strftime("%-d %b %Y") %></span>
+          <% else %>
+            <span class="font-mono text-[13px] italic text-slate-400">nothing earlier</span>
           <% end %>
-          <span class="ml-auto pr-2 text-[12px] text-slate-500"><%= @comparison.before.created_at.strftime("%-d %b %Y") %></span>
-        <% else %>
-          <span class="font-mono text-[13px] italic text-slate-400">nothing earlier</span>
-        <% end %>
+        </div>
+
+        <div class="flex items-center gap-3 px-2 py-2.5">
+          <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Current</span>
+          <span class="font-mono text-[13px] font-bold text-slate-900"><%= @version.name %></span>
+          <span class="ml-auto text-[12px] text-slate-500"><%= @version.created_at.strftime("%-d %b %Y") %></span>
+        </div>
       </div>
 
-      <div class="flex items-center gap-3 px-2 py-2.5">
-        <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Current</span>
-        <span class="font-mono text-[13px] font-bold text-slate-900"><%= @version.name %></span>
-        <span class="ml-auto text-[12px] text-slate-500"><%= @version.created_at.strftime("%-d %b %Y") %></span>
-      </div>
+      <% if [ @comparison.before, @version ].any? { |version| version.release_notes.present? } %>
+        <div id="release-notes" class="grid grid-cols-2 gap-x-2 border-t border-slate-200">
+          <div class="border-r border-slate-300 px-2 py-3">
+            <%= render "versions/release_notes", version: @comparison.before %>
+          </div>
+          <div class="px-2 py-3">
+            <%= render "versions/release_notes", version: @version %>
+          </div>
+        </div>
+      <% end %>
     </div>
   </div>
 </div>
