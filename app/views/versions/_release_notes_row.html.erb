@@ -1,0 +1,12 @@
+<% if [ @comparison.before, @version ].any? { |version| version.release_notes.present? } %>
+  <div id="release-notes" class="border-b border-slate-300 bg-slate-100">
+    <div class="grid grid-cols-2 gap-x-2">
+      <div class="border-r border-slate-300 px-2 py-3">
+        <%= render "versions/release_notes", version: @comparison.before %>
+      </div>
+      <div class="px-2 py-3">
+        <%= render "versions/release_notes", version: @version %>
+      </div>
+    </div>
+  </div>
+<% end %>

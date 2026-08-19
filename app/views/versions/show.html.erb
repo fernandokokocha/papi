@@ -3,100 +3,19 @@
 <% events << [ "Proposed", candidate.author, candidate.created_at ] if candidate.author %>
 <% events << [ candidate.merged? ? "Merged" : "Rejected", candidate.decided_by, candidate.decided_at ] if candidate.decided_by %>
 
-<div class="[--pinned-offset:3rem]">
-  <div class="mx-[calc(50%-50vw)] -mt-6 bg-slate-100">
-    <header class="mx-auto max-w-7xl px-8 pb-5 pt-5">
-      <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
-        <span><%= @project.name %></span>
-        <span class="text-slate-400">/</span>
-        <%= link_to candidate.name, project_candidate_path(@project.name, candidate.name),
-              class: "font-mono text-[12px] tracking-normal text-sky-700 hover:text-sky-800 hover:underline" %>
-      </div>
-      <div class="mt-1 flex items-center gap-3">
-        <h1 class="font-mono text-3xl font-bold tracking-tight text-slate-900"><%= @version.name %></h1>
-        <nav class="ml-auto inline-flex divide-x divide-slate-300 overflow-hidden rounded-md border border-slate-400 bg-white font-mono text-[13px] font-bold shadow-sm">
-          <% if @previous_version.order > -1 %>
-            <%= link_to "← #{@previous_version.name}", project_version_path(project_name: @project.name, name: @previous_version.name), class: "inline-flex w-24 items-center justify-center py-1.5 text-slate-900 hover:bg-slate-50" %>
-          <% else %>
-            <span class="inline-flex w-24 items-center justify-center bg-slate-200 py-1.5 text-slate-400">←</span>
-          <% end %>
-          <% if @next_version %>
-            <%= link_to "#{@next_version.name} →", project_version_path(project_name: @project.name, name: @next_version.name), class: "inline-flex w-24 items-center justify-center py-1.5 text-slate-900 hover:bg-slate-50" %>
-          <% else %>
-            <span class="inline-flex w-24 items-center justify-center bg-slate-200 py-1.5 text-slate-400">→</span>
-          <% end %>
-        </nav>
-      </div>
+<div class="-mt-6 [--pinned-offset:3rem]" data-controller="sidebar">
+  <%= render "versions/identity", candidate: candidate, events: events %>
 
-      <div class="mt-2 flex flex-wrap items-center gap-x-2 text-[13px] text-slate-600">
-        <% events.each_with_index do |(label, user, at), index| %>
-          <% if index > 0 %><span class="text-slate-400">·</span><% end %>
-          <span><%= label %> by</span>
-          <span class="font-medium text-slate-800"><%= user.email_address %></span>
-          <% if user == Current.user %>
-            <span class="inline-flex items-center rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-sky-700 ring-1 ring-inset ring-sky-300">you</span>
-          <% end %>
-          <span><%= at.strftime("%-d %b %Y") %></span>
-        <% end %>
-      </div>
-    </header>
-  </div>
+  <div class="mt-2 flex gap-6">
+    <%= render "versions/sidebar" %>
 
-  <div class="sticky top-0 z-20 mx-[calc(50%-50vw)] h-[var(--pinned-offset)] border-y border-slate-300 bg-slate-100 shadow-sm">
-    <div class="mx-auto h-full max-w-7xl px-6">
-      <div class="grid h-full grid-cols-2 gap-x-2">
-        <div class="flex items-center gap-3 border-r border-slate-300 px-2">
-          <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Compared with</span>
-          <% if @comparison.before.order > -1 %>
-            <%= form_with url: project_version_path(project_name: @project.name, name: @version.name), method: :get do %>
-              <%= select_tag :base,
-                    options_for_select(@version.earlier_versions.map(&:name), @comparison.before.name),
-                    onchange: "this.form.requestSubmit()",
-                    class: "cursor-pointer rounded-md border border-slate-400 bg-white px-2 py-1 font-mono text-[13px] font-bold text-slate-900 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-sky-400" %>
-            <% end %>
-            <span class="ml-auto pr-2 text-[12px] text-slate-500"><%= @comparison.before.created_at.strftime("%-d %b %Y") %></span>
-          <% else %>
-            <span class="font-mono text-[13px] italic text-slate-400">nothing earlier</span>
-          <% end %>
-        </div>
+    <div class="min-w-0 flex-1">
+      <%= render "versions/comparison_rail" %>
+      <%= render "versions/release_notes_row" %>
 
-        <div class="flex items-center gap-3 px-2">
-          <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Current</span>
-          <span class="font-mono text-[13px] font-bold text-slate-900"><%= @version.name %></span>
-          <span class="text-[12px] text-slate-500"><%= @version.created_at.strftime("%-d %b %Y") %></span>
-
-          <div class="ml-auto flex items-center gap-2">
-            <%= link_to "Export OpenAPI", project_version_openapi_path(project_name: @project.name, version_name: @version.name),
-                  class: "rounded-md border border-slate-400 bg-white px-3 py-1.5 text-[13px] font-semibold text-slate-900 shadow-sm hover:bg-slate-50" %>
-            <% if @project.can_create_candidate? %>
-              <%= link_to "New candidate", new_project_candidate_path(project_name: @project.name),
-                    class: "rounded-md border border-sky-800 bg-sky-700 px-3 py-1.5 text-[13px] font-semibold text-white shadow-sm hover:bg-sky-800" %>
-            <% else %>
-              <span title="<%= @project.candidates.open.first.name %> is still open"
-                    class="cursor-not-allowed rounded-md border border-slate-300 bg-slate-200 px-3 py-1.5 text-[13px] font-semibold text-slate-400">New candidate</span>
-            <% end %>
-          </div>
-        </div>
+      <div class="mt-6">
+        <%= render "versions/endpoints_and_entities" %>
       </div>
     </div>
-  </div>
-
-  <% if [ @comparison.before, @version ].any? { |version| version.release_notes.present? } %>
-    <div id="release-notes" class="mx-[calc(50%-50vw)] bg-slate-100">
-      <div class="mx-auto max-w-7xl px-6">
-        <div class="grid grid-cols-2 gap-x-2">
-          <div class="border-r border-slate-300 px-2 py-3">
-            <%= render "versions/release_notes", version: @comparison.before %>
-          </div>
-          <div class="px-2 py-3">
-            <%= render "versions/release_notes", version: @version %>
-          </div>
-        </div>
-      </div>
-    </div>
-  <% end %>
-
-  <div class="mt-6">
-    <%= render "versions/endpoints_and_entities" %>
   </div>
 </div>

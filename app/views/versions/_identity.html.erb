@@ -1,0 +1,37 @@
+<div class="mx-[calc(50%-50vw)] bg-slate-100">
+  <header class="mx-auto max-w-7xl px-8 pb-5 pt-5">
+    <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
+      <span><%= @project.name %></span>
+      <span class="text-slate-400">/</span>
+      <%= link_to candidate.name, project_candidate_path(@project.name, candidate.name),
+            class: "font-mono text-[12px] tracking-normal text-sky-700 hover:text-sky-800 hover:underline" %>
+    </div>
+    <div class="mt-1 flex items-center gap-3">
+      <h1 class="font-mono text-3xl font-bold tracking-tight text-slate-900"><%= @version.name %></h1>
+      <nav class="ml-auto inline-flex divide-x divide-slate-300 overflow-hidden rounded-md border border-slate-400 bg-white font-mono text-[13px] font-bold shadow-sm">
+        <% if @previous_version.order > -1 %>
+          <%= link_to "← #{@previous_version.name}", project_version_path(project_name: @project.name, name: @previous_version.name), class: "inline-flex w-24 items-center justify-center py-1.5 text-slate-900 hover:bg-slate-50" %>
+        <% else %>
+          <span class="inline-flex w-24 items-center justify-center bg-slate-200 py-1.5 text-slate-400">←</span>
+        <% end %>
+        <% if @next_version %>
+          <%= link_to "#{@next_version.name} →", project_version_path(project_name: @project.name, name: @next_version.name), class: "inline-flex w-24 items-center justify-center py-1.5 text-slate-900 hover:bg-slate-50" %>
+        <% else %>
+          <span class="inline-flex w-24 items-center justify-center bg-slate-200 py-1.5 text-slate-400">→</span>
+        <% end %>
+      </nav>
+    </div>
+
+    <div class="mt-2 flex flex-wrap items-center gap-x-2 text-[13px] text-slate-600">
+      <% events.each_with_index do |(label, user, at), index| %>
+        <% if index > 0 %><span class="text-slate-400">·</span><% end %>
+        <span><%= label %> by</span>
+        <span class="font-medium text-slate-800"><%= user.email_address %></span>
+        <% if user == Current.user %>
+          <span class="inline-flex items-center rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-sky-700 ring-1 ring-inset ring-sky-300">you</span>
+        <% end %>
+        <span><%= at.strftime("%-d %b %Y") %></span>
+      <% end %>
+    </div>
+  </header>
+</div>

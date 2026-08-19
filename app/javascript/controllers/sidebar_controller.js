@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["aside", "showButton", "link", "card"]
+  static targets = ["aside", "button", "link", "card"]
   static storageKey = "papi.sidebar.collapsed"
   static anchorKey = "papi.anchor.enabled"
 
@@ -139,6 +139,6 @@ export default class extends Controller {
 
   apply(collapsed) {
     this.asideTarget.classList.toggle("sidebar-collapsed", collapsed)
-    this.showButtonTarget.classList.toggle("hidden", !collapsed)
+    this.buttonTarget.title = collapsed ? "Show contents" : "Hide contents"
   }
 }

@@ -1,3 +1,6 @@
+<div class="-mt-6 flex gap-6" data-controller="sidebar">
+<%= render "versions/sidebar" %>
+<div class="min-w-0 flex-1 pt-6">
 <div class="mb-6 flex items-center justify-between">
   <div>
     <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1"><%= @project.name %></div>
@@ -82,6 +85,9 @@
     <%= render "comments/form", candidate: @candidate, parent: nil, anchor: CommentAnchor.for_candidate %>
   </div>
 </section>
+
+</div>
+</div>
 
 <div data-controller="comment-mode">
   <%= render "comments/toolbar" %>

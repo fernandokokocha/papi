@@ -1,0 +1,36 @@
+<div class="sticky top-0 z-20 h-[var(--pinned-offset)] border-y border-slate-300 bg-slate-100 shadow-sm">
+  <div class="grid h-full grid-cols-2 gap-x-2">
+    <div class="flex items-center gap-3 border-r border-slate-300 px-2">
+      <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Compared with</span>
+      <% if @comparison.before.order > -1 %>
+        <%= form_with url: project_version_path(project_name: @project.name, name: @version.name), method: :get do %>
+          <%= select_tag :base,
+                options_for_select(@version.earlier_versions.map(&:name), @comparison.before.name),
+                onchange: "this.form.requestSubmit()",
+                class: "cursor-pointer rounded-md border border-slate-400 bg-white px-2 py-1 font-mono text-[13px] font-bold text-slate-900 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-sky-400" %>
+        <% end %>
+        <span class="ml-auto pr-2 text-[12px] text-slate-500"><%= @comparison.before.created_at.strftime("%-d %b %Y") %></span>
+      <% else %>
+        <span class="font-mono text-[13px] italic text-slate-400">nothing earlier</span>
+      <% end %>
+    </div>
+
+    <div class="flex items-center gap-3 px-2">
+      <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Current</span>
+      <span class="font-mono text-[13px] font-bold text-slate-900"><%= @version.name %></span>
+      <span class="text-[12px] text-slate-500"><%= @version.created_at.strftime("%-d %b %Y") %></span>
+
+      <div class="ml-auto flex items-center gap-2">
+        <%= link_to "Export OpenAPI", project_version_openapi_path(project_name: @project.name, version_name: @version.name),
+              class: "rounded-md border border-slate-400 bg-white px-3 py-1.5 text-[13px] font-semibold text-slate-900 shadow-sm hover:bg-slate-50" %>
+        <% if @project.can_create_candidate? %>
+          <%= link_to "New candidate", new_project_candidate_path(project_name: @project.name),
+                class: "rounded-md border border-sky-800 bg-sky-700 px-3 py-1.5 text-[13px] font-semibold text-white shadow-sm hover:bg-sky-800" %>
+        <% else %>
+          <span title="<%= @project.candidates.open.first.name %> is still open"
+                class="cursor-not-allowed rounded-md border border-slate-300 bg-slate-200 px-3 py-1.5 text-[13px] font-semibold text-slate-400">New candidate</span>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
