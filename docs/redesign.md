@@ -72,7 +72,7 @@ step 36.
 ### Page level
 
 23. ~~Version identity — project, name, date, proposed/merged by~~
-24. Comparison control — "Compared with" select + Current
+24. ~~Comparison control — "Compared with" select + Current~~
 25. Release notes
 26. Version navigation — ← →, View candidate
 27. Actions — Export OpenAPI, Import OpenAPI, New candidate

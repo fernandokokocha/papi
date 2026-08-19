@@ -8,29 +8,51 @@
 <% events << [ "Proposed", candidate.author, candidate.created_at ] if candidate.author %>
 <% events << [ candidate.merged? ? "Merged" : "Rejected", candidate.decided_by, candidate.decided_at ] if candidate.decided_by %>
 
-<header class="mb-8 rounded-xl border border-slate-300 bg-white p-2 shadow-sm">
-  <div class="px-4 py-3">
+<div class="mx-[calc(50%-50vw)] -mt-6 mb-6 bg-slate-100">
+  <header class="mx-auto max-w-7xl px-8 pb-5 pt-5">
     <div class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500"><%= @project.name %></div>
     <div class="mt-1 flex items-center gap-3">
       <h1 class="font-mono text-3xl font-bold tracking-tight text-slate-900"><%= @version.name %></h1>
       <span class="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.08em] shadow-sm <%= state_chip %>"><%= candidate.aasm_state %></span>
     </div>
-  </div>
 
-  <dl class="flex divide-x divide-slate-200 rounded-lg bg-slate-50 px-4 py-3 text-[13px] ring-1 ring-inset ring-slate-200">
-    <% events.each_with_index do |(label, user, at), index| %>
-      <div class="<%= index.zero? ? "pr-6" : "px-6" %>">
-        <dt class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500"><%= label %></dt>
-        <dd class="mt-1 flex items-center gap-2 font-medium text-slate-800">
-          <%= user.email_address %>
-          <% if user == Current.user %>
-            <span class="inline-flex items-center rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-sky-700 ring-1 ring-inset ring-sky-300">you</span>
+    <div class="mt-2 flex flex-wrap items-center gap-x-2 text-[13px] text-slate-600">
+      <% events.each_with_index do |(label, user, at), index| %>
+        <% if index > 0 %><span class="text-slate-400">·</span><% end %>
+        <span><%= label %> by</span>
+        <span class="font-medium text-slate-800"><%= user.email_address %></span>
+        <% if user == Current.user %>
+          <span class="inline-flex items-center rounded bg-sky-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-sky-700 ring-1 ring-inset ring-sky-300">you</span>
+        <% end %>
+        <span><%= at.strftime("%-d %b %Y") %></span>
+      <% end %>
+    </div>
+  </header>
+
+  <div class="border-t border-slate-300">
+    <div class="mx-auto grid max-w-7xl grid-cols-2 gap-x-2 px-6">
+      <div class="flex items-center gap-3 border-r border-slate-300 px-2 py-2.5">
+        <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Compared with</span>
+        <% if @comparison.before.order > -1 %>
+          <%= form_with url: project_version_path(project_name: @project.name, name: @version.name), method: :get do %>
+            <%= select_tag :base,
+                  options_for_select(@version.earlier_versions.map(&:name), @comparison.before.name),
+                  onchange: "this.form.requestSubmit()",
+                  class: "cursor-pointer rounded-md border border-slate-400 bg-white px-2 py-1 font-mono text-[13px] font-bold text-slate-900 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-sky-400" %>
           <% end %>
-          <span class="text-slate-500">· <%= at.strftime("%-d %b %Y") %></span>
-        </dd>
+          <span class="ml-auto pr-2 text-[12px] text-slate-500"><%= @comparison.before.created_at.strftime("%-d %b %Y") %></span>
+        <% else %>
+          <span class="font-mono text-[13px] italic text-slate-400">nothing earlier</span>
+        <% end %>
       </div>
-    <% end %>
-  </dl>
-</header>
+
+      <div class="flex items-center gap-3 px-2 py-2.5">
+        <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Current</span>
+        <span class="font-mono text-[13px] font-bold text-slate-900"><%= @version.name %></span>
+        <span class="ml-auto text-[12px] text-slate-500"><%= @version.created_at.strftime("%-d %b %Y") %></span>
+      </div>
+    </div>
+  </div>
+</div>
 
 <%= render "versions/endpoints_and_entities" %>
