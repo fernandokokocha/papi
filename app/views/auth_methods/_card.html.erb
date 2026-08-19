@@ -45,7 +45,7 @@
 <div id="auth-<%= auth_method.name %>" class="group scroll-mt-4">
   <input type="checkbox" id="<%= fold_id %>" class="sr-only">
 
-  <div class="sticky top-0 z-10 grid grid-cols-2 gap-x-2 bg-slate-200">
+  <div class="sticky top-[var(--pinned-offset)] z-10 grid grid-cols-2 gap-x-2 bg-slate-200">
     <% records.each_with_index do |record, index| %>
       <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl <%= col %> <%= header_tint %>">
         <span class="truncate font-mono text-[13px] font-medium"><%= record.name %></span>

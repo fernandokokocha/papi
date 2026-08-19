@@ -4,7 +4,7 @@
   <div></div>
   <div>
     <div class="border border-emerald-200 rounded-lg">
-      <div class="sticky top-0 z-10 rounded-t-lg bg-emerald-700 text-white px-4 py-3 text-sm font-mono flex items-center justify-between">
+      <div class="sticky top-[var(--pinned-offset)] z-10 rounded-t-lg bg-emerald-700 text-white px-4 py-3 text-sm font-mono flex items-center justify-between">
         <%= render "endpoints/verb_path", verb: endpoint.verb, path: endpoint.path %>
         <div class="flex items-center gap-2 ml-4">
           <%= render "shared/expand_button", expandable: endpoint.parsed_input.expandable? || endpoint.responses.any? { |r| r.parsed_output.expandable? }, expanded: expanded %>

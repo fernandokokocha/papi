@@ -75,7 +75,7 @@ step 36.
 24. ~~Comparison control — "Compared with" select + Current~~
 25. ~~Release notes~~
 26. ~~Version navigation — ← →, View candidate~~
-27. Actions — Export OpenAPI, Import OpenAPI, New candidate
+27. ~~Actions — Export OpenAPI, Import OpenAPI, New candidate~~
 
 ### Sidebar
 

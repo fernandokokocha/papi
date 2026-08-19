@@ -50,7 +50,7 @@
 <% expandable_keys = ([ [ "input", input_expandable ] ] + expandable_by_code.to_a).select(&:last).map(&:first) %>
 <% all_expanded = (expandable_keys - expanded).empty? %>
 
-<div class="sticky top-0 z-10 grid grid-cols-2 gap-x-2 bg-slate-200">
+<div class="sticky top-[var(--pinned-offset)] z-10 grid grid-cols-2 gap-x-2 bg-slate-200">
   <% sides.each_with_index do |record, index| %>
     <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl <%= col %> <%= header_tint %>">
       <span class="truncate font-mono text-[13px] font-medium"><%= render "endpoints/verb_badge", verb: record.verb %> <%= record.path %></span>

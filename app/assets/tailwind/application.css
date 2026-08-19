@@ -6,6 +6,10 @@ body {
   overflow-x: clip;
 }
 
+:root {
+  --pinned-offset: 0px;
+}
+
 .sidebar-collapsed {
   width: 0;
   margin-right: 0;
