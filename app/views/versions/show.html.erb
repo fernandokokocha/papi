@@ -1,19 +1,30 @@
 <% candidate = @version.candidate %>
-<% state_chip = case candidate.aasm_state
-     when "merged"   then "bg-emerald-500 text-white"
-     when "rejected" then "bg-rose-500 text-white"
-     else                 "bg-amber-400 text-slate-900"
-   end %>
 <% events = [] %>
 <% events << [ "Proposed", candidate.author, candidate.created_at ] if candidate.author %>
 <% events << [ candidate.merged? ? "Merged" : "Rejected", candidate.decided_by, candidate.decided_at ] if candidate.decided_by %>
 
 <div class="mx-[calc(50%-50vw)] -mt-6 mb-6 bg-slate-100">
   <header class="mx-auto max-w-7xl px-8 pb-5 pt-5">
-    <div class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500"><%= @project.name %></div>
+    <div class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
+      <span><%= @project.name %></span>
+      <span class="text-slate-400">/</span>
+      <%= link_to candidate.name, project_candidate_path(@project.name, candidate.name),
+            class: "font-mono text-[12px] tracking-normal text-sky-700 hover:text-sky-800 hover:underline" %>
+    </div>
     <div class="mt-1 flex items-center gap-3">
       <h1 class="font-mono text-3xl font-bold tracking-tight text-slate-900"><%= @version.name %></h1>
-      <span class="inline-flex items-center rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.08em] shadow-sm <%= state_chip %>"><%= candidate.aasm_state %></span>
+      <nav class="ml-auto inline-flex divide-x divide-slate-300 overflow-hidden rounded-md border border-slate-400 bg-white font-mono text-[13px] font-bold shadow-sm">
+        <% if @previous_version.order > -1 %>
+          <%= link_to "← #{@previous_version.name}", project_version_path(project_name: @project.name, name: @previous_version.name), class: "inline-flex w-24 items-center justify-center py-1.5 text-slate-900 hover:bg-slate-50" %>
+        <% else %>
+          <span class="inline-flex w-24 items-center justify-center bg-slate-200 py-1.5 text-slate-400">←</span>
+        <% end %>
+        <% if @next_version %>
+          <%= link_to "#{@next_version.name} →", project_version_path(project_name: @project.name, name: @next_version.name), class: "inline-flex w-24 items-center justify-center py-1.5 text-slate-900 hover:bg-slate-50" %>
+        <% else %>
+          <span class="inline-flex w-24 items-center justify-center bg-slate-200 py-1.5 text-slate-400">→</span>
+        <% end %>
+      </nav>
     </div>
 
     <div class="mt-2 flex flex-wrap items-center gap-x-2 text-[13px] text-slate-600">
