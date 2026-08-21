@@ -1,2 +1,26 @@
-<aside class="sticky top-0 h-screen w-64 shrink-0 overflow-y-auto border-r border-slate-400 px-3 py-3 transition-[width] duration-200 ease-out group-data-[sidebar=collapsed]:w-0 group-data-[sidebar=collapsed]:border-r-0">
+<% tint = {
+     "added" => "bg-emerald-100 hover:bg-emerald-200",
+     "removed" => "bg-rose-100 hover:bg-rose-200",
+     "changed" => "bg-amber-100 hover:bg-amber-200"
+   } %>
+<% tint.default = "hover:bg-white" %>
+
+<aside class="sticky top-0 h-screen w-64 shrink-0 overflow-y-auto overflow-x-hidden border-r border-slate-400 transition-[width] duration-200 ease-out group-data-[sidebar=collapsed]:w-0 group-data-[sidebar=collapsed]:border-r-0">
+  <div class="w-64 px-3 py-2">
+    <% if @comparison.endpoints.any? %>
+      <div class="mb-1 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Endpoints</div>
+      <% @comparison.endpoints.group_by(&:path).each_with_index do |(path, endpoints), index| %>
+        <div class="-mx-3 <%= "mt-1 border-t border-slate-300 pt-1" if index > 0 %>">
+          <% endpoints.each do |endpoint| %>
+            <a href="#endpoint-<%= endpoint.page_url %>"
+               title="<%= endpoint.name %>"
+               class="flex items-center gap-2 px-3 py-0.5 <%= tint[endpoint.annotation] %>">
+              <%= render "endpoints/verb_badge", verb: endpoint.verb %>
+              <span class="truncate font-mono text-[12px] text-slate-800"><%= endpoint.path %></span>
+            </a>
+          <% end %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
 </aside>

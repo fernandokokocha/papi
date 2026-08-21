@@ -81,7 +81,7 @@ deleted — that page no longer carries it.
 ### Sidebar
 
 28. ~~Shell + collapse toggle~~
-29. Endpoint list — verb badges, paths, path grouping, truncation
+29. ~~Endpoint list — verb badges, paths, path grouping, truncation~~
 30. Entities and Auth sections
 31. Scroll-spy active state
 
