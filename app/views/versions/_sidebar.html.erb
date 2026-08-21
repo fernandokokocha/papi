@@ -5,12 +5,14 @@
    } %>
 <% tint.default = "hover:bg-white" %>
 <% row_class = "flex h-6 items-center gap-2 pl-2 pr-2" %>
-<% name_class = "truncate font-mono text-[12px] text-slate-800" %>
+<% name_class = "truncate font-mono text-[12px] text-slate-800 [.sidebar-link-active_&]:font-semibold [.sidebar-link-active_&]:text-slate-900" %>
 
 <aside class="sticky top-0 h-screen w-64 shrink-0 overflow-y-auto overflow-x-hidden border-r border-slate-400 transition-[width] duration-200 ease-out group-data-[sidebar=collapsed]:w-0 group-data-[sidebar=collapsed]:border-r-0">
   <div class="flex w-64 flex-col px-3 pb-2">
     <% if [ @comparison.before, @comparison.after ].any? { |version| version.release_notes.present? } %>
-      <a href="#release-notes" class="-mx-3 flex h-7 items-center pl-7 pr-2 text-[12px] font-semibold text-slate-800 hover:bg-white">Release notes</a>
+      <a href="#release-notes"
+         data-sidebar-target="link"
+         class="-mx-3 flex h-7 items-center pl-7 pr-2 text-[12px] font-semibold text-slate-800 hover:bg-white">Release notes</a>
     <% end %>
 
     <% if @comparison.endpoints.any? %>
@@ -18,6 +20,7 @@
         <% @comparison.endpoints.each do |endpoint| %>
           <a href="#endpoint-<%= endpoint.page_url %>"
              title="<%= endpoint.name %>"
+             data-sidebar-target="link"
              class="<%= row_class %> <%= tint[endpoint.annotation] %>">
             <%= render "endpoints/verb_badge", verb: endpoint.verb %>
             <span class="<%= name_class %>"><%= endpoint.path %></span>
@@ -31,6 +34,7 @@
         <% @comparison.entities.each do |entity| %>
           <a href="#entity-<%= entity.name %>"
              title="<%= entity.name %>"
+             data-sidebar-target="link"
              class="<%= row_class %> <%= tint[entity.annotation] %>">
             <span class="<%= name_class %>"><%= entity.name %></span>
           </a>
@@ -43,6 +47,7 @@
         <% @comparison.auth_methods.each do |auth_method| %>
           <a href="#auth-<%= auth_method.name %>"
              title="<%= auth_method.name %>"
+             data-sidebar-target="link"
              class="<%= row_class %> <%= tint[auth_method.annotation] %>">
             <span class="<%= name_class %>"><%= auth_method.name %></span>
             <span class="ml-auto shrink-0 font-mono text-[12px] text-slate-500"><%= auth_method.kind %></span>

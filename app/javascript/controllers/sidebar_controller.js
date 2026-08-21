@@ -5,9 +5,6 @@ export default class extends Controller {
   static storageKey = "papi.sidebar.collapsed"
   static anchorKey = "papi.anchor.enabled"
 
-  // Trigger line, in px below the viewport top. Matches the cards' scroll-mt-6.
-  static triggerY = 24
-
   // Keys that scroll the page — pressing them releases a pinned selection.
   static scrollKeys = ["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " "]
 
@@ -71,13 +68,20 @@ export default class extends Controller {
     })
   }
 
+  // The trigger line is wherever an anchor click parks a card: below the sticky
+  // rail, which the cards declare as their scroll-margin-top.
+  triggerY() {
+    return parseFloat(getComputedStyle(this.cardTargets[0]).scrollMarginTop) + 1
+  }
+
   // Scroll-spy pick: the last card whose top has crossed the trigger line. Once
   // the page is scrolled all the way down, the bottom cards can't reach it, so
   // fall back to the final card.
   currentByScroll() {
+    const triggerY = this.triggerY()
     let current = this.cardTargets[0]
     this.cardTargets.forEach((card) => {
-      if (card.getBoundingClientRect().top <= this.constructor.triggerY) current = card
+      if (card.getBoundingClientRect().top <= triggerY) current = card
     })
 
     const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 2

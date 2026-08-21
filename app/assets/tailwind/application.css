@@ -10,28 +10,8 @@ body {
   --pinned-offset: 0px;
 }
 
-.anchor-active {
-  background-color: var(--color-sky-200);
-  margin: -1rem -100vw;
-  padding: 1rem 100vw;
-  border-radius: 0.75rem;
-  transition: background-color 300ms ease;
-}
-
-.anchor-flash {
-  animation: anchor-flash 1s ease-out;
-}
-@keyframes anchor-flash {
-  0%   { background-color: var(--color-sky-400); }
-  100% { background-color: var(--color-sky-200); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .anchor-flash { animation: none; }
-}
-
 .sidebar-link-active {
-  background-color: var(--color-sky-100);
-  font-weight: 600;
+  box-shadow: inset 3px 0 0 var(--color-sky-600);
 }
 
 /* ── Spec display styles ── */
