@@ -1,0 +1,11 @@
+<details open class="group/fold">
+  <summary class="-mx-3 flex h-7 cursor-pointer list-none items-center gap-1.5 px-2 hover:bg-white [&::-webkit-details-marker]:hidden">
+    <svg viewBox="0 0 20 20" fill="currentColor" class="h-3.5 w-3.5 shrink-0 text-slate-500 transition-transform duration-150 group-open/fold:rotate-90">
+      <path d="M7.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 1 1-1.06-1.06L10.94 10 7.22 6.28a.75.75 0 0 1 0-1.06Z"/>
+    </svg>
+    <span class="text-[12px] font-semibold text-slate-800"><%= label %></span>
+  </summary>
+  <div class="-mx-3 ml-2 border-l border-slate-300">
+    <%= yield %>
+  </div>
+</details>

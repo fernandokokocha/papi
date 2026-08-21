@@ -1,0 +1,9 @@
+<details open id="<%= local_assigns[:id] %>" class="group/sec scroll-mt-[var(--pinned-offset)]">
+  <summary class="flex cursor-pointer list-none items-center gap-2 py-1 [&::-webkit-details-marker]:hidden">
+    <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 shrink-0 text-slate-500 transition-transform duration-150 group-open/sec:rotate-90">
+      <path d="M7.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 1 1-1.06-1.06L10.94 10 7.22 6.28a.75.75 0 0 1 0-1.06Z"/>
+    </svg>
+    <span class="text-[14px] font-semibold text-slate-800"><%= label %></span>
+  </summary>
+  <div class="mb-12 mt-4"><%= yield %></div>
+</details>

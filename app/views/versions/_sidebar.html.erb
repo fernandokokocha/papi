@@ -4,22 +4,50 @@
      "changed" => "bg-amber-100 hover:bg-amber-200"
    } %>
 <% tint.default = "hover:bg-white" %>
+<% row_class = "flex h-6 items-center gap-2 pl-2 pr-2" %>
+<% name_class = "truncate font-mono text-[12px] text-slate-800" %>
 
 <aside class="sticky top-0 h-screen w-64 shrink-0 overflow-y-auto overflow-x-hidden border-r border-slate-400 transition-[width] duration-200 ease-out group-data-[sidebar=collapsed]:w-0 group-data-[sidebar=collapsed]:border-r-0">
-  <div class="w-64 px-3 py-2">
+  <div class="flex w-64 flex-col px-3 pb-2">
+    <% if [ @comparison.before, @comparison.after ].any? { |version| version.release_notes.present? } %>
+      <a href="#release-notes" class="-mx-3 flex h-7 items-center pl-7 pr-2 text-[12px] font-semibold text-slate-800 hover:bg-white">Release notes</a>
+    <% end %>
+
     <% if @comparison.endpoints.any? %>
-      <div class="mb-1 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Endpoints</div>
-      <% @comparison.endpoints.group_by(&:path).each_with_index do |(path, endpoints), index| %>
-        <div class="-mx-3 <%= "mt-1 border-t border-slate-300 pt-1" if index > 0 %>">
-          <% endpoints.each do |endpoint| %>
-            <a href="#endpoint-<%= endpoint.page_url %>"
-               title="<%= endpoint.name %>"
-               class="flex items-center gap-2 px-3 py-0.5 <%= tint[endpoint.annotation] %>">
-              <%= render "endpoints/verb_badge", verb: endpoint.verb %>
-              <span class="truncate font-mono text-[12px] text-slate-800"><%= endpoint.path %></span>
-            </a>
-          <% end %>
-        </div>
+      <%= render layout: "versions/sidebar_section", locals: { label: "Endpoints" } do %>
+        <% @comparison.endpoints.each do |endpoint| %>
+          <a href="#endpoint-<%= endpoint.page_url %>"
+             title="<%= endpoint.name %>"
+             class="<%= row_class %> <%= tint[endpoint.annotation] %>">
+            <%= render "endpoints/verb_badge", verb: endpoint.verb %>
+            <span class="<%= name_class %>"><%= endpoint.path %></span>
+          </a>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% if @comparison.entities.any? %>
+      <%= render layout: "versions/sidebar_section", locals: { label: "Entities" } do %>
+        <% @comparison.entities.each do |entity| %>
+          <a href="#entity-<%= entity.name %>"
+             title="<%= entity.name %>"
+             class="<%= row_class %> <%= tint[entity.annotation] %>">
+            <span class="<%= name_class %>"><%= entity.name %></span>
+          </a>
+        <% end %>
+      <% end %>
+    <% end %>
+
+    <% if @comparison.auth_methods.any? %>
+      <%= render layout: "versions/sidebar_section", locals: { label: "Auth" } do %>
+        <% @comparison.auth_methods.each do |auth_method| %>
+          <a href="#auth-<%= auth_method.name %>"
+             title="<%= auth_method.name %>"
+             class="<%= row_class %> <%= tint[auth_method.annotation] %>">
+            <span class="<%= name_class %>"><%= auth_method.name %></span>
+            <span class="ml-auto shrink-0 font-mono text-[12px] text-slate-500"><%= auth_method.kind %></span>
+          </a>
+        <% end %>
       <% end %>
     <% end %>
   </div>

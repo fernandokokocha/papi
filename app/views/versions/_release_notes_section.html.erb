@@ -1,14 +1,12 @@
-<% if [ @comparison.before, @version ].any? { |version| version.release_notes.present? } %>
-  <div id="release-notes" class="flex flex-col gap-4">
-    <%= render "versions/section_heading", label: "Release notes" %>
-
+<% if [ @comparison.before, @comparison.after ].any? { |version| version.release_notes.present? } %>
+  <%= render layout: "versions/section", locals: { label: "Release notes", id: "release-notes" } do %>
     <div class="grid grid-cols-2 gap-x-2">
       <div class="pr-3">
         <%= render "versions/release_notes", version: @comparison.before %>
       </div>
       <div>
-        <%= render "versions/release_notes", version: @version %>
+        <%= render "versions/release_notes", version: @comparison.after %>
       </div>
     </div>
-  </div>
+  <% end %>
 <% end %>

@@ -1,28 +1,31 @@
-<div class="flex flex-col gap-12">
+<div>
   <% if @comparison.endpoints.any? %>
-    <div class="flex flex-col gap-4">
-      <%= render "versions/section_heading", label: "Endpoints" %>
-      <% @comparison.endpoints.each do |endpoint| %>
-        <%= render "endpoints/card", endpoint: endpoint, base: @comparison.before.name, project_name: @project.name %>
-      <% end %>
-    </div>
+    <%= render layout: "versions/section", locals: { label: "Endpoints" } do %>
+      <div class="flex flex-col gap-4">
+        <% @comparison.endpoints.each do |endpoint| %>
+          <%= render "endpoints/card", endpoint: endpoint, base: @comparison.before.name, project_name: @project.name %>
+        <% end %>
+      </div>
+    <% end %>
   <% end %>
 
   <% if @comparison.entities.any? %>
-    <div class="flex flex-col gap-4">
-      <%= render "versions/section_heading", label: "Entities" %>
-      <% @comparison.entities.each do |entity| %>
-        <%= render "entities/card", entity: entity, base: @comparison.before.name, project_name: @project.name %>
-      <% end %>
-    </div>
+    <%= render layout: "versions/section", locals: { label: "Entities" } do %>
+      <div class="flex flex-col gap-4">
+        <% @comparison.entities.each do |entity| %>
+          <%= render "entities/card", entity: entity, base: @comparison.before.name, project_name: @project.name %>
+        <% end %>
+      </div>
+    <% end %>
   <% end %>
 
   <% if @comparison.auth_methods.any? %>
-    <div class="flex flex-col gap-4">
-      <%= render "versions/section_heading", label: "Auth" %>
-      <% @comparison.auth_methods.each do |auth_method| %>
-        <%= render "auth_methods/card", auth_method: auth_method %>
-      <% end %>
-    </div>
+    <%= render layout: "versions/section", locals: { label: "Auth" } do %>
+      <div class="flex flex-col gap-4">
+        <% @comparison.auth_methods.each do |auth_method| %>
+          <%= render "auth_methods/card", auth_method: auth_method %>
+        <% end %>
+      </div>
+    <% end %>
   <% end %>
 </div>
