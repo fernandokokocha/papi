@@ -69,14 +69,14 @@
   <div class="overflow-hidden">
     <div class="grid grid-cols-2 gap-x-2">
       <% columns_of_lines = if columns == 1
-           [ entity.parsed_root(expanded: expanded).to_diff(:no_change) ]
+           [ [ entity.parsed_root(expanded: expanded).to_diff(:no_change), entity, nil ] ]
          else
            diff = Diff::FromValues.new(previous.parsed_root(expanded: expanded), entity.parsed_root(expanded: expanded))
-           [ diff.before, diff.after ]
+           [ [ diff.before, previous, nil ], [ diff.after, entity, previous ] ]
          end %>
-      <% columns_of_lines.each do |lines| %>
+      <% columns_of_lines.each do |lines, record, previous_record| %>
         <div class="rounded-b-xl bg-white px-3 py-2 shadow-sm <%= col %> <%= edge %>">
-          <%= render "endpoints/schema", lines: lines, tints: columns == 2 %>
+          <%= render "endpoints/schema", lines: lines, tints: columns == 2, notes: schema_notes_by_row(record, previous_record, lines) %>
         </div>
       <% end %>
     </div>

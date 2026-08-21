@@ -124,8 +124,9 @@
                               end) %>
         </div>
       <% end %>
-      <% [ diff.input.before, diff.input.after ].public_send(side, columns).each do |lines| %>
-        <div class="<%= edge %> px-3 py-2"><%= render "endpoints/schema", lines: lines, tints: tints %></div>
+      <% input_columns = [ [ diff.input.before, previous, nil ], [ diff.input.after, current, (previous if columns == 2) ] ].public_send(side, columns) %>
+      <% input_columns.each do |lines, record, previous_record| %>
+        <div class="<%= edge %> px-3 py-2"><%= render "endpoints/schema", lines: lines, tints: tints, notes: schema_notes_by_row(record, previous_record, lines) %></div>
       <% end %>
 
       <% columns.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Responses", toggle: nil %></div><% end %>
@@ -161,11 +162,14 @@
             <% end %>
           </div>
         <% end %>
-        <% [ [ response.before_response, response.output_diff&.before ], [ response.after_response, response.output_diff&.after ] ].public_send(side, columns).each do |record, lines| %>
+        <% output_columns = [ [ response.before_response, response.output_diff&.before, nil ],
+                              [ response.after_response, response.output_diff&.after, (response.before_response if columns == 2) ] ].public_send(side, columns) %>
+        <% output_columns.each do |record, lines, previous_record| %>
           <div class="<%= edge %> px-3 pb-2 <%= framed ? "pt-0" : "pt-2" %> <%= edge_bottom if last %>">
             <% if record %>
+              <% output_lines = lines || record.parsed_output(expanded: expanded.include?(response.code)).to_diff(response.state) %>
               <div class="<%= "#{frame} rounded-b-md px-2 pb-2" if framed %>">
-                <%= render "endpoints/schema", lines: lines || record.parsed_output(expanded: expanded.include?(response.code)).to_diff(response.state), tints: tints && !framed %>
+                <%= render "endpoints/schema", lines: output_lines, tints: tints && !framed, notes: schema_notes_by_row(record, previous_record, output_lines) %>
               </div>
             <% end %>
           </div>
