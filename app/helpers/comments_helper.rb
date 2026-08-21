@@ -29,6 +29,12 @@ module CommentsHelper
     "sidebar_count_#{anchor.dom_id}"
   end
 
+  def sidebar_count_badge(anchor, css_class: "ml-auto shrink-0")
+    return "".html_safe unless @candidate
+    tag.span(render("comments/count_badge", count: candidate_comments.sidebar_count(anchor)),
+             id: sidebar_count_dom_id(anchor), class: css_class)
+  end
+
   def comment_region_attr(anchor)
     return "".html_safe unless @candidate
     tag.attributes("data-comment-region": anchor.dom_id)

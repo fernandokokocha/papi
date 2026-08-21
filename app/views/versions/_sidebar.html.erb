@@ -12,7 +12,10 @@
     <% if [ @comparison.before, @comparison.after ].any? { |version| version.release_notes.present? } %>
       <a href="#release-notes"
          data-sidebar-target="link"
-         class="-mx-3 flex h-7 items-center pl-7 pr-2 text-[12px] font-semibold text-slate-800 hover:bg-white">Release notes</a>
+         class="-mx-3 flex h-7 items-center gap-2 pl-7 pr-2 text-[12px] font-semibold text-slate-800 hover:bg-white">
+        <span class="truncate">Release notes</span>
+        <%= sidebar_count_badge(CommentAnchor.for_release_notes) %>
+      </a>
     <% end %>
 
     <% if @comparison.endpoints.any? %>
@@ -24,6 +27,7 @@
              class="<%= row_class %> <%= tint[endpoint.annotation] %>">
             <%= render "endpoints/verb_badge", verb: endpoint.verb %>
             <span class="<%= name_class %>"><%= endpoint.path %></span>
+            <%= sidebar_count_badge(CommentAnchor.for_endpoint(endpoint)) %>
           </a>
         <% end %>
       <% end %>
@@ -37,6 +41,7 @@
              data-sidebar-target="link"
              class="<%= row_class %> <%= tint[entity.annotation] %>">
             <span class="<%= name_class %>"><%= entity.name %></span>
+            <%= sidebar_count_badge(CommentAnchor.for_entity(entity)) %>
           </a>
         <% end %>
       <% end %>
@@ -51,6 +56,7 @@
              class="<%= row_class %> <%= tint[auth_method.annotation] %>">
             <span class="<%= name_class %>"><%= auth_method.name %></span>
             <span class="ml-auto shrink-0 font-mono text-[12px] text-slate-500"><%= auth_method.kind %></span>
+            <%= sidebar_count_badge(CommentAnchor.for_auth_method(auth_method), css_class: "shrink-0") %>
           </a>
         <% end %>
       <% end %>

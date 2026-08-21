@@ -87,7 +87,7 @@ deleted — that page no longer carries it.
 
 ### Comment layer
 
-32. Count badges — sidebar and card
+32. ~~Count badges — sidebar and card~~
 33. Line note badges + hover cards
 34. Card-level threads
 35. Reply and resolve

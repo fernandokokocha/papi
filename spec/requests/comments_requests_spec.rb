@@ -105,7 +105,7 @@ describe "Comments requests", type: :request do
 
       sidebar_id = "sidebar_count_#{CommentAnchor.new(scope: "endpoint", part: "whole", endpoint_path: "/users", endpoint_http_verb: 0).dom_id}"
       expect(turbo_actions).to include([ "update", sidebar_id ])
-      expect(response.body).to include("💬 1")
+      expect(response.body).to include(%(title="1 comment"))
     end
 
     describe "param-anchored roots" do
@@ -147,7 +147,7 @@ describe "Comments requests", type: :request do
 
         sidebar_id = "sidebar_count_#{CommentAnchor.new(scope: "endpoint", part: "whole", endpoint_path: "/users/:id", endpoint_http_verb: 0).dom_id}"
         expect(turbo_actions).to include([ "update", sidebar_id ])
-        expect(response.body).to include("💬 1")
+        expect(response.body).to include(%(title="1 comment"))
       end
 
       it "rejects a param anchor with no param name" do
@@ -286,7 +286,7 @@ describe "Comments requests", type: :request do
 
           sidebar_id = "sidebar_count_#{CommentAnchor.for_endpoint(endpoint).dom_id}"
           expect(turbo_actions).to include([ "update", sidebar_id ])
-          expect(response.body).to include("💬 1")
+          expect(response.body).to include(%(title="1 comment"))
         end
 
         it "appends a region thread to the input anchor when no line is picked" do
