@@ -10,12 +10,6 @@ body {
   --pinned-offset: 0px;
 }
 
-.sidebar-collapsed {
-  width: 0;
-  margin-left: 0;
-  margin-right: -1rem;
-}
-
 .anchor-active {
   background-color: var(--color-sky-200);
   margin: -1rem -100vw;

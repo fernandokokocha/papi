@@ -95,9 +95,9 @@ deleted — that page no longer carries it.
 
 ### Shell
 
-37. Page background, content width, vertical rhythm
+37. ~~Page geometry — full-bleed shell, sidebar column, diff pane~~
 38. Topbar identity — logo, user, log out
-39. Sticky behaviour
+39. ~~Sticky behaviour — the page scrolls, the rail pins, the sidebar holds its own scroll~~
 
 ### History page
 

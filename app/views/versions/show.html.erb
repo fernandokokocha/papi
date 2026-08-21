@@ -1,19 +1,22 @@
+<% content_for :topbar_class, "w-full" %>
+<% content_for :main_class, "w-full" %>
+
 <% candidate = @version.candidate %>
 <% events = [] %>
 <% events << [ "Proposed", candidate.author, candidate.created_at ] if candidate.author %>
 <% events << [ candidate.merged? ? "Merged" : "Rejected", candidate.decided_by, candidate.decided_at ] if candidate.decided_by %>
 
-<div class="-mt-6 [--pinned-offset:3rem]" data-controller="sidebar">
+<div class="group [--pinned-offset:2.75rem]" data-controller="sidebar" data-sidebar="open">
   <%= render "versions/identity", candidate: candidate, events: events %>
 
-  <div class="mt-2 flex gap-6">
+  <div class="flex">
     <%= render "versions/sidebar" %>
 
     <div class="min-w-0 flex-1">
       <%= render "versions/comparison_rail" %>
-      <%= render "versions/release_notes_row" %>
 
-      <div class="mt-6">
+      <div class="flex flex-col gap-12 px-4 pb-16 pt-6">
+        <%= render "versions/release_notes_section" %>
         <%= render "versions/endpoints_and_entities" %>
       </div>
     </div>

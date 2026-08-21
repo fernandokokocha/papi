@@ -1,7 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 
 export default class extends Controller {
-  static targets = ["aside", "button", "link", "card"]
+  static targets = ["button", "link", "card"]
   static storageKey = "papi.sidebar.collapsed"
   static anchorKey = "papi.anchor.enabled"
 
@@ -132,13 +132,12 @@ export default class extends Controller {
   }
 
   toggle() {
-    const collapsed = !this.asideTarget.classList.contains("sidebar-collapsed")
-    localStorage.setItem(this.constructor.storageKey, collapsed ? "1" : "0")
-    this.apply(collapsed)
+    this.apply(this.element.dataset.sidebar !== "collapsed")
   }
 
   apply(collapsed) {
-    this.asideTarget.classList.toggle("sidebar-collapsed", collapsed)
+    this.element.dataset.sidebar = collapsed ? "collapsed" : "open"
+    localStorage.setItem(this.constructor.storageKey, collapsed ? "1" : "0")
     this.buttonTarget.title = collapsed ? "Show contents" : "Hide contents"
   }
 }
