@@ -34,6 +34,21 @@ class CandidateComments
     end.sort_by(&:created_at)
   end
 
+  def threads_at(anchor)
+    @by_anchor.fetch(anchor.key, [])
+  end
+
+  def outdated_lines_under(region_anchor, version)
+    part = region_anchor.region_line_part
+    return [] unless part
+
+    line_anchor = region_anchor.with_part(part)
+    bucket = line_bucket(line_anchor)
+    return [] if bucket.empty?
+
+    by_freshness(bucket, line_anchor.current_output(version)).outdated
+  end
+
   def card_for_endpoint(endpoint)
     @endpoint_cards.fetch(endpoint_key(endpoint), EMPTY_CARD)
   end
@@ -64,6 +79,14 @@ class CandidateComments
   end
 
   private
+
+  def line_bucket(anchor)
+    case anchor.part
+    when "output" then @response_lines.fetch([ anchor.endpoint_identity_path, anchor.endpoint_http_verb, anchor.response_code ], [])
+    when "input"  then @input_lines.fetch([ anchor.endpoint_identity_path, anchor.endpoint_http_verb ], [])
+    when "root"   then @entity_lines.fetch(anchor.entity_name, [])
+    end
+  end
 
   def by_freshness(comments, current_text)
     fresh, outdated = comments.partition { |comment| comment.anchor_snapshot == current_text }

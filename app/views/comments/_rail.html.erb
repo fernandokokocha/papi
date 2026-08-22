@@ -1,0 +1,10 @@
+<% threads = local_assigns[:threads] || [] %>
+<% outdated = local_assigns[:outdated] || [] %>
+<% composable = local_assigns.fetch(:composable, true) && can_comment? %>
+<% if @candidate && (composable || threads.any? || outdated.any?) %>
+  <div class="anchor-strip absolute -right-10 flex items-center font-sans <%= local_assigns[:wrapper_class] %>">
+    <span class="anchor-line pointer-events-none h-px flex-1"></span>
+    <%= render "comments/rail_body", anchor: anchor, threads: threads, outdated: outdated,
+               composable: composable, sublabel: local_assigns[:sublabel] %>
+  </div>
+<% end %>

@@ -1,5 +1,5 @@
 <% threads = candidate_comments.threads_for("candidate") %>
-<div class="flex flex-col gap-3" data-comment-exempt>
+<div class="flex flex-col gap-3">
   <div id="candidate_comment_threads" class="flex flex-col gap-3">
     <% threads.each do |thread| %>
       <%= render "comments/conversation_thread", comment: thread %>

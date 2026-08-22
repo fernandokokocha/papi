@@ -35,7 +35,7 @@
 
 <div class="sticky top-[var(--pinned-offset)] z-10 grid grid-cols-2 gap-x-2 bg-slate-200">
   <% records.each_with_index do |record, index| %>
-    <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl <%= col %> <%= header_tint %>">
+    <div class="comment-host flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl <%= col %> <%= header_tint %>">
       <span class="truncate font-mono text-[13px] font-medium"><%= record.name %></span>
 
       <div class="ml-auto flex items-center gap-2">
@@ -63,7 +63,7 @@
         </label>
 
         <% if index == columns - 1 %>
-          <%= render "comments/thread_region", wrapper_class: reach,
+          <%= render "comments/rail", wrapper_class: reach,
                      anchor: CommentAnchor.for_entity(entity),
                      threads: candidate_comments.threads_for("entity", entity: entity),
                      outdated: candidate_comments.entity_root_lines(entity).outdated %>
@@ -86,7 +86,8 @@
         <div class="rounded-b-xl bg-white px-3 py-2 shadow-sm <%= col %> <%= edge %>">
           <%= render "endpoints/schema", lines: lines, tints: columns == 2, notes: schema_notes_by_row(record, previous_record, lines),
                      line_anchor: CommentAnchor.for_entity_root(entity), line_reach: "#{reach} group-has-[>input:checked]:hidden",
-                     line_threads: (line_threads_by_row(lines, entity.version.entities, candidate_comments.entity_root_lines(entity)) if index == columns - 1) %>
+                     line_index: (line_index_for(lines, entity.version.entities) if index == columns - 1), line_composable: !removed,
+                     line_comments: candidate_comments.entity_root_lines(entity) %>
         </div>
       <% end %>
     </div>

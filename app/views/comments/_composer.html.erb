@@ -1,0 +1,12 @@
+<div data-composer-target="home" hidden>
+  <%= form_with model: Comment.new, url: project_candidate_comments_path(@project.name, @candidate.name),
+                data: { turbo: true, composer_target: "form" }, class: "p-2.5" do |form| %>
+    <% CommentAnchor::COLUMNS.each do |column| %><%= form.hidden_field column, value: nil %><% end %>
+    <%= hidden_field_tag :sublabel, nil %>
+    <%= form.text_area :body, rows: 3, required: true, placeholder: "Leave a comment…",
+          class: "w-full resize-y rounded border border-slate-300 bg-white px-2 py-1.5 text-[12px] leading-5 text-slate-800 placeholder-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" %>
+    <div class="mt-1.5 flex justify-end">
+      <%= form.submit "Comment", class: "cursor-pointer rounded bg-sky-600 px-2.5 py-1 text-[11px] font-medium text-white hover:bg-sky-700" %>
+    </div>
+  <% end %>
+</div>

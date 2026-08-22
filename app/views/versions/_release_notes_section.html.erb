@@ -1,12 +1,18 @@
 <% if [ @comparison.before, @comparison.after ].any? { |version| version.release_notes.present? } %>
   <%= render layout: "versions/section", locals: { label: "Release notes", id: "release-notes" } do %>
-    <div class="grid grid-cols-2 gap-x-2">
-      <div class="pr-3">
-        <%= render "versions/release_notes", version: @comparison.before %>
+    <div class="flex items-start gap-3">
+      <div class="comment-host relative grid min-w-0 flex-1 grid-cols-2 gap-x-2">
+        <div class="pr-3">
+          <%= render "versions/release_notes", version: @comparison.before %>
+        </div>
+        <div>
+          <%= render "versions/release_notes", version: @comparison.after %>
+        </div>
+        <%= render "comments/rail", wrapper_class: "left-full",
+                   anchor: CommentAnchor.for_release_notes,
+                   threads: candidate_comments.threads_at(CommentAnchor.for_release_notes) %>
       </div>
-      <div>
-        <%= render "versions/release_notes", version: @comparison.after %>
-      </div>
+      <div class="w-7 shrink-0"></div>
     </div>
   <% end %>
 <% end %>

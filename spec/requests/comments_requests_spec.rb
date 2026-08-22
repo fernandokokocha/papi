@@ -80,18 +80,15 @@ describe "Comments requests", type: :request do
       expect(response.body).not_to include("Resolved by")
     end
 
-    it "renders a Turbo Stream targeting the anchor container when the request is turbo_stream" do
+    it "renders a Turbo Stream replacing the anchor's pin when the request is turbo_stream" do
       sign_in(user)
       post project_candidate_comments_path(project.name, candidate.name),
            params: { comment: { body: "Anchored", scope: "entity", part: "whole", entity_name: "User" } },
            as: :turbo_stream
 
-      dom_id = Comment.last.anchor.dom_id
       expect(response.media_type).to eq("text/vnd.turbo-stream.html")
-      expect(turbo_actions).to include(
-        [ "append", dom_id ],
-        [ "replace", "#{dom_id}_form" ]
-      )
+      expect(turbo_actions).to include([ "replace", Comment.last.anchor.dom_id ])
+      expect(response.body).to include("Anchored")
     end
 
     it "live-updates the endpoint sidebar count when an anchored root is posted" do
@@ -128,14 +125,12 @@ describe "Comments requests", type: :request do
         expect(Comment.last.anchor_snapshot).to be_nil
       end
 
-      it "streams the thread into the param's inline container" do
+      it "streams the thread into the param's pin" do
         sign_in(user)
         post_param_comment
 
-        expect(turbo_actions).to include(
-          [ "append", anchor.dom_id ],
-          [ "replace", "#{anchor.dom_id}_form" ]
-        )
+        expect(turbo_actions).to include([ "replace", anchor.dom_id ])
+        expect(response.body).to include("Should this be a slug?")
       end
 
       it "counts a param thread into the endpoint's sidebar badge" do
@@ -163,21 +158,142 @@ describe "Comments requests", type: :request do
       let!(:endpoint) { FactoryBot.create :endpoint, version: version, path: "/users/:id", http_verb: "verb_get" }
       let(:anchor) { CommentAnchor.for_endpoint_param(endpoint, "id", "path") }
 
-      it "makes each param row its own comment region" do
+      it "gives each param row its own rail, ready to comment on" do
         sign_in(user)
         get project_candidate_path(project.name, candidate.name)
 
-        expect(response.body).to include(%(data-comment-region="#{anchor.dom_id}"))
+        expect(response.body).to include(%(id="#{anchor.dom_id}"))
+        expect(response.body).to include(%(title="Comment here"))
       end
 
-      it "renders a param thread inline under its row" do
+      it "renders a param thread in the row's pin" do
         FactoryBot.create :comment, :param_scope, candidate: candidate, author: user, body: "Should this be a slug?"
         sign_in(user)
         get project_candidate_path(project.name, candidate.name)
 
         expect(response.body).to include(%(id="#{anchor.dom_id}"))
         expect(response.body).to include("Should this be a slug?")
-        expect(response.body).to include("GET /users/:id → :id")
+        expect(response.body).to include(%(title="1 thread"))
+      end
+    end
+
+    describe "every place a comment can be anchored" do
+      let!(:version) do
+        FactoryBot.create :version, candidate: candidate, project: project, order: 1,
+                          release_notes: "Adds pagination."
+      end
+      let!(:auth_method) { FactoryBot.create :auth_method, version: version, name: "UserToken" }
+      let!(:entity) { FactoryBot.create :entity, version: version, name: "User", root: "{id:number}" }
+      let!(:endpoint) do
+        FactoryBot.create :endpoint, version: version, path: "/users/:id", http_verb: "verb_get",
+                          note: "Fetches one user.", input: "{page:number}", auth: "UserToken"
+      end
+      let!(:path_param) { FactoryBot.create :endpoint_param, endpoint: endpoint, name: "id" }
+      let!(:query_param) { FactoryBot.create :endpoint_param, :query, endpoint: endpoint, name: "page" }
+      let!(:response_200) { FactoryBot.create :response, endpoint: endpoint, code: "200", output: "{name:string}" }
+
+      # Every scope and part CommentTarget accepts, minus the ones the page has
+      # no room for: the candidate's own thread lives in the conversation, and a
+      # response note shares its response's pin.
+      def every_anchor
+        {
+          "release notes" => CommentAnchor.for_release_notes,
+          "endpoint" => CommentAnchor.for_endpoint(endpoint),
+          "endpoint note" => CommentAnchor.new(scope: "endpoint", part: "note", endpoint_path: endpoint.path, endpoint_http_verb: 0),
+          "endpoint auth" => CommentAnchor.for_endpoint_auth(endpoint),
+          "endpoint input" => CommentAnchor.for_endpoint_input(endpoint),
+          "input line" => CommentAnchor.for_endpoint_input(endpoint).with_line(1),
+          "path param" => CommentAnchor.for_endpoint_param(endpoint, "id", "path"),
+          "query param" => CommentAnchor.for_endpoint_param(endpoint, "page", "query"),
+          "response" => CommentAnchor.new(scope: "response", part: "whole", endpoint_path: endpoint.path, endpoint_http_verb: 0, response_code: "200"),
+          "output line" => CommentAnchor.for_response_output(endpoint, "200").with_line(1),
+          "entity" => CommentAnchor.for_entity(entity),
+          "entity root line" => CommentAnchor.for_entity_root(entity).with_line(1),
+          "auth method" => CommentAnchor.for_auth_method(auth_method),
+          "auth method note" => CommentAnchor.new(scope: "auth_method", part: "note", auth_method_name: auth_method.name)
+        }
+      end
+
+      it "offers a rail on the candidate page" do
+        sign_in(user)
+        get project_candidate_path(project.name, candidate.name)
+
+        missing = every_anchor.reject { |_, anchor| response.body.include?(%(id="#{anchor.dom_id}")) }
+        expect(missing.keys).to be_empty
+      end
+
+      # A rail outside a comment-host renders, but its + never appears, because
+      # only the host's hover reveals it.
+      it "puts every rail inside something that reveals it on hover" do
+        sign_in(user)
+        get project_candidate_path(project.name, candidate.name)
+
+        rails = Nokogiri::HTML(response.body).css('[id^="comment_anchor_"]')
+        unhosted = rails.reject { |rail| rail.ancestors(".comment-host").any? }
+
+        expect(rails).not_to be_empty
+        expect(unhosted.map { |rail| rail["id"] }).to be_empty
+      end
+
+      it "accepts a comment posted at each of them" do
+        sign_in(user)
+        every_anchor.each do |name, anchor|
+          expect {
+            post project_candidate_comments_path(project.name, candidate.name),
+                 params: { comment: { body: "Comment on #{name}" }.merge(anchor.to_columns) }, as: :turbo_stream
+          }.to change(Comment, :count).by(1), "posting on #{name} failed: #{flash[:alert]}"
+          expect(turbo_actions).to include([ "replace", anchor.dom_id ]), "no pin replaced for #{name}"
+        end
+      end
+    end
+
+    describe "a record the candidate removes" do
+      let!(:base_candidate) { FactoryBot.create :candidate, project: project, name: "rc0", aasm_state: "merged" }
+      let!(:base_version) { FactoryBot.create :version, project: project, candidate: base_candidate, name: "v1", order: 1 }
+      let!(:gone_endpoint) do
+        FactoryBot.create :endpoint, version: base_version, path: "/legacy", http_verb: "verb_get",
+                          input: "{token:string}"
+      end
+      let!(:gone_response) { FactoryBot.create :response, endpoint: gone_endpoint, code: "200", output: "{ok:boolean}" }
+      let!(:gone_entity) { FactoryBot.create :entity, version: base_version, name: "LegacyToken", root: "{token:string}" }
+      let!(:version) { FactoryBot.create :version, project: project, candidate: candidate, name: "v2", order: 2 }
+
+      before { candidate.update!(base_version: base_version) }
+
+      it "still offers its card and region rails" do
+        sign_in(user)
+        get project_candidate_path(project.name, candidate.name)
+
+        expect(response.body).to include(%(id="#{CommentAnchor.for_endpoint(gone_endpoint).dom_id}"))
+        expect(response.body).to include(%(id="#{CommentAnchor.for_endpoint_input(gone_endpoint).dom_id}"))
+        expect(response.body).to include(%(id="#{CommentAnchor.for_entity(gone_entity).dom_id}"))
+      end
+
+      # A line anchor snapshots the record's current text, and there is none.
+      it "offers no line rails on its schema" do
+        sign_in(user)
+        get project_candidate_path(project.name, candidate.name)
+
+        line_rails = [
+          CommentAnchor.for_endpoint_input(gone_endpoint).with_line(1),
+          CommentAnchor.for_response_output(gone_endpoint, "200").with_line(1),
+          CommentAnchor.for_entity_root(gone_entity).with_line(1)
+        ]
+        offered = line_rails.select { |anchor| response.body.include?(%(id="#{anchor.dom_id}")) }
+        expect(offered.map(&:label)).to be_empty
+      end
+
+      it "keeps a line thread it already carries, with no + beside it" do
+        anchor = CommentAnchor.for_entity_root(gone_entity).with_line(0)
+        candidate.comments.create!(author: user, body: "Why is this going away?",
+                                   **anchor.to_columns, anchor_snapshot: gone_entity.root)
+        sign_in(user)
+        get project_candidate_path(project.name, candidate.name)
+
+        pin = Nokogiri::HTML(response.body).at_css(%([id="#{anchor.dom_id}"]))
+        expect(pin).to be_present
+        expect(pin.text).to include("Why is this going away?")
+        expect(pin.css(".pin-icon-plus")).to be_empty
       end
     end
 
@@ -199,36 +315,17 @@ describe "Comments requests", type: :request do
         expect(Comment.last.anchor_snapshot).to eq("{total:number,items:[User]}")
       end
 
-      it "streams the thread inline after its row when the block was expanded" do
+      it "streams the thread into the pin on its own row" do
         sign_in(user)
         post project_candidate_comments_path(project.name, candidate.name),
-             params: line_params.merge(expanded: "true"), as: :turbo_stream
+             params: line_params.merge(sublabel: "line 4"), as: :turbo_stream
 
-        region = CommentAnchor.new(scope: "response", part: "output",
-                                   endpoint_path: "/users", endpoint_http_verb: 0, response_code: "200")
+        line_anchor = CommentAnchor.new(scope: "response", part: "output", line: 4,
+                                        endpoint_path: "/users", endpoint_http_verb: 0, response_code: "200")
         expect(response.media_type).to eq("text/vnd.turbo-stream.html")
-        expect(turbo_actions).to include(
-          [ "after", %([data-line-pick="#{region.dom_id}"] [data-line-index="4"]) ],
-          [ "remove", "#{region.dom_id}_form" ],
-          [ "update", "#{region.dom_id}_form_home" ]
-        )
-        expect(response.body).to include(">Inlined<")
-      end
-
-      it "streams the thread into the below-block container when the block was collapsed" do
-        sign_in(user)
-        post project_candidate_comments_path(project.name, candidate.name),
-             params: line_params.merge(expanded: "false"), as: :turbo_stream
-
-        region = CommentAnchor.new(scope: "response", part: "output",
-                                   endpoint_path: "/users", endpoint_http_verb: 0, response_code: "200")
-        expect(turbo_actions).to include(
-          [ "append", "#{region.dom_id}_line_threads" ],
-          [ "remove", "#{region.dom_id}_form" ],
-          [ "update", "#{region.dom_id}_form_home" ]
-        )
-        expect(response.body).to include(">Collapsed<")
-        expect(turbo_actions.map(&:first)).not_to include("after")
+        expect(turbo_actions).to include([ "replace", line_anchor.dom_id ])
+        expect(response.body).to include("Pinned to the User row")
+        expect(response.body).to include("line 4")
       end
 
       describe "on an endpoint input" do
@@ -250,30 +347,13 @@ describe "Comments requests", type: :request do
           expect(Comment.last.anchor_snapshot).to eq("{name:string,email:string}")
         end
 
-        it "streams the thread inline after its row when the block was expanded" do
+        it "streams the thread into the pin on its own row" do
           sign_in(user)
           post project_candidate_comments_path(project.name, candidate.name),
-               params: input_params.merge(expanded: "true"), as: :turbo_stream
+               params: input_params, as: :turbo_stream
 
-          expect(turbo_actions).to include(
-            [ "after", %([data-line-pick="#{region.dom_id}"] [data-line-index="1"]) ],
-            [ "remove", "#{region.dom_id}_form" ],
-            [ "update", "#{region.dom_id}_form_home" ]
-          )
-          expect(response.body).to include(">Inlined<")
-        end
-
-        it "streams the thread into the below-block container when the block was collapsed" do
-          sign_in(user)
-          post project_candidate_comments_path(project.name, candidate.name),
-               params: input_params.merge(expanded: "false"), as: :turbo_stream
-
-          expect(turbo_actions).to include(
-            [ "append", "#{region.dom_id}_line_threads" ],
-            [ "remove", "#{region.dom_id}_form" ],
-            [ "update", "#{region.dom_id}_form_home" ]
-          )
-          expect(response.body).to include(">Collapsed<")
+          expect(turbo_actions).to include([ "replace", region.with_line(1).dom_id ])
+          expect(response.body).to include("Pinned to the name row")
         end
 
         it "counts an input thread into the endpoint's sidebar badge" do
@@ -293,10 +373,7 @@ describe "Comments requests", type: :request do
                                     endpoint_path: "/users", endpoint_http_verb: "0" } },
                as: :turbo_stream
 
-          expect(turbo_actions).to include(
-            [ "append", region.dom_id ],
-            [ "replace", "#{region.dom_id}_form" ]
-          )
+          expect(turbo_actions).to include([ "replace", region.dom_id ])
           expect(Comment.last.anchor_snapshot).to be_nil
         end
       end

@@ -3,7 +3,11 @@ require "digest/md5"
 class CommentAnchor
   IDENTITY_COLUMNS = %i[endpoint_path endpoint_http_verb entity_name response_code param_name param_location auth_method_name].freeze
   LINE_PARTS = %w[note output root input].freeze
-  private_constant :IDENTITY_COLUMNS, :LINE_PARTS
+  COLUMNS = %i[scope part line endpoint_path endpoint_http_verb entity_name response_code param_name param_location auth_method_name].freeze
+  # A region pin also carries the outdated line threads of the block below it,
+  # so it has to know which part those lines live on.
+  REGION_LINE_PARTS = { %w[response whole] => "output", %w[endpoint input] => "input", %w[entity whole] => "root" }.freeze
+  private_constant :IDENTITY_COLUMNS, :LINE_PARTS, :REGION_LINE_PARTS
 
   def self.parts_for(scope)
     CommentTarget.parts_for(scope)
@@ -137,16 +141,18 @@ class CommentAnchor
   end
 
   def to_columns
-    {
-      scope: scope, part: part, line: line,
-      endpoint_path: endpoint_path, endpoint_http_verb: endpoint_http_verb,
-      entity_name: entity_name, response_code: response_code,
-      param_name: param_name, param_location: param_location,
-      auth_method_name: auth_method_name
-    }
+    COLUMNS.index_with { |column| public_send(column) }
   end
 
-  def without_line
+  def region_line_part
+    REGION_LINE_PARTS[[ scope, part ]]
+  end
+
+  def with_part(new_part)
+    self.class.new(**to_columns.merge(part: new_part, line: nil))
+  end
+
+def without_line
     self.class.new(scope: scope, part: part,
                    endpoint_path: endpoint_path, endpoint_http_verb: endpoint_http_verb,
                    entity_name: entity_name, response_code: response_code,

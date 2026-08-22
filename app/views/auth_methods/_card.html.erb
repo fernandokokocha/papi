@@ -51,7 +51,7 @@
     <div class="relative min-w-0 flex-1">
       <div class="sticky top-[var(--pinned-offset)] z-10 grid grid-cols-2 gap-x-2 bg-slate-200">
         <% records.each_with_index do |record, index| %>
-          <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl <%= col %> <%= header_tint %>">
+          <div class="comment-host flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl <%= col %> <%= header_tint %>">
             <span class="truncate font-mono text-[13px] font-medium"><%= record.name %></span>
 
             <div class="ml-auto flex items-center gap-2">
@@ -64,7 +64,7 @@
               </label>
 
               <% if index == columns - 1 %>
-                <%= render "comments/thread_region", wrapper_class: reach,
+                <%= render "comments/rail", wrapper_class: reach,
                            anchor: CommentAnchor.for_auth_method(auth_method),
                            threads: candidate_comments.threads_for("auth_method", auth_method: auth_method, part: "whole") %>
               <% end %>
@@ -87,7 +87,7 @@
 
             <% columns.times do |index| %>
               <div class="bg-white shadow-sm <%= col %> <%= edge %>"><%= render "endpoints/section_band", label: "Note", toggle: nil,
-                         pin: (render("comments/thread_region", wrapper_class: region_reach,
+                         pin: (render("comments/rail", wrapper_class: region_reach,
                                       anchor: CommentAnchor.new(scope: "auth_method", part: "note", auth_method_name: auth_method.name),
                                       threads: candidate_comments.threads_for("auth_method", auth_method: auth_method, part: "note")) if index == columns - 1) %></div>
             <% end %>

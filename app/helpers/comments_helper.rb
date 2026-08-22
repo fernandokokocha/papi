@@ -25,6 +25,12 @@ module CommentsHelper
     @candidate_comments ||= CandidateComments.for(@candidate)
   end
 
+  def can_comment?
+    return @can_comment unless @can_comment.nil?
+
+    @can_comment = @candidate.present? && policy(Comment.new(candidate: @candidate)).create?
+  end
+
   def sidebar_count_dom_id(anchor)
     "sidebar_count_#{anchor.dom_id}"
   end
@@ -98,14 +104,10 @@ module CommentsHelper
     line_pick_attributes(CommentAnchor.for_entity_root(entity))
   end
 
-  def line_threads_by_row(lines, entities, line_comments)
-    return {} unless @candidate
+  def line_index_for(lines, entities)
+    return nil unless @candidate
 
-    by_line = line_comments.by_line
-    ExpandedLineIndex.new(lines, entities).to_a.each_with_index.filter_map do |line, row|
-      threads = by_line[line] if line
-      [ row, threads ] if threads
-    end.to_h
+    ExpandedLineIndex.new(lines, entities).to_a
   end
 
   def line_index_attr(map, index)

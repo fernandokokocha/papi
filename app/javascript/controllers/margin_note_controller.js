@@ -10,11 +10,15 @@ export default class extends Controller {
   open() {
     this.panelTarget.hidden = false
     this.lift(true)
+    this.dispatch("open")
   }
 
   close() {
+    if (this.panelTarget.hidden) return
+
     this.panelTarget.hidden = true
     this.lift(false)
+    this.dispatch("close")
   }
 
   dismiss(event) {

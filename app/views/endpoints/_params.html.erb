@@ -8,7 +8,7 @@
   <% rows.each do |row| %>
     <% if row %>
       <div class="whitespace-pre border-l-2 border-transparent pl-1.5 pr-5 font-mono text-[12px] leading-[18px] text-gray-900 <%= change_tint(row.line.change) if tints %>"><%= row.line.pre_type %></div>
-      <div class="flex items-center pr-2 font-mono text-[12px] leading-[18px] <%= change_tint(row.line.change) if tints %>"><span class="rounded px-1 ring-1 ring-inset <%= type_tint[row.line.class_name] %>"><%= row.line.type %></span><% if endpoint %><%= render "comments/thread_region", wrapper_class: reach,
+      <div class="comment-host flex items-center pr-2 font-mono text-[12px] leading-[18px] <%= change_tint(row.line.change) if tints %>"><span class="rounded px-1 ring-1 ring-inset <%= type_tint[row.line.class_name] %>"><%= row.line.type %></span><% if endpoint %><%= render "comments/rail", wrapper_class: reach,
                  anchor: CommentAnchor.for_endpoint_param(endpoint, row.name, location),
                  threads: candidate_comments.threads_for("param", endpoint: endpoint, param_name: row.name, param_location: location),
                  sublabel: row.name %><% end %></div>

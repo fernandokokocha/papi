@@ -54,7 +54,7 @@
 
 <div class="sticky top-[var(--pinned-offset)] z-10 grid grid-cols-2 gap-x-2 bg-slate-200">
   <% sides.each_with_index do |record, index| %>
-    <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl <%= col %> <%= header_tint %>">
+    <div class="comment-host flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl <%= col %> <%= header_tint %>">
       <span class="truncate font-mono text-[13px] font-medium"><%= render "endpoints/verb_badge", verb: record.verb %> <%= record.path %></span>
 
       <div class="ml-auto flex items-center gap-2">
@@ -82,7 +82,7 @@
         </label>
 
         <% if index == sides.size - 1 %>
-          <%= render "comments/thread_region", wrapper_class: reach,
+          <%= render "comments/rail", wrapper_class: reach,
                      anchor: CommentAnchor.for_endpoint(endpoint),
                      threads: candidate_comments.threads_for("endpoint", endpoint: endpoint, part: "whole") %>
         <% end %>
@@ -104,7 +104,7 @@
 
       <% if show_auth %>
         <% columns.times do |index| %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Auth", toggle: nil,
-                     pin: (render("comments/thread_region", wrapper_class: region_reach, anchor: CommentAnchor.for_endpoint_auth(endpoint),
+                     pin: (render("comments/rail", wrapper_class: region_reach, anchor: CommentAnchor.for_endpoint_auth(endpoint),
                                   threads: candidate_comments.threads_for("endpoint", endpoint: endpoint, part: "auth")) if index == columns - 1) %></div><% end %>
         <% [ [ previous, diff.auth.before_line ], [ current, diff.auth.after_line ] ].public_send(side, columns).each do |record, line| %>
           <% auth_method = record.auth_method %>
@@ -119,7 +119,7 @@
 
       <% note_anchor = CommentAnchor.new(scope: "endpoint", part: "note", endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb]) %>
       <% columns.times do |index| %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Note", toggle: nil,
-                   pin: (render("comments/thread_region", wrapper_class: region_reach, anchor: note_anchor,
+                   pin: (render("comments/rail", wrapper_class: region_reach, anchor: note_anchor,
                                 threads: candidate_comments.threads_for("endpoint", endpoint: endpoint, part: "note")) if index == columns - 1) %></div><% end %>
       <% [ diff.note.before, diff.note.after ].public_send(side, columns).each do |lines| %>
         <div class="<%= edge %> px-3 py-2">
@@ -135,7 +135,7 @@
                      toggle: (if input_expandable && index == columns - 1
                                 render "endpoints/ref_toggle", expanded: expanded.include?("input"), url: toggle_url.(toggled.("input"))
                               end),
-                     pin: (render("comments/thread_region", wrapper_class: region_reach, anchor: CommentAnchor.for_endpoint_input(endpoint),
+                     pin: (render("comments/rail", wrapper_class: region_reach, anchor: CommentAnchor.for_endpoint_input(endpoint),
                                   threads: candidate_comments.threads_for("endpoint", endpoint: endpoint, part: "input"),
                                   outdated: candidate_comments.endpoint_input_lines(endpoint).outdated) if index == columns - 1) %>
         </div>
@@ -144,7 +144,8 @@
       <% input_columns.each_with_index do |(lines, record, previous_record), index| %>
         <div class="<%= edge %> px-3 py-2"><%= render "endpoints/schema", lines: lines, tints: tints, notes: schema_notes_by_row(record, previous_record, lines),
                    line_anchor: CommentAnchor.for_endpoint_input(endpoint), line_reach: region_reach,
-                   line_threads: (line_threads_by_row(lines, endpoint.version.entities, candidate_comments.endpoint_input_lines(endpoint)) if index == columns - 1) %></div>
+                   line_index: (line_index_for(lines, endpoint.version.entities) if index == columns - 1), line_composable: !removed,
+                   line_comments: candidate_comments.endpoint_input_lines(endpoint) %></div>
       <% end %>
 
       <% columns.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Responses", toggle: nil %></div><% end %>
@@ -162,7 +163,7 @@
           <div class="<%= edge %> px-3 pt-2">
             <% if index > 0 %><div class="mb-2 h-px bg-gray-200"></div><% end %>
             <% if record %>
-              <div class="flex items-center gap-2 <%= "#{frame} rounded-t-md px-2 py-1.5" if framed %>">
+              <div class="comment-host flex items-center gap-2 <%= "#{frame} rounded-t-md px-2 py-1.5" if framed %>">
                 <span class="inline-flex items-center justify-center rounded bg-gray-100 px-1.5 py-1 font-mono text-[12px] font-bold leading-none text-gray-700 ring-1 ring-inset ring-gray-300"><%= response.code %></span>
                 <span class="truncate text-[13px] text-gray-600"><%= record.note %></span>
                 <div class="ml-auto flex items-center gap-2">
@@ -176,7 +177,7 @@
                     <%= render "endpoints/ref_toggle", expanded: expanded.include?(response.code), url: toggle_url.(toggled.(response.code)) %>
                   <% end %>
                   <% if column == chip_at %>
-                    <%= render "comments/thread_region", wrapper_class: region_reach,
+                    <%= render "comments/rail", wrapper_class: region_reach,
                                anchor: CommentAnchor.new(scope: "response", part: "whole", endpoint_path: endpoint.path,
                                                          endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb], response_code: response.code),
                                threads: candidate_comments.threads_for("response", endpoint: endpoint, response_code: response.code),
@@ -197,7 +198,8 @@
               <div class="<%= "#{frame} rounded-b-md px-2 pb-2" if framed %>">
                 <%= render "endpoints/schema", lines: output_lines, tints: tints && !framed, notes: schema_notes_by_row(record, previous_record, output_lines),
                            line_anchor: CommentAnchor.for_response_output(endpoint, response.code), line_reach: region_reach,
-                           line_threads: (line_threads_by_row(output_lines, endpoint.version.entities, candidate_comments.response_output_lines(endpoint, response.code)) if column == columns - 1) %>
+                           line_index: (line_index_for(output_lines, endpoint.version.entities) if column == columns - 1), line_composable: !removed,
+                           line_comments: candidate_comments.response_output_lines(endpoint, response.code) %>
               </div>
             <% end %>
           </div>

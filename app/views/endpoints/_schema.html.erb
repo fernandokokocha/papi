@@ -1,5 +1,6 @@
 <% notes = local_assigns[:notes] || {} %>
-<% line_threads = local_assigns[:line_threads] || {} %>
+<% line_index = local_assigns[:line_index] %>
+<% by_line = local_assigns[:line_comments]&.by_line || {} %>
 <% line_anchor = local_assigns[:line_anchor] %>
 <% type_tint = {
   "string" => "bg-green-100 text-green-800 ring-green-200",
@@ -21,11 +22,12 @@
     <% number = 0 %>
     <% lines.lines.each_with_index do |line, row| %>
       <% number += 1 unless line.change == :blank %>
-      <% threads = line_threads[row] %>
-      <div class="flex min-h-[18px] border-l-2 border-transparent pr-2.5 <%= change_tint(line.change) if tints %>">
-        <% if threads %>
-          <%= render "comments/thread_region", wrapper_class: "#{local_assigns[:line_reach]} h-[18px]",
-                     anchor: line_anchor.with_line(threads.first.line), threads: threads,
+      <% index = line_index && line_index[row] %>
+      <div class="comment-host flex min-h-[18px] border-l-2 border-transparent pr-2.5 <%= change_tint(line.change) if tints %>">
+        <% if index %>
+          <%= render "comments/rail", wrapper_class: "#{local_assigns[:line_reach]} h-[18px]",
+                     anchor: line_anchor.with_line(index), threads: by_line[index] || [],
+                     composable: local_assigns.fetch(:line_composable, true),
                      sublabel: "line #{number}" %>
         <% end %>
         <span class="w-8 shrink-0 select-none pr-2 text-right font-mono text-[11px] leading-[18px] text-slate-400"><%= number unless line.change == :blank %></span>

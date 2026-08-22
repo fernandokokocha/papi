@@ -301,47 +301,7 @@ select:has(option[value="oneOf"]:checked)   { background: aquamarine; }
   border-radius: 0.5rem;
 }
 
-.comment-pin {
-  position: fixed;
-  z-index: 60;
-  display: none;
-  pointer-events: none;
-  font-size: 20px;
-  line-height: 1;
-  transform: translate(2px, -26px);
-  filter: drop-shadow(0 2px 3px rgba(16, 24, 40, 0.35));
-}
-body.commenting .comment-pin { display: block; }
-body.commenting, body.commenting * { cursor: none; }
-body.commenting .anchor-strip, body.commenting .anchor-strip * { cursor: auto; }
-body.commenting [data-comment-toolbar], body.commenting [data-comment-toolbar] * { cursor: auto; }
-body.commenting [data-comment-exempt], body.commenting [data-comment-exempt] * { cursor: auto; }
-body.commenting .anchor-strip textarea, body.commenting [data-comment-exempt] textarea { cursor: text; }
-body.commenting [data-action*="expandable#"] { pointer-events: none; }
-
-.line-pick-highlight {
-  background-color: var(--color-sky-100);
-  outline: 2px solid var(--color-sky-400);
-  outline-offset: -2px;
-  border-radius: 0.25rem;
-}
-.line-picked {
-  background-color: var(--color-sky-100);
-  outline: 2px solid var(--color-sky-500);
-  outline-offset: -2px;
-  border-radius: 0.25rem;
-}
-
 .margin-note-open { z-index: 40; }
-
-/* ── Comment display ── */
-
-body.comments-hidden .anchor-strip,
-body.comments-hidden .inline-line-comment,
-body.comments-hidden .candidate-conversation,
-body.comments-hidden [data-comment-form] { display: none; }
-
-.anchor-strip:not(:has(.comment-thread)) { margin-top: 0; gap: 0; }
 
 /* ── Projects page view toggle ── */
 
@@ -451,7 +411,8 @@ body.comments-hidden [data-comment-form] { display: none; }
 
 /* ── Margin comment pins ── */
 
-.anchor-line { background: var(--color-slate-200); }
+.anchor-line { background: transparent; }
+.anchor-strip:has(.anchor-pin:not(.anchor-pin-empty)) .anchor-line { background: var(--color-slate-200); }
 
 .anchor-pin {
   color: var(--color-slate-400);
@@ -462,29 +423,58 @@ body.comments-hidden [data-comment-form] { display: none; }
 
 .anchor-pin-count { background: var(--color-slate-300); color: var(--color-slate-600); }
 
-.pin-icon-check { display: none; }
+/* An empty pin is nothing until its row is hovered — then it is the + itself. */
+.anchor-pin-empty { opacity: 0; pointer-events: none; transition: opacity 120ms ease-out; }
+.comment-host:hover .anchor-pin-empty, .anchor-pin-empty:focus-visible { pointer-events: auto; }
 
-.pin-has-fresh .pin-icon-bubble { display: none; }
-.pin-has-fresh .pin-icon-check { display: block; }
+.pin-icon-check, .pin-icon-plus { display: none; }
 
-.pin-has-fresh:has(.pin-fresh [data-live-thread]) .pin-icon-bubble { display: block; }
-.pin-has-fresh:has(.pin-fresh [data-live-thread]) .pin-icon-check { display: none; }
+.anchor-strip:has(.pin-fresh) .pin-icon-bubble { display: none; }
+.anchor-strip:has(.pin-fresh) .pin-icon-check { display: block; }
 
-.pin-has-fresh:has(.pin-fresh [data-live-thread]) .anchor-line { background: var(--color-slate-400); }
-.pin-has-fresh:has(.pin-fresh [data-live-thread]):hover .anchor-line { background: var(--color-sky-500); }
+.anchor-strip:has(.pin-fresh [data-live-thread]) .pin-icon-bubble { display: block; }
+.anchor-strip:has(.pin-fresh [data-live-thread]) .pin-icon-check { display: none; }
 
-.pin-has-fresh:has(.pin-fresh [data-live-thread]) .anchor-pin {
+/* Hovering the row covers whatever the pin was showing with the +. Matching on
+   the + itself both outranks the :has() rules above and leaves a pin that has
+   no + — a removed record's line — showing what it always showed. */
+.comment-host:hover .anchor-pin:has(.pin-icon-plus) .pin-icon-bubble,
+.comment-host:hover .anchor-pin:has(.pin-icon-plus) .pin-icon-check { display: none; }
+.comment-host:hover .pin-icon-plus { display: block; }
+
+.anchor-strip:has(.pin-fresh [data-live-thread]) .anchor-line { background: var(--color-slate-400); }
+.anchor-strip:has(.pin-fresh [data-live-thread]):hover .anchor-line { background: var(--color-sky-500); }
+
+.anchor-strip:has(.pin-fresh [data-live-thread]) .anchor-pin {
   color: white;
   background: var(--color-sky-600);
   box-shadow: inset 0 0 0 1px var(--color-sky-600), 0 1px 3px rgb(2 132 199 / 0.45);
   opacity: 1;
 }
-.pin-has-fresh:has(.pin-fresh [data-live-thread]) .anchor-pin:hover {
+.anchor-strip:has(.pin-fresh [data-live-thread]) .anchor-pin:hover {
   background: var(--color-sky-700);
   box-shadow: inset 0 0 0 1px var(--color-sky-700), 0 2px 5px rgb(2 132 199 / 0.5);
 }
 
-.pin-has-fresh:has(.pin-fresh [data-live-thread]) .anchor-pin-count {
+.anchor-strip:has(.pin-fresh [data-live-thread]) .anchor-pin-count {
   background: var(--color-slate-700);
   color: white;
+}
+
+/* One + everywhere: while its row is hovered a pin drops whatever state it was
+   showing and becomes the same control an empty rail offers. */
+.comment-host:hover .anchor-pin:has(.pin-icon-plus) {
+  color: var(--color-slate-500);
+  background: white;
+  box-shadow: inset 0 0 0 1px var(--color-slate-300), 0 1px 2px rgb(0 0 0 / 0.05);
+  opacity: 1;
+}
+.comment-host:hover .anchor-pin:has(.pin-icon-plus):hover {
+  color: white;
+  background: var(--color-sky-600);
+  box-shadow: inset 0 0 0 1px var(--color-sky-600), 0 1px 3px rgb(2 132 199 / 0.45);
+}
+.comment-host:hover .anchor-pin:has(.pin-icon-plus) + .anchor-pin-count {
+  background: var(--color-slate-300);
+  color: var(--color-slate-600);
 }

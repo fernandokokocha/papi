@@ -1,0 +1,4 @@
+<div id="<%= anchor.dom_id %>" class="relative flex h-7 w-7 shrink-0 items-center justify-center">
+  <%= render "comments/thread_pin", anchor: anchor, threads: threads, outdated: outdated,
+             composable: local_assigns.fetch(:composable, can_comment?), sublabel: sublabel %>
+</div>
