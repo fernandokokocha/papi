@@ -114,9 +114,9 @@ deleted — that page no longer carries it.
 ### Candidate page
 
 47. ~~Identity — project, name, state chip, proposed / decided by~~
-48. Approvals — count, approvers, the approve toggle
-49. Comparison rail and actions — Edit, Reject, Merge; View version when merged
-50. Conversation — candidate-level threads and the compose form
+48. ~~Approvals — count, approvers, the approve toggle~~
+49. ~~Comparison rail and actions — Edit, Reject, Merge; View version when merged~~
+50. ~~Conversation — candidate-level threads and the compose form~~
 
 ### Minor pages
 

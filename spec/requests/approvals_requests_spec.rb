@@ -46,7 +46,7 @@ describe "Approvals requests", type: :request do
     end
 
     it "refuses a candidate that is no longer open" do
-      candidate.merge!
+      candidate.reject!
       sign_in(reviewer)
 
       post project_candidate_approval_path(project.name, candidate.name)
@@ -77,17 +77,29 @@ describe "Approvals requests", type: :request do
 
       get project_candidate_path(project.name, candidate.name)
 
-      expect(response.body).to include("Approved by reviewer@example.com")
+      expect(response.body).to include("Approved by")
+      expect(response.body).to include("reviewer@example.com")
     end
 
     it "offers the button to a reviewer and withdraws it from the author" do
       sign_in(reviewer)
       get project_candidate_path(project.name, candidate.name)
-      expect(response.body).to include("👍 Approve")
+      expect(response.body).to include(">Approve<")
 
       sign_in(author)
       get project_candidate_path(project.name, candidate.name)
-      expect(response.body).not_to include("👍 Approve")
+      expect(response.body).not_to include(">Approve<")
+    end
+
+    it "takes the way back off a candidate that has been decided" do
+      FactoryBot.create :approval, candidate: candidate, user: reviewer
+      candidate.reject!
+      sign_in(reviewer)
+
+      get project_candidate_path(project.name, candidate.name)
+
+      expect(response.body).to include("reviewer@example.com")
+      expect(response.body).not_to include(">Approved ✓<")
     end
 
     it "offers a reviewer who already approved the way back" do
@@ -96,7 +108,7 @@ describe "Approvals requests", type: :request do
 
       get project_candidate_path(project.name, candidate.name)
 
-      expect(response.body).to include("Approved ✓")
+      expect(response.body).to include(">Approved ✓<")
     end
 
     it "counts the approvals in the candidate history" do

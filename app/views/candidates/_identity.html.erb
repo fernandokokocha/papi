@@ -25,5 +25,25 @@
         <% end %>
       </div>
     </div>
+
+    <div class="flex shrink-0 flex-col items-end gap-2">
+      <div class="flex flex-wrap items-center justify-end gap-2">
+        <% if @candidate.open? %>
+          <%= link_to "Edit", edit_project_candidate_path(@project.name, @candidate.name),
+                class: "rounded-md border border-slate-400 bg-white px-3 py-1.5 text-[13px] font-semibold text-slate-900 hover:bg-slate-50" %>
+          <%= button_to "Reject", project_candidate_rejection_path(@project.name, @candidate.name),
+                class: "cursor-pointer rounded-md border border-rose-300 bg-white px-3 py-1.5 text-[13px] font-semibold text-rose-700 hover:border-rose-400 hover:bg-rose-50" %>
+          <%= button_to "Merge", project_candidate_merge_path(@project.name, @candidate.name),
+                class: "cursor-pointer rounded-md border border-emerald-800 bg-emerald-700 px-3 py-1.5 text-[13px] font-semibold text-white hover:bg-emerald-800" %>
+        <% elsif @candidate.merged? %>
+          <%= link_to project_version_path(@project.name, @candidate.promoted_version.name),
+                class: "rounded-md border border-slate-400 bg-white px-3 py-1.5 text-[13px] font-semibold text-slate-900 hover:bg-slate-50" do %>
+            View version <span class="font-mono"><%= @candidate.promoted_version.name %></span> →
+          <% end %>
+        <% end %>
+      </div>
+
+      <%= render "candidates/approvals" %>
+    </div>
   </div>
 </header>
