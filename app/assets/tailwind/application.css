@@ -448,3 +448,43 @@ body.comments-hidden [data-comment-form] { display: none; }
 }
 
 .node-note-done:hover { background: var(--color-cyan-700); }
+
+/* ── Margin comment pins ── */
+
+.anchor-line { background: var(--color-slate-200); }
+
+.anchor-pin {
+  color: var(--color-slate-400);
+  box-shadow: inset 0 0 0 1px var(--color-slate-200), 0 1px 2px rgb(0 0 0 / 0.05);
+  opacity: 0.65;
+}
+.anchor-pin:hover { opacity: 1; box-shadow: inset 0 0 0 2px var(--color-slate-400), 0 1px 2px rgb(0 0 0 / 0.05); }
+
+.anchor-pin-count { background: var(--color-slate-300); color: var(--color-slate-600); }
+
+.pin-icon-check { display: none; }
+
+.pin-has-fresh .pin-icon-bubble { display: none; }
+.pin-has-fresh .pin-icon-check { display: block; }
+
+.pin-has-fresh:has(.pin-fresh [data-live-thread]) .pin-icon-bubble { display: block; }
+.pin-has-fresh:has(.pin-fresh [data-live-thread]) .pin-icon-check { display: none; }
+
+.pin-has-fresh:has(.pin-fresh [data-live-thread]) .anchor-line { background: var(--color-slate-400); }
+.pin-has-fresh:has(.pin-fresh [data-live-thread]):hover .anchor-line { background: var(--color-sky-500); }
+
+.pin-has-fresh:has(.pin-fresh [data-live-thread]) .anchor-pin {
+  color: white;
+  background: var(--color-sky-600);
+  box-shadow: inset 0 0 0 1px var(--color-sky-600), 0 1px 3px rgb(2 132 199 / 0.45);
+  opacity: 1;
+}
+.pin-has-fresh:has(.pin-fresh [data-live-thread]) .anchor-pin:hover {
+  background: var(--color-sky-700);
+  box-shadow: inset 0 0 0 1px var(--color-sky-700), 0 2px 5px rgb(2 132 199 / 0.5);
+}
+
+.pin-has-fresh:has(.pin-fresh [data-live-thread]) .anchor-pin-count {
+  background: var(--color-slate-700);
+  color: white;
+}

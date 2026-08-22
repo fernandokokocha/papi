@@ -57,7 +57,7 @@ describe "Comments requests", type: :request do
       expect(textarea_contents).to all(be_blank)
     end
 
-    it "answers a turbo stream that appends a reply into its thread" do
+    it "answers a turbo stream that replaces the thread with the reply in it" do
       root = FactoryBot.create :comment, candidate: candidate
       sign_in(user)
       post project_candidate_comments_path(project.name, candidate.name),
@@ -65,10 +65,7 @@ describe "Comments requests", type: :request do
            headers: { "Accept" => "text/vnd.turbo-stream.html" }
 
       expect(response.media_type).to eq("text/vnd.turbo-stream.html")
-      expect(turbo_actions).to include(
-        [ "append", "replies_comment_#{root.id}" ],
-        [ "update", "reply_form_comment_#{root.id}" ]
-      )
+      expect(turbo_actions).to include([ "replace", "comment_#{root.id}" ])
       expect(response.body).to include("Agreed.")
     end
 

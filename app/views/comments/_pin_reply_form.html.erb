@@ -1,0 +1,10 @@
+<%= form_with model: Comment.new, url: project_candidate_comments_path(parent.candidate.project.name, parent.candidate.name), data: { turbo: true } do |form| %>
+  <%= form.hidden_field :parent_id, value: parent.id %>
+  <%= form.text_area :body, rows: 3, required: true, placeholder: "Write a reply…",
+        class: "w-full resize-y rounded border border-slate-300 bg-white px-2 py-1.5 text-[12px] leading-5 text-slate-800 placeholder-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" %>
+  <div class="mt-1.5 flex justify-end gap-1.5">
+    <button type="button" data-action="reply#cancel"
+            class="cursor-pointer rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-medium text-slate-600 hover:bg-slate-50">Cancel</button>
+    <%= form.submit "Reply", class: "cursor-pointer rounded bg-sky-600 px-2.5 py-1 text-[11px] font-medium text-white hover:bg-sky-700" %>
+  </div>
+<% end %>

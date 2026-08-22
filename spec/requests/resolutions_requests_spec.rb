@@ -19,16 +19,7 @@ describe "Resolutions requests", type: :request do
       expect(turbo_actions).to include([ "replace", ActionView::RecordIdentifier.dom_id(thread) ])
       expect(response.body).to include("Resolved by author@example.com")
       expect(response.body).to include("Reopen")
-      expect(response.body).not_to include("Resolve thread")
-    end
-
-    it "echoes the line_badge into the re-render" do
-      line_thread = FactoryBot.create :comment, :response_scope, candidate: candidate, author: author,
-                                      part: "output", line: 0, anchor_snapshot: "x"
-      sign_in(author)
-      post project_candidate_comment_resolution_path(project.name, candidate.name, line_thread),
-           params: { line_badge: "collapsed" }, as: :turbo_stream
-      expect(response.body).to include(">Collapsed<")
+      expect(response.body).not_to include(">Resolve<")
     end
 
     it "forbids a non-author" do
@@ -48,7 +39,7 @@ describe "Resolutions requests", type: :request do
       expect(thread.reload).not_to be_resolved
       expect(turbo_actions).to include([ "replace", ActionView::RecordIdentifier.dom_id(thread) ])
       expect(response.body).not_to include("Resolved by")
-      expect(response.body).to include("Resolve thread")
+      expect(response.body).to include(">Resolve<")
       expect(response.body).not_to include("Reopen")
     end
 

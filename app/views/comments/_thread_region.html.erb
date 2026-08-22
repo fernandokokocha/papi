@@ -1,7 +1,7 @@
 <% outdated = local_assigns[:outdated] || [] %>
 <% if @candidate && (threads.any? || outdated.any?) %>
-  <div class="anchor-strip group/note absolute -right-10 flex items-center font-sans <%= local_assigns[:wrapper_class] %>">
-    <span class="pointer-events-none h-px flex-1 <%= threads.any? ? "bg-slate-400 group-hover/note:bg-sky-500" : "bg-slate-300" %>"></span>
+  <div class="anchor-strip group/note absolute -right-10 flex items-center font-sans <%= "pin-has-fresh" if threads.any? %> <%= local_assigns[:wrapper_class] %>">
+    <span class="anchor-line pointer-events-none h-px flex-1"></span>
     <div id="<%= anchor.dom_id %>" class="shrink-0">
       <%= render "comments/thread_pin", anchor: anchor, threads: threads, outdated: outdated, sublabel: local_assigns[:sublabel] %>
     </div>
