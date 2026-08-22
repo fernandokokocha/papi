@@ -89,7 +89,8 @@ deleted — that page no longer carries it.
 
 32. ~~Count badges — sidebar and card~~
 33. ~~Line note badges + hover cards~~
-34. Card-level threads
+34a. ~~Card-level threads~~
+34b. Region and line threads
 35. Reply and resolve
 36. Comment / Display toolbar
 

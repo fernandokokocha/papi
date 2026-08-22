@@ -45,47 +45,55 @@
 <div id="auth-<%= auth_method.name %>" class="group scroll-mt-[var(--pinned-offset)]" data-sidebar-target="card">
   <input type="checkbox" id="<%= fold_id %>" class="sr-only">
 
-  <div class="sticky top-[var(--pinned-offset)] z-10 grid grid-cols-2 gap-x-2 bg-slate-200">
-    <% records.each_with_index do |record, index| %>
-      <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl <%= col %> <%= header_tint %>">
-        <span class="truncate font-mono text-[13px] font-medium"><%= record.name %></span>
+  <div class="flex items-start gap-3">
+    <div class="min-w-0 flex-1">
+      <div class="sticky top-[var(--pinned-offset)] z-10 grid grid-cols-2 gap-x-2 bg-slate-200">
+        <% records.each_with_index do |record, index| %>
+          <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl <%= col %> <%= header_tint %>">
+            <span class="truncate font-mono text-[13px] font-medium"><%= record.name %></span>
 
-        <div class="ml-auto flex items-center gap-2">
-          <label for="<%= fold_id %>"
-                 class="flex h-5 w-5 shrink-0 cursor-pointer select-none items-center justify-center rounded <%= header_affordance %>">
-            <svg class="h-3.5 w-3.5 transition-transform duration-200 ease-out group-has-[>input:checked]:-rotate-90" viewBox="0 0 20 20"
-                 fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
-              <path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-          </label>
-        </div>
-      </div>
-    <% end %>
-  </div>
-
-  <div class="grid grid-rows-[1fr] transition-[grid-template-rows] duration-200 ease-out group-has-[>input:checked]:grid-rows-[0fr]">
-    <div class="overflow-hidden">
-      <div class="grid grid-cols-2 gap-x-2">
-        <% columns.times do %>
-          <div class="bg-white shadow-sm <%= col %> <%= edge %>"><%= render "endpoints/section_band", label: "Kind", toggle: nil %></div>
-        <% end %>
-        <% records.each do |record| %>
-          <div class="bg-white px-3 py-2 shadow-sm <%= col %> <%= edge %>">
-            <div class="border-l-2 border-transparent pl-1.5 font-mono text-[12px] leading-[18px] text-gray-900 <%= change_tint(kind_change) if tints %>"><%= record.kind %></div>
+            <div class="ml-auto flex items-center gap-2">
+              <label for="<%= fold_id %>"
+                     class="flex h-5 w-5 shrink-0 cursor-pointer select-none items-center justify-center rounded <%= header_affordance %>">
+                <svg class="h-3.5 w-3.5 transition-transform duration-200 ease-out group-has-[>input:checked]:-rotate-90" viewBox="0 0 20 20"
+                     fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </label>
+            </div>
           </div>
         <% end %>
+      </div>
 
-        <% columns.times do %>
-          <div class="bg-white shadow-sm <%= col %> <%= edge %>"><%= render "endpoints/section_band", label: "Note", toggle: nil %></div>
-        <% end %>
-        <% (tints ? [ notes.before, notes.after ] : [ notes.after ]).each do |lines| %>
-          <div class="bg-white px-3 py-2 shadow-sm <%= col %> <%= edge %> <%= edge_bottom %>">
-            <% lines.each do |line| %>
-              <div class="min-h-[20px] border-l-2 border-transparent pl-1.5 pr-2 text-sm leading-[20px] text-gray-700 <%= change_tint(line.change) if tints %>"><%= line.whole_line %></div>
+      <div class="grid grid-rows-[1fr] transition-[grid-template-rows] duration-200 ease-out group-has-[>input:checked]:grid-rows-[0fr]">
+        <div class="overflow-hidden">
+          <div class="grid grid-cols-2 gap-x-2">
+            <% columns.times do %>
+              <div class="bg-white shadow-sm <%= col %> <%= edge %>"><%= render "endpoints/section_band", label: "Kind", toggle: nil %></div>
+            <% end %>
+            <% records.each do |record| %>
+              <div class="bg-white px-3 py-2 shadow-sm <%= col %> <%= edge %>">
+                <div class="border-l-2 border-transparent pl-1.5 font-mono text-[12px] leading-[18px] text-gray-900 <%= change_tint(kind_change) if tints %>"><%= record.kind %></div>
+              </div>
+            <% end %>
+
+            <% columns.times do %>
+              <div class="bg-white shadow-sm <%= col %> <%= edge %>"><%= render "endpoints/section_band", label: "Note", toggle: nil %></div>
+            <% end %>
+            <% (tints ? [ notes.before, notes.after ] : [ notes.after ]).each do |lines| %>
+              <div class="bg-white px-3 py-2 shadow-sm <%= col %> <%= edge %> <%= edge_bottom %>">
+                <% lines.each do |line| %>
+                  <div class="min-h-[20px] border-l-2 border-transparent pl-1.5 pr-2 text-sm leading-[20px] text-gray-700 <%= change_tint(line.change) if tints %>"><%= line.whole_line %></div>
+                <% end %>
+              </div>
             <% end %>
           </div>
-        <% end %>
+        </div>
       </div>
     </div>
+
+    <%= render "comments/thread_margin",
+               anchor: CommentAnchor.for_auth_method(auth_method),
+               threads: candidate_comments.threads_for("auth_method", auth_method: auth_method, part: "whole") %>
   </div>
 </div>
