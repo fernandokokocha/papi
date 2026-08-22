@@ -1,0 +1,15 @@
+<% threads = candidate_comments.threads_for("candidate") %>
+<div class="flex flex-col gap-3" data-comment-exempt>
+  <div id="candidate_comment_threads" class="flex flex-col gap-3">
+    <% threads.each do |thread| %>
+      <%= render "comments/conversation_thread", comment: thread %>
+    <% end %>
+    <% if threads.empty? %>
+      <p id="no_comments_message" class="text-[14px] text-slate-500">No comments yet.</p>
+    <% end %>
+  </div>
+
+  <div id="new_comment_form">
+    <%= render "comments/conversation_form", candidate: @candidate %>
+  </div>
+</div>

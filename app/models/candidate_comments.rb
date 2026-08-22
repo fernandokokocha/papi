@@ -19,6 +19,7 @@ class CandidateComments
     @entity_cards = {}
     @auth_method_cards = {}
     @release_notes_card = { whole: [], lines: [] }
+    @candidate_card = { whole: [], lines: [] }
     @response_lines = {}
     @entity_lines = {}
     @input_lines = {}
@@ -89,6 +90,8 @@ class CandidateComments
       into_card(@auth_method_cards, comment.auth_method_name, comment)
     when "release_notes"
       @release_notes_card[:whole] << comment
+    when "candidate"
+      @candidate_card[:whole] << comment
     end
   end
 
@@ -98,7 +101,9 @@ class CandidateComments
   end
 
   def card_for_anchor(anchor)
-    if anchor.scope == "release_notes"
+    if anchor.scope == "candidate"
+      @candidate_card
+    elsif anchor.scope == "release_notes"
       @release_notes_card
     elsif anchor.scope == "entity"
       @entity_cards.fetch(anchor.entity_name, EMPTY_CARD)

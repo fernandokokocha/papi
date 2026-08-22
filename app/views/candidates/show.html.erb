@@ -1,6 +1,9 @@
-<div class="group -mt-6 flex" data-controller="sidebar" data-sidebar="open">
+<% content_for :topbar_class, "w-full" %>
+<% content_for :main_class, "w-full" %>
+
+<div class="group flex" data-controller="sidebar" data-sidebar="open">
 <%= render "versions/sidebar" %>
-<div class="min-w-0 flex-1 px-6 pt-6">
+<div class="min-w-0 flex-1 px-6 pb-16 pt-6">
 <div class="mb-4"><%= render "versions/sidebar_toggle" %></div>
 <div class="mb-6 flex items-center justify-between">
   <div>
@@ -46,46 +49,12 @@
   <% end %>
 </div>
 
-<%= render "versions/endpoints_and_entities" do %>
-  <div class="grid grid-cols-2 gap-2 mb-6">
-    <div class="bg-white border border-gray-200 rounded-lg p-4">
-      <% if @comparison.before.order > -1 %>
-        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Base Version</div>
-        <div class="text-lg font-semibold text-gray-900"><%= @comparison.before.name %></div>
-        <div class="text-sm text-gray-500"><%= @comparison.before.created_at.strftime("%Y-%m-%d") %></div>
-      <% else %>
-        <div class="text-sm text-gray-400 italic">No base version</div>
-      <% end %>
-    </div>
-    <div class="bg-white border border-gray-200 rounded-lg p-4">
-      <% if @comparison.after.persisted? %>
-        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Current Version</div>
-        <div class="text-lg font-semibold text-gray-900"><%= @comparison.after.name %></div>
-        <div class="text-sm text-gray-500"><%= @comparison.after.created_at.strftime("%Y-%m-%d") %></div>
-      <% else %>
-        <div class="text-sm text-gray-400 italic">No current version</div>
-      <% end %>
-    </div>
-  </div>
-
-  <%= render "versions/release_notes", version: @comparison.after %>
+<%= render layout: "versions/section", locals: { label: "Conversation", id: "conversation" } do %>
+  <%= render "comments/conversation" %>
 <% end %>
 
-<section class="mt-10 candidate-conversation" data-comment-exempt>
-  <h2 class="text-xl font-semibold text-gray-900 mb-4">Conversation</h2>
-  <% candidate_threads = candidate_comments.threads_for("candidate") %>
-  <div id="candidate_comment_threads" class="flex flex-col gap-3">
-    <% candidate_threads.each do |thread| %>
-      <%= render "comments/thread", comment: thread %>
-    <% end %>
-    <% if candidate_threads.empty? %>
-      <p id="no_comments_message" class="text-sm text-gray-500">No comments yet.</p>
-    <% end %>
-  </div>
-  <div id="new_comment_form" class="mt-6">
-    <%= render "comments/form", candidate: @candidate, parent: nil, anchor: CommentAnchor.for_candidate %>
-  </div>
-</section>
+<%= render "versions/release_notes_section" %>
+<%= render "versions/endpoints_and_entities" %>
 
 </div>
 </div>

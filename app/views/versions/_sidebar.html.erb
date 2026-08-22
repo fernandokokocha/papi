@@ -9,6 +9,15 @@
 
 <aside class="sticky top-0 h-screen w-64 shrink-0 overflow-y-auto overflow-x-hidden border-r border-slate-400 transition-[width] duration-200 ease-out group-data-[sidebar=collapsed]:w-0 group-data-[sidebar=collapsed]:border-r-0">
   <div class="flex w-64 flex-col px-3 pb-2">
+    <% if @candidate %>
+      <a href="#conversation"
+         data-sidebar-target="link"
+         class="-mx-3 flex h-7 items-center gap-2 pl-7 pr-2 text-[12px] font-semibold text-slate-800 hover:bg-white">
+        <span class="truncate">Conversation</span>
+        <%= sidebar_count_badge(CommentAnchor.for_candidate) %>
+      </a>
+    <% end %>
+
     <% if [ @comparison.before, @comparison.after ].any? { |version| version.release_notes.present? } %>
       <a href="#release-notes"
          data-sidebar-target="link"

@@ -14,10 +14,13 @@
 <% elsif @comment.scope == "candidate" %>
   <%= turbo_stream.remove "no_comments_message" %>
   <%= turbo_stream.append "candidate_comment_threads" do %>
-    <%= render "comments/thread", comment: @comment %>
+    <%= render "comments/conversation_thread", comment: @comment %>
   <% end %>
   <%= turbo_stream.update "new_comment_form" do %>
-    <%= render "comments/form", candidate: @candidate, parent: nil, anchor: CommentAnchor.for_candidate %>
+    <%= render "comments/conversation_form", candidate: @candidate %>
+  <% end %>
+  <%= turbo_stream.update sidebar_count_dom_id(CommentAnchor.for_candidate) do %>
+    <%= render "comments/count_badge", count: candidate_comments.sidebar_count(CommentAnchor.for_candidate) %>
   <% end %>
 <% else %>
   <% region_anchor = @comment.anchor.without_line %>
