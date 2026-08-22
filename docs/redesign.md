@@ -102,7 +102,7 @@ deleted — that page no longer carries it.
 ### Shell
 
 41. ~~Page geometry — full-bleed shell, sidebar column, diff pane~~
-42. Topbar identity — logo, user, log out
+42. ~~Topbar identity — logo, user, log out~~
 43. ~~Sticky behaviour — the page scrolls, the rail pins, the sidebar holds its own scroll~~
 
 ### History page

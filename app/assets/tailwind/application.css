@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+.logotype {
+  font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+}
+
 /* ── Sidebar & current-card highlight ── */
 
 body {
