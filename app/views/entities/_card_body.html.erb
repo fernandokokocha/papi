@@ -4,7 +4,7 @@
 <% removed = entity.annotation == "removed" %>
 <% changed = entity.annotation == "changed" %>
 <% expandable = [ previous, entity ].compact.any? { |e| e.parsed_root.expandable? } %>
-<% toggle_url = project_entity_card_path(project_name: project_name, entity_id: entity.id, base: base, annotation: entity.annotation, expanded: !expanded) %>
+<% toggle_url = project_entity_card_path(project_name: project_name, entity_id: entity.id, base: base, annotation: entity.annotation, expanded: !expanded, candidate: @candidate&.name) %>
 <% header_tint = if added
      "border-emerald-700 bg-emerald-700 text-white"
    elsif removed
@@ -81,9 +81,11 @@
            diff = Diff::FromValues.new(previous.parsed_root(expanded: expanded), entity.parsed_root(expanded: expanded))
            [ [ diff.before, previous, nil ], [ diff.after, entity, previous ] ]
          end %>
-      <% columns_of_lines.each do |lines, record, previous_record| %>
+      <% columns_of_lines.each_with_index do |(lines, record, previous_record), index| %>
         <div class="rounded-b-xl bg-white px-3 py-2 shadow-sm <%= col %> <%= edge %>">
-          <%= render "endpoints/schema", lines: lines, tints: columns == 2, notes: schema_notes_by_row(record, previous_record, lines) %>
+          <%= render "endpoints/schema", lines: lines, tints: columns == 2, notes: schema_notes_by_row(record, previous_record, lines),
+                     line_anchor: CommentAnchor.for_entity_root(entity), line_reach: "#{reach} group-has-[>input:checked]:hidden",
+                     line_threads: (line_threads_by_row(lines, entity.version.entities, candidate_comments.entity_root_lines(entity)) if index == columns - 1) %>
         </div>
       <% end %>
     </div>

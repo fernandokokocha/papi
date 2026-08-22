@@ -332,6 +332,8 @@ body.commenting [data-action*="expandable#"] { pointer-events: none; }
   border-radius: 0.25rem;
 }
 
+.margin-note-open { z-index: 40; }
+
 /* ── Comment display ── */
 
 body.comments-hidden .anchor-strip,

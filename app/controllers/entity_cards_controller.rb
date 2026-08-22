@@ -1,6 +1,7 @@
 class EntityCardsController < ApplicationController
   def show
     @project = Project.find_by!(name: params[:project_name])
+    @candidate = @project.candidates.find_by(name: params[:candidate])
     entity = Entity.find(params[:entity_id])
     authorize entity
 

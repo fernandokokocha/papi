@@ -1,6 +1,7 @@
 class EndpointCardsController < ApplicationController
   def show
     @project = Project.find_by!(name: params[:project_name])
+    @candidate = @project.candidates.find_by(name: params[:candidate])
     endpoint = Endpoint.find(params[:endpoint_id])
     authorize endpoint
 

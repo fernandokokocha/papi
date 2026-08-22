@@ -45,7 +45,7 @@
      "rounded-b-xl border-b border-slate-300"
    end %>
 
-<% toggle_url = ->(keys) { project_endpoint_card_path(project_name: project_name, endpoint_id: endpoint.id, base: base, annotation: endpoint.annotation, expanded: keys.join(",")) } %>
+<% toggle_url = ->(keys) { project_endpoint_card_path(project_name: project_name, endpoint_id: endpoint.id, base: base, annotation: endpoint.annotation, expanded: keys.join(","), candidate: @candidate&.name) } %>
 <% toggled = ->(key) { expanded.include?(key) ? expanded - [ key ] : expanded + [ key ] } %>
 <% input_expandable = [ previous, current ].any? { |e| e.parsed_input.expandable? } %>
 <% expandable_by_code = diff.responses.lines.to_h { |r| [ r.code, [ r.before_response, r.after_response ].compact.any? { |x| x.parsed_output.expandable? } ] } %>
@@ -140,8 +140,10 @@
         </div>
       <% end %>
       <% input_columns = [ [ diff.input.before, previous, nil ], [ diff.input.after, current, (previous if columns == 2) ] ].public_send(side, columns) %>
-      <% input_columns.each do |lines, record, previous_record| %>
-        <div class="<%= edge %> px-3 py-2"><%= render "endpoints/schema", lines: lines, tints: tints, notes: schema_notes_by_row(record, previous_record, lines) %></div>
+      <% input_columns.each_with_index do |(lines, record, previous_record), index| %>
+        <div class="<%= edge %> px-3 py-2"><%= render "endpoints/schema", lines: lines, tints: tints, notes: schema_notes_by_row(record, previous_record, lines),
+                   line_anchor: CommentAnchor.for_endpoint_input(endpoint), line_reach: region_reach,
+                   line_threads: (line_threads_by_row(lines, endpoint.version.entities, candidate_comments.endpoint_input_lines(endpoint)) if index == columns - 1) %></div>
       <% end %>
 
       <% columns.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Responses", toggle: nil %></div><% end %>
@@ -186,12 +188,14 @@
         <% end %>
         <% output_columns = [ [ response.before_response, response.output_diff&.before, nil ],
                               [ response.after_response, response.output_diff&.after, (response.before_response if columns == 2) ] ].public_send(side, columns) %>
-        <% output_columns.each do |record, lines, previous_record| %>
+        <% output_columns.each_with_index do |(record, lines, previous_record), column| %>
           <div class="<%= edge %> px-3 pb-2 <%= framed ? "pt-0" : "pt-2" %> <%= edge_bottom if last %>">
             <% if record %>
               <% output_lines = lines || record.parsed_output(expanded: expanded.include?(response.code)).to_diff(response.state) %>
               <div class="<%= "#{frame} rounded-b-md px-2 pb-2" if framed %>">
-                <%= render "endpoints/schema", lines: output_lines, tints: tints && !framed, notes: schema_notes_by_row(record, previous_record, output_lines) %>
+                <%= render "endpoints/schema", lines: output_lines, tints: tints && !framed, notes: schema_notes_by_row(record, previous_record, output_lines),
+                           line_anchor: CommentAnchor.for_response_output(endpoint, response.code), line_reach: region_reach,
+                           line_threads: (line_threads_by_row(output_lines, endpoint.version.entities, candidate_comments.response_output_lines(endpoint, response.code)) if column == columns - 1) %>
               </div>
             <% end %>
           </div>

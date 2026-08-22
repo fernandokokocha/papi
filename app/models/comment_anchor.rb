@@ -154,6 +154,14 @@ class CommentAnchor
                    auth_method_name: auth_method_name)
   end
 
+  def with_line(line)
+    self.class.new(scope: scope, part: part, line: line,
+                   endpoint_path: endpoint_path, endpoint_http_verb: endpoint_http_verb,
+                   entity_name: entity_name, response_code: response_code,
+                   param_name: param_name, param_location: param_location,
+                   auth_method_name: auth_method_name)
+  end
+
   def current_output(version)
     case part
     when "output" then target.record(version).output

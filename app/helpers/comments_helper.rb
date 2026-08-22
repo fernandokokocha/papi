@@ -98,6 +98,16 @@ module CommentsHelper
     line_pick_attributes(CommentAnchor.for_entity_root(entity))
   end
 
+  def line_threads_by_row(lines, entities, line_comments)
+    return {} unless @candidate
+
+    by_line = line_comments.by_line
+    ExpandedLineIndex.new(lines, entities).to_a.each_with_index.filter_map do |line, row|
+      threads = by_line[line] if line
+      [ row, threads ] if threads
+    end.to_h
+  end
+
   def line_index_attr(map, index)
     return "".html_safe if map.nil?
     expanded_index = map[index]

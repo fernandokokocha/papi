@@ -139,7 +139,7 @@ c4_user_entity_root_line_fresh:
   entity_name: User
   part: root
   line: 3
-  anchor_snapshot: "{id:number,email:string,name:string,avatar_url:string}"
+  anchor_snapshot: "{id:number,email:string,name:(string|null),avatar_url:(string|null)}"
   created_at: 2025-04-03 13:00:00
 
 c4_user_entity_root_line_outdated:
@@ -426,3 +426,106 @@ ks_auth_method_note:
   auth_method_name: AdminBasic
   part: note
   created_at: 2025-04-04 10:00:00
+
+# ----- kitchen sink: a line thread in every line state -----
+ks_line_label:
+  candidate: candidate4
+  author: one
+  body: "label is doing double duty as a display name and a slug. Split it?"
+  scope: endpoint
+  endpoint_path: /kitchen-sink/:sinkId
+  endpoint_http_verb: 3
+  part: input
+  line: 1
+  anchor_snapshot: "{label:string,weight:number,tags:[string],owner:User,archived:boolean}"
+  created_at: 2025-04-04 10:10:00
+ks_line_label_reply:
+  candidate: candidate4
+  author: two
+  parent: ks_line_label
+  body: "Slug is derived server-side, so one field is enough."
+  scope: endpoint
+  endpoint_path: /kitchen-sink/:sinkId
+  endpoint_http_verb: 3
+  part: input
+  line: 1
+  anchor_snapshot: "{label:string,weight:number,tags:[string],owner:User,archived:boolean}"
+  created_at: 2025-04-04 10:12:00
+ks_line_weight:
+  candidate: candidate4
+  author: two
+  body: "weight in what unit? Grams here and kilos in the report is a bug waiting."
+  scope: endpoint
+  endpoint_path: /kitchen-sink/:sinkId
+  endpoint_http_verb: 3
+  part: input
+  line: 2
+  anchor_snapshot: "{label:string,weight:number,tags:[string],owner:User,archived:boolean}"
+  created_at: 2025-04-04 10:15:00
+ks_line_tag_item:
+  candidate: candidate4
+  author: one
+  body: "Are tags free text, or drawn from a fixed vocabulary?"
+  scope: endpoint
+  endpoint_path: /kitchen-sink/:sinkId
+  endpoint_http_verb: 3
+  part: input
+  line: 5
+  anchor_snapshot: "{label:string,weight:number,tags:[string],owner:User,archived:boolean}"
+  created_at: 2025-04-04 10:20:00
+ks_line_owner_email:
+  candidate: candidate4
+  author: two
+  body: "Sending the owner's email back on every patch leaks more than we need."
+  scope: endpoint
+  endpoint_path: /kitchen-sink/:sinkId
+  endpoint_http_verb: 3
+  part: input
+  line: 10
+  anchor_snapshot: "{label:string,weight:number,tags:[string],owner:User,archived:boolean}"
+  created_at: 2025-04-04 10:25:00
+ks_line_archived:
+  candidate: candidate4
+  author: one
+  body: "archived as a boolean loses when it was archived, and by whom."
+  scope: endpoint
+  endpoint_path: /kitchen-sink/:sinkId
+  endpoint_http_verb: 3
+  part: input
+  line: 22
+  anchor_snapshot: "{label:string,weight:number,tags:[string],owner:User,archived:boolean}"
+  created_at: 2025-04-04 10:30:00
+ks_line_archived_second:
+  candidate: candidate4
+  author: two
+  body: "Second thread on the same line, so the stacked count shows on a line pin."
+  scope: endpoint
+  endpoint_path: /kitchen-sink/:sinkId
+  endpoint_http_verb: 3
+  part: input
+  line: 22
+  anchor_snapshot: "{label:string,weight:number,tags:[string],owner:User,archived:boolean}"
+  created_at: 2025-04-04 10:32:00
+ks_line_outdated:
+  candidate: candidate4
+  author: one
+  body: "When I flagged this, tags was still a bare string rather than a list."
+  scope: endpoint
+  endpoint_path: /kitchen-sink/:sinkId
+  endpoint_http_verb: 3
+  part: input
+  line: 4
+  anchor_snapshot: "{label:string,weight:number,tags:[string],owner:User}"
+  created_at: 2025-04-04 10:35:00
+ks_line_200_email:
+  candidate: candidate4
+  author: two
+  body: "Same leak on the way out — does a patch response need the email at all?"
+  scope: response
+  endpoint_path: /kitchen-sink/:sinkId
+  endpoint_http_verb: 3
+  response_code: "200"
+  part: output
+  line: 2
+  anchor_snapshot: "User"
+  created_at: 2025-04-04 10:40:00
