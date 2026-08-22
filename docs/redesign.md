@@ -90,9 +90,12 @@ deleted — that page no longer carries it.
 32. ~~Count badges — sidebar and card~~
 33. ~~Line note badges + hover cards~~
 34a. ~~Card-level threads~~
-34b. Region and line threads
+34b. ~~Region threads~~
+34c. Line threads
 35. Reply and resolve
-36. Comment / Display toolbar
+36a. Comment / Display toolbar
+36b. Whether the version and candidate views unify — a decided candidate is
+     still commentable, and the version page shows no comments at all
 
 ### Shell
 

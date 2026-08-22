@@ -70,3 +70,33 @@ p1v4_users_list_per_page:
   kind: number
   location: query
   required: false
+
+# ===== kitchen sink =====
+p1v3_kitchen_sink_id:
+  endpoint: p1v3_kitchen_sink
+  name: sinkId
+  kind: string
+p1v3_kitchen_sink_verbose:
+  endpoint: p1v3_kitchen_sink
+  name: verbose
+  kind: boolean
+  location: query
+p1v3_kitchen_sink_depth:
+  endpoint: p1v3_kitchen_sink
+  name: depth
+  kind: number
+  location: query
+p1v4_kitchen_sink_id:
+  endpoint: p1v4_kitchen_sink
+  name: sinkId
+  kind: number
+p1v4_kitchen_sink_verbose:
+  endpoint: p1v4_kitchen_sink
+  name: verbose
+  kind: boolean
+  location: query
+p1v4_kitchen_sink_depth:
+  endpoint: p1v4_kitchen_sink
+  name: depth
+  kind: number
+  location: query

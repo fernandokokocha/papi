@@ -208,3 +208,11 @@ p1v3_notifications_update_200: { endpoint: p1v3_notifications_update, code: "200
 p1v3_notifications_update_404: { endpoint: p1v3_notifications_update, code: "404", note: "Resource not found", output: "Error" }
 p1v4_notifications_update_200: { endpoint: p1v4_notifications_update, code: "200", note: "Request succeeded", output: "Notification" }
 p1v4_notifications_update_404: { endpoint: p1v4_notifications_update, code: "404", note: "Resource not found", output: "Error" }
+
+# ===== kitchen sink =====
+p1v3_kitchen_sink_200: { endpoint: p1v3_kitchen_sink, code: "200", note: "Request succeeded", output: "User" }
+p1v3_kitchen_sink_400: { endpoint: p1v3_kitchen_sink, code: "400", note: "Invalid request", output: "Error" }
+p1v3_kitchen_sink_404: { endpoint: p1v3_kitchen_sink, code: "404", note: "Resource not found", output: "Error" }
+p1v4_kitchen_sink_200: { endpoint: p1v4_kitchen_sink, code: "200", note: "Request succeeded", output: "User" }
+p1v4_kitchen_sink_400: { endpoint: p1v4_kitchen_sink, code: "400", note: "Invalid request", output: "Error" }
+p1v4_kitchen_sink_404: { endpoint: p1v4_kitchen_sink, code: "404", note: "Resource not found", output: "Error" }

@@ -27,6 +27,8 @@
      "opacity-60 hover:bg-black/10 hover:opacity-100"
    end %>
 <% tints = columns == 2 %>
+<% reach = removed ? "left-[calc(50%-4px)]" : "left-full" %>
+<% region_reach = "#{reach} group-has-[>input:checked]:hidden" %>
 <% col = if added then "col-start-2" elsif removed then "col-start-1" else "" end %>
 <% edge = if added
      "col-start-2 border-x-2 border-emerald-500 bg-white shadow-sm"
@@ -78,6 +80,12 @@
             <path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
         </label>
+
+        <% if index == sides.size - 1 %>
+          <%= render "comments/thread_region", wrapper_class: reach,
+                     anchor: CommentAnchor.for_endpoint(endpoint),
+                     threads: candidate_comments.threads_for("endpoint", endpoint: endpoint, part: "whole") %>
+        <% end %>
       </div>
     </div>
   <% end %>
@@ -86,16 +94,18 @@
 <div class="grid grid-rows-[1fr] transition-[grid-template-rows] duration-200 ease-out group-has-[>input:checked]:grid-rows-[0fr]">
   <div class="overflow-hidden">
     <div class="grid grid-cols-2 gap-x-2">
-      <% { "Params" => path_params, "Query" => query_params }.each do |label, pairs| %>
+      <% { "path" => [ "Params", path_params ], "query" => [ "Query", query_params ] }.each do |location, (label, pairs)| %>
         <% next if pairs.empty? %>
         <% columns.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: label, toggle: nil %></div><% end %>
-        <% [ pairs.map(&:first), pairs.map(&:last) ].public_send(side, columns).each do |rows| %>
-          <div class="<%= edge %> px-3 py-2"><%= render "endpoints/params", rows: rows, tints: tints %></div>
+        <% [ pairs.map(&:first), pairs.map(&:last) ].public_send(side, columns).each_with_index do |rows, index| %>
+          <div class="<%= edge %> px-3 py-2"><%= render "endpoints/params", rows: rows, tints: tints, endpoint: (endpoint if index == columns - 1), location: location, reach: region_reach %></div>
         <% end %>
       <% end %>
 
       <% if show_auth %>
-        <% columns.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Auth", toggle: nil %></div><% end %>
+        <% columns.times do |index| %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Auth", toggle: nil,
+                     pin: (render("comments/thread_region", wrapper_class: region_reach, anchor: CommentAnchor.for_endpoint_auth(endpoint),
+                                  threads: candidate_comments.threads_for("endpoint", endpoint: endpoint, part: "auth")) if index == columns - 1) %></div><% end %>
         <% [ [ previous, diff.auth.before_line ], [ current, diff.auth.after_line ] ].public_send(side, columns).each do |record, line| %>
           <% auth_method = record.auth_method %>
           <div class="<%= edge %> px-3 py-2">
@@ -107,7 +117,10 @@
         <% end %>
       <% end %>
 
-      <% columns.times do %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Note", toggle: nil %></div><% end %>
+      <% note_anchor = CommentAnchor.new(scope: "endpoint", part: "note", endpoint_path: endpoint.path, endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb]) %>
+      <% columns.times do |index| %><div class="<%= edge %>"><%= render "endpoints/section_band", label: "Note", toggle: nil,
+                   pin: (render("comments/thread_region", wrapper_class: region_reach, anchor: note_anchor,
+                                threads: candidate_comments.threads_for("endpoint", endpoint: endpoint, part: "note")) if index == columns - 1) %></div><% end %>
       <% [ diff.note.before, diff.note.after ].public_send(side, columns).each do |lines| %>
         <div class="<%= edge %> px-3 py-2">
           <% lines.each do |line| %>
@@ -121,7 +134,9 @@
           <%= render "endpoints/section_band", label: "Input",
                      toggle: (if input_expandable && index == columns - 1
                                 render "endpoints/ref_toggle", expanded: expanded.include?("input"), url: toggle_url.(toggled.("input"))
-                              end) %>
+                              end),
+                     pin: (render("comments/thread_region", wrapper_class: region_reach, anchor: CommentAnchor.for_endpoint_input(endpoint),
+                                  threads: candidate_comments.threads_for("endpoint", endpoint: endpoint, part: "input")) if index == columns - 1) %>
         </div>
       <% end %>
       <% input_columns = [ [ diff.input.before, previous, nil ], [ diff.input.after, current, (previous if columns == 2) ] ].public_send(side, columns) %>
@@ -156,6 +171,13 @@
                   <% end %>
                   <% if expandable && column == chip_at %>
                     <%= render "endpoints/ref_toggle", expanded: expanded.include?(response.code), url: toggle_url.(toggled.(response.code)) %>
+                  <% end %>
+                  <% if column == chip_at %>
+                    <%= render "comments/thread_region", wrapper_class: region_reach,
+                               anchor: CommentAnchor.new(scope: "response", part: "whole", endpoint_path: endpoint.path,
+                                                         endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb], response_code: response.code),
+                               threads: candidate_comments.threads_for("response", endpoint: endpoint, response_code: response.code),
+                               sublabel: response.code %>
                   <% end %>
                 </div>
               </div>

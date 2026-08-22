@@ -492,3 +492,19 @@ p1v4_cache_clear:
   path: /cache
   version: project1v4
   note: "Clear the server cache (no response body)"
+
+# --- kitchen sink: a comment in every possible place, for looking at pin density ---
+p1v3_kitchen_sink:
+  http_verb: verb_patch
+  path: /kitchen-sink/:sinkId
+  version: project1v3
+  note: "Everything at once, so every comment placement shows up on one card"
+  input: "{label:string,weight:number,tags:[string],owner:User}"
+  auth: UserToken
+p1v4_kitchen_sink:
+  http_verb: verb_patch
+  path: /kitchen-sink/:sinkId
+  version: project1v4
+  note: "Everything at once, so every comment placement shows up on one card. Now also takes tags."
+  input: "{label:string,weight:number,tags:[string],owner:User,archived:boolean}"
+  auth: AdminBasic

@@ -6,6 +6,8 @@
 <% records = added || removed ? [ auth_method ] : [ previous, auth_method ] %>
 <% columns = records.size %>
 <% tints = columns == 2 %>
+<% reach = removed ? "left-[calc(50%-4px)]" : "left-full" %>
+<% region_reach = "#{reach} group-has-[>input:checked]:hidden" %>
 <% notes = DiffText::FromNotes.new(previous&.note, auth_method.note) %>
 <% kind_change = changed && previous.kind != auth_method.kind ? "type_changed" : "no_change" %>
 <% header_tint = if added
@@ -46,7 +48,7 @@
   <input type="checkbox" id="<%= fold_id %>" class="sr-only">
 
   <div class="flex items-start gap-3">
-    <div class="min-w-0 flex-1">
+    <div class="relative min-w-0 flex-1">
       <div class="sticky top-[var(--pinned-offset)] z-10 grid grid-cols-2 gap-x-2 bg-slate-200">
         <% records.each_with_index do |record, index| %>
           <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl <%= col %> <%= header_tint %>">
@@ -60,6 +62,12 @@
                   <path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
               </label>
+
+              <% if index == columns - 1 %>
+                <%= render "comments/thread_region", wrapper_class: reach,
+                           anchor: CommentAnchor.for_auth_method(auth_method),
+                           threads: candidate_comments.threads_for("auth_method", auth_method: auth_method, part: "whole") %>
+              <% end %>
             </div>
           </div>
         <% end %>
@@ -77,8 +85,11 @@
               </div>
             <% end %>
 
-            <% columns.times do %>
-              <div class="bg-white shadow-sm <%= col %> <%= edge %>"><%= render "endpoints/section_band", label: "Note", toggle: nil %></div>
+            <% columns.times do |index| %>
+              <div class="bg-white shadow-sm <%= col %> <%= edge %>"><%= render "endpoints/section_band", label: "Note", toggle: nil,
+                         pin: (render("comments/thread_region", wrapper_class: region_reach,
+                                      anchor: CommentAnchor.new(scope: "auth_method", part: "note", auth_method_name: auth_method.name),
+                                      threads: candidate_comments.threads_for("auth_method", auth_method: auth_method, part: "note")) if index == columns - 1) %></div>
             <% end %>
             <% (tints ? [ notes.before, notes.after ] : [ notes.after ]).each do |lines| %>
               <div class="bg-white px-3 py-2 shadow-sm <%= col %> <%= edge %> <%= edge_bottom %>">
@@ -92,8 +103,6 @@
       </div>
     </div>
 
-    <%= render "comments/thread_margin",
-               anchor: CommentAnchor.for_auth_method(auth_method),
-               threads: candidate_comments.threads_for("auth_method", auth_method: auth_method, part: "whole") %>
+    <div class="w-7 shrink-0"></div>
   </div>
 </div>

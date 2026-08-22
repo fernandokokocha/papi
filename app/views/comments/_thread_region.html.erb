@@ -1,0 +1,8 @@
+<% if @candidate && threads.any? %>
+  <div class="anchor-strip group/note absolute -right-10 flex items-center font-sans <%= local_assigns[:wrapper_class] %>">
+    <span class="pointer-events-none h-px flex-1 bg-slate-400 group-hover/note:bg-sky-500"></span>
+    <div id="<%= anchor.dom_id %>" class="shrink-0">
+      <%= render "comments/thread_pin", anchor: anchor, threads: threads, sublabel: local_assigns[:sublabel] %>
+    </div>
+  </div>
+<% end %>

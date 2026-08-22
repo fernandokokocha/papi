@@ -2,12 +2,10 @@
   <input type="checkbox" id="fold_<%= endpoint.id %>" class="sr-only">
 
   <div class="flex items-start gap-3">
-    <div class="min-w-0 flex-1" data-expandable-target="container">
+    <div class="relative min-w-0 flex-1" data-expandable-target="container">
       <%= render "endpoints/card_body", endpoint: endpoint, expanded: [], base: base, project_name: project_name %>
     </div>
 
-    <%= render "comments/thread_margin",
-               anchor: CommentAnchor.for_endpoint(endpoint),
-               threads: candidate_comments.threads_for("endpoint", endpoint: endpoint, part: "whole") %>
+    <div class="w-7 shrink-0"></div>
   </div>
 </div>

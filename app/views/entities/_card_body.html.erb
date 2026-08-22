@@ -31,6 +31,7 @@
 <% col = if added then "col-start-2" elsif removed then "col-start-1" else "" end %>
 <% records = if added then [ entity ] elsif removed then [ entity ] else [ previous, entity ] end %>
 <% columns = records.size %>
+<% reach = removed ? "left-[calc(50%-4px)]" : "left-full" %>
 
 <div class="sticky top-[var(--pinned-offset)] z-10 grid grid-cols-2 gap-x-2 bg-slate-200">
   <% records.each_with_index do |record, index| %>
@@ -60,6 +61,12 @@
             <path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
         </label>
+
+        <% if index == columns - 1 %>
+          <%= render "comments/thread_region", wrapper_class: reach,
+                     anchor: CommentAnchor.for_entity(entity),
+                     threads: candidate_comments.threads_for("entity", entity: entity) %>
+        <% end %>
       </div>
     </div>
   <% end %>
