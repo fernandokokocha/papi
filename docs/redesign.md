@@ -23,10 +23,9 @@ which `candidates/show` also renders, so most of the candidate page comes with
 it. Steps 28–40 in particular are shared.
 
 While the rebuild is in progress the version and candidate request specs are
-red. Every red example is a content assertion for something not yet rebuilt, so
-that list doubles as the check that nothing was dropped. It reaches zero at
-step 50, once two examples asserting Import OpenAPI on the version page are
-deleted — that page no longer carries it.
+red. Every red example is a content assertion for markup that moved, was
+replaced, or was dropped on purpose, so that list doubles as the check that
+nothing was lost. It is settled last, at step 59.
 
 ## Steps
 
@@ -121,12 +120,16 @@ deleted — that page no longer carries it.
 ### Minor pages
 
 51. ~~Projects list — project rows, latest version, entry points~~
-52. Project page — `ProjectsController#show`: the version and candidate history
+52. ~~Project page — `ProjectsController#show`: the version and candidate history~~
 53. Activity — the event stream, its own page
 54. Auth — log in, forgot password, reset password
 55. Small forms — new project, import OpenAPI
 
 ### Last
 
-56. Candidate form — the schema editor
-57. `/design-preview`, rebuilt from what landed
+56. Colours revisited — the palette as it landed, across every page
+57. Candidate form — the schema editor
+58. `/design-preview`, rebuilt from what landed
+59. The red request specs — each re-aimed at what landed, and the gaps they
+    exposed closed: reply and resolve on a candidate-level thread, and the
+    release-notes region a candidate needs in order to raise its absence

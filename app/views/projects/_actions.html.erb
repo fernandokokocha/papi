@@ -1,0 +1,14 @@
+<div class="flex shrink-0 items-center gap-2">
+  <% if project.can_create_candidate? %>
+    <%= link_to "Import OpenAPI", new_project_openapi_import_path(project_name: project.name),
+          class: "rounded-md border border-slate-400 bg-white px-3 py-1.5 text-[13px] font-semibold text-slate-900 hover:bg-slate-50" %>
+    <%= link_to "New candidate", new_project_candidate_path(project_name: project.name),
+          class: "rounded-md border border-sky-800 bg-sky-700 px-3 py-1.5 text-[13px] font-semibold text-white hover:bg-sky-800" %>
+  <% else %>
+    <% blocked = "#{project.candidates.open.first.name} is still open" %>
+    <span title="<%= blocked %>"
+          class="cursor-not-allowed rounded-md border border-slate-300 bg-slate-200 px-3 py-1.5 text-[13px] font-semibold text-slate-400">Import OpenAPI</span>
+    <span title="<%= blocked %>"
+          class="cursor-not-allowed rounded-md border border-slate-300 bg-slate-200 px-3 py-1.5 text-[13px] font-semibold text-slate-400">New candidate</span>
+  <% end %>
+</div>

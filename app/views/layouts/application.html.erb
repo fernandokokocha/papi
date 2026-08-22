@@ -29,9 +29,10 @@
       <div class="flex h-11 items-center gap-3 px-6">
         <%= link_to "Papi", root_path, class: "logotype text-[19px] tracking-tight text-slate-900 no-underline hover:text-sky-800" %>
 
-        <% if @project %>
+        <% if @project&.persisted? %>
           <span class="h-5 w-px bg-slate-300"></span>
-          <span class="text-[12px] font-bold uppercase tracking-[0.14em] text-slate-600"><%= @project.name %></span>
+          <%= link_to @project.name, project_path(@project.name),
+                class: "text-[12px] font-bold uppercase tracking-[0.14em] text-slate-600 no-underline hover:text-sky-800" %>
         <% end %>
 
         <% if Current.user %>

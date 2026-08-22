@@ -7,7 +7,7 @@ describe "Projects requests", type: :request do
   let(:another_group) { FactoryBot.create :group, name: "Test group 2" }
   let(:another_user) { FactoryBot.create :user, email_address: "test3@example.com", password: "password", group: another_group }
 
-  describe "#index history" do
+  describe "#show history" do
     let(:project) { FactoryBot.create(:project, name: "proj", group: group) }
 
     it "renders the candidate history with version mapping" do
@@ -15,7 +15,7 @@ describe "Projects requests", type: :request do
       FactoryBot.create(:version, project: project, candidate: candidate, name: "v1", order: 1)
       sign_in(user)
 
-      get projects_path
+      get project_path(project.name)
 
       expect(response.body).to include("rc1")
       expect(response.body).to include(project_version_path(project.name, "v1"))

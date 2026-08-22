@@ -1,5 +1,81 @@
 <% content_for :main_class, "w-full" %>
 
 <header class="border-b border-slate-400 px-6 py-4">
-  <h1 class="text-2xl font-normal tracking-tight text-slate-700"><%= @project.name %></h1>
+  <div class="flex items-center gap-6">
+    <h1 class="min-w-0 flex-1 text-2xl font-normal tracking-tight text-slate-700"><%= @project.name %></h1>
+
+    <%= render "projects/actions", project: @project %>
+  </div>
 </header>
+
+<% if @project.history.empty? %>
+  <div class="px-6 pt-10">
+    <div class="rounded-xl border border-dashed border-slate-400 bg-white/60 px-6 py-10 text-center text-[13px] text-slate-500">
+      No candidates yet — nothing has been proposed for this project.
+    </div>
+  </div>
+<% else %>
+  <% current_version = @project.latest_version %>
+
+  <div class="grid grid-cols-[10rem_1fr] gap-x-6 border-b border-slate-300 px-6 py-2">
+    <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Version</span>
+    <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Candidate</span>
+  </div>
+
+  <div class="divide-y divide-slate-300">
+    <% @project.history.each do |candidate| %>
+      <% version = candidate.promoted_version %>
+      <% threads = candidate.comments.count { |comment| comment.parent_id.nil? } %>
+      <div class="grid grid-cols-[10rem_1fr] items-baseline gap-x-6 px-6 py-3 hover:bg-white/70">
+        <div class="flex items-baseline gap-2 border-r border-slate-300 pr-4">
+          <% if version %>
+            <%= link_to version.name, project_version_path(@project.name, version.name),
+                  class: "font-mono text-[15px] font-bold text-slate-900 hover:text-sky-800 hover:underline" %>
+            <% if version.id == current_version.id %>
+              <span class="rounded border border-sky-300 bg-sky-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-sky-800">Current</span>
+            <% end %>
+          <% else %>
+            <span class="font-mono text-[15px] text-slate-300">—</span>
+          <% end %>
+        </div>
+
+        <div>
+          <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <%= link_to candidate.name, project_candidate_path(@project.name, candidate.name),
+                  class: "font-mono text-[13px] font-semibold text-sky-700 hover:underline" %>
+            <% if candidate.open? %>
+              <span class="rounded border border-amber-300 bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-amber-800">Open</span>
+            <% elsif candidate.rejected? %>
+              <span class="rounded border border-rose-300 bg-rose-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-rose-800">Rejected</span>
+            <% end %>
+
+            <span class="text-[12px] text-slate-500">
+              <% if candidate.author %>
+                <%= render "shared/actor", user: candidate.author %> ·
+              <% end %>
+              <%= candidate.created_at.strftime("%-d %b %Y") %>
+              <% if candidate.decided_by %>
+                → <%= render "shared/actor", user: candidate.decided_by %> · <%= candidate.decided_at.strftime("%-d %b %Y") %>
+              <% end %>
+            </span>
+
+            <span class="ml-auto flex shrink-0 items-center gap-3 text-slate-500">
+              <%= render "comments/count_badge", count: threads %>
+              <% if candidate.approvals.size > 0 %>
+                <span class="inline-flex items-center gap-1 text-[11px] font-medium leading-none opacity-60" title="<%= pluralize(candidate.approvals.size, "approval") %>">
+                  <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 111.4-1.4l3.8 3.8 6.8-6.8a1 1 0 011.4 0z" clip-rule="evenodd" />
+                  </svg><%= candidate.approvals.size %>
+                </span>
+              <% end %>
+            </span>
+          </div>
+
+          <% if version&.release_notes.present? %>
+            <div class="mt-1 text-[12px] text-slate-400"><%= truncate(version.release_notes.squish, length: 90) %></div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>

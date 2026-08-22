@@ -116,10 +116,10 @@ describe "Approvals requests", type: :request do
       FactoryBot.create :approval, candidate: candidate, user: reviewer
       sign_in(reviewer)
 
-      get projects_path
+      get project_path(project.name)
 
-      row = Nokogiri::HTML5(response.body).css("table tbody tr").first
-      expect(row.css("td")[6].text.strip).to eq("1")
+      badge = Nokogiri::HTML5(response.body).css("span[title='1 approval']")
+      expect(badge.text.strip).to eq("1")
     end
   end
 end
