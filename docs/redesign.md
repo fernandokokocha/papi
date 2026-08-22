@@ -96,8 +96,8 @@ deleted — that page no longer carries it.
 38. ~~Reply and resolve~~
 39. ~~Comment / Display toolbar — and with it the whole act of writing a
     comment~~
-40. Whether the version and candidate views unify — a decided candidate is
-    still commentable, and the version page shows no comments at all
+40. ~~Whether the version and candidate views unify — a decided candidate is
+    still commentable, and the version page shows no comments at all~~
 
 ### Shell
 

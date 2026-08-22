@@ -1,0 +1,26 @@
+<% commenting = @candidate.present? %>
+<div class="group [--pinned-offset:2.75rem]"
+     data-controller="<%= commenting ? "sidebar composer" : "sidebar" %>"
+     data-sidebar="open"
+     <%= tag.attributes("data-action": "margin-note:open->composer#attach margin-note:close->composer#park turbo:submit-start@document->composer#submitted") if commenting %>>
+  <%= render header %>
+
+  <div class="flex">
+    <%= render "versions/sidebar" %>
+
+    <div class="min-w-0 flex-1">
+      <%= render "comparisons/rail" %>
+
+      <div class="px-4 pb-16 pt-6">
+        <% if commenting %>
+          <%= render layout: "versions/section", locals: { label: "Conversation", id: "conversation" } do %>
+            <%= render "comments/conversation" %>
+          <% end %>
+        <% end %>
+        <%= render "versions/release_notes_section" %>
+        <%= render "versions/endpoints_and_entities" %>
+        <%= render "comments/composer" if commenting %>
+      </div>
+    </div>
+  </div>
+</div>
