@@ -8,6 +8,7 @@
 <div class="sticky top-0 z-20 bg-slate-200">
   <div class="grid h-[var(--pinned-offset)] grid-cols-2 gap-x-2 px-4">
     <div class="flex items-center gap-3 pr-3">
+      <%= render "versions/sidebar_toggle" %>
       <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Was</span>
       <% if milestone.before %>
         <span class="font-mono text-[13px] font-bold text-slate-900"><%= milestone.before.version.name %></span>

@@ -2,16 +2,13 @@
 <% dot = { added: "bg-emerald-500", changed: "bg-amber-400", removed: "bg-rose-500" } %>
 
 <div class="group [--pinned-offset:2.75rem]" data-controller="sidebar" data-sidebar="open">
-  <header class="border-b border-slate-400 px-6 py-3">
-    <div class="flex items-center gap-3">
-      <%= render "versions/sidebar_toggle" %>
-      <span class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500"><%= @project.name %></span>
-      <span class="text-slate-400">/</span>
-      <span class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">History</span>
-      <span class="ml-1"><%= render identity %></span>
-      <span class="text-[12px] text-slate-500"><%= pluralize(@milestones.size, "milestone") %></span>
+  <header class="border-b border-slate-400 px-6 py-4">
+    <div class="flex items-center gap-6">
+      <h1 class="min-w-0 flex-1 text-2xl font-normal tracking-tight text-slate-700">
+        History <%= render identity %>
+      </h1>
 
-      <div class="ml-auto">
+      <div class="shrink-0">
         <% if source.project %>
           <%= link_to "← #{source.name}", project_version_path(project_name: @project.name, name: source.name),
                 class: "rounded-md border border-slate-400 bg-white px-3 py-1.5 font-mono text-[13px] font-semibold text-slate-900 hover:bg-slate-50" %>

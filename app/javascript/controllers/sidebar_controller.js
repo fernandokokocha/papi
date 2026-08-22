@@ -142,6 +142,8 @@ export default class extends Controller {
   apply(collapsed) {
     this.element.dataset.sidebar = collapsed ? "collapsed" : "open"
     localStorage.setItem(this.constructor.storageKey, collapsed ? "1" : "0")
-    this.buttonTarget.title = collapsed ? "Show contents" : "Hide contents"
+    this.buttonTargets.forEach((button) => {
+      button.title = collapsed ? "Show contents" : "Hide contents"
+    })
   }
 }

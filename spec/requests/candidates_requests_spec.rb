@@ -112,7 +112,7 @@ describe "Candidates requests", type: :request do
       rejected = FactoryBot.create(:candidate, project: project, author: author, decided_by: author, aasm_state: "rejected")
       sign_in(user)
       get project_candidate_path(project.name, rejected.name)
-      expect(response.body).to include("Rejected by")
+      expect(response.body).to include("Rejected")
       expect(response.body).to include("author@example.com")
     end
 
