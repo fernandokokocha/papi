@@ -20,12 +20,12 @@ One commit per settled step, so `git log` is the record of what is done.
 
 The version page goes first. Its guts live in `versions/_endpoints_and_entities`,
 which `candidates/show` also renders, so most of the candidate page comes with
-it. Steps 28–36 in particular are shared.
+it. Steps 28–39 in particular are shared.
 
 While the rebuild is in progress the version and candidate request specs are
 red. Every red example is a content assertion for something not yet rebuilt, so
 that list doubles as the check that nothing was dropped. It reaches zero at
-step 46, once two examples asserting Import OpenAPI on the version page are
+step 49, once two examples asserting Import OpenAPI on the version page are
 deleted — that page no longer carries it.
 
 ## Steps
@@ -89,41 +89,41 @@ deleted — that page no longer carries it.
 
 32. ~~Count badges — sidebar and card~~
 33. ~~Line note badges + hover cards~~
-34a. ~~Card-level threads~~
-34b. ~~Region threads~~
-34c. Line threads
-35. Reply and resolve
-36a. Comment / Display toolbar
-36b. Whether the version and candidate views unify — a decided candidate is
-     still commentable, and the version page shows no comments at all
+34. ~~Card-level threads~~
+35. ~~Region threads~~
+36. Line threads
+37. Reply and resolve
+38. Comment / Display toolbar
+39. Whether the version and candidate views unify — a decided candidate is
+    still commentable, and the version page shows no comments at all
 
 ### Shell
 
-37. ~~Page geometry — full-bleed shell, sidebar column, diff pane~~
-38. Topbar identity — logo, user, log out
-39. ~~Sticky behaviour — the page scrolls, the rail pins, the sidebar holds its own scroll~~
+40. ~~Page geometry — full-bleed shell, sidebar column, diff pane~~
+41. Topbar identity — logo, user, log out
+42. ~~Sticky behaviour — the page scrolls, the rail pins, the sidebar holds its own scroll~~
 
 ### History page
 
-40. Milestone cards — the version-page card, compared against `milestone.before`
-41. Milestone header — version, kind, since, date, author, candidate
-42. Page header — project, endpoint or entity identity, count, empty state
+43. Milestone cards — the version-page card, compared against `milestone.before`
+44. Milestone header — version, kind, since, date, author, candidate
+45. Page header — project, endpoint or entity identity, count, empty state
 
 ### Candidate page
 
-43. Identity — project, name, state chip, proposed / decided by
-44. Approvals — count, approvers, the approve toggle
-45. Comparison rail and actions — Edit, Reject, Merge; View version when merged
-46. Conversation — candidate-level threads and the compose form
+46. Identity — project, name, state chip, proposed / decided by
+47. Approvals — count, approvers, the approve toggle
+48. Comparison rail and actions — Edit, Reject, Merge; View version when merged
+49. Conversation — candidate-level threads and the compose form
 
 ### Minor pages
 
-47. Projects list — project rows, latest version, entry points
-48. Project history — the Table / Activity toggle
-49. Auth — log in, forgot password, reset password
-50. Small forms — new project, import OpenAPI
+50. Projects list — project rows, latest version, entry points
+51. Project history — the Table / Activity toggle
+52. Auth — log in, forgot password, reset password
+53. Small forms — new project, import OpenAPI
 
 ### Last
 
-51. Candidate form — the schema editor
-52. `/design-preview`, rebuilt from what landed
+54. Candidate form — the schema editor
+55. `/design-preview`, rebuilt from what landed
