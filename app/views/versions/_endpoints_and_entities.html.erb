@@ -3,7 +3,7 @@
     <%= render layout: "versions/section", locals: { label: "Endpoints" } do %>
       <div class="flex flex-col gap-4">
         <% @comparison.endpoints.each do |endpoint| %>
-          <%= render "endpoints/card", endpoint: endpoint, base: @comparison.before.name, project_name: @project.name %>
+          <%= render "endpoints/card", endpoint: endpoint, anchor: "endpoint-#{endpoint.page_url}", base: @comparison.before.name, project_name: @project.name %>
         <% end %>
       </div>
     <% end %>
@@ -13,7 +13,7 @@
     <%= render layout: "versions/section", locals: { label: "Entities" } do %>
       <div class="flex flex-col gap-4">
         <% @comparison.entities.each do |entity| %>
-          <%= render "entities/card", entity: entity, base: @comparison.before.name, project_name: @project.name %>
+          <%= render "entities/card", entity: entity, anchor: "entity-#{entity.name}", base: @comparison.before.name, project_name: @project.name %>
         <% end %>
       </div>
     <% end %>

@@ -107,9 +107,9 @@ deleted — that page no longer carries it.
 
 ### History page
 
-44. Milestone cards — the version-page card, compared against `milestone.before`
-45. Milestone header — version, kind, since, date, author, candidate
-46. Page header — project, endpoint or entity identity, count, empty state
+44. ~~Milestone cards — the version-page card, compared against `milestone.before`~~
+45. ~~Milestone header — version, kind, since, date, author, candidate~~
+46. ~~Page header — project, endpoint or entity identity, count, empty state~~
 
 ### Candidate page
 

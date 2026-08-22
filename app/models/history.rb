@@ -1,5 +1,16 @@
 class History
-  Milestone = Struct.new(:version, :kind, :before, :after, keyword_init: true)
+  Milestone = Struct.new(:version, :kind, :before, :after, keyword_init: true) do
+    def record
+      (kind == :removed ? before : after).tap do |record|
+        record.annotation = kind.to_s
+        record.previous = (before if kind == :changed)
+      end
+    end
+
+    def base_name
+      before && before.version.name
+    end
+  end
 
   def self.for_endpoint(project, endpoint)
     http_verb = Endpoint.http_verbs[endpoint.http_verb]
