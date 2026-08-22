@@ -64,8 +64,7 @@
              data-sidebar-target="link"
              class="<%= row_class %> <%= tint[auth_method.annotation] %>">
             <span class="<%= name_class %>"><%= auth_method.name %></span>
-            <span class="ml-auto shrink-0 font-mono text-[12px] text-slate-500"><%= auth_method.kind %></span>
-            <%= sidebar_count_badge(CommentAnchor.for_auth_method(auth_method), css_class: "shrink-0") %>
+            <%= sidebar_count_badge(CommentAnchor.for_auth_method(auth_method)) %>
           </a>
         <% end %>
       <% end %>

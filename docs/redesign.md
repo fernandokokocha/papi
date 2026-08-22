@@ -92,9 +92,10 @@ deleted — that page no longer carries it.
 34. ~~Card-level threads~~
 35. ~~Region threads~~
 36. ~~Line threads~~
-37. Outdated line threads — the snapshot drifted, so there is no line to sit on
+37. ~~Outdated line threads — the snapshot drifted, so there is no line to sit on~~
 38. Reply and resolve
-39. Comment / Display toolbar
+39. Comment / Display toolbar — and with it the whole act of writing a
+    comment
 40. Whether the version and candidate views unify — a decided candidate is
     still commentable, and the version page shows no comments at all
 

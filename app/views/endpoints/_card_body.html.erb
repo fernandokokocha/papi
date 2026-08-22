@@ -136,7 +136,8 @@
                                 render "endpoints/ref_toggle", expanded: expanded.include?("input"), url: toggle_url.(toggled.("input"))
                               end),
                      pin: (render("comments/thread_region", wrapper_class: region_reach, anchor: CommentAnchor.for_endpoint_input(endpoint),
-                                  threads: candidate_comments.threads_for("endpoint", endpoint: endpoint, part: "input")) if index == columns - 1) %>
+                                  threads: candidate_comments.threads_for("endpoint", endpoint: endpoint, part: "input"),
+                                  outdated: candidate_comments.endpoint_input_lines(endpoint).outdated) if index == columns - 1) %>
         </div>
       <% end %>
       <% input_columns = [ [ diff.input.before, previous, nil ], [ diff.input.after, current, (previous if columns == 2) ] ].public_send(side, columns) %>
@@ -179,6 +180,7 @@
                                anchor: CommentAnchor.new(scope: "response", part: "whole", endpoint_path: endpoint.path,
                                                          endpoint_http_verb: Endpoint.http_verbs[endpoint.http_verb], response_code: response.code),
                                threads: candidate_comments.threads_for("response", endpoint: endpoint, response_code: response.code),
+                               outdated: candidate_comments.response_output_lines(endpoint, response.code).outdated,
                                sublabel: response.code %>
                   <% end %>
                 </div>

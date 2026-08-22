@@ -65,7 +65,8 @@
         <% if index == columns - 1 %>
           <%= render "comments/thread_region", wrapper_class: reach,
                      anchor: CommentAnchor.for_entity(entity),
-                     threads: candidate_comments.threads_for("entity", entity: entity) %>
+                     threads: candidate_comments.threads_for("entity", entity: entity),
+                     outdated: candidate_comments.entity_root_lines(entity).outdated %>
         <% end %>
       </div>
     </div>
