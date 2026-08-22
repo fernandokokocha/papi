@@ -120,12 +120,13 @@ deleted — that page no longer carries it.
 
 ### Minor pages
 
-51. Projects list — project rows, latest version, entry points
-52. Project history — the Table / Activity toggle
-53. Auth — log in, forgot password, reset password
-54. Small forms — new project, import OpenAPI
+51. ~~Projects list — project rows, latest version, entry points~~
+52. Project page — `ProjectsController#show`: the version and candidate history
+53. Activity — the event stream, its own page
+54. Auth — log in, forgot password, reset password
+55. Small forms — new project, import OpenAPI
 
 ### Last
 
-55. Candidate form — the schema editor
-56. `/design-preview`, rebuilt from what landed
+56. Candidate form — the schema editor
+57. `/design-preview`, rebuilt from what landed

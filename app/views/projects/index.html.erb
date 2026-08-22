@@ -1,45 +1,54 @@
-<div data-controller="view-toggle" data-view-toggle-default-value="table">
-  <div class="mb-8 flex items-center justify-between">
-    <h1 class="text-2xl font-semibold text-gray-900"><%= @group.name %></h1>
-    <div class="flex items-center gap-3">
-      <div class="inline-flex bg-slate-100 rounded-lg p-0.5">
-        <button data-action="view-toggle#show" data-view-toggle-view-param="table" class="view-tab-table text-sm font-semibold px-3.5 py-1.5 rounded-md text-slate-500 cursor-pointer">Table</button>
-        <button data-action="view-toggle#show" data-view-toggle-view-param="timeline" class="view-tab-timeline text-sm font-semibold px-3.5 py-1.5 rounded-md text-slate-500 cursor-pointer">Activity</button>
-      </div>
-      <%= button_to "New project", new_project_path, method: :get, class: "bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium px-4 py-2 rounded cursor-pointer" %>
-    </div>
+<% content_for :main_class, "w-full" %>
+
+<header class="border-b border-slate-400 px-6 py-4">
+  <div class="flex items-center gap-6">
+    <h1 class="min-w-0 flex-1 text-2xl font-normal tracking-tight text-slate-900"><%= @group.name %></h1>
+    <%= link_to "New project", new_project_path,
+          class: "rounded-md border border-sky-800 bg-sky-700 px-3 py-1.5 text-[13px] font-semibold text-white hover:bg-sky-800" %>
   </div>
+</header>
 
-  <div class="flex flex-col gap-3">
-    <% @projects.each do |project| %>
-    <div class="bg-white border border-gray-200 rounded-lg p-6">
-
-      <div class="flex items-center justify-between mb-6">
-        <div class="flex items-center gap-4">
-          <h2 class="text-lg font-semibold text-gray-900"><%= project.name %></h2>
-          <% latest = project.latest_version %>
+<div class="divide-y divide-slate-300">
+  <% @projects.each do |project| %>
+    <% latest = project.latest_version %>
+    <% open_candidate = project.candidates.open.first %>
+    <div class="flex items-center gap-6 px-6 py-4 hover:bg-white/70">
+      <div class="min-w-0 flex-1">
+        <div class="flex items-baseline gap-3">
+          <%= link_to project.name, project_path(project.name),
+                class: "text-[17px] font-semibold text-sky-700 hover:underline" %>
           <% if latest.persisted? %>
-            <%= link_to latest.name, project_version_path(name: latest.name, project_name: project.name), class: "text-sm font-semibold text-sky-700 underline underline-offset-2 hover:text-sky-900" %>
-          <% end %>
-        </div>
-        <div class="flex items-center gap-3">
-          <% if project.can_create_candidate? %>
-            <%= button_to "Import OpenAPI", new_project_openapi_import_path(project_name: project.name), method: :get, class: "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-sm font-medium px-4 py-2 rounded cursor-pointer" %>
-            <%= button_to "New candidate", new_project_candidate_path(project_name: project.name), method: :get, class: "bg-sky-600 hover:bg-sky-700 text-white text-sm font-medium px-4 py-2 rounded cursor-pointer" %>
+            <%= link_to latest.name, project_version_path(project.name, latest.name),
+                  class: "font-mono text-[13px] font-bold text-slate-900 hover:text-sky-800 hover:underline" %>
+            <span class="text-[12px] text-slate-500"><%= latest.created_at.strftime("%-d %b %Y") %></span>
           <% else %>
-            <button disabled class="bg-gray-100 text-gray-400 text-sm font-medium px-4 py-2 rounded cursor-not-allowed">Import OpenAPI</button>
-            <button disabled class="bg-gray-100 text-gray-400 text-sm font-medium px-4 py-2 rounded cursor-not-allowed">New candidate</button>
+            <span class="font-mono text-[13px] italic text-slate-400">no version yet</span>
           <% end %>
         </div>
+
+        <% if open_candidate %>
+          <div class="mt-1 flex items-center gap-2 text-[12px] text-slate-500">
+            <span class="rounded border border-amber-300 bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-amber-800">Open</span>
+            <%= link_to open_candidate.name, project_candidate_path(project.name, open_candidate.name),
+                  class: "font-mono text-sky-700 hover:underline" %>
+            <% if open_candidate.author %>
+              <span>by <%= render "shared/actor", user: open_candidate.author %></span>
+            <% end %>
+          </div>
+        <% end %>
       </div>
 
-      <div class="view-table">
-        <%= render "projects/history_table", project: project %>
-      </div>
-      <div class="view-timeline">
-        <%= render "projects/history_timeline", project: project %>
+      <div class="flex shrink-0 items-center gap-2">
+        <%= link_to "Import OpenAPI", new_project_openapi_import_path(project_name: project.name),
+              class: "rounded-md border border-slate-400 bg-white px-3 py-1.5 text-[13px] font-semibold text-slate-900 hover:bg-slate-50" %>
+        <% if project.can_create_candidate? %>
+          <%= link_to "New candidate", new_project_candidate_path(project_name: project.name),
+                class: "rounded-md border border-sky-800 bg-sky-700 px-3 py-1.5 text-[13px] font-semibold text-white hover:bg-sky-800" %>
+        <% else %>
+          <span title="<%= open_candidate.name %> is still open"
+                class="cursor-not-allowed rounded-md border border-slate-300 bg-slate-200 px-3 py-1.5 text-[13px] font-semibold text-slate-400">New candidate</span>
+        <% end %>
       </div>
     </div>
   <% end %>
-  </div>
 </div>

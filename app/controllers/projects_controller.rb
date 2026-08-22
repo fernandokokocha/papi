@@ -4,6 +4,10 @@ class ProjectsController < ApplicationController
     @projects = Project.where(group: @group).sort_by(&:name)
   end
 
+  def show
+    @project = Project.find_by!(name: params[:name])
+  end
+
   def new
     @project = Project.new(group: Current.user.group)
   end
