@@ -41,10 +41,15 @@ end
     expect(rendered).to eq((1..lines.size).map(&:to_s))
   end
 
-  it "offers the version's other entities as types, and never the one being edited" do
-    types = form.css("#entity_root_1 select").flat_map { |select| select.css("option").map(&:text) }.uniq
+  # Order already names Customer, so Customer may not name Order back, and
+  # neither may name itself.
+  it "offers only the entities a block can name without closing a circle" do
+    page = form
+    types = ->(id) { page.css("##{id} select").flat_map { |select| select.css("option").map(&:text) }.uniq }
 
-    expect(types).to include("Customer", "Order")
+    expect(types.("entity_root_1")).to include("Customer")
+    expect(types.("entity_root_1")).not_to include("Order")
+    expect(types.("entity_root_0")).not_to include("Customer", "Order")
   end
 
   # The whole point of building it in place: what the editor renders is what the
@@ -90,9 +95,8 @@ end
     with_forgery_protection do
       post schema_edit_path, params: {
         authenticity_token: token,
-        version: { entities_attributes: { "0" => { root: "{id:number}" } } },
-        id: "entity_root_0", field: "version[entities_attributes][0][root]",
-        entity_names: [ "Customer" ], op: "change_type", path: [ "id" ], value: "string"
+        blocks: { "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Customer", root: "{id:number}" } },
+        id: "entity_root_0", op: "change_type", path: [ "id" ], value: "string"
       }
     end
 

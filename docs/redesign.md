@@ -129,9 +129,9 @@ nothing was lost. It is settled last, at step 66.
 
 56. ~~Colours revisited — the palette as it landed, across every page~~
 57. ~~Candidate form — entity schemas, server-rendered and editable, in place~~
-58. Candidate form — global truth on every op: only the types that cannot close
+58. ~~Candidate form — global truth on every op: only the types that cannot close
     a cycle, and an answer carrying every block that changed, not only the one
-    that was clicked
+    that was clicked~~
 59. Candidate form — entities added, removed and restored
 60. Candidate form — auth methods
 61. Candidate form — endpoints: verb, path, params, query, auth, note, input

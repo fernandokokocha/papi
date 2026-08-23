@@ -8,9 +8,11 @@ describe "Schema edit requests", type: :request do
 
   def edit(op, path, value = nil)
     params = {
-      version: { entities_attributes: { "0" => { root: schema } } },
-      id: "entity_root_0", field: "version[entities_attributes][0][root]",
-      entity_names: [ "Customer" ], op: op, value: value
+      blocks: {
+        "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Order", root: schema },
+        "entity_root_1" => { field: "version[entities_attributes][1][root]", name: "Customer", root: "{id:string}" }
+      },
+      id: "entity_root_0", op: op, value: value
     }
     params[:path] = path if path.any?
 
@@ -70,6 +72,32 @@ describe "Schema edit requests", type: :request do
     expect(first_branch.css("option").map(&:text)).not_to include("null", "number")
   end
 
+  def types_in(id)
+    Nokogiri::HTML5.fragment(response.body).css("##{id} select").flat_map { |select| select.css("option").map(&:text) }.uniq
+  end
+
+  it "withholds from the answer every name that would close a circle" do
+    edit("change_type", [ "id" ], "Customer")
+
+    expect(types_in("entity_root_0")).to include("Customer")
+    expect(types_in("entity_root_0")).not_to include("Order")
+  end
+
+  # Pointing Order at Customer is what takes Order away from Customer, so the
+  # block that was not clicked is the one that has gone wrong.
+  it "answers with every block the op moved, not only the one that was clicked" do
+    edit("change_type", [ "id" ], "Customer")
+
+    expect(turbo_actions).to eq([ [ "replace", "entity_root_0" ], [ "replace", "entity_root_1" ] ])
+    expect(types_in("entity_root_1")).not_to include("Order")
+  end
+
+  it "leaves alone the blocks an op does not reach" do
+    edit("rename", [ "id" ], "identifier")
+
+    expect(turbo_actions).to eq([ [ "replace", "entity_root_0" ] ])
+  end
+
   # A one-of needs two branches to mean anything, and nothing validates that —
   # withholding the control is the whole enforcement, as it was in the editor
   # this replaces.
@@ -81,17 +109,16 @@ describe "Schema edit requests", type: :request do
     expect(branch_remove_controls.size).to eq(1)
   end
 
-  # The whole form is submitted, so the block being edited is the one its field
-  # name points at — not merely the only one there is.
-  it "edits the block its field names, leaving its neighbours alone" do
+  # The whole form is submitted, so the block being edited is the one the op
+  # names — not merely the only one there is.
+  it "edits the block the op names, leaving its neighbours alone" do
     post schema_edit_path, params: {
-      version: { entities_attributes: {
-        "0" => { root: "{id:number}" },
-        "1" => { root: "{total:number}" },
-        "2" => { root: "{label:string}" }
-      } },
-      id: "entity_root_1", field: "version[entities_attributes][1][root]",
-      entity_names: [], op: "add"
+      blocks: {
+        "entity_root_0" => { field: "version[entities_attributes][0][root]", root: "{id:number}" },
+        "entity_root_1" => { field: "version[entities_attributes][1][root]", root: "{total:number}" },
+        "entity_root_2" => { field: "version[entities_attributes][2][root]", root: "{label:string}" }
+      },
+      id: "entity_root_1", op: "add"
     }
 
     fields = Nokogiri::HTML5.fragment(response.body).css("input[type=hidden]").to_h { |i| [ i["name"], i["value"] ] }
@@ -104,9 +131,8 @@ describe "Schema edit requests", type: :request do
   # and the server stays a function.
   it "accumulates edits through the field it hands back, storing nothing" do
     post schema_edit_path, params: {
-      version: { entities_attributes: { "0" => { root: "{id:number}" } } },
-      id: "entity_root_0", field: "version[entities_attributes][0][root]",
-      entity_names: [], op: "add"
+      blocks: { "entity_root_0" => { field: "version[entities_attributes][0][root]", root: "{id:number}" } },
+      id: "entity_root_0", op: "add"
     }
     expect(edited_schema).to eq("{id:number,new:string}")
 
@@ -116,9 +142,8 @@ describe "Schema edit requests", type: :request do
     end
 
     post schema_edit_path, params: {
-      version: { entities_attributes: { "0" => { root: edited_schema } } },
-      id: "entity_root_0", field: "version[entities_attributes][0][root]",
-      entity_names: [], op: "rename", path: [ "new" ], value: "label"
+      blocks: { "entity_root_0" => { field: "version[entities_attributes][0][root]", root: edited_schema } },
+      id: "entity_root_0", op: "rename", path: [ "new" ], value: "label"
     }
 
     ActiveSupport::Notifications.unsubscribe(subscriber)

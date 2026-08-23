@@ -5,7 +5,7 @@
   </div>
 
   <div class="rounded-b-xl border-x border-b border-violet-400 bg-white px-3 py-2 shadow-sm">
-    <%= render "schema_form/editor", root: entity.parsed_root, id: "entity_root_#{index}",
-               field: "version[entities_attributes][#{index}][root]", entity_names: entity_names %>
+    <%= render "schema_form/editor", root: entity.parsed_root, id: "entity_root_#{index}", name: entity.name,
+               field: "version[entities_attributes][#{index}][root]", referenceable_names: referenceable_names %>
   </div>
 </div>

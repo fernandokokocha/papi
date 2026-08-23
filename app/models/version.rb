@@ -21,6 +21,10 @@ class Version < ApplicationRecord
     )
   end
 
+  def referenceable_entity_names(from)
+    entities.map(&:name) - EntityReferences.new(entities).names_reaching(from)
+  end
+
   def previous
     return Version.null_version(project) unless project
     project.versions.find_by(order: order - 1) || Version.null_version(project)

@@ -12,9 +12,9 @@
       <option <%= "selected" if structure == row.type %>><%= structure %></option>
     <% end %>
   </optgroup>
-  <% if (entity_names - row.taken).any? %>
+  <% if (referenceable_names - row.taken).any? %>
     <optgroup label="Entity">
-      <% (entity_names - row.taken).each do |entity_name| %>
+      <% (referenceable_names - row.taken).each do |entity_name| %>
         <option <%= "selected" if entity_name == row.type %>><%= entity_name %></option>
       <% end %>
     </optgroup>
