@@ -14,20 +14,13 @@ class Project < ApplicationRecord
   end
 
   def history
-    @history ||= candidates.includes(:author, :decided_by, :versions, :comments).order(order: :desc)
+    @history ||= candidates.includes(:author, :decided_by, :versions, approvals: :user, comments: :author).order(order: :desc)
   end
 
-  Event = Struct.new(:at, :actor, :verb, :candidate, :version, keyword_init: true)
+  Event = Struct.new(:at, :actor, :verb, :candidate, :version, :count, keyword_init: true)
 
   def events
-    history.flat_map do |candidate|
-      list = [ Event.new(at: candidate.created_at, actor: candidate.author, verb: :created, candidate: candidate) ]
-      if candidate.decided_at
-        list << Event.new(at: candidate.decided_at, actor: candidate.decided_by, verb: candidate.aasm_state.to_sym,
-                          candidate: candidate, version: candidate.promoted_version)
-      end
-      list
-    end.sort_by(&:at).reverse
+    history.flat_map { |candidate| events_for(candidate) }.sort_by(&:at).reverse
   end
 
   def null_candidate
@@ -49,5 +42,32 @@ class Project < ApplicationRecord
 
   def to_param
     name
+  end
+
+  private
+
+  def events_for(candidate)
+    list = [ Event.new(at: candidate.created_at, actor: candidate.author, verb: :opened, candidate: candidate) ]
+
+    candidate.approvals.each do |approval|
+      list << Event.new(at: approval.created_at, actor: approval.user, verb: :approved, candidate: candidate)
+    end
+
+    list.concat(comment_events(candidate))
+
+    if candidate.decided_at
+      list << Event.new(at: candidate.decided_at, actor: candidate.decided_by, verb: candidate.aasm_state.to_sym,
+                        candidate: candidate, version: candidate.promoted_version)
+    end
+
+    list
+  end
+
+  def comment_events(candidate)
+    candidate.comments.group_by { |comment| [ comment.author, comment.created_at.to_date ] }
+      .map do |(author, _date), comments|
+        Event.new(at: comments.map(&:created_at).max, actor: author, verb: :commented,
+                  candidate: candidate, count: comments.size)
+      end
   end
 end

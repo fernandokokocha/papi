@@ -52,14 +52,14 @@ describe Project, type: :model do
     let(:author) { FactoryBot.create(:user, email_address: "author@example.com", group: group) }
     let(:decider) { FactoryBot.create(:user, email_address: "decider@example.com", group: group) }
 
-    it "emits a created event per candidate and a decision event when decided, newest-first" do
+    it "emits an opened event per candidate and a decision event when decided, newest-first" do
       FactoryBot.create(:candidate, project: project, name: "rc1", order: 1, author: author,
                         aasm_state: "merged", decided_by: decider, decided_at: 1.hour.ago, created_at: 3.hours.ago)
       FactoryBot.create(:candidate, project: project, name: "rc2", order: 2, author: author, created_at: 30.minutes.ago)
 
       verbs = project.events.map(&:verb)
 
-      expect(verbs).to eq([ :created, :merged, :created ])
+      expect(verbs).to eq([ :opened, :merged, :opened ])
       expect(project.events.map { |e| e.at }).to eq(project.events.map(&:at).sort.reverse)
     end
 
@@ -70,6 +70,24 @@ describe Project, type: :model do
       merge_event = project.events.find { |e| e.verb == :merged }
 
       expect(merge_event.version).to eq(version)
+    end
+
+    it "emits an approval event per approver" do
+      candidate = FactoryBot.create(:candidate, project: project, name: "rc1", order: 1, author: author)
+      Approval.create!(candidate: candidate, user: decider)
+
+      approval_event = project.events.find { |e| e.verb == :approved }
+
+      expect(approval_event.actor).to eq(decider)
+    end
+
+    it "rolls a day of one persons comments into a single event" do
+      candidate = FactoryBot.create(:candidate, project: project, name: "rc1", order: 1, author: author)
+      2.times { Comment.create!(candidate: candidate, author: decider, body: "x", scope: "candidate", part: "whole") }
+
+      comment_events = project.events.select { |e| e.verb == :commented }
+
+      expect(comment_events.map(&:count)).to eq([ 2 ])
     end
   end
 end

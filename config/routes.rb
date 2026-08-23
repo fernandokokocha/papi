@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get "up" => "rails/health#show", as: :rails_health_check
 
   resources :projects, only: [ :index, :show, :new, :create ], param: :name do
+    resource :timeline, only: [ :show ]
     resource :openapi_import, only: [ :new, :create ], controller: "open_api_imports"
     resources :candidates, only: [ :new, :create, :show, :edit, :update ], param: :name do
       resources :comments, only: [ :create ] do

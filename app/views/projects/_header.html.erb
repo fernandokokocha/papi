@@ -1,0 +1,18 @@
+<%
+  tab = ->(current) do
+    current ? "-mb-px border-b-2 border-sky-700 pb-2 text-[13px] font-semibold text-slate-900" : "-mb-px border-b-2 border-transparent pb-2 text-[13px] text-slate-600 hover:text-sky-800"
+  end
+%>
+
+<header class="border-b border-slate-400 px-6 pt-4">
+  <div class="flex items-center gap-6">
+    <h1 class="min-w-0 flex-1 text-2xl font-normal tracking-tight text-slate-700"><%= project.name %></h1>
+
+    <%= render "projects/actions", project: project %>
+  </div>
+
+  <nav class="mt-3 flex items-center gap-5">
+    <%= link_to "Releases", project_path(project.name), class: tab.(active == :releases) %>
+    <%= link_to "Timeline", project_timeline_path(project.name), class: tab.(active == :timeline) %>
+  </nav>
+</header>
