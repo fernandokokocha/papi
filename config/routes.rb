@@ -33,6 +33,7 @@ Rails.application.routes.draw do
   end
 
   get "design-preview" => "design_preview#show"
+  resource :schema_edit, only: [ :create ]
 
   root "projects#index"
 end

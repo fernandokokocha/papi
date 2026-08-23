@@ -25,7 +25,7 @@ it. Steps 28–40 in particular are shared.
 While the rebuild is in progress the version and candidate request specs are
 red. Every red example is a content assertion for markup that moved, was
 replaced, or was dropped on purpose, so that list doubles as the check that
-nothing was lost. It is settled last, at step 59.
+nothing was lost. It is settled last, at step 66.
 
 ## Steps
 
@@ -128,8 +128,19 @@ nothing was lost. It is settled last, at step 59.
 ### Last
 
 56. ~~Colours revisited — the palette as it landed, across every page~~
-57. Candidate form — the schema editor
-58. `/design-preview`, rebuilt from what landed
-59. The red request specs — each re-aimed at what landed, and the gaps they
+57. ~~Candidate form — entity schemas, server-rendered and editable, in place~~
+58. Candidate form — global truth on every op: only the types that cannot close
+    a cycle, and an answer carrying every block that changed, not only the one
+    that was clicked
+59. Candidate form — entities added, removed and restored
+60. Candidate form — auth methods
+61. Candidate form — endpoints: verb, path, params, query, auth, note, input
+    and each response
+62. Candidate form — the form reads as the diff: before and after columns
+63. Candidate form — the submit bar, and the collision, cycle and
+    nothing-changed checks behind it, answered by Ruby
+64. React and Vite removed
+65. `/design-preview`, rebuilt from what landed
+66. The red request specs — each re-aimed at what landed, and the gaps they
     exposed closed: reply and resolve on a candidate-level thread, and the
     release-notes region a candidate needs in order to raise its absence

@@ -1,0 +1,22 @@
+<select class="<%= css %>" aria-label="Type" form="<%= SchemaForm::OPS_FORM_ID %>"
+        data-controller="schema-edit"
+        data-schema-edit-url-value="<%= url %>"
+        data-action="change->schema-edit#submit">
+  <optgroup label="Primitive">
+    <% (JSONSchemaParser::PRIMITIVE_KINDS - row.taken).each do |kind| %>
+      <option <%= "selected" if kind == row.type %>><%= kind %></option>
+    <% end %>
+  </optgroup>
+  <optgroup label="Structure">
+    <% SchemaForm::Operation::STRUCTURES.each do |structure| %>
+      <option <%= "selected" if structure == row.type %>><%= structure %></option>
+    <% end %>
+  </optgroup>
+  <% if (entity_names - row.taken).any? %>
+    <optgroup label="Entity">
+      <% (entity_names - row.taken).each do |entity_name| %>
+        <option <%= "selected" if entity_name == row.type %>><%= entity_name %></option>
+      <% end %>
+    </optgroup>
+  <% end %>
+</select>

@@ -1,0 +1,11 @@
+<div class="group">
+  <div class="flex items-center gap-3 rounded-t-xl border border-violet-400 bg-violet-100 px-2 py-2 text-violet-900 shadow-sm">
+    <span class="truncate font-mono text-[13px] font-medium"><%= entity.name %></span>
+    <%= hidden_field_tag "version[entities_attributes][#{index}][name]", entity.name, id: nil %>
+  </div>
+
+  <div class="rounded-b-xl border-x border-b border-violet-400 bg-white px-3 py-2 shadow-sm">
+    <%= render "schema_form/editor", root: entity.parsed_root, id: "entity_root_#{index}",
+               field: "version[entities_attributes][#{index}][root]", entity_names: entity_names %>
+  </div>
+</div>

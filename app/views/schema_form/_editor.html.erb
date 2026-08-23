@@ -1,0 +1,62 @@
+<% op_url = ->(op, row, value = nil) {
+     schema_edit_path(id: id, field: field, entity_names: entity_names, op: op, path: row.path, value: value)
+   } %>
+<% ops = SchemaForm::OPS_FORM_ID %>
+<div id="<%= id %>" data-turbo="true" class="overflow-hidden rounded-md bg-slate-50 py-2 ring-1 ring-inset ring-slate-200">
+  <%= hidden_field_tag field, root.serialize, id: nil %>
+  <%= hidden_field_tag field, root.serialize, id: nil, form: ops %>
+  <% number = 0 %>
+  <% SchemaForm::Rows.for(root).each do |row| %>
+    <% number += 1 if row.numbered? %>
+    <div class="group/row flex min-h-[18px] items-center pr-2.5 hover:bg-white">
+      <span class="w-8 shrink-0 select-none pr-2 text-right font-mono text-[11px] leading-[18px] text-slate-500"><%= number if row.numbered? %></span>
+      <span class="whitespace-pre font-mono text-[12px] leading-[18px] text-slate-700"><%= "  " * row.indent %></span>
+
+      <% case row.kind %>
+      <% when :add %>
+        <button type="submit" form="<%= ops %>" formaction="<%= op_url.("add", row) %>"
+                class="cursor-pointer rounded px-1 font-mono text-[12px] leading-[18px] text-slate-400 opacity-0 hover:bg-slate-200 hover:text-slate-700 focus:opacity-100 group-hover/row:opacity-100">+ <%= row.label %></button>
+
+      <% when :close %>
+        <span class="font-mono text-[12px] leading-[18px] text-slate-700"><%= row.bracket %></span>
+
+      <% else %>
+        <% if row.named? %>
+          <input value="<%= row.name %>" size="1" aria-label="Attribute name" form="<%= ops %>"
+                 data-controller="schema-edit"
+                 data-schema-edit-url-value="<%= op_url.("rename", row, "__VALUE__") %>"
+                 data-action="change->schema-edit#submit keydown.enter->schema-edit#commit"
+                 class="field-sizing-content rounded bg-transparent px-0.5 font-mono text-[12px] leading-[18px] text-slate-700 hover:bg-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-600">
+          <% if row.optional %><span class="font-mono text-[12px] leading-[18px] text-slate-400">?</span><% end %>
+          <span class="whitespace-pre font-mono text-[12px] leading-[18px] text-slate-700"><%= row.type ? ": " : ":" %></span>
+        <% end %>
+
+        <% if row.bracket %>
+          <span class="relative inline-flex">
+            <span class="rounded px-0.5 font-mono text-[12px] leading-[18px] text-slate-700 ring-1 ring-transparent group-hover/row:ring-slate-300"><%= row.bracket %></span>
+            <%= render "schema_form/type_select", row: row, entity_names: entity_names,
+                       url: op_url.("change_type", row, "__VALUE__"),
+                       css: "absolute inset-0 cursor-pointer opacity-0" %>
+          </span>
+        <% elsif row.type %>
+          <%= render "schema_form/type_select", row: row, entity_names: entity_names,
+                     url: op_url.("change_type", row, "__VALUE__"),
+                     css: "field-sizing-content cursor-pointer appearance-none rounded px-1 font-mono text-[12px] leading-[18px] ring-1 ring-inset focus:outline-none focus:ring-2 focus:ring-sky-600 #{type_tint(JSONSchemaParser::PRIMITIVE_KINDS.include?(row.type) ? row.type : "custom")}" %>
+        <% end %>
+
+        <% if row.named? || row.removable %>
+          <span class="ml-auto hidden shrink-0 items-center gap-1 pl-4 group-hover/row:flex">
+            <% if row.named? %>
+              <button type="submit" form="<%= ops %>" formaction="<%= op_url.("toggle_optional", row) %>" title="Toggle optional"
+                      class="flex h-4 w-4 cursor-pointer items-center justify-center rounded font-mono text-[11px] leading-none text-slate-500 ring-1 ring-inset ring-slate-300 hover:bg-slate-200 hover:text-slate-900">?</button>
+            <% end %>
+            <% if row.removable %>
+              <button type="submit" form="<%= ops %>" formaction="<%= op_url.("remove", row) %>" title="Remove"
+                      class="flex h-4 w-4 cursor-pointer items-center justify-center rounded font-mono text-[12px] leading-none text-slate-500 ring-1 ring-inset ring-slate-300 hover:bg-rose-100 hover:text-rose-700 hover:ring-rose-300">&times;</button>
+            <% end %>
+          </span>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+</div>

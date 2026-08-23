@@ -2,13 +2,6 @@
 <% line_index = local_assigns[:line_index] %>
 <% by_line = local_assigns[:line_comments]&.by_line || {} %>
 <% line_anchor = local_assigns[:line_anchor] %>
-<% type_tint = {
-  "string" => "bg-green-100 text-green-800 ring-green-200",
-  "number" => "bg-blue-100 text-blue-800 ring-blue-200",
-  "boolean" => "bg-orange-100 text-orange-800 ring-orange-200",
-  "null" => "bg-red-100 text-red-800 ring-red-200",
-  "custom" => "bg-violet-100 text-violet-800 ring-violet-300"
-} %>
 <% note_tint = {
   no_change: "bg-slate-300 text-slate-700 ring-slate-400/60",
   added: "bg-emerald-500 text-white ring-emerald-600",
@@ -31,7 +24,7 @@
                      sublabel: "line #{number}" %>
         <% end %>
         <span class="w-8 shrink-0 select-none pr-2 text-right font-mono text-[11px] leading-[18px] text-slate-500"><%= number unless line.change == :blank %></span>
-        <span class="whitespace-pre font-mono text-[12px] leading-[18px] text-slate-700"><%= "  " * line.indent %><%= line.pre_type %><% if line.class_name == "custom" %><a href="#entity-<%= line.type %>" class="rounded px-1 ring-1 ring-inset <%= type_tint[line.class_name] %> hover:bg-violet-200 hover:text-violet-900"><%= line.type %></a><% elsif line.type %><span class="rounded px-1 ring-1 ring-inset <%= type_tint[line.class_name] %>"><%= line.type %></span><% end %></span>
+        <span class="whitespace-pre font-mono text-[12px] leading-[18px] text-slate-700"><%= "  " * line.indent %><%= line.pre_type %><% if line.class_name == "custom" %><a href="#entity-<%= line.type %>" class="rounded px-1 ring-1 ring-inset <%= type_tint(line.class_name) %> hover:bg-violet-200 hover:text-violet-900"><%= line.type %></a><% elsif line.type %><span class="rounded px-1 ring-1 ring-inset <%= type_tint(line.class_name) %>"><%= line.type %></span><% end %></span>
         <% note = notes[row] %>
         <% if note %>
           <span class="ml-1.5 flex shrink-0 items-start" data-controller="note-card"

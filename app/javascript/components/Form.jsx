@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react'
 import EndpointList from "@/components/EndpointList.jsx";
-import EntityList from "@/components/EntityList.jsx";
 import AuthMethodList from "@/components/AuthMethodList.jsx";
 import {v4 as uuidv4} from "uuid";
 import deserialize from "@/helpers/deserialize.js";
@@ -26,17 +25,6 @@ const isNewEndpointColliding = (verb, path, e) => {
         })
 
     return newEndpointColliding;
-}
-
-const newEntityError = (newEntity, entities) => {
-    if (!/^[A-Z]/.test(newEntity)) {
-        return "An entity name must start with an uppercase letter"
-    }
-
-    const colliding = entities.filter((entity) => (entity.type !== 'removed'))
-        .some((entity) => (entity.name === newEntity))
-
-    return colliding ? "This entity already exists" : null
 }
 
 const newAuthMethodError = (newAuthMethod, authMethods) => {
@@ -82,17 +70,11 @@ const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, c
     const [newPath, setNewPath] = useState("/resource")
     const [newVerb, setNewVerb] = useState("verb_get")
     const [addEndpointDisabled, setAddEndpointDisabled] = useState(() => isNewEndpointColliding(newVerb, newPath, endpoints))
-    const [newEntity, setNewEntity] = useState("MyResource")
-    const [entityError, setEntityError] = useState(() => newEntityError(newEntity, entities))
     const [newAuthMethod, setNewAuthMethod] = useState("UserToken")
     const [authMethodError, setAuthMethodError] = useState(() => newAuthMethodError(newAuthMethod, authMethods))
 
     const validateNewEndpoint = (verb, path, e) => {
         setAddEndpointDisabled(isNewEndpointColliding(verb, path, e))
-    }
-
-    const validateNewEntity = (newEntity, entities) => {
-        setEntityError(newEntityError(newEntity, entities))
     }
 
     const validateNewAuthMethod = (newAuthMethod, authMethods) => {
@@ -258,26 +240,6 @@ const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, c
         setEndpoints(newEndpoints)
     }
 
-    const updateNewEntity = (e) => {
-        setNewEntity(e.target.value)
-        validateNewEntity(e.target.value, entities)
-    }
-
-    const addEntity = () => {
-        const newEntities = JSON.parse(JSON.stringify(entities))
-        newEntities.push({
-            type: "new",
-            id: uuidv4(),
-            root: {nodeType: "primitive", value: "string"},
-            name: newEntity,
-            collision: false,
-            is_referenced: false
-        })
-        validateNewEntity(newEntity, newEntities)
-        validate(endpoints, newEntities, authMethods)
-        setEntities(newEntities)
-    }
-
     const updateNewPath = (e) => {
         setNewPath(e.target.value)
         validateNewEndpoint(newVerb, e.target.value, endpoints)
@@ -286,32 +248,6 @@ const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, c
     const updateNewVerb = (e) => {
         setNewVerb(e.target.value)
         validateNewEndpoint(e.target.value, newPath, endpoints)
-    }
-
-    const updateEntity = (id, newEntity) => {
-        const indexToUpdate = entities.findIndex((entity) => (entity.id === id))
-        const newEntities = [
-            ...entities.slice(0, indexToUpdate),
-            newEntity,
-            ...entities.slice(indexToUpdate + 1),
-        ]
-
-        validate(endpoints, newEntities, authMethods)
-        setEntities(newEntities)
-    }
-
-    const removeEntity = (id) => {
-        let newEntities = JSON.parse(JSON.stringify(entities))
-        const entityToRemove = newEntities.find((entity) => (entity.id === id))
-        if (entityToRemove.type === 'old') {
-            entityToRemove.type = 'removed'
-        } else if (entityToRemove.type === 'new') {
-            newEntities = newEntities.filter((entity) => (entity.id !== id))
-        }
-
-        validateNewEntity(newEntity, newEntities)
-        validate(endpoints, newEntities, authMethods)
-        setEntities(newEntities)
     }
 
     const updateNewAuthMethod = (e) => {
@@ -423,7 +359,6 @@ const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, c
         setAuthMethods(parsed_auth_methods)
 
         validateNewEndpoint(newVerb, newPath, parsed_endpoints)
-        validateNewEntity(newEntity, parsed_entities)
         validateNewAuthMethod(newAuthMethod, parsed_auth_methods)
     }, [])
 
@@ -460,17 +395,6 @@ const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, c
                 comments={commentsMap.endpoints}
                 edited={anyChanges}
                 authMethods={authMethods}
-            />
-            <EntityList
-                entities={entities}
-                updateEntity={updateEntity}
-                removeEntity={removeEntity}
-                newEntity={newEntity}
-                updateNewEntity={updateNewEntity}
-                addEntity={addEntity}
-                entityError={entityError}
-                comments={commentsMap.entities}
-                edited={anyChanges}
             />
             <AuthMethodList
                 authMethods={authMethods}
