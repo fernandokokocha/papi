@@ -122,7 +122,7 @@ nothing was lost. It is settled last, at step 59.
 51. ~~Projects list — project rows, latest version, entry points~~
 52. ~~Project page — `ProjectsController#show`: the version and candidate history~~
 53. ~~Activity — the event stream, its own page~~
-54. Auth — log in, forgot password, reset password
+54. ~~Auth — log in, forgot password, reset password~~
 55. Small forms — new project, import OpenAPI
 
 ### Last
