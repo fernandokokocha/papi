@@ -5,27 +5,27 @@
    }[milestone.kind] %>
 <% candidate = milestone.version.candidate %>
 
-<div class="sticky top-0 z-20 bg-slate-200">
+<div class="sticky top-0 z-20 bg-slate-100">
   <div class="grid h-[var(--pinned-offset)] grid-cols-2 gap-x-2 px-4">
     <div class="flex items-center gap-3 pr-3">
       <%= render "versions/sidebar_toggle" %>
-      <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Was</span>
+      <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Was</span>
       <% if milestone.before %>
         <span class="font-mono text-[13px] font-bold text-slate-900"><%= milestone.before.version.name %></span>
-        <span class="text-[12px] text-slate-500"><%= milestone.before.version.created_at.strftime("%-d %b %Y") %></span>
+        <span class="text-[12px] text-slate-600"><%= milestone.before.version.created_at.strftime("%-d %b %Y") %></span>
       <% else %>
-        <span class="font-mono text-[13px] italic text-slate-400">not there yet</span>
+        <span class="font-mono text-[13px] italic text-slate-500">not there yet</span>
       <% end %>
     </div>
 
     <div class="flex items-center gap-3 pl-3">
-      <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Became</span>
+      <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Became</span>
       <%= link_to milestone.version.name, project_version_path(project_name: @project.name, name: milestone.version.name),
             class: "font-mono text-[13px] font-bold text-sky-700 hover:text-sky-800 hover:underline" %>
-      <span class="text-[12px] text-slate-500"><%= milestone.version.created_at.strftime("%-d %b %Y") %></span>
+      <span class="text-[12px] text-slate-600"><%= milestone.version.created_at.strftime("%-d %b %Y") %></span>
       <span class="rounded border px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] <%= chip[:tint] %>"><%= chip[:label] %></span>
 
-      <span class="ml-auto flex items-center gap-2 text-[12px] text-slate-500">
+      <span class="ml-auto flex items-center gap-2 text-[12px] text-slate-600">
         <% if candidate.author %>
           <span class="truncate"><%= candidate.author.email_address %></span>
         <% end %>

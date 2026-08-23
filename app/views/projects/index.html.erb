@@ -8,11 +8,11 @@
   </div>
 </header>
 
-<div class="divide-y divide-slate-300">
+<div class="divide-y divide-slate-300 border-b border-slate-400 bg-white">
   <% @projects.each do |project| %>
     <% latest = project.latest_version %>
     <% open_candidate = project.candidates.open.first %>
-    <div class="flex items-center gap-6 px-6 py-4 hover:bg-white/70">
+    <div class="flex items-center gap-6 px-6 py-4 hover:bg-slate-50">
       <div class="min-w-0 flex-1">
         <div class="flex items-baseline gap-3">
           <%= link_to project.name, project_path(project.name),
@@ -20,14 +20,14 @@
           <% if latest.persisted? %>
             <%= link_to latest.name, project_version_path(project.name, latest.name),
                   class: "font-mono text-[13px] font-bold text-slate-900 hover:text-sky-800 hover:underline" %>
-            <span class="text-[12px] text-slate-500"><%= latest.created_at.strftime("%-d %b %Y") %></span>
+            <span class="text-[12px] text-slate-600"><%= latest.created_at.strftime("%-d %b %Y") %></span>
           <% else %>
-            <span class="font-mono text-[13px] italic text-slate-400">no version yet</span>
+            <span class="font-mono text-[13px] italic text-slate-500">no version yet</span>
           <% end %>
         </div>
 
         <% if open_candidate %>
-          <div class="mt-1 flex items-center gap-2 text-[12px] text-slate-500">
+          <div class="mt-1 flex items-center gap-2 text-[12px] text-slate-600">
             <span class="rounded border border-amber-300 bg-amber-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-amber-800">Open</span>
             <%= link_to open_candidate.name, project_candidate_path(project.name, open_candidate.name),
                   class: "font-mono text-sky-700 hover:underline" %>

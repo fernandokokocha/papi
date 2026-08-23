@@ -11,10 +11,10 @@
       <div class="shrink-0">
         <% if source.project %>
           <%= link_to "← #{source.name}", project_version_path(project_name: @project.name, name: source.name),
-                class: "rounded-md border border-slate-400 bg-white px-3 py-1.5 font-mono text-[13px] font-semibold text-slate-900 hover:bg-slate-50" %>
+                class: "rounded-md border border-slate-300 bg-white px-3 py-1.5 font-mono text-[13px] font-semibold text-slate-900 hover:bg-slate-50" %>
         <% else %>
           <%= link_to "← #{source.candidate.name}", project_candidate_path(@project.name, source.candidate.name),
-                class: "rounded-md border border-slate-400 bg-white px-3 py-1.5 font-mono text-[13px] font-semibold text-slate-900 hover:bg-slate-50" %>
+                class: "rounded-md border border-slate-300 bg-white px-3 py-1.5 font-mono text-[13px] font-semibold text-slate-900 hover:bg-slate-50" %>
         <% end %>
       </div>
     </div>
@@ -23,14 +23,14 @@
   <div class="flex">
     <aside class="sticky top-0 h-screen w-64 shrink-0 overflow-y-auto overflow-x-hidden border-r border-slate-400 transition-[width] duration-200 ease-out group-data-[sidebar=collapsed]:w-0 group-data-[sidebar=collapsed]:border-r-0">
       <div class="flex w-64 flex-col px-3 py-2">
-        <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Milestones</div>
+        <div class="px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Milestones</div>
         <% @milestones.each do |milestone| %>
           <a href="#milestone-<%= milestone.version.name %>"
              data-sidebar-target="link"
              class="flex h-7 items-center gap-2 pl-2 pr-2 hover:bg-white">
             <span class="h-1.5 w-1.5 shrink-0 rounded-full <%= dot[milestone.kind] %>"></span>
             <span class="truncate font-mono text-[12px] text-slate-800 [.sidebar-link-active_&]:font-semibold [.sidebar-link-active_&]:text-slate-900"><%= milestone.version.name %></span>
-            <span class="ml-auto shrink-0 text-[11px] text-slate-500"><%= milestone.version.created_at.strftime("%-d %b") %></span>
+            <span class="ml-auto shrink-0 text-[11px] text-slate-600"><%= milestone.version.created_at.strftime("%-d %b") %></span>
           </a>
         <% end %>
       </div>
@@ -39,7 +39,7 @@
     <div class="min-w-0 flex-1 pb-16">
       <% if @milestones.empty? %>
         <div class="px-4 pt-10">
-          <div class="rounded-xl border border-dashed border-slate-400 bg-white/60 px-6 py-10 text-center text-[13px] text-slate-500">
+          <div class="rounded-xl border border-dashed border-slate-300 bg-white/60 px-6 py-10 text-center text-[13px] text-slate-600">
             No published history yet — this <%= noun %> is new in a candidate.
           </div>
         </div>

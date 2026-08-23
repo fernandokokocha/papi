@@ -127,7 +127,7 @@ nothing was lost. It is settled last, at step 59.
 
 ### Last
 
-56. Colours revisited — the palette as it landed, across every page
+56. ~~Colours revisited — the palette as it landed, across every page~~
 57. Candidate form — the schema editor
 58. `/design-preview`, rebuilt from what landed
 59. The red request specs — each re-aimed at what landed, and the gaps they

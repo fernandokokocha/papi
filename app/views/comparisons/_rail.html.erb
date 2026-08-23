@@ -1,15 +1,15 @@
-<div class="sticky top-0 z-20 bg-slate-200">
+<div class="sticky top-0 z-20 bg-slate-100">
   <div class="grid h-[var(--pinned-offset)] grid-cols-2 gap-x-2 px-4">
     <div class="flex items-center gap-3 pr-3">
       <%= render "versions/sidebar_toggle" %>
 
       <div class="ml-auto flex items-center gap-3">
-        <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Compared with</span>
+        <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Compared with</span>
         <% if @comparison.before.order == -1 %>
-          <span class="font-mono text-[13px] italic text-slate-400">nothing earlier</span>
+          <span class="font-mono text-[13px] italic text-slate-500">nothing earlier</span>
         <% elsif @candidate %>
           <span class="font-mono text-[13px] font-bold text-slate-900"><%= @comparison.before.name %></span>
-          <span class="text-[12px] text-slate-500"><%= @comparison.before.created_at.strftime("%-d %b %Y") %></span>
+          <span class="text-[12px] text-slate-600"><%= @comparison.before.created_at.strftime("%-d %b %Y") %></span>
         <% else %>
           <%= form_with url: project_version_path(project_name: @project.name, name: @comparison.after.name), method: :get do %>
             <%= select_tag :base,
@@ -17,17 +17,17 @@
                   onchange: "this.form.requestSubmit()",
                   class: "cursor-pointer rounded-md border border-slate-400 bg-white px-2 py-1 font-mono text-[13px] font-bold text-slate-900 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-sky-400" %>
           <% end %>
-          <span class="text-[12px] text-slate-500"><%= @comparison.before.created_at.strftime("%-d %b %Y") %></span>
+          <span class="text-[12px] text-slate-600"><%= @comparison.before.created_at.strftime("%-d %b %Y") %></span>
         <% end %>
       </div>
     </div>
 
     <div class="flex items-center gap-3 pl-3">
-      <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500"><%= @candidate ? "Proposed" : "Current" %></span>
+      <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600"><%= @candidate ? "Proposed" : "Current" %></span>
       <span class="font-mono text-[13px] font-bold text-slate-900"><%= @comparison.after.name %></span>
-      <span class="text-[12px] text-slate-500"><%= @comparison.after.created_at.strftime("%-d %b %Y") %></span>
+      <span class="text-[12px] text-slate-600"><%= @comparison.after.created_at.strftime("%-d %b %Y") %></span>
 
-      <%= link_to "#top", class: "ml-auto flex items-center gap-1 rounded border border-slate-400 bg-white px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600 hover:bg-slate-50 hover:text-slate-900" do %>
+      <%= link_to "#top", class: "ml-auto flex items-center gap-1 rounded border border-slate-400 bg-white px-2 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-700 hover:bg-slate-50 hover:text-slate-900" do %>
         <svg class="h-3 w-3" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
           <path d="M10 16V5m0 0l-4.5 4.5M10 5l4.5 4.5" stroke-linecap="round" stroke-linejoin="round" />
         </svg>

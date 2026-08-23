@@ -1,8 +1,8 @@
 <% content_for :main_class, "mx-auto w-full max-w-[26rem] px-6 py-14" %>
 
-<div class="border border-slate-400 bg-white">
-  <div class="border-b border-slate-400 px-6 py-4">
-    <div class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500"><%= @project.group.name %></div>
+<div class="border border-slate-300 bg-white">
+  <div class="border-b border-slate-300 px-6 py-4">
+    <div class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-600"><%= @project.group.name %></div>
     <h1 class="mt-1 text-2xl font-normal tracking-tight text-slate-700">New project</h1>
   </div>
 
@@ -14,11 +14,11 @@
     <%= form_with model: @project do |form| %>
       <%= form.hidden_field :group_id %>
 
-      <%= form.label :name, "Project name", class: "block text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500" %>
+      <%= form.label :name, "Project name", class: "block text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600" %>
       <%= form.text_field :name,
             required: true, autofocus: true,
             placeholder: "payments-api",
-            class: "mt-1 w-full rounded-md border border-slate-400 bg-white px-3 py-2 text-[13px] text-slate-900 placeholder-slate-400 focus:border-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-200" %>
+            class: "mt-1 w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-[13px] text-slate-900 placeholder-slate-400 focus:border-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-200" %>
 
       <%= form.submit "Create project", class: "mt-5 w-full cursor-pointer rounded-md border border-sky-800 bg-sky-700 px-3 py-2 text-[13px] font-semibold text-white hover:bg-sky-800" %>
     <% end %>

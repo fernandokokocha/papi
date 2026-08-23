@@ -18,14 +18,12 @@
       </a>
     <% end %>
 
-    <% if [ @comparison.before, @comparison.after ].any? { |version| version.release_notes.present? } %>
-      <a href="#release-notes"
-         data-sidebar-target="link"
-         class="-mx-3 flex h-7 items-center gap-2 pl-7 pr-2 text-[12px] font-semibold text-slate-800 hover:bg-white">
-        <span class="truncate">Release notes</span>
-        <%= sidebar_count_badge(CommentAnchor.for_release_notes) %>
-      </a>
-    <% end %>
+    <a href="#release-notes"
+       data-sidebar-target="link"
+       class="-mx-3 flex h-7 items-center gap-2 pl-7 pr-2 text-[12px] font-semibold text-slate-800 hover:bg-white">
+      <span class="truncate">Release notes</span>
+      <%= sidebar_count_badge(CommentAnchor.for_release_notes) %>
+    </a>
 
     <% if @comparison.endpoints.any? %>
       <%= render layout: "versions/sidebar_section", locals: { label: "Endpoints" } do %>

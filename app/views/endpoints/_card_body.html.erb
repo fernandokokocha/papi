@@ -17,9 +17,9 @@
    elsif removed
      "border-rose-700 bg-rose-700 text-white"
    elsif changed
-     "border-amber-400 bg-amber-100 text-gray-900"
+     "border-amber-400 bg-amber-100 text-slate-900"
    else
-     "border-slate-300 bg-slate-100 text-gray-900"
+     "border-slate-400 bg-slate-100 text-slate-900"
    end %>
 <% header_affordance = if added || removed
      "opacity-90 hover:bg-white/25 hover:opacity-100"
@@ -35,14 +35,14 @@
    elsif removed
      "col-start-1 border-x-2 border-rose-500 bg-white shadow-sm"
    else
-     "border-x border-slate-300 bg-white shadow-sm"
+     "border-x border-slate-400 bg-white shadow-sm"
    end %>
 <% edge_bottom = if added
      "rounded-b-xl border-b-2 border-emerald-500"
    elsif removed
      "rounded-b-xl border-b-2 border-rose-500"
    else
-     "rounded-b-xl border-b border-slate-300"
+     "rounded-b-xl border-b border-slate-400"
    end %>
 
 <% toggle_url = ->(keys) { project_endpoint_card_path(project_name: project_name, endpoint_id: endpoint.id, base: base, annotation: endpoint.annotation, expanded: keys.join(","), candidate: @candidate&.name) } %>
@@ -52,7 +52,7 @@
 <% expandable_keys = ([ [ "input", input_expandable ] ] + expandable_by_code.to_a).select(&:last).map(&:first) %>
 <% all_expanded = (expandable_keys - expanded).empty? %>
 
-<div class="sticky top-[var(--pinned-offset)] z-10 grid grid-cols-2 gap-x-2 bg-slate-200">
+<div class="sticky top-[var(--pinned-offset)] z-10 grid grid-cols-2 gap-x-2 bg-slate-100">
   <% sides.each_with_index do |record, index| %>
     <div class="comment-host flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl <%= col %> <%= header_tint %>">
       <span class="truncate font-mono text-[13px] font-medium"><%= render "endpoints/verb_badge", verb: record.verb %> <%= record.path %></span>
@@ -110,7 +110,7 @@
           <% auth_method = record.auth_method %>
           <div class="<%= edge %> px-3 py-2">
             <div class="grid grid-cols-[max-content_1fr]">
-              <div class="border-l-2 border-transparent pl-1.5 pr-5 font-mono text-[12px] leading-[18px] text-gray-900 <%= change_tint(line.change) if tints %>"><% if auth_method %><a href="#auth-<%= auth_method.name %>" class="rounded bg-slate-200 px-1 text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-slate-300 hover:text-slate-900"><%= auth_method.name %></a><% else %><%= record.auth.presence || "—" %><% end %></div>
+              <div class="border-l-2 border-transparent pl-1.5 pr-5 font-mono text-[12px] leading-[18px] text-slate-900 <%= change_tint(line.change) if tints %>"><% if auth_method %><a href="#auth-<%= auth_method.name %>" class="rounded bg-slate-200 px-1 text-slate-700 ring-1 ring-inset ring-slate-400 hover:bg-slate-400 hover:text-slate-900"><%= auth_method.name %></a><% else %><%= record.auth.presence || "—" %><% end %></div>
               <div class="pr-2 font-mono text-[12px] leading-[18px] text-gray-500 <%= change_tint(line.change) if tints %>"><%= auth_method&.kind %></div>
             </div>
           </div>

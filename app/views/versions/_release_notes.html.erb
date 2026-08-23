@@ -1,7 +1,9 @@
-<% if version.release_notes.present? %>
-  <div class="space-y-2.5 text-[14px] leading-6 text-slate-700">
-    <%= simple_format h(version.release_notes) %>
-  </div>
-<% else %>
-  <div class="text-[14px] text-slate-400">—</div>
-<% end %>
+<div class="rounded-xl border border-slate-400 bg-white p-4 shadow-sm">
+  <% if version.release_notes.present? %>
+    <div class="space-y-2.5 text-[14px] leading-6 text-slate-700">
+      <%= simple_format h(version.release_notes) %>
+    </div>
+  <% else %>
+    <div class="text-[14px] text-slate-500">—</div>
+  <% end %>
+</div>

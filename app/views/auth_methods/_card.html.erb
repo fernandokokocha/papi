@@ -15,9 +15,9 @@
    elsif removed
      "border-rose-700 bg-rose-700 text-white"
    elsif changed
-     "border-amber-400 bg-amber-100 text-gray-900"
+     "border-amber-400 bg-amber-100 text-slate-900"
    else
-     "border-sky-300 bg-sky-100 text-sky-900"
+     "border-sky-400 bg-sky-100 text-sky-900"
    end %>
 <% header_affordance = if added || removed
      "opacity-90 hover:bg-white/25 hover:opacity-100"
@@ -32,7 +32,7 @@
    elsif changed
      "border-x border-amber-400"
    else
-     "border-x border-sky-300"
+     "border-x border-sky-400"
    end %>
 <% edge_bottom = if added
      "rounded-b-xl border-b-2 border-emerald-500"
@@ -41,7 +41,7 @@
    elsif changed
      "rounded-b-xl border-b border-amber-400"
    else
-     "rounded-b-xl border-b border-sky-300"
+     "rounded-b-xl border-b border-sky-400"
    end %>
 
 <div id="auth-<%= auth_method.name %>" class="group scroll-mt-[var(--pinned-offset)]" data-sidebar-target="card">
@@ -49,7 +49,7 @@
 
   <div class="flex items-start gap-3">
     <div class="relative min-w-0 flex-1">
-      <div class="sticky top-[var(--pinned-offset)] z-10 grid grid-cols-2 gap-x-2 bg-slate-200">
+      <div class="sticky top-[var(--pinned-offset)] z-10 grid grid-cols-2 gap-x-2 bg-slate-100">
         <% records.each_with_index do |record, index| %>
           <div class="comment-host flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm transition-[border-radius] duration-200 ease-out group-has-[>input:checked]:rounded-b-xl <%= col %> <%= header_tint %>">
             <span class="truncate font-mono text-[13px] font-medium"><%= record.name %></span>
@@ -81,7 +81,7 @@
             <% end %>
             <% records.each do |record| %>
               <div class="bg-white px-3 py-2 shadow-sm <%= col %> <%= edge %>">
-                <div class="border-l-2 border-transparent pl-1.5 font-mono text-[12px] leading-[18px] text-gray-900 <%= change_tint(kind_change) if tints %>"><%= record.kind %></div>
+                <div class="border-l-2 border-transparent pl-1.5 font-mono text-[12px] leading-[18px] text-slate-900 <%= change_tint(kind_change) if tints %>"><%= record.kind %></div>
               </div>
             <% end %>
 

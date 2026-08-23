@@ -1,16 +1,17 @@
 <% approvers = @candidate.approvers %>
+<% approvable = policy(Approval.new(candidate: @candidate, user: Current.user)).create? %>
 
-<div class="flex items-center gap-2 rounded-md border border-slate-300 bg-white/70 py-1 pl-2.5 pr-1">
+<div class="flex items-center gap-2 rounded-md border border-slate-400 bg-white/70 py-1 pl-2.5 <%= approvable ? "pr-1" : "pr-2.5" %>">
   <% if approvers.any? %>
     <svg class="h-4 w-4 shrink-0 text-emerald-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
       <path fill-rule="evenodd" d="M16.7 5.3a1 1 0 010 1.4l-7.5 7.5a1 1 0 01-1.4 0L3.3 9.7a1 1 0 111.4-1.4l3.8 3.8 6.8-6.8a1 1 0 011.4 0z" clip-rule="evenodd" />
     </svg>
-    <span class="text-[12px] text-slate-500">Approved by <%= safe_join(approvers.map { |approver| render("shared/actor", user: approver) }, ", ") %></span>
+    <span class="text-[12px] text-slate-600">Approved by <%= safe_join(approvers.map { |approver| render("shared/actor", user: approver) }, ", ") %></span>
   <% else %>
-    <span class="text-[12px] italic text-slate-400">No approvals yet</span>
+    <span class="text-[12px] italic text-slate-500">No approvals yet</span>
   <% end %>
 
-  <% if policy(Approval.new(candidate: @candidate, user: Current.user)).create? %>
+  <% if approvable %>
     <% if @candidate.approved_by?(Current.user) %>
       <%= button_to "Approved ✓", project_candidate_approval_path(@project.name, @candidate.name), method: :delete,
             class: "cursor-pointer rounded border border-emerald-300 bg-emerald-50 px-2.5 py-1 text-[13px] font-semibold text-emerald-800 hover:bg-emerald-100" %>

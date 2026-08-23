@@ -13,7 +13,7 @@
   phrase = ->(event) { event.verb == :commented ? "left #{pluralize(event.count, "comment")} on" : event.verb.to_s }
 
   facet = ->(active) do
-    active ? "border-b-2 border-sky-700 font-semibold text-slate-900" : "border-b-2 border-transparent text-slate-600 hover:text-sky-800"
+    active ? "border-b-2 border-sky-700 font-semibold text-slate-900" : "border-b-2 border-transparent text-slate-700 hover:text-sky-800"
   end
 %>
 
@@ -21,39 +21,39 @@
 
 <div class="flex">
   <aside class="sticky top-0 w-52 shrink-0 self-start border-r border-slate-400 px-6 py-5">
-    <div class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Kind</div>
+    <div class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Kind</div>
     <div class="mt-2 flex flex-col items-start gap-1.5">
       <%= link_to project_timeline_path(@project.name, candidate: @candidate_name),
             class: "text-[12px] #{facet.(@kind.blank?)}" do %>
-        All <span class="font-normal text-slate-400"><%= @kind_counts.values.sum %></span>
+        All <span class="font-normal text-slate-500"><%= @kind_counts.values.sum %></span>
       <% end %>
       <% kinds.each do |kind| %>
         <% next unless @kind_counts[kind] %>
         <%= link_to project_timeline_path(@project.name, kind: kind, candidate: @candidate_name),
               class: "text-[12px] #{facet.(@kind == kind.to_s)}" do %>
-          <%= label[kind] %> <span class="font-normal text-slate-400"><%= @kind_counts[kind] %></span>
+          <%= label[kind] %> <span class="font-normal text-slate-500"><%= @kind_counts[kind] %></span>
         <% end %>
       <% end %>
     </div>
 
-    <div class="mt-6 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-500">Candidate</div>
+    <div class="mt-6 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Candidate</div>
     <div class="mt-2 flex flex-col items-start gap-1.5">
       <%= link_to project_timeline_path(@project.name, kind: @kind),
             class: "text-[12px] #{facet.(@candidate_name.blank?)}" do %>
-        All <span class="font-normal text-slate-400"><%= @candidate_counts.values.sum %></span>
+        All <span class="font-normal text-slate-500"><%= @candidate_counts.values.sum %></span>
       <% end %>
       <% @candidate_counts.each do |name, count| %>
         <%= link_to project_timeline_path(@project.name, kind: @kind, candidate: name),
               class: "font-mono text-[12px] #{facet.(@candidate_name == name)}" do %>
-          <%= name %> <span class="font-sans font-normal text-slate-400"><%= count %></span>
+          <%= name %> <span class="font-sans font-normal text-slate-500"><%= count %></span>
         <% end %>
       <% end %>
     </div>
   </aside>
 
-  <div class="min-w-0 flex-1">
+  <div class="min-w-0 flex-1 border-b border-slate-400 bg-white">
     <% if @events.empty? %>
-      <div class="px-6 py-10 text-[13px] text-slate-500">
+      <div class="px-6 py-10 text-[13px] text-slate-600">
         <% if @project.history.empty? %>
           No activity yet — nothing has been proposed for this project.
         <% else %>
@@ -63,10 +63,10 @@
     <% else %>
       <div class="divide-y divide-slate-300">
         <% @events.each do |event| %>
-          <div class="flex items-baseline gap-3 px-6 py-2.5 hover:bg-white/70">
-            <span class="w-20 shrink-0 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400"><%= label[event.verb] %></span>
+          <div class="flex items-baseline gap-3 px-6 py-2.5 hover:bg-slate-50">
+            <span class="w-20 shrink-0 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500"><%= label[event.verb] %></span>
             <span class="relative top-[-2px] h-2 w-2 shrink-0 rounded-full <%= dot[event.verb] %>"></span>
-            <span class="min-w-0 flex-1 text-[13px] text-slate-600">
+            <span class="min-w-0 flex-1 text-[13px] text-slate-700">
               <span class="font-medium text-slate-700"><%= event.actor&.email_address || "Someone" %></span>
               <%= phrase.(event) %>
               <%= link_to event.candidate.name, project_candidate_path(@project.name, event.candidate.name),
@@ -76,7 +76,7 @@
                          class: "font-mono font-semibold text-sky-700 hover:underline" %>
               <% end %>
             </span>
-            <span class="shrink-0 text-[11px] text-slate-400"><%= event.at.strftime("%-d %b %Y, %H:%M") %></span>
+            <span class="shrink-0 text-[11px] text-slate-500"><%= event.at.strftime("%-d %b %Y, %H:%M") %></span>
           </div>
         <% end %>
       </div>
