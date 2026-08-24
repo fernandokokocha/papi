@@ -2,9 +2,11 @@ class SchemaForm::Endpoint
   NEW_KIND = "string".freeze
   NEW_QUERY_PARAM = "new".freeze
 
-  attr_reader :http_verb, :path, :auth, :note, :param_kinds, :query_params, :responses
+  attr_reader :key, :http_verb, :path, :auth, :note, :param_kinds, :query_params, :responses, :removed, :added
 
-  def initialize(http_verb:, path:, auth:, note:, param_kinds:, query_params:, responses:)
+  def initialize(key:, http_verb:, path:, auth:, note:, param_kinds:, query_params:, responses:,
+                 removed: false, added: false)
+    @key = key
     @http_verb = http_verb
     @path = path
     @auth = auth
@@ -12,10 +14,16 @@ class SchemaForm::Endpoint
     @param_kinds = param_kinds
     @query_params = query_params
     @responses = responses
+    @removed = removed
+    @added = added
   end
 
   def verb
     ::Endpoint::VERB_TRANSLATIONS[http_verb.to_sym]
+  end
+
+  def identity
+    [ http_verb, ::Endpoint.identity_path(path) ]
   end
 
   def path_params
@@ -24,6 +32,10 @@ class SchemaForm::Endpoint
 
   def unused_codes
     ::Response::CODES - responses.map(&:code)
+  end
+
+  def with_removed(removed)
+    with(removed: removed)
   end
 
   def adding_query_param
@@ -51,8 +63,8 @@ class SchemaForm::Endpoint
   private
 
   def with(**changes)
-    self.class.new(**{ http_verb: http_verb, path: path, auth: auth, note: note, param_kinds: param_kinds,
-                       query_params: query_params, responses: responses }, **changes)
+    self.class.new(**{ key: key, http_verb: http_verb, path: path, auth: auth, note: note, param_kinds: param_kinds,
+                       query_params: query_params, responses: responses, removed: removed, added: added }, **changes)
   end
 
   def unused_query_param_name

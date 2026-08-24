@@ -1,6 +1,30 @@
+<% new_endpoint = local_assigns[:new_endpoint] || {} %>
+<% error = local_assigns[:error] %>
 <div id="endpoints" class="flex flex-col gap-4">
-  <% endpoints.each_with_index do |endpoint, index| %>
-    <%= render "endpoints/form_card", endpoint: endpoint, index: index, blocks: blocks,
+  <% endpoints.each do |endpoint| %>
+    <%= render "endpoints/form_card", endpoint: endpoint, blocks: blocks,
                auth_methods: auth_methods.reject(&:removed) %>
   <% end %>
+
+  <div class="rounded-xl border border-dashed border-slate-300 px-2 py-2" data-turbo="true">
+    <div class="flex items-center gap-2">
+      <span class="select-none font-mono text-[13px] leading-[18px] text-slate-400">+</span>
+      <select name="new_endpoint[http_verb]" form="<%= SchemaForm::OPS_FORM_ID %>" aria-label="New endpoint verb"
+              class="cursor-pointer appearance-none rounded bg-white px-1.5 font-mono text-[13px] font-bold leading-[18px] text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-600">
+        <% Endpoint::VERB_TRANSLATIONS.each do |http_verb, verb| %>
+          <option value="<%= http_verb %>" <%= "selected" if http_verb.to_s == new_endpoint[:http_verb] %>><%= verb %></option>
+        <% end %>
+      </select>
+      <%= text_field_tag "new_endpoint[path]", new_endpoint[:path], id: nil, form: SchemaForm::OPS_FORM_ID,
+            placeholder: "/customers/:id", autocomplete: "off",
+            data: { controller: "schema-edit", action: "keydown.enter->schema-edit#submit",
+                    schema_edit_url_value: schema_edit_path(op: "add_endpoint") },
+            class: "w-64 rounded bg-white px-1.5 font-mono text-[13px] leading-[18px] text-slate-700 placeholder-slate-400 ring-1 ring-inset #{error ? "ring-rose-400" : "ring-slate-300"} focus:outline-none focus:ring-2 focus:ring-sky-600" %>
+      <button type="submit" form="<%= SchemaForm::OPS_FORM_ID %>" formaction="<%= schema_edit_path(op: "add_endpoint") %>"
+              class="cursor-pointer rounded px-2 py-0.5 text-[11px] font-medium text-slate-600 ring-1 ring-inset ring-slate-300 hover:bg-white hover:text-slate-900">Add endpoint</button>
+      <% if error %>
+        <span class="text-[11px] text-rose-700"><%= error %></span>
+      <% end %>
+    </div>
+  </div>
 </div>

@@ -6,11 +6,15 @@ class SchemaEditsController < ApplicationController
     when "remove_entity" then render_entities(blocks.removing(params[:id]))
     when "restore_entity" then render_entities(blocks.restoring(params[:id]))
     when "endpoint" then render_endpoints(endpoints)
-    when "add_query_param" then render_endpoints(endpoints.adding_query_param(position))
-    when "drop_query_param" then render_endpoints(endpoints.dropping_query_param(position, query_position))
-    when "toggle_query_param" then render_endpoints(endpoints.toggling_query_param(position, query_position))
+    when "add_endpoint" then add_endpoint
+    when "drop_endpoint" then render_endpoints(endpoints.dropping(key), blocks.dropping_endpoint(key))
+    when "remove_endpoint" then render_endpoints(endpoints.removing(key), blocks.removing_endpoint(key))
+    when "restore_endpoint" then render_endpoints(endpoints.restoring(key), blocks.restoring_endpoint(key))
+    when "add_query_param" then render_endpoints(endpoints.adding_query_param(key))
+    when "drop_query_param" then render_endpoints(endpoints.dropping_query_param(key, query_position))
+    when "toggle_query_param" then render_endpoints(endpoints.toggling_query_param(key, query_position))
     when "add_response" then add_response
-    when "drop_response" then render_endpoints(endpoints.dropping_response(position, params[:code]))
+    when "drop_response" then render_endpoints(endpoints.dropping_response(key, params[:code]))
     when "auth" then render_auth_methods(auth_methods)
     when "add_auth_method" then add_auth_method
     when "drop_auth_method" then render_auth_methods(auth_methods.dropping(position))
@@ -36,6 +40,12 @@ class SchemaEditsController < ApplicationController
 
   def position
     params[:index].to_i
+  end
+
+  # An endpoint's key outlives its position: dropping one leaves the rest where
+  # they were, so the blocks its schemas live in keep the ids they were given.
+  def key
+    params[:index]
   end
 
   def query_position
@@ -86,19 +96,37 @@ class SchemaEditsController < ApplicationController
   # A response arrives with an output of its own, so the block the editor reads
   # has to be there before the answer is rendered.
   def add_response
-    code = params[:new_response][position.to_s]
+    code = params[:new_response][key]
 
-    render turbo_stream: endpoints_stream(endpoints: endpoints.adding_response(position, code),
-                                          blocks: blocks.adding_output(position, code))
+    render turbo_stream: endpoints_stream(endpoints: endpoints.adding_response(key, code),
+                                          blocks: blocks.adding_output(key, code))
   end
 
-  def render_endpoints(edited)
-    render turbo_stream: endpoints_stream(endpoints: edited)
+  # An endpoint arrives with an input of its own, and it is nothing until the
+  # editor is asked for something else.
+  def add_endpoint
+    http_verb = params[:new_endpoint][:http_verb]
+    path = params[:new_endpoint][:path].to_s
+    error = endpoints.new_endpoint_error(http_verb, path)
+
+    if error
+      render turbo_stream: endpoints_stream(new_endpoint: { http_verb: http_verb, path: path }, error: error)
+    else
+      added = endpoints.next_key
+      render turbo_stream: endpoints_stream(endpoints: endpoints.adding(added, http_verb, path),
+                                            blocks: blocks.adding_endpoint(added))
+    end
   end
 
-  def endpoints_stream(endpoints: self.endpoints, auth_methods: self.auth_methods, blocks: self.blocks)
+  def render_endpoints(edited, edited_blocks = blocks)
+    render turbo_stream: endpoints_stream(endpoints: edited, blocks: edited_blocks)
+  end
+
+  def endpoints_stream(endpoints: self.endpoints, auth_methods: self.auth_methods, blocks: self.blocks,
+                       new_endpoint: nil, error: nil)
     turbo_stream.replace("endpoints", partial: "endpoints/form_list",
-                         locals: { endpoints: endpoints, auth_methods: auth_methods, blocks: blocks })
+                         locals: { endpoints: endpoints, auth_methods: auth_methods, blocks: blocks,
+                                   new_endpoint: new_endpoint, error: error })
   end
 
   def render_blocks

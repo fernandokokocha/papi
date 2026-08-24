@@ -136,7 +136,7 @@ nothing was lost. It is settled last, at step 68.
 60. ~~Candidate form — auth methods~~
 61. ~~Candidate form — endpoints: verb, path, params, query, auth, note, input
     and each response~~
-62. Candidate form — endpoints added, removed and restored
+62. ~~Candidate form — endpoints added, removed and restored~~
 63. Candidate form — the form reads as the diff: before and after columns
 64. Candidate form — the sidebar, over the endpoints, entities and auth the
     form holds

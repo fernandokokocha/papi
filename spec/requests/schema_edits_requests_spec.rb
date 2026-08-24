@@ -524,4 +524,115 @@ describe "Schema edit requests", type: :request do
     expect(turbo_actions).to eq([ [ "replace", "auth_methods" ], [ "replace", "endpoints" ] ])
     expect(form_fields["version[endpoints_attributes][][auth]"]).to eq("")
   end
+
+  def endpoint_field_values(name)
+    Nokogiri::HTML5.fragment(response.body).css("input[type=hidden][name='#{name}']").map { |input| input["value"] }
+  end
+
+  def endpoint_set_edit(op, endpoints:, blocks: {}, **rest)
+    post schema_edit_path, params: {
+      op: op,
+      auth_methods: { "0" => { name: "UserToken", kind: "bearer", note: "A token from POST /session." } },
+      blocks: { "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Customer", root: "{id:number}" } }.merge(blocks),
+      endpoints: endpoints
+    }.merge(rest)
+  end
+
+  let(:one_endpoint) do
+    { "0" => { http_verb: "verb_get", path: "/customers/:id", auth: "UserToken", note: "One customer.",
+               params: { "id" => "number" },
+               query_params: { "0" => { name: "expand", kind: "boolean", required: "1" } },
+               responses: { "200" => { note: "The customer." } } } }
+  end
+
+  let(:one_endpoints_blocks) do
+    { "endpoint_input_0" => { field: "version[endpoints_attributes][][input]", root: "" },
+      "endpoint_output_0_200" => { field: "version[endpoints_attributes][][responses][200][output]", root: "Customer" } }
+  end
+
+  # A new endpoint takes the next key, not the next position: the keys are what
+  # its schema blocks are named after, and a position moves when a card goes.
+  it "adds an endpoint holding the verb and path it was given, and an input that is nothing" do
+    endpoint_set_edit("add_endpoint", endpoints: one_endpoint, blocks: one_endpoints_blocks,
+                      new_endpoint: { http_verb: "verb_post", path: "/customers" })
+
+    expect(turbo_actions).to eq([ [ "replace", "endpoints" ] ])
+    expect(endpoint_field_values("version[endpoints_attributes][][path]")).to eq([ "/customers/:id", "/customers" ])
+    expect(endpoint_field_values("version[endpoints_attributes][][http_verb]")).to eq([ "verb_get", "verb_post" ])
+    expect(form_fields["blocks[endpoint_input_1][root]"]).to eq("")
+    expect(form_fields["endpoints[1][added]"]).to eq("1")
+  end
+
+  # Param names are ours, so /customers/:id and /customers/:customer_id are the
+  # same endpoint and the second one may not be added.
+  it "refuses an endpoint whose verb and path shape the form already holds" do
+    endpoint_set_edit("add_endpoint", endpoints: one_endpoint, blocks: one_endpoints_blocks,
+                      new_endpoint: { http_verb: "verb_get", path: "/customers/:customer_id" })
+
+    expect(response.body).to include("This endpoint already exists")
+    expect(endpoint_field_values("version[endpoints_attributes][][path]")).to eq([ "/customers/:id" ])
+  end
+
+  it "refuses an endpoint with no path" do
+    endpoint_set_edit("add_endpoint", endpoints: one_endpoint, blocks: one_endpoints_blocks,
+                      new_endpoint: { http_verb: "verb_get", path: "" })
+
+    expect(response.body).to include("An endpoint needs a path")
+    expect(endpoint_field_values("version[endpoints_attributes][][path]")).to eq([ "/customers/:id" ])
+  end
+
+  # A removed endpoint is one the new version is not told about, so its card
+  # stops writing into version[endpoints_attributes] — and it keeps writing
+  # into the ops form, which is the only reason it can come back.
+  it "stops submitting a removed endpoint to the version, and keeps submitting it to itself" do
+    endpoint_set_edit("remove_endpoint", index: 0, endpoints: one_endpoint, blocks: one_endpoints_blocks)
+
+    expect(endpoint_field_values("version[endpoints_attributes][][path]")).to be_empty
+    expect(form_fields["endpoints[0][path]"]).to eq("/customers/:id")
+    expect(form_fields["endpoints[0][params][id]"]).to eq("number")
+    expect(form_fields["endpoints[0][query_params][0][name]"]).to eq("expand")
+    expect(form_fields["endpoints[0][responses][200][note]"]).to eq("The customer.")
+    expect(form_fields["endpoints[0][removed]"]).to eq("1")
+    expect(form_fields["blocks[endpoint_output_0_200][root]"]).to eq("Customer")
+    expect(form_fields["blocks[endpoint_output_0_200][removed]"]).to eq("1")
+  end
+
+  it "brings a removed endpoint back with every part it was holding" do
+    removed = { "0" => one_endpoint["0"].merge(removed: "1") }
+    blocks = one_endpoints_blocks.transform_values { |block| block.merge(removed: "1") }
+
+    endpoint_set_edit("restore_endpoint", index: 0, endpoints: removed, blocks: blocks)
+
+    expect(form_fields["version[endpoints_attributes][][path]"]).to eq("/customers/:id")
+    expect(form_fields["version[endpoints_attributes][][params][id][kind]"]).to eq("number")
+    expect(form_fields["version[endpoints_attributes][][responses][200][note]"]).to eq("The customer.")
+    expect(form_fields["version[endpoints_attributes][][responses][200][output]"]).to eq("Customer")
+  end
+
+  # An added endpoint has nothing to come back to, so its card goes and the
+  # blocks its schemas lived in go with it.
+  it "drops an added endpoint outright, and the blocks its schemas lived in" do
+    endpoints = one_endpoint.merge("1" => { http_verb: "verb_post", path: "/customers", added: "1" })
+    blocks = one_endpoints_blocks.merge("endpoint_input_1" => { field: "version[endpoints_attributes][][input]", root: "Customer" })
+
+    endpoint_set_edit("drop_endpoint", index: 1, endpoints: endpoints, blocks: blocks)
+
+    expect(endpoint_field_values("version[endpoints_attributes][][path]")).to eq([ "/customers/:id" ])
+    expect(form_fields.keys).not_to include("blocks[endpoint_input_1][root]")
+  end
+
+  # A removed endpoint is not going into the version, so the entity its input
+  # named is no longer a reason to keep that entity.
+  it "offers the remove control on an entity only a removed endpoint names" do
+    post schema_edit_path, params: {
+      op: "restore_entity", id: "entity_root_0",
+      blocks: {
+        "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Customer", root: "{id:number}" },
+        "endpoint_input_0" => { field: "version[endpoints_attributes][][input]", root: "Customer", removed: "1" }
+      },
+      endpoints: { "0" => { http_verb: "verb_get", path: "/customers", note: "", removed: "1" } }
+    }
+
+    expect(Nokogiri::HTML5.fragment(response.body).css("button[title='Remove entity']")).not_to be_empty
+  end
 end

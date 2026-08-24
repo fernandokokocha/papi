@@ -14,6 +14,10 @@ class SchemaForm::Block
     name.present?
   end
 
+  def belongs_to_endpoint?(key)
+    id == SchemaForm::Blocks.input_id(key) || id.start_with?(SchemaForm::Blocks.output_id(key, ""))
+  end
+
   def with_root(root)
     copy(root: root)
   end

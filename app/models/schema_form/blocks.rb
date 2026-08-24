@@ -15,28 +15,29 @@ class SchemaForm::Blocks
   end
 
   def self.for_version(version)
-    for_entities(version.entities) + new(version.endpoints.each_with_index.flat_map do |endpoint, position|
-      [ input_block(position, endpoint.input) ] +
-        endpoint.responses.sort_by(&:code).map { |response| output_block(position, response.code, response.output) }
+    for_entities(version.entities) + new(version.endpoints.each_with_index.flat_map do |endpoint, index|
+      key = index.to_s
+      [ input_block(key, endpoint.input) ] +
+        endpoint.responses.sort_by(&:code).map { |response| output_block(key, response.code, response.output) }
     end)
   end
 
-  def self.input_block(position, root)
-    SchemaForm::Block.new(id: input_id(position), field: "version[endpoints_attributes][][input]",
+  def self.input_block(key, root)
+    SchemaForm::Block.new(id: input_id(key), field: "version[endpoints_attributes][][input]",
                           name: nil, root: root)
   end
 
-  def self.output_block(position, code, root)
-    SchemaForm::Block.new(id: output_id(position, code), name: nil, root: root,
+  def self.output_block(key, code, root)
+    SchemaForm::Block.new(id: output_id(key, code), name: nil, root: root,
                           field: "version[endpoints_attributes][][responses][#{code}][output]")
   end
 
-  def self.input_id(position)
-    "endpoint_input_#{position}"
+  def self.input_id(key)
+    "endpoint_input_#{key}"
   end
 
-  def self.output_id(position, code)
-    "endpoint_output_#{position}_#{code}"
+  def self.output_id(key, code)
+    "endpoint_output_#{key}_#{code}"
   end
 
   def initialize(blocks)
@@ -55,16 +56,32 @@ class SchemaForm::Blocks
     @blocks.select(&:entity?)
   end
 
-  def input_for(position)
-    fetch(self.class.input_id(position))
+  def input_for(key)
+    fetch(self.class.input_id(key))
   end
 
-  def output_for(position, code)
-    fetch(self.class.output_id(position, code))
+  def output_for(key, code)
+    fetch(self.class.output_id(key, code))
   end
 
-  def adding_output(position, code)
-    self.class.new(@blocks + [ self.class.output_block(position, code, "") ])
+  def adding_output(key, code)
+    self.class.new(@blocks + [ self.class.output_block(key, code, "") ])
+  end
+
+  def adding_endpoint(key)
+    self.class.new(@blocks + [ self.class.input_block(key, "") ])
+  end
+
+  def dropping_endpoint(key)
+    self.class.new(@blocks.reject { |block| block.belongs_to_endpoint?(key) })
+  end
+
+  def removing_endpoint(key)
+    mapping_endpoint(key) { |block| block.with_removed(true) }
+  end
+
+  def restoring_endpoint(key)
+    mapping_endpoint(key) { |block| block.with_removed(false) }
   end
 
   def fetch(id)
@@ -146,12 +163,18 @@ class SchemaForm::Blocks
 
   private
 
+  # A removed endpoint is not going into the version, so what its schemas name
+  # is not a reason to keep an entity.
   def schemas
-    @blocks.reject(&:entity?)
+    @blocks.reject(&:entity?).reject(&:removed)
   end
 
   def mapping(id)
     self.class.new(@blocks.map { |block| block.id == id ? yield(block) : block })
+  end
+
+  def mapping_endpoint(key)
+    self.class.new(@blocks.map { |block| block.belongs_to_endpoint?(key) ? yield(block) : block })
   end
 
   def all_records
