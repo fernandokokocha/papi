@@ -3,7 +3,8 @@
 <div id="endpoints" class="flex flex-col gap-4">
   <% endpoints.each do |endpoint| %>
     <%= render "endpoints/form_card", endpoint: endpoint, blocks: blocks,
-               auth_methods: auth_methods.reject(&:removed) %>
+               auth_methods: auth_methods.reject(&:removed),
+               base_endpoint: base.endpoints.find { |record| record.identity_name == endpoint.identity_name } %>
   <% end %>
 
   <div class="rounded-xl border border-dashed border-slate-300 px-2 py-2" data-turbo="true">

@@ -135,7 +135,7 @@ class SchemaEditsController < ApplicationController
                        new_endpoint: nil, error: nil)
     turbo_stream.replace("endpoints", partial: "endpoints/form_list",
                          locals: { endpoints: endpoints, auth_methods: auth_methods, blocks: blocks,
-                                   new_endpoint: new_endpoint, error: error })
+                                   base: base_version, new_endpoint: new_endpoint, error: error })
   end
 
   def render_blocks

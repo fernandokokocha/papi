@@ -49,7 +49,7 @@
 
   <%= render layout: "versions/section", locals: { label: "Endpoints" } do %>
     <%= render "endpoints/form_list", endpoints: SchemaForm::Endpoints.for_version(@version.endpoints),
-               auth_methods: auth_methods, blocks: blocks %>
+               auth_methods: auth_methods, blocks: blocks, base: base_version %>
   <% end %>
 
   <%= render layout: "versions/section", locals: { label: "Entities" } do %>

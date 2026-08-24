@@ -9,6 +9,10 @@ class SchemaForm::AuthMethod
     @added = added
   end
 
+  def same_contract_as?(other)
+    name == other.name && kind == other.kind
+  end
+
   def with_removed(removed)
     self.class.new(name: name, kind: kind, note: note, removed: removed, added: added)
   end

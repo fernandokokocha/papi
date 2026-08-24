@@ -26,6 +26,10 @@ class SchemaForm::Endpoint
     [ http_verb, ::Endpoint.identity_path(path) ]
   end
 
+  def identity_name
+    "#{verb} #{::Endpoint.identity_path(path)}"
+  end
+
   def path_params
     path.scan(::Endpoint::PARAM_TOKEN).flatten.uniq.map { |name| [ name, param_kinds.fetch(name, NEW_KIND) ] }
   end
