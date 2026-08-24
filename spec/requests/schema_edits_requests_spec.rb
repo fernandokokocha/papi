@@ -20,7 +20,11 @@ describe "Schema edit requests", type: :request do
   end
 
   def edited_schema
-    Nokogiri::HTML5.fragment(response.body).at_css("input[name='version[entities_attributes][0][root]']")["value"]
+    hidden_fields["version[entities_attributes][0][root]"]
+  end
+
+  def hidden_fields
+    Nokogiri::HTML5.fragment(response.body).css("input[type=hidden]").to_h { |field| [ field["name"], field["value"] ] }
   end
 
   def branch_remove_controls
@@ -30,10 +34,12 @@ describe "Schema edit requests", type: :request do
 
   before { sign_in(user) }
 
-  it "replaces the block it was told to, and carries the new schema in its hidden field" do
+  # An edit moves a card's before column and its header as well as its editor,
+  # so the answer is the lists, exactly as it is for every other op.
+  it "answers with the entity and endpoint lists, carrying the new schema in its hidden field" do
     edit("add", [ "address" ])
 
-    expect(turbo_actions).to eq([ [ "replace", "entity_root_0" ] ])
+    expect(turbo_actions).to eq([ [ "replace", "entities" ], [ "replace", "endpoints" ] ])
     expect(edited_schema).to eq("{id:number,tags:[string],address?:{street:string,new:string},status:(string|null)}")
   end
 
@@ -88,14 +94,13 @@ describe "Schema edit requests", type: :request do
   it "answers with every block the op moved, not only the one that was clicked" do
     edit("change_type", [ "id" ], "Customer")
 
-    expect(turbo_actions).to eq([ [ "replace", "entity_root_0" ], [ "replace", "entity_root_1" ] ])
     expect(types_in("entity_root_1")).not_to include("Order")
   end
 
   it "leaves alone the blocks an op does not reach" do
     edit("rename", [ "id" ], "identifier")
 
-    expect(turbo_actions).to eq([ [ "replace", "entity_root_0" ] ])
+    expect(hidden_fields["version[entities_attributes][1][root]"]).to eq("{id:string}")
   end
 
   # A one-of needs two branches to mean anything, and nothing validates that —
@@ -114,24 +119,23 @@ describe "Schema edit requests", type: :request do
   it "edits the block the op names, leaving its neighbours alone" do
     post schema_edit_path, params: {
       blocks: {
-        "entity_root_0" => { field: "version[entities_attributes][0][root]", root: "{id:number}" },
-        "entity_root_1" => { field: "version[entities_attributes][1][root]", root: "{total:number}" },
-        "entity_root_2" => { field: "version[entities_attributes][2][root]", root: "{label:string}" }
+        "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Order", root: "{id:number}" },
+        "entity_root_1" => { field: "version[entities_attributes][1][root]", name: "Cart", root: "{total:number}" },
+        "entity_root_2" => { field: "version[entities_attributes][2][root]", name: "Label", root: "{label:string}" }
       },
       id: "entity_root_1", op: "add"
     }
 
-    fields = Nokogiri::HTML5.fragment(response.body).css("input[type=hidden]").to_h { |i| [ i["name"], i["value"] ] }
-    expect(turbo_actions).to eq([ [ "replace", "entity_root_1" ] ])
-    expect(fields["version[entities_attributes][1][root]"]).to eq("{total:number,new:string}")
-    expect(fields.keys).not_to include("version[entities_attributes][0][root]")
+    expect(hidden_fields["version[entities_attributes][1][root]"]).to eq("{total:number,new:string}")
+    expect(hidden_fields["version[entities_attributes][0][root]"]).to eq("{id:number}")
+    expect(hidden_fields["version[entities_attributes][2][root]"]).to eq("{label:string}")
   end
   # Nothing is remembered between ops: each answer carries the whole schema
   # back into the field the next op reads from, so the browser holds the state
   # and the server stays a function.
   it "accumulates edits through the field it hands back, storing nothing" do
     post schema_edit_path, params: {
-      blocks: { "entity_root_0" => { field: "version[entities_attributes][0][root]", root: "{id:number}" } },
+      blocks: { "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Order", root: "{id:number}" } },
       id: "entity_root_0", op: "add"
     }
     expect(edited_schema).to eq("{id:number,new:string}")
@@ -142,7 +146,7 @@ describe "Schema edit requests", type: :request do
     end
 
     post schema_edit_path, params: {
-      blocks: { "entity_root_0" => { field: "version[entities_attributes][0][root]", root: edited_schema } },
+      blocks: { "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Order", root: edited_schema } },
       id: "entity_root_0", op: "rename", path: [ "new" ], value: "label"
     }
 
@@ -473,7 +477,6 @@ describe "Schema edit requests", type: :request do
       id: "endpoint_input_0", op: "change_type", path: [ "name" ], value: "Customer"
     }
 
-    expect(turbo_actions).to eq([ [ "replace", "endpoint_input_0" ] ])
     expect(form_fields["version[endpoints_attributes][][input]"]).to eq("{name:Customer}")
   end
 

@@ -25,7 +25,7 @@ it. Steps 28–40 in particular are shared.
 While the rebuild is in progress the version and candidate request specs are
 red. Every red example is a content assertion for markup that moved, was
 replaced, or was dropped on purpose, so that list doubles as the check that
-nothing was lost. It is settled last, at step 68.
+nothing was lost. It is settled last, at step 70.
 
 ## Steps
 
@@ -137,15 +137,17 @@ nothing was lost. It is settled last, at step 68.
 61. ~~Candidate form — endpoints: verb, path, params, query, auth, note, input
     and each response~~
 62. ~~Candidate form — endpoints added, removed and restored~~
-63. Candidate form — the form reads as the diff: before and after columns
-64. Candidate form — the sidebar, over the endpoints, entities and auth the
+63. ~~Candidate form — entities read as the diff: before and after columns~~
+64. Candidate form — auth methods read as the diff, band by band
+65. Candidate form — endpoints read as the diff, band by band
+66. Candidate form — the sidebar, over the endpoints, entities and auth the
     form holds
-65. Candidate form — the submit bar, and the checks behind it, answered by
+67. Candidate form — the submit bar, and the checks behind it, answered by
     Ruby: endpoints colliding, an endpoint with no responses, a path repeating
     a param name, a query param blank or named twice, entity references in a
     cycle, and nothing changed at all
-66. React and Vite removed
-67. `/design-preview`, rebuilt from what landed
-68. The red request specs — each re-aimed at what landed, and the gaps they
+68. React and Vite removed
+69. `/design-preview`, rebuilt from what landed
+70. The red request specs — each re-aimed at what landed, and the gaps they
     exposed closed: reply and resolve on a candidate-level thread, and the
     release-notes region a candidate needs in order to raise its absence

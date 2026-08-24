@@ -128,13 +128,6 @@ class SchemaForm::Blocks
     end)
   end
 
-  def changed_since(previous)
-    @blocks.select do |block|
-      was = previous.fetch(block.id)
-      block.root != was.root || referenceable_names(block) != previous.referenceable_names(was)
-    end
-  end
-
   def locals_for(block)
     { root: parse(block), id: block.id, field: block.field, name: block.name,
       referenceable_names: referenceable_names(block), nothing: !block.entity? }
@@ -177,8 +170,10 @@ class SchemaForm::Blocks
     self.class.new(@blocks.map { |block| block.belongs_to_endpoint?(key) ? yield(block) : block })
   end
 
+  # Diffing a reference asks the entity it names for its own root, so every
+  # record the parser is handed has to sit in a version that can resolve it.
   def all_records
-    @all_records ||= records_for(entities)
+    @all_records ||= Version.new(entities: records_for(entities)).entities
   end
 
   def records_for(blocks)

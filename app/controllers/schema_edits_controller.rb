@@ -30,6 +30,14 @@ class SchemaEditsController < ApplicationController
     @blocks ||= SchemaForm::Blocks.from(params[:blocks])
   end
 
+  # The form reads as the diff, so every op has to answer against the version
+  # the candidate branched from. It travels as an id in the ops form because it
+  # cannot change while the form is open.
+  def base_version
+    @base_version ||= Version.find_by(id: params[:base_version_id])&.tap { |version| authorize version, :show? } ||
+      Version.new
+  end
+
   def auth_methods
     @auth_methods ||= SchemaForm::AuthMethods.from(params[:auth_methods])
   end
@@ -80,7 +88,7 @@ class SchemaEditsController < ApplicationController
   def render_entities(edited, new_entity: "", error: nil)
     render turbo_stream: [
       turbo_stream.replace("entities", partial: "entities/form_list",
-                           locals: { blocks: edited, new_entity: new_entity, error: error }),
+                           locals: { blocks: edited, base: base_version, new_entity: new_entity, error: error }),
       endpoints_stream(blocks: edited)
     ]
   end
@@ -134,10 +142,6 @@ class SchemaEditsController < ApplicationController
     root = SchemaForm::Operation.new(blocks.parse(block), blocks.version.entities)
       .apply(params[:op], Array(params[:path]), params[:value])
 
-    edited = blocks.replacing(block.id, root.serialize)
-
-    render turbo_stream: edited.changed_since(blocks).map { |changed|
-      turbo_stream.replace(changed.id, partial: "schema_form/editor", locals: edited.locals_for(changed))
-    }
+    render_entities(blocks.replacing(block.id, root.serialize))
   end
 end

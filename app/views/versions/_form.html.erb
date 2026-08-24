@@ -1,4 +1,7 @@
-<%= form_with url: schema_edit_path, id: SchemaForm::OPS_FORM_ID, data: { turbo: true } do %><% end %>
+<% base_version = @candidate.base_version || Version.null_version(@project) %>
+<%= form_with url: schema_edit_path, id: SchemaForm::OPS_FORM_ID, data: { turbo: true } do %>
+  <%= hidden_field_tag :base_version_id, base_version.id, id: nil %>
+<% end %>
 
 <%= form_with model: [@project, @candidate] do |f| %>
   <%= f.hidden_field :project_id %>
@@ -7,7 +10,6 @@
   <%= hidden_field(:version, :order) %>
   <%= hidden_field(:version, :name) %>
 
-  <% base_version = @candidate.base_version || Version.null_version(@project) %>
   <div class="grid grid-cols-2 gap-2 mb-6">
     <div class="bg-white border border-gray-200 rounded-lg p-4">
       <% if base_version.order > -1 %>
@@ -51,7 +53,7 @@
   <% end %>
 
   <%= render layout: "versions/section", locals: { label: "Entities" } do %>
-    <%= render "entities/form_list", blocks: blocks %>
+    <%= render "entities/form_list", blocks: blocks, base: base_version %>
   <% end %>
 
   <%= render layout: "versions/section", locals: { label: "Auth" } do %>
