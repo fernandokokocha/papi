@@ -42,6 +42,10 @@ class SchemaForm::AuthMethods
     at(position) { |auth_method| auth_method.with_removed(false) }
   end
 
+  def removed_twin_position(name)
+    find_index { |auth_method| auth_method.removed && auth_method.name == name }
+  end
+
   def new_name_error(name)
     return "An auth method needs a name" if name.blank?
     return "This auth method already exists" if reject(&:removed).any? { |auth_method| auth_method.name == name }

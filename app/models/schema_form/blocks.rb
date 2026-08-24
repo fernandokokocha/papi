@@ -108,6 +108,10 @@ class SchemaForm::Blocks
     self.class.new(@blocks.reject { |block| block.id == id }).renumbering
   end
 
+  def removed_twin(name)
+    entities.find { |block| block.removed && block.name == name }
+  end
+
   def new_entity_error(name)
     return "An entity name must start with an uppercase letter" unless name.match?(/\A[A-Z]/)
     return "This entity already exists" if entities.reject(&:removed).any? { |block| block.name == name }

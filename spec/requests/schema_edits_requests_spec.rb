@@ -257,13 +257,16 @@ describe "Schema edit requests", type: :request do
     expect(response.body).to include("This entity already exists")
   end
 
-  # The name is free again the moment the entity holding it is removed, which
-  # is how an entity is replaced rather than edited.
-  it "lets a removed name be taken again" do
+  # The version cannot hold two entities of one name, so adding back the name
+  # that was just removed brings that entity back rather than opening a slot
+  # beside it.
+  it "restores a removed entity instead of adding a twin of it" do
     add_entity("Customer", blocks_removed: [ "entity_root_1" ])
 
     expect(response.body).not_to include("This entity already exists")
-    expect(form_fields["version[entities_attributes][2][name]"]).to eq("Customer")
+    expect(form_fields["version[entities_attributes][1][name]"]).to eq("Customer")
+    expect(form_fields["version[entities_attributes][1][root]"]).to eq("{id:string}")
+    expect(form_fields).not_to include("version[entities_attributes][2][name]")
   end
 
   # A new entity was never in the base version, so there is nothing for it to
@@ -354,10 +357,12 @@ describe "Schema edit requests", type: :request do
     expect(form_fields).not_to include("version[auth_methods_attributes][2][name]")
   end
 
-  it "lets a removed name be taken again" do
+  it "restores a removed auth method instead of adding a twin of it" do
     auth_edit("add_auth_method", removed: [ "1" ], new_auth_method: "AdminBasic")
 
-    expect(form_fields["version[auth_methods_attributes][2][name]"]).to eq("AdminBasic")
+    expect(form_fields["version[auth_methods_attributes][1][name]"]).to eq("AdminBasic")
+    expect(form_fields["version[auth_methods_attributes][1][note]"]).to eq("Operator credentials.")
+    expect(form_fields).not_to include("version[auth_methods_attributes][2][name]")
   end
 
   it "discards a new auth method instead of marking it removed" do
@@ -598,6 +603,20 @@ describe "Schema edit requests", type: :request do
     expect(form_fields["endpoints[0][removed]"]).to eq("1")
     expect(form_fields["blocks[endpoint_output_0_200][root]"]).to eq("Customer")
     expect(form_fields["blocks[endpoint_output_0_200][removed]"]).to eq("1")
+  end
+
+  # Param names are ours here too, so the endpoint comes back under the path it
+  # was removed with, not under the one that was typed.
+  it "restores a removed endpoint instead of adding a twin of it" do
+    removed = { "0" => one_endpoint["0"].merge(removed: "1") }
+    blocks = one_endpoints_blocks.transform_values { |block| block.merge(removed: "1") }
+
+    endpoint_set_edit("add_endpoint", endpoints: removed, blocks: blocks,
+                      new_endpoint: { http_verb: "verb_get", path: "/customers/:customer_id" })
+
+    expect(endpoint_field_values("version[endpoints_attributes][][path]")).to eq([ "/customers/:id" ])
+    expect(form_fields["version[endpoints_attributes][][responses][200][output]"]).to eq("Customer")
+    expect(form_fields).not_to include("endpoints[1][added]")
   end
 
   it "brings a removed endpoint back with every part it was holding" do

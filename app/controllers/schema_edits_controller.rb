@@ -63,9 +63,12 @@ class SchemaEditsController < ApplicationController
   def add_entity
     name = params[:new_entity].to_s
     error = blocks.new_entity_error(name)
+    twin = blocks.removed_twin(name)
 
     if error
       render_entities(blocks, new_entity: name, error: error)
+    elsif twin
+      render_entities(blocks.restoring(twin.id))
     else
       render_entities(blocks.adding(name))
     end
@@ -74,9 +77,12 @@ class SchemaEditsController < ApplicationController
   def add_auth_method
     name = params[:new_auth_method].to_s
     error = auth_methods.new_name_error(name)
+    twin = auth_methods.removed_twin_position(name)
 
     if error
       render_auth_methods(auth_methods, new_auth_method: name, error: error)
+    elsif twin
+      render_auth_methods(auth_methods.restoring(twin))
     else
       render_auth_methods(auth_methods.adding(name))
     end
@@ -117,9 +123,12 @@ class SchemaEditsController < ApplicationController
     http_verb = params[:new_endpoint][:http_verb]
     path = params[:new_endpoint][:path].to_s
     error = endpoints.new_endpoint_error(http_verb, path)
+    twin = endpoints.removed_twin(http_verb, path)
 
     if error
       render turbo_stream: endpoints_stream(new_endpoint: { http_verb: http_verb, path: path }, error: error)
+    elsif twin
+      render_endpoints(endpoints.restoring(twin.key), blocks.restoring_endpoint(twin.key))
     else
       added = endpoints.next_key
       render turbo_stream: endpoints_stream(endpoints: endpoints.adding(added, http_verb, path),

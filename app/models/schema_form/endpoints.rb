@@ -70,6 +70,14 @@ class SchemaForm::Endpoints
     at(key) { |endpoint| endpoint.with_removed(false) }
   end
 
+  # Adding back what was just removed is a restore: the version cannot hold two
+  # endpoints of one identity, so the removed card would otherwise sit above a
+  # twin that reads as a change against it.
+  def removed_twin(http_verb, path)
+    identity = [ http_verb, ::Endpoint.identity_path(path) ]
+    find { |endpoint| endpoint.removed && endpoint.identity == identity }
+  end
+
   def new_endpoint_error(http_verb, path)
     return "An endpoint needs a path" if path.blank?
     return "This endpoint already exists" if reject(&:removed).any? { |endpoint|
