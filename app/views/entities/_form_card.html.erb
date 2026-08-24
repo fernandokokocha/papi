@@ -2,7 +2,7 @@
 <% removed = block.removed %>
 <% added = base_entity.nil? && !removed %>
 <% diff = Diff::FromValues.new(base_entity.parsed_root, root) if base_entity && !removed %>
-<% changed = diff&.any_changes? %>
+<% changed = diff && record.differs_from?(base_entity) %>
 <% columns = added || removed ? 1 : 2 %>
 <% col = if added then "col-start-2" elsif removed then "col-start-1" else "" end %>
 <% header_tint = if added
@@ -26,9 +26,7 @@
 <div id="form-entity-<%= block.id %>" data-sidebar-target="card" data-turbo="true"
      class="group grid grid-cols-2 gap-x-2 scroll-mt-[var(--pinned-offset)]">
   <% if removed %>
-    <%= hidden_field_tag "blocks[#{block.id}][root]", block.root, id: nil, form: ops %>
-    <%= hidden_field_tag "blocks[#{block.id}][field]", block.field, id: nil, form: ops %>
-    <%= hidden_field_tag "blocks[#{block.id}][name]", block.name, id: nil, form: ops %>
+    <%= render "schema_form/ops_fields", block: block %>
     <%= hidden_field_tag "blocks[#{block.id}][removed]", "1", id: nil, form: ops %>
   <% else %>
     <%= hidden_field_tag "version[entities_attributes][#{index}][name]", block.name, id: nil %>
@@ -64,8 +62,8 @@
     <% if removed %>
       <%= render "endpoints/schema", lines: root.to_diff(:no_change), tints: false %>
     <% else %>
-      <%= render "schema_form/editor", root: root, id: block.id, name: block.name, nothing: false,
-                 field: block.field, referenceable_names: referenceable_names %>
+      <%= render "schema_form/editor", root: root, block: block, nothing: false,
+                 referenceable_names: referenceable_names %>
     <% end %>
   </div>
 </div>

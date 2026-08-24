@@ -10,7 +10,7 @@ class SchemaForm::Rows
   end
 
   def to_a
-    rows_for(@root, [], 0)
+    rows_for(@root, [], [], 0)
   end
 
   private
@@ -18,33 +18,42 @@ class SchemaForm::Rows
   # A named attribute whose value is a block reads over two lines, exactly as
   # Diff::Lines lays it out: the label, then the opening bracket. The first row
   # a node emits is the one that carries its name and its controls.
-  def rows_for(node, path, indent, name: nil, optional: false, **identity)
-    return [ leaf(node, path, indent, name: name, optional: optional, **identity) ] if leaf?(node)
-    return block(node, path, indent, **identity) if name.nil?
+  #
+  # An op addresses a node one way and a note another — a one-of branch is
+  # "0" to the first and 0 to the second, an array element "[]" and null — so
+  # both paths are carried down rather than one being derived from the other.
+  def rows_for(node, path, note_path, indent, name: nil, optional: false, **identity)
+    return [ leaf(node, path, note_path, indent, name: name, optional: optional, **identity) ] if leaf?(node)
+    return block(node, path, note_path, indent, **identity) if name.nil?
 
-    [ label(path, indent, name, optional, **identity) ] + block(node, path, indent, **identity.slice(:taken))
+    [ label(path, note_path, indent, name, optional, **identity) ] +
+      block(node, path, note_path, indent, labelled: true, **identity.slice(:taken))
   end
 
-  def block(node, path, indent, **identity)
+  # Both rows of a labelled block name the same node, and a note belongs on the
+  # first — which is what SchemaPathIndex reads back off the rendered lines.
+  def block(node, path, note_path, indent, labelled: false, **identity)
+    opening_note_path = labelled ? nil : note_path
+
     case node
     when Node::Object
       inside = node.object_attributes.flat_map do |attribute|
-        rows_for(attribute.value, path + [ attribute.name ], indent + 1,
+        rows_for(attribute.value, path + [ attribute.name ], note_path + [ attribute.name ], indent + 1,
                  name: attribute.name, optional: attribute.optional, removable: true)
       end
-      [ opening("object", "{", path, indent, **identity) ] + inside +
+      [ opening("object", "{", path, opening_note_path, indent, **identity) ] + inside +
         [ add(path, indent + 1, "attribute"), closing("}", path, indent) ]
     when Node::Array
-      [ opening("array", "[", path, indent, **identity) ] +
-        rows_for(node.value, path + [ ARRAY_SEGMENT ], indent + 1) +
+      [ opening("array", "[", path, opening_note_path, indent, **identity) ] +
+        rows_for(node.value, path + [ ARRAY_SEGMENT ], note_path + [ nil ], indent + 1) +
         [ closing("]", path, indent) ]
     when Node::OneOf
       inside = node.branches.each_with_index.flat_map do |branch, index|
-        rows_for(branch, path + [ index.to_s ], indent + 1,
+        rows_for(branch, path + [ index.to_s ], note_path + [ index ], indent + 1,
                  taken: named_types(node.branches) - [ named_type(branch) ],
                  removable: node.branches.size > 2)
       end
-      [ opening("one-of", "(", path, indent, **identity) ] + inside +
+      [ opening("one-of", "(", path, opening_note_path, indent, **identity) ] + inside +
         [ add(path, indent + 1, "branch"), closing(")", path, indent) ]
     end
   end
@@ -64,8 +73,8 @@ class SchemaForm::Rows
     end
   end
 
-  def leaf(node, path, indent, **row)
-    SchemaForm::Row.new(kind: :node, indent: indent, path: path, type: type_of(node), **row)
+  def leaf(node, path, note_path, indent, **row)
+    SchemaForm::Row.new(kind: :node, indent: indent, path: path, note_path: note_path, type: type_of(node), **row)
   end
 
   def type_of(node)
@@ -76,13 +85,14 @@ class SchemaForm::Rows
     end
   end
 
-  def label(path, indent, name, optional, **identity)
-    SchemaForm::Row.new(kind: :node, indent: indent, path: path, name: name, optional: optional,
-                        **identity.except(:taken))
+  def label(path, note_path, indent, name, optional, **identity)
+    SchemaForm::Row.new(kind: :node, indent: indent, path: path, note_path: note_path, name: name,
+                        optional: optional, **identity.except(:taken))
   end
 
-  def opening(type, bracket, path, indent, **identity)
-    SchemaForm::Row.new(kind: :node, indent: indent, path: path, type: type, bracket: bracket, **identity)
+  def opening(type, bracket, path, note_path, indent, **identity)
+    SchemaForm::Row.new(kind: :node, indent: indent, path: path, note_path: note_path, type: type,
+                        bracket: bracket, **identity)
   end
 
   def closing(bracket, path, indent)

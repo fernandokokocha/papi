@@ -177,6 +177,134 @@ end
     expect(Version.last.auth_methods.find_by(name: "UserToken")).to have_attributes(kind: "basic", note: "Now a username and password.")
   end
 
+  # Diffing a reference asks the two entities whether they differ, and a note is
+  # half of that answer — so a stand-in without them makes every reference to a
+  # noted entity read as a change on a form nobody has touched yet.
+  it "hands a stand-in entity the notes its own record carries" do
+    customer.schema_notes.create!(path: '["id"]', body: "The customer's id.")
+    page = form
+
+    expect(page.at_css("#submit_bar").text).to include("Nothing has changed yet")
+    expect(page.css("aside a[href^='#form-']").map { |link| link["class"] }.join).not_to include("amber")
+  end
+
+  # A note is pinned in a schema the form has no editor for, so the only way it
+  # survives the version this form cuts is by riding across as a hidden field.
+  it "carries every schema note across, so a save does not drop them" do
+    customer.schema_notes.create!(path: '["id"]', body: "Sequential, not a UUID.")
+    endpoint.schema_notes.create!(path: "[]", body: "Nothing goes in.")
+    ok.schema_notes.create!(path: '["name"]', body: "Blank for a deleted customer.")
+
+    fields = form.css("input[type=hidden]").map { |input| [ input["name"], input["value"] ] }
+
+    expect(fields).to include([ "version[entities_attributes][0][schema_notes_attributes][0][path]", '["id"]' ])
+    expect(fields).to include([ "version[entities_attributes][0][schema_notes_attributes][0][body]", "Sequential, not a UUID." ])
+    expect(fields).to include([ "version[endpoints_attributes][][schema_notes][0][body]", "Nothing goes in." ])
+    expect(fields).to include([ "version[endpoints_attributes][][responses][200][schema_notes][0][path]", '["name"]' ])
+    expect(fields).to include([ "version[endpoints_attributes][][responses][200][schema_notes][0][body]", "Blank for a deleted customer." ])
+  end
+
+  it "gives the created version notes of its own, on the entity, the input and the output" do
+    customer.schema_notes.create!(path: '["id"]', body: "Sequential, not a UUID.")
+    endpoint.schema_notes.create!(path: "[]", body: "Nothing goes in.")
+    ok.schema_notes.create!(path: '["name"]', body: "Blank for a deleted customer.")
+
+    page = form
+    post project_candidates_path(project.name), params: submitted_form(page)
+
+    cut = Version.last
+    expect(cut.entities.find_by(name: "Customer").schema_notes.map(&:body)).to eq([ "Sequential, not a UUID." ])
+    expect(cut.endpoints.first.schema_notes.map(&:body)).to eq([ "Nothing goes in." ])
+    expect(cut.endpoints.first.responses.find_by(code: "200").schema_notes.map(&:body)).to eq([ "Blank for a deleted customer." ])
+  end
+
+  # Editing an open candidate goes through a service of its own, which rebuilds
+  # the version from scratch — so the notes have to be in the form there too.
+  it "keeps the notes when an open candidate is saved again" do
+    customer.schema_notes.create!(path: '["id"]', body: "Sequential, not a UUID.")
+    user.update!(role: 1)
+    open_candidate = FactoryBot.create(:candidate, name: "rc2", project: project, base_version: base_version,
+                                       order: 2, author: user)
+    draft = base_version.reload.amoeba_dup
+    draft.update!(name: "rc2-v1", order: 1, candidate: open_candidate)
+
+    get edit_project_candidate_path(project.name, open_candidate.name)
+    patch project_candidate_path(project.name, open_candidate.name),
+          params: submitted_form(Nokogiri::HTML5.fragment(response.body))
+
+    expect(draft.reload.entities.find_by(name: "Customer").schema_notes.map(&:body)).to eq([ "Sequential, not a UUID." ])
+  end
+
+  # The page posts what its fields hold, so the spec posts them too rather than
+  # restating the version by hand.
+  def submitted_form(page)
+    Rack::Utils.parse_nested_query(
+      page.css("form##{SchemaForm::FORM_ID} input[type=hidden][name], form##{SchemaForm::FORM_ID} textarea[name]")
+        .map { |field| "#{CGI.escape(field["name"])}=#{CGI.escape(field["value"] || field.text)}" }.join("&")
+    ).merge("candidate" => { "project_id" => project.id, "name" => "rc2" })
+  end
+
+  def note_op(id, note, value, blocks)
+    post schema_edit_path, params: { op: "note", id: id, note: note, value: value,
+                                     base_version_id: base_version.id, blocks: blocks }
+    Nokogiri::HTML5.fragment(response.body)
+  end
+
+  def entity_blocks(notes = {})
+    { "entity_root_0" => { field: "version[entities_attributes][0][root]",
+                           notes_field: "version[entities_attributes][0][schema_notes_attributes]",
+                           name: "Customer", root: "{id:number,name:string}", notes: notes } }
+  end
+
+  # An op addresses a node one way and a note another — "0" against 0, "[]"
+  # against null — so the badge sends the stored key rather than the op path.
+  it "offers a note badge on every node, keyed the way the note is stored" do
+    keys = form.css("#entity_root_0 [data-note-edit-target=badge]")
+      .map { |badge| form.at_css("##{badge["popovertarget"]} textarea")["data-schema-edit-url-value"] }
+      .map { |url| CGI.parse(URI.parse(url).query).fetch("note").first }
+
+    expect(keys).to eq([ "[]", '["id"]', '["name"]' ])
+  end
+
+  it "pins a note, rewords it, and takes it off again when the text is cleared" do
+    pinned = note_op("entity_root_0", '["id"]', "Sequential, not a UUID.", entity_blocks)
+    fields = ->(page) { page.css("input[type=hidden]").to_h { |input| [ input["name"], input["value"] ] } }
+
+    expect(fields.(pinned)["version[entities_attributes][0][schema_notes_attributes][0][path]"]).to eq('["id"]')
+    expect(fields.(pinned)["version[entities_attributes][0][schema_notes_attributes][0][body]"]).to eq("Sequential, not a UUID.")
+    expect(fields.(pinned)["blocks[entity_root_0][notes][0][body]"]).to eq("Sequential, not a UUID.")
+
+    held = { "0" => { path: '["id"]', body: "Sequential, not a UUID." } }
+    cleared = note_op("entity_root_0", '["id"]', "", entity_blocks(held))
+
+    expect(fields.(cleared)).not_to include("version[entities_attributes][0][schema_notes_attributes][0][path]")
+    expect(fields.(cleared)).not_to include("blocks[entity_root_0][notes][0][path]")
+  end
+
+  # A note is spec content, so pinning one is a change like any other — the card
+  # tints, the sidebar says so, and the submit bar opens.
+  it "reads a pinned note as a change" do
+    page = note_op("entity_root_0", '["id"]', "Sequential, not a UUID.", entity_blocks)
+
+    expect(page.at_css("a[href='#form-entity-entity_root_0']")["class"]).to include("bg-amber-100")
+    expect(page.at_css("#submit_bar button[type=submit]")).to be_present
+  end
+
+  # The note has nothing left to point at, so it goes with the node.
+  it "drops a note whose node the next op takes away" do
+    held = { "0" => { path: '["id"]', body: "Sequential, not a UUID." },
+             "1" => { path: '["name"]', body: "As the customer wrote it." } }
+    post schema_edit_path, params: { op: "remove", id: "entity_root_0", path: [ "id" ],
+                                     base_version_id: base_version.id, blocks: entity_blocks(held) }
+
+    fields = Nokogiri::HTML5.fragment(response.body).css("input[type=hidden]")
+      .to_h { |input| [ input["name"], input["value"] ] }
+
+    expect(fields["blocks[entity_root_0][root]"]).to eq("{name:string}")
+    expect(fields["blocks[entity_root_0][notes][0][body]"]).to eq("As the customer wrote it.")
+    expect(fields).not_to include("blocks[entity_root_0][notes][1][path]")
+  end
+
   def ops_params
     {
       base_version_id: base_version.id,

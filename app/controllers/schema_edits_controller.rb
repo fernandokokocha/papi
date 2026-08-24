@@ -15,6 +15,7 @@ class SchemaEditsController < ApplicationController
     when "toggle_query_param" then render_endpoints(endpoints.toggling_query_param(key, query_position))
     when "add_response" then add_response
     when "drop_response" then render_endpoints(endpoints.dropping_response(key, params[:code]))
+    when "note" then render_entities(blocks.noting(params[:id], params[:note], params[:value].to_s))
     when "auth" then render_auth_methods(auth_methods)
     when "add_auth_method" then add_auth_method
     when "drop_auth_method" then render_auth_methods(auth_methods.dropping(position))

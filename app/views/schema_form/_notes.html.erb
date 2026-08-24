@@ -1,0 +1,7 @@
+<%# A note is pinned to a node, not typed into this form, so it rides across as
+    a passenger: the version the candidate branched from is where it comes from,
+    and the create and update services already read these names. %>
+<% notes.each_with_index do |note, index| %>
+  <%= hidden_field_tag "#{name}[#{index}][path]", note.path, id: nil %>
+  <%= hidden_field_tag "#{name}[#{index}][body]", note.body, id: nil %>
+<% end %>

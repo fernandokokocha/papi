@@ -40,10 +40,21 @@ class SchemaForm::EndpointDiff
 
   def any_changes?
     path_renamed? || path_params.any_changes? || query_params.any_changes? || auth.any_changes? ||
-      note.any_changes? || input.any_changes? || responses.any? { |row| row.state != :no_change }
+      note.any_changes? || input.any_changes? || input_notes_changed? ||
+      responses.any? { |row| row.state != :no_change }
   end
 
   private
+
+  # A note is spec content, so pinning, rewording or clearing one is a change
+  # like any other — and the schema it sits in reads no differently for it.
+  def input_notes_changed?
+    notes_differ?(@base, @blocks.input_for(@endpoint.key))
+  end
+
+  def notes_differ?(record, block)
+    SchemaNote.differ?(record.schema_notes, block.notes.map(&:to_record))
+  end
 
   def codes
     (@base.responses.map(&:code) + @endpoint.responses.map(&:code)).uniq.sort
@@ -56,9 +67,10 @@ class SchemaForm::EndpointDiff
     return ResponseRow.new(code: code, state: :added, before_note: nil, before_lines: nil, note_change: nil) if before.nil?
     return removed_row(code, before) if after.nil?
 
-    output = Diff::FromValues.new(before.parsed_output, @blocks.parse(@blocks.output_for(@endpoint.key, code)))
+    block = @blocks.output_for(@endpoint.key, code)
+    output = Diff::FromValues.new(before.parsed_output, @blocks.parse(block))
     note_change = before.note == after.note ? "no_change" : "type_changed"
-    changed = output.any_changes? || note_change != "no_change"
+    changed = output.any_changes? || note_change != "no_change" || notes_differ?(before, block)
     ResponseRow.new(code: code, state: changed ? :changed : :no_change, before_note: before.note,
                     before_lines: output.before, note_change: note_change)
   end

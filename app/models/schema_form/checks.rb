@@ -40,7 +40,7 @@ class SchemaForm::Checks
     base_entity = @base.entities.find { |entity| entity.identity_name == block.name }
     return "added" if base_entity.nil?
 
-    "changed" if Diff::FromValues.new(base_entity.parsed_root, @blocks.parse(block)).any_changes?
+    "changed" if @blocks.record_for(block).differs_from?(base_entity)
   end
 
   def auth_method_change(auth_method)

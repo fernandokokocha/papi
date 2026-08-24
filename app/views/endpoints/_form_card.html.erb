@@ -65,8 +65,7 @@
       <%= hidden_field_tag field.("[responses][#{response.code}][note]"), response.note, id: nil, form: ops %>
     <% end %>
     <% [ input, *endpoint.responses.map { |response| blocks.output_for(key, response.code) } ].each do |block| %>
-      <%= hidden_field_tag "blocks[#{block.id}][root]", block.root, id: nil, form: ops %>
-      <%= hidden_field_tag "blocks[#{block.id}][field]", block.field, id: nil, form: ops %>
+      <%= render "schema_form/ops_fields", block: block %>
       <%= hidden_field_tag "blocks[#{block.id}][removed]", "1", id: nil, form: ops %>
     <% end %>
   <% elsif endpoint.added %>

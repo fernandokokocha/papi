@@ -1,0 +1,9 @@
+<% ops = SchemaForm::OPS_FORM_ID %>
+<%= hidden_field_tag "blocks[#{block.id}][root]", block.root, id: nil, form: ops %>
+<%= hidden_field_tag "blocks[#{block.id}][field]", block.field, id: nil, form: ops %>
+<%= hidden_field_tag "blocks[#{block.id}][notes_field]", block.notes_field, id: nil, form: ops %>
+<%= hidden_field_tag "blocks[#{block.id}][name]", block.name, id: nil, form: ops %>
+<% block.notes.each_with_index do |note, index| %>
+  <%= hidden_field_tag "blocks[#{block.id}][notes][#{index}][path]", note.path, id: nil, form: ops %>
+  <%= hidden_field_tag "blocks[#{block.id}][notes][#{index}][body]", note.body, id: nil, form: ops %>
+<% end %>
