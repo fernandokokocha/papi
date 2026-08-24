@@ -1,6 +1,7 @@
 class SchemaForm::Operation
   PRIMITIVE_KINDS = JSONSchemaParser::PRIMITIVE_KINDS
   STRUCTURES = [ "object", "array", "one-of" ].freeze
+  NOTHING = "nothing".freeze
   TYPES = (PRIMITIVE_KINDS + STRUCTURES).freeze
 
   attr_reader :root
@@ -70,6 +71,7 @@ class SchemaForm::Operation
 
   def build(type)
     case type
+    when NOTHING then Node::Nothing.new
     when "object" then Node::Object.new
     when "array" then Node::Array.new(value: Node::Primitive.new)
     when "one-of" then Node::OneOf.new(branches: [ Node::Primitive.new(kind: "string"), Node::Primitive.new(kind: "number") ])

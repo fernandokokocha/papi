@@ -172,7 +172,7 @@ describe "Schema edit requests", type: :request do
   it "stops submitting a removed entity to the version, and keeps submitting it to itself" do
     entity_edit("remove_entity", "entity_root_0")
 
-    expect(turbo_actions).to eq([ [ "replace", "entities" ] ])
+    expect(turbo_actions).to eq([ [ "replace", "entities" ], [ "replace", "endpoints" ] ])
     expect(form_fields).not_to include("version[entities_attributes][0][name]", "version[entities_attributes][0][root]")
     expect(form_fields["blocks[entity_root_0][root]"]).to eq("{id:number,customer:Customer}")
     expect(form_fields["blocks[entity_root_0][removed]"]).to eq("1")
@@ -227,7 +227,7 @@ describe "Schema edit requests", type: :request do
   it "gives a new entity a slot of its own, a string to start from, and the flag that says it is new" do
     add_entity("Invoice")
 
-    expect(turbo_actions).to eq([ [ "replace", "entities" ] ])
+    expect(turbo_actions).to eq([ [ "replace", "entities" ], [ "replace", "endpoints" ] ])
     expect(form_fields["version[entities_attributes][2][name]"]).to eq("Invoice")
     expect(form_fields["version[entities_attributes][2][root]"]).to eq("string")
     expect(form_fields["blocks[entity_root_2][added]"]).to eq("1")
@@ -318,7 +318,7 @@ describe "Schema edit requests", type: :request do
   it "stops submitting a removed auth method to the version, and keeps submitting it to itself" do
     auth_edit("remove_auth_method", 0)
 
-    expect(turbo_actions).to eq([ [ "replace", "auth_methods" ] ])
+    expect(turbo_actions).to eq([ [ "replace", "auth_methods" ], [ "replace", "endpoints" ] ])
     expect(form_fields).not_to include("version[auth_methods_attributes][0][name]", "version[auth_methods_attributes][0][kind]")
     expect(form_fields["auth_methods[0][note]"]).to eq("A token from POST /session.")
     expect(form_fields["auth_methods[0][removed]"]).to eq("1")
@@ -374,5 +374,154 @@ describe "Schema edit requests", type: :request do
 
     post schema_edit_path, params: { op: "add_auth_method", new_auth_method: "UserToken" }
     expect(form_fields["version[auth_methods_attributes][0][name]"]).to eq("UserToken")
+  end
+
+  def endpoint_edit(op, index: 0, query: nil, code: nil, new_response: nil, input: "{name:string}", **endpoint)
+    post schema_edit_path, params: {
+      op: op, index: index, query: query, code: code, new_response: new_response,
+      auth_methods: { "0" => { name: "UserToken", kind: "bearer", note: "A token from POST /session." } },
+      blocks: {
+        "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Customer", root: "{id:number}" },
+        "endpoint_input_0" => { field: "version[endpoints_attributes][][input]", root: input },
+        "endpoint_output_0_200" => { field: "version[endpoints_attributes][][responses][200][output]", root: "Customer" }
+      },
+      endpoints: {
+        "0" => {
+          http_verb: "verb_get", path: "/customers/:id", auth: "UserToken", note: "One customer.",
+          params: { "id" => "number" },
+          query_params: { "0" => { name: "expand", kind: "boolean", required: "1" } },
+          responses: { "200" => { note: "The customer." } }
+        }.merge(endpoint)
+      }
+    }.compact
+  end
+
+  it "answers an endpoint edit with the verb, path, auth and note the whole form is holding" do
+    endpoint_edit("endpoint", http_verb: "verb_post", path: "/customers", auth: "", note: "Every customer.")
+
+    expect(turbo_actions).to eq([ [ "replace", "endpoints" ] ])
+    expect(form_fields["version[endpoints_attributes][][http_verb]"]).to eq("verb_post")
+    expect(form_fields["version[endpoints_attributes][][path]"]).to eq("/customers")
+    expect(form_fields["version[endpoints_attributes][][auth]"]).to eq("")
+    expect(form_fields["version[endpoints_attributes][][note]"]).to eq("Every customer.")
+  end
+
+  # The path is where a param comes from, so a param leaves and arrives by
+  # being typed rather than by a control of its own.
+  it "reads the params off the edited path, keeping the kind of a name that stayed" do
+    endpoint_edit("endpoint", path: "/customers/:id/orders/:order_id")
+
+    expect(form_fields["version[endpoints_attributes][][params][id][kind]"]).to eq("number")
+    expect(form_fields["version[endpoints_attributes][][params][order_id][kind]"]).to eq("string")
+
+    endpoint_edit("endpoint", path: "/customers")
+    expect(form_fields.keys).not_to include("version[endpoints_attributes][][params][id][kind]")
+  end
+
+  it "adds, drops and toggles a query param" do
+    endpoint_edit("add_query_param")
+    expect(form_fields["version[endpoints_attributes][][query_params][new][kind]"]).to eq("string")
+    expect(form_fields["version[endpoints_attributes][][query_params][new][required]"]).to eq("true")
+
+    endpoint_edit("toggle_query_param", query: 0)
+    expect(form_fields["version[endpoints_attributes][][query_params][expand][required]"]).to eq("false")
+
+    endpoint_edit("drop_query_param", query: 0)
+    expect(form_fields.keys.grep(/query_params/)).to be_empty
+  end
+
+  it "answers a response's note with what the whole form is holding" do
+    endpoint_edit("endpoint", responses: { "200" => { note: "The one customer." } })
+
+    expect(form_fields["version[endpoints_attributes][][responses][200][note]"]).to eq("The one customer.")
+    expect(form_fields["version[endpoints_attributes][][responses][200][output]"]).to eq("Customer")
+  end
+
+  # A response arrives with an output of its own, and an output that was never
+  # declared is nothing.
+  it "adds a response with the code that was picked, and an output of nothing" do
+    endpoint_edit("add_response", new_response: { "0" => "404" })
+
+    expect(form_fields["version[endpoints_attributes][][responses][404][note]"]).to eq("")
+    expect(form_fields["version[endpoints_attributes][][responses][404][output]"]).to eq("")
+    expect(types_in("endpoint_output_0_404")).to include("nothing")
+  end
+
+  it "offers only the codes the endpoint has not taken" do
+    endpoint_edit("endpoint")
+
+    codes = Nokogiri::HTML5.fragment(response.body).at_css("select[name='new_response[0]']").css("option").map(&:text)
+    expect(codes).not_to include("200")
+    expect(codes).to include("404")
+  end
+
+  it "drops a response, and the output that came with it" do
+    endpoint_edit("drop_response", code: "200")
+
+    expect(form_fields.keys.grep(/responses/)).to be_empty
+  end
+
+  # The input is a block like any other, so the op that edits it is the one
+  # that edits an entity — it just answers into a different field.
+  it "edits an endpoint's input through the block the whole form submits" do
+    post schema_edit_path, params: {
+      blocks: {
+        "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Customer", root: "{id:number}" },
+        "endpoint_input_0" => { field: "version[endpoints_attributes][][input]", root: "{name:string}" }
+      },
+      endpoints: { "0" => { http_verb: "verb_post", path: "/customers", note: "" } },
+      id: "endpoint_input_0", op: "change_type", path: [ "name" ], value: "Customer"
+    }
+
+    expect(turbo_actions).to eq([ [ "replace", "endpoint_input_0" ] ])
+    expect(form_fields["version[endpoints_attributes][][input]"]).to eq("{name:Customer}")
+  end
+
+  # Nothing is absence, and it is legal only as a whole value — so it is
+  # offered at an input's root and nowhere inside it.
+  it "offers nothing at an input's root, and only there" do
+    post schema_edit_path, params: {
+      blocks: { "endpoint_input_0" => { field: "version[endpoints_attributes][][input]", root: "{name:string}" } },
+      endpoints: { "0" => { http_verb: "verb_post", path: "/customers", note: "" } },
+      id: "endpoint_input_0", op: "change_type", value: "nothing"
+    }
+
+    expect(form_fields["version[endpoints_attributes][][input]"]).to eq("")
+    expect(types_in("endpoint_input_0")).to include("nothing")
+  end
+
+  it "offers nothing to no entity" do
+    entity_edit("restore_entity", "entity_root_0")
+
+    expect(types_in("entity_root_0")).not_to include("nothing")
+  end
+
+  # An entity an endpoint's input names is one the version still needs, and
+  # withholding the control is the whole enforcement.
+  it "offers no remove control on an entity an input references" do
+    post schema_edit_path, params: {
+      blocks: {
+        "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Customer", root: "{id:number}" },
+        "endpoint_input_0" => { field: "version[endpoints_attributes][][input]", root: "Customer" }
+      },
+      endpoints: { "0" => { http_verb: "verb_post", path: "/customers", note: "" } },
+      id: "entity_root_0", op: "restore_entity"
+    }
+
+    expect(Nokogiri::HTML5.fragment(response.body).css("button[title='Remove entity']")).to be_empty
+  end
+
+  # An auth method the form no longer holds is one the endpoints may no longer
+  # name, so the name goes out of the endpoint with it.
+  it "takes a removed auth method out of the endpoint that named it" do
+    post schema_edit_path, params: {
+      op: "remove_auth_method", index: 0,
+      auth_methods: { "0" => { name: "UserToken", kind: "bearer", note: "A token from POST /session." } },
+      blocks: { "endpoint_input_0" => { field: "version[endpoints_attributes][][input]", root: "" } },
+      endpoints: { "0" => { http_verb: "verb_get", path: "/customers", auth: "UserToken", note: "" } }
+    }
+
+    expect(turbo_actions).to eq([ [ "replace", "auth_methods" ], [ "replace", "endpoints" ] ])
+    expect(form_fields["version[endpoints_attributes][][auth]"]).to eq("")
   end
 end

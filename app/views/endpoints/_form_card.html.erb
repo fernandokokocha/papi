@@ -1,0 +1,149 @@
+<% ops = SchemaForm::OPS_FORM_ID %>
+<% op_url = ->(op, **rest) { schema_edit_path(op: op, index: index, **rest) } %>
+<% field = ->(name) { "endpoints[#{index}]#{name}" } %>
+<% chosen = auth_methods.find { |auth_method| auth_method.name == endpoint.auth } %>
+<div class="group" data-turbo="true">
+  <div class="flex items-center gap-2 rounded-t-xl border border-slate-400 bg-slate-100 px-2 py-2 text-slate-900 shadow-sm">
+    <span class="relative inline-flex shrink-0">
+      <%= render "endpoints/verb_badge", verb: endpoint.verb %>
+      <select name="<%= field.("[http_verb]") %>" form="<%= ops %>" aria-label="Verb"
+              data-controller="schema-edit" data-schema-edit-url-value="<%= op_url.("endpoint") %>"
+              data-action="change->schema-edit#submit"
+              class="absolute inset-0 cursor-pointer opacity-0">
+        <% Endpoint::VERB_TRANSLATIONS.each do |http_verb, verb| %>
+          <option value="<%= http_verb %>" <%= "selected" if http_verb.to_s == endpoint.http_verb %>><%= verb %></option>
+        <% end %>
+      </select>
+    </span>
+
+    <input value="<%= endpoint.path %>" size="1" aria-label="Path" name="<%= field.("[path]") %>" form="<%= ops %>"
+           data-controller="schema-edit" data-schema-edit-url-value="<%= op_url.("endpoint") %>"
+           data-action="change->schema-edit#submit keydown.enter->schema-edit#commit"
+           class="field-sizing-content min-w-0 max-w-full rounded bg-transparent px-0.5 font-mono text-[13px] font-medium leading-[20px] hover:bg-white focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-600">
+
+    <%= hidden_field_tag "version[endpoints_attributes][][http_verb]", endpoint.http_verb, id: nil %>
+    <%= hidden_field_tag "version[endpoints_attributes][][path]", endpoint.path, id: nil %>
+  </div>
+
+  <div class="rounded-b-xl border-x border-b border-slate-400 bg-white pb-3 shadow-sm">
+    <% if endpoint.path_params.any? %>
+      <%= render "endpoints/section_band", label: "Params", toggle: nil %>
+      <div class="px-3 py-1">
+        <% endpoint.path_params.each do |name, kind| %>
+          <div class="flex min-h-[18px] items-center">
+            <span class="whitespace-pre font-mono text-[12px] leading-[18px] text-slate-700">:<%= name %>: </span>
+            <select name="<%= field.("[params][#{name}]") %>" form="<%= ops %>" aria-label="Kind of :<%= name %>"
+                    data-controller="schema-edit" data-schema-edit-url-value="<%= op_url.("endpoint") %>"
+                    data-action="change->schema-edit#submit"
+                    class="field-sizing-content cursor-pointer appearance-none rounded px-1 font-mono text-[12px] leading-[18px] ring-1 ring-inset focus:outline-none focus:ring-2 focus:ring-sky-600 <%= type_tint(kind) %>">
+              <% EndpointParam::KINDS.each do |option| %>
+                <option <%= "selected" if option == kind %>><%= option %></option>
+              <% end %>
+            </select>
+            <%= hidden_field_tag "version[endpoints_attributes][][params][#{name}][kind]", kind, id: nil %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+
+    <%= render "endpoints/section_band", label: "Query", toggle: nil %>
+    <div class="px-3 py-1">
+      <% endpoint.query_params.each_with_index do |query_param, position| %>
+        <div class="group/row flex min-h-[18px] items-center pr-1 hover:bg-slate-50">
+          <input value="<%= query_param.name %>" size="1" aria-label="Query param name" name="<%= field.("[query_params][#{position}][name]") %>" form="<%= ops %>"
+                 data-controller="schema-edit" data-schema-edit-url-value="<%= op_url.("endpoint") %>"
+                 data-action="change->schema-edit#submit keydown.enter->schema-edit#commit"
+                 class="field-sizing-content rounded bg-transparent px-0.5 font-mono text-[12px] leading-[18px] text-slate-700 hover:bg-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-600">
+          <% unless query_param.required %><span class="font-mono text-[12px] leading-[18px] text-slate-400">?</span><% end %>
+          <span class="whitespace-pre font-mono text-[12px] leading-[18px] text-slate-700">: </span>
+          <select name="<%= field.("[query_params][#{position}][kind]") %>" form="<%= ops %>" aria-label="Kind of <%= query_param.name %>"
+                  data-controller="schema-edit" data-schema-edit-url-value="<%= op_url.("endpoint") %>"
+                  data-action="change->schema-edit#submit"
+                  class="field-sizing-content cursor-pointer appearance-none rounded px-1 font-mono text-[12px] leading-[18px] ring-1 ring-inset focus:outline-none focus:ring-2 focus:ring-sky-600 <%= type_tint(query_param.kind) %>">
+            <% EndpointParam::KINDS.each do |option| %>
+              <option <%= "selected" if option == query_param.kind %>><%= option %></option>
+            <% end %>
+          </select>
+
+          <span class="ml-auto hidden shrink-0 items-center gap-1 pl-4 group-hover/row:flex">
+            <button type="submit" form="<%= ops %>" formaction="<%= op_url.("toggle_query_param", query: position) %>" title="Toggle required"
+                    class="flex h-4 w-4 cursor-pointer items-center justify-center rounded font-mono text-[11px] leading-none text-slate-500 ring-1 ring-inset ring-slate-300 hover:bg-slate-200 hover:text-slate-900">?</button>
+            <button type="submit" form="<%= ops %>" formaction="<%= op_url.("drop_query_param", query: position) %>" title="Remove"
+                    class="flex h-4 w-4 cursor-pointer items-center justify-center rounded font-mono text-[12px] leading-none text-slate-500 ring-1 ring-inset ring-slate-300 hover:bg-rose-100 hover:text-rose-700 hover:ring-rose-300">&times;</button>
+          </span>
+
+          <% if query_param.required %>
+            <%= hidden_field_tag field.("[query_params][#{position}][required]"), "1", id: nil, form: ops %>
+          <% end %>
+          <%= hidden_field_tag "version[endpoints_attributes][][query_params][#{query_param.name}][kind]", query_param.kind, id: nil %>
+          <%= hidden_field_tag "version[endpoints_attributes][][query_params][#{query_param.name}][required]", query_param.required, id: nil %>
+        </div>
+      <% end %>
+      <div class="group/row flex min-h-[18px] items-center">
+        <button type="submit" form="<%= ops %>" formaction="<%= op_url.("add_query_param") %>"
+                class="cursor-pointer rounded px-1 font-mono text-[12px] leading-[18px] text-slate-400 hover:bg-slate-200 hover:text-slate-700">+ query param</button>
+      </div>
+    </div>
+
+    <%= render "endpoints/section_band", label: "Auth", toggle: nil %>
+    <div class="flex items-center gap-2 px-3 py-1">
+      <select name="<%= field.("[auth]") %>" form="<%= ops %>" aria-label="Auth"
+              data-controller="schema-edit" data-schema-edit-url-value="<%= op_url.("endpoint") %>"
+              data-action="change->schema-edit#submit"
+              class="field-sizing-content cursor-pointer appearance-none rounded bg-slate-200 px-1 font-mono text-[12px] leading-[18px] text-slate-700 ring-1 ring-inset ring-slate-400 hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-600">
+        <option value="">none</option>
+        <% auth_methods.each do |auth_method| %>
+          <option <%= "selected" if auth_method == chosen %>><%= auth_method.name %></option>
+        <% end %>
+      </select>
+      <span class="font-mono text-[12px] leading-[18px] text-gray-500"><%= chosen&.kind %></span>
+      <%= hidden_field_tag "version[endpoints_attributes][][auth]", chosen&.name.to_s, id: nil %>
+    </div>
+
+    <%= render "endpoints/section_band", label: "Note", toggle: nil %>
+    <div class="px-3 py-1">
+      <%= text_area_tag field.("[note]"), endpoint.note, id: nil, form: ops, rows: 2,
+            data: { controller: "schema-edit", action: "change->schema-edit#submit",
+                    schema_edit_url_value: op_url.("endpoint") },
+            class: "w-full resize-y rounded bg-slate-50 px-2 py-1 text-[13px] leading-[20px] text-slate-800 ring-1 ring-inset ring-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-600" %>
+      <%= hidden_field_tag "version[endpoints_attributes][][note]", endpoint.note, id: nil %>
+    </div>
+
+    <%= render "endpoints/section_band", label: "Input", toggle: nil %>
+    <div class="px-3 py-1">
+      <%= render "schema_form/editor", blocks.locals_for(blocks.input_for(index)) %>
+    </div>
+
+    <%= render "endpoints/section_band", label: "Responses", toggle: nil %>
+    <div class="px-3 py-1">
+      <% endpoint.responses.each_with_index do |response, position| %>
+        <div class="group/response <%= "mt-2 border-t border-slate-200 pt-2" if position > 0 %>">
+          <div class="flex items-center gap-2 pb-1">
+            <span class="inline-flex items-center justify-center rounded bg-gray-100 px-1.5 py-1 font-mono text-[12px] font-bold leading-none text-gray-700 ring-1 ring-inset ring-gray-300"><%= response.code %></span>
+            <input value="<%= response.note %>" aria-label="Note of <%= response.code %>" name="<%= field.("[responses][#{response.code}][note]") %>" form="<%= ops %>"
+                   data-controller="schema-edit" data-schema-edit-url-value="<%= op_url.("endpoint") %>"
+                   data-action="change->schema-edit#submit keydown.enter->schema-edit#commit"
+                   class="min-w-0 flex-1 rounded bg-transparent px-0.5 text-[13px] leading-[20px] text-slate-800 hover:bg-slate-100 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-600">
+            <button type="submit" form="<%= ops %>" formaction="<%= op_url.("drop_response", code: response.code) %>" title="Remove response"
+                    class="flex h-4 w-4 shrink-0 cursor-pointer items-center justify-center rounded font-mono text-[12px] leading-none text-slate-500 opacity-0 ring-1 ring-inset ring-slate-300 hover:bg-rose-100 hover:text-rose-700 hover:ring-rose-300 focus:opacity-100 group-hover/response:opacity-100">&times;</button>
+            <%= hidden_field_tag "version[endpoints_attributes][][responses][#{response.code}][note]", response.note, id: nil %>
+          </div>
+          <%= render "schema_form/editor", blocks.locals_for(blocks.output_for(index, response.code)) %>
+        </div>
+      <% end %>
+
+      <% if endpoint.unused_codes.any? %>
+        <div class="flex items-center gap-2 <%= "pt-2" if endpoint.responses.any? %>">
+          <select name="new_response[<%= index %>]" form="<%= ops %>" aria-label="New response code"
+                  class="cursor-pointer appearance-none rounded bg-white px-1.5 font-mono text-[12px] leading-[18px] text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-600">
+            <% endpoint.unused_codes.each do |code| %>
+              <option><%= code %></option>
+            <% end %>
+          </select>
+          <button type="submit" form="<%= ops %>" formaction="<%= op_url.("add_response") %>"
+                  class="cursor-pointer rounded px-1 font-mono text-[12px] leading-[18px] text-slate-400 hover:bg-slate-200 hover:text-slate-700">+ response</button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

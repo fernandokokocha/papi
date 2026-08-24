@@ -10,6 +10,11 @@ describe "Candidate form requests", type: :request do
   let!(:customer) { FactoryBot.create(:entity, version: base_version, name: "Customer", root: "{id:number,name:string}") }
   let!(:order) { FactoryBot.create(:entity, version: base_version, name: "Order", root: "{customer:Customer,total:number}") }
   let!(:user_token) { FactoryBot.create(:auth_method, version: base_version, name: "UserToken", kind: "bearer", note: "A token from POST /session.") }
+  let!(:endpoint) { FactoryBot.create(:endpoint, version: base_version, path: "/customers/:id", auth: "UserToken", note: "One customer.", input: "") }
+  let!(:path_param) { FactoryBot.create(:endpoint_param, endpoint: endpoint, name: "id", kind: "number") }
+  let!(:query_param) { FactoryBot.create(:endpoint_param, :query, endpoint: endpoint, name: "expand", kind: "boolean", required: false) }
+  let!(:ok) { FactoryBot.create(:response, endpoint: endpoint, code: "200", note: "The customer.", output: "Customer") }
+  let!(:missing) { FactoryBot.create(:response, endpoint: endpoint, code: "404", note: "No such customer.", output: "") }
 
   before { sign_in(user) }
 
@@ -86,6 +91,50 @@ end
     controls = page.css("#entity_root_0 button[type=submit], #entity_root_0 select, #entity_root_0 input:not([type=hidden])")
     expect(controls).to be_any
     expect(controls.map { |control| control["form"] }.uniq).to eq([ SchemaForm::OPS_FORM_ID ])
+  end
+
+  it "renders each endpoint's verb, path, params, query, auth and note as fields the create service reads" do
+    fields = form.css("input[type=hidden]").to_h { |input| [ input["name"], input["value"] ] }
+
+    expect(fields["version[endpoints_attributes][][http_verb]"]).to eq("verb_get")
+    expect(fields["version[endpoints_attributes][][path]"]).to eq("/customers/:id")
+    expect(fields["version[endpoints_attributes][][params][id][kind]"]).to eq("number")
+    expect(fields["version[endpoints_attributes][][query_params][expand][kind]"]).to eq("boolean")
+    expect(fields["version[endpoints_attributes][][query_params][expand][required]"]).to eq("false")
+    expect(fields["version[endpoints_attributes][][auth]"]).to eq("UserToken")
+    expect(fields["version[endpoints_attributes][][note]"]).to eq("One customer.")
+  end
+
+  it "renders each response as a block of its own, named for the params the create service reads" do
+    fields = form.css("input[type=hidden]").to_h { |input| [ input["name"], input["value"] ] }
+
+    expect(fields["version[endpoints_attributes][][input]"]).to eq("")
+    expect(fields["version[endpoints_attributes][][responses][200][note]"]).to eq("The customer.")
+    expect(fields["version[endpoints_attributes][][responses][200][output]"]).to eq("Customer")
+    expect(fields["version[endpoints_attributes][][responses][404][note]"]).to eq("No such customer.")
+    expect(fields["version[endpoints_attributes][][responses][404][output]"]).to eq("")
+  end
+
+  # An input and an output are the only roots that may be absent, and an entity
+  # is not one of them.
+  it "offers nothing at an input's and an output's root, and to no entity" do
+    page = form
+    types = ->(id) { page.css("##{id} select").flat_map { |select| select.css("option").map(&:text) }.uniq }
+
+    expect(types.("endpoint_input_0")).to include("nothing")
+    expect(types.("endpoint_output_0_404")).to include("nothing")
+    expect(types.("entity_root_0")).not_to include("nothing")
+  end
+
+  it "puts the verb, the kinds, the query names, the auth and the note in the ops form" do
+    page = form
+
+    expect(page.at_css("select[name='endpoints[0][http_verb]'] option[selected]").text).to eq("GET")
+    expect(page.at_css("select[name='endpoints[0][params][id]'] option[selected]").text).to eq("number")
+    expect(page.at_css("input[name='endpoints[0][query_params][0][name]']")["value"]).to eq("expand")
+    expect(page.at_css("select[name='endpoints[0][query_params][0][kind]'] option[selected]").text).to eq("boolean")
+    expect(page.at_css("select[name='endpoints[0][auth]'] option[selected]").text).to eq("UserToken")
+    expect(page.at_css("textarea[name='endpoints[0][note]']").text).to eq("One customer.")
   end
 
   it "renders each auth method's kind and note as fields the create service reads" do

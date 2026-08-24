@@ -31,7 +31,7 @@
     </div>
 
     <div class="rounded-b-xl bg-white px-3 py-2 shadow-sm <%= block.added ? "border-x-2 border-b-2 border-emerald-500" : "border-x border-b border-violet-400" %>">
-      <%= render "schema_form/editor", root: root, id: block.id, name: block.name,
+      <%= render "schema_form/editor", root: root, id: block.id, name: block.name, nothing: false,
                  field: block.field, referenceable_names: referenceable_names %>
     </div>
   <% end %>

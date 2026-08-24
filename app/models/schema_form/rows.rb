@@ -50,7 +50,7 @@ class SchemaForm::Rows
   end
 
   def leaf?(node)
-    node.is_a?(Node::Primitive) || node.is_a?(Node::Entity)
+    node.is_a?(Node::Primitive) || node.is_a?(Node::Entity) || node.is_a?(Node::Nothing)
   end
 
   def named_types(branches)
@@ -65,8 +65,15 @@ class SchemaForm::Rows
   end
 
   def leaf(node, path, indent, **row)
-    type = node.is_a?(Node::Entity) ? node.entity.name : node.kind
-    SchemaForm::Row.new(kind: :node, indent: indent, path: path, type: type, **row)
+    SchemaForm::Row.new(kind: :node, indent: indent, path: path, type: type_of(node), **row)
+  end
+
+  def type_of(node)
+    case node
+    when Node::Entity then node.entity.name
+    when Node::Nothing then SchemaForm::Operation::NOTHING
+    else node.kind
+    end
   end
 
   def label(path, indent, name, optional, **identity)

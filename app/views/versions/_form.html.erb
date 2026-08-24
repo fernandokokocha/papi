@@ -42,12 +42,20 @@
     <% end %>
   </div>
 
+  <% auth_methods = SchemaForm::AuthMethods.for_version(@version.auth_methods) %>
+  <% blocks = SchemaForm::Blocks.for_version(@version) %>
+
+  <%= render layout: "versions/section", locals: { label: "Endpoints" } do %>
+    <%= render "endpoints/form_list", endpoints: SchemaForm::Endpoints.for_version(@version.endpoints),
+               auth_methods: auth_methods, blocks: blocks %>
+  <% end %>
+
   <%= render layout: "versions/section", locals: { label: "Entities" } do %>
-    <%= render "entities/form_list", blocks: SchemaForm::Blocks.for_entities(@version.entities) %>
+    <%= render "entities/form_list", blocks: blocks %>
   <% end %>
 
   <%= render layout: "versions/section", locals: { label: "Auth" } do %>
-    <%= render "auth_methods/form_list", auth_methods: SchemaForm::AuthMethods.for_version(@version.auth_methods) %>
+    <%= render "auth_methods/form_list", auth_methods: auth_methods %>
   <% end %>
 
   <div

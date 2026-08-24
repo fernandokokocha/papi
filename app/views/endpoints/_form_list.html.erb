@@ -1,0 +1,6 @@
+<div id="endpoints" class="flex flex-col gap-4">
+  <% endpoints.each_with_index do |endpoint, index| %>
+    <%= render "endpoints/form_card", endpoint: endpoint, index: index, blocks: blocks,
+               auth_methods: auth_methods.reject(&:removed) %>
+  <% end %>
+</div>
