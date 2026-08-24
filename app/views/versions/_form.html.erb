@@ -46,6 +46,10 @@
     <%= render "entities/form_list", blocks: SchemaForm::Blocks.for_entities(@version.entities) %>
   <% end %>
 
+  <%= render layout: "versions/section", locals: { label: "Auth" } do %>
+    <%= render "auth_methods/form_list", auth_methods: SchemaForm::AuthMethods.for_version(@version.auth_methods) %>
+  <% end %>
+
   <div
     id="react-form"
     data-serialized-endpoints="<%= @version.existing_endpoints_for_frontend %>"

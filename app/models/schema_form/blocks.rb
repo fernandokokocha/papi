@@ -4,7 +4,7 @@ class SchemaForm::Blocks
   NEW_ROOT = "string".freeze
 
   def self.from(submitted)
-    new(submitted.each_pair.map do |id, attributes|
+    new((submitted || {}).each_pair.map do |id, attributes|
       SchemaForm::Block.new(id: id, field: attributes[:field], name: attributes[:name], root: attributes[:root],
                             removed: attributes[:removed].present?, added: attributes[:added].present?)
     end)

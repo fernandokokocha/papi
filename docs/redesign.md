@@ -133,7 +133,7 @@ nothing was lost. It is settled last, at step 67.
     a cycle, and an answer carrying every block that changed, not only the one
     that was clicked~~
 59. ~~Candidate form — entities added, removed and restored~~
-60. Candidate form — auth methods
+60. ~~Candidate form — auth methods~~
 61. Candidate form — endpoints: verb, path, params, query, auth, note, input
     and each response
 62. Candidate form — the form reads as the diff: before and after columns

@@ -300,4 +300,79 @@ describe "Schema edit requests", type: :request do
 
     expect(form_fields["blocks[entity_root_0][root]"]).to eq("{id:number,customer:Customer}")
   end
+
+  def auth_edit(op, index = nil, removed: [], added: [], new_auth_method: nil)
+    auth_methods = {
+      "0" => { name: "UserToken", kind: "bearer", note: "A token from POST /session." },
+      "1" => { name: "AdminBasic", kind: "basic", note: "Operator credentials." }
+    }
+    removed.each { |position| auth_methods[position][:removed] = "1" }
+    added.each { |position| auth_methods[position][:added] = "1" }
+
+    post schema_edit_path, params: { auth_methods: auth_methods, index: index, op: op, new_auth_method: new_auth_method }.compact
+  end
+
+  # A removed auth method is one the new version is not told about, so its card
+  # stops writing into version[auth_methods_attributes] — and it keeps writing
+  # into the ops form, which is the only reason it can come back.
+  it "stops submitting a removed auth method to the version, and keeps submitting it to itself" do
+    auth_edit("remove_auth_method", 0)
+
+    expect(turbo_actions).to eq([ [ "replace", "auth_methods" ] ])
+    expect(form_fields).not_to include("version[auth_methods_attributes][0][name]", "version[auth_methods_attributes][0][kind]")
+    expect(form_fields["auth_methods[0][note]"]).to eq("A token from POST /session.")
+    expect(form_fields["auth_methods[0][removed]"]).to eq("1")
+  end
+
+  it "gives a removed auth method back the fields the version reads" do
+    auth_edit("restore_auth_method", 0, removed: [ "0" ])
+
+    expect(form_fields["version[auth_methods_attributes][0][name]"]).to eq("UserToken")
+    expect(form_fields["version[auth_methods_attributes][0][kind]"]).to eq("bearer")
+    expect(form_fields).not_to include("auth_methods[0][removed]")
+  end
+
+  it "gives a new auth method a bearer to start from, and the flag that says it is new" do
+    auth_edit("add_auth_method", new_auth_method: "ServiceKey")
+
+    expect(form_fields["version[auth_methods_attributes][2][name]"]).to eq("ServiceKey")
+    expect(form_fields["version[auth_methods_attributes][2][kind]"]).to eq("bearer")
+    expect(form_fields["version[auth_methods_attributes][2][note]"]).to eq("")
+    expect(form_fields["auth_methods[2][added]"]).to eq("1")
+  end
+
+  it "refuses a nameless auth method, and refuses a name the form already has" do
+    auth_edit("add_auth_method", new_auth_method: "")
+    expect(response.body).to include("An auth method needs a name")
+
+    auth_edit("add_auth_method", new_auth_method: "AdminBasic")
+    expect(response.body).to include("This auth method already exists")
+    expect(form_fields).not_to include("version[auth_methods_attributes][2][name]")
+  end
+
+  it "lets a removed name be taken again" do
+    auth_edit("add_auth_method", removed: [ "1" ], new_auth_method: "AdminBasic")
+
+    expect(form_fields["version[auth_methods_attributes][2][name]"]).to eq("AdminBasic")
+  end
+
+  it "discards a new auth method instead of marking it removed" do
+    auth_edit("drop_auth_method", 1, added: [ "1" ])
+
+    expect(form_fields.keys.grep(/auth_methods_attributes/)).to eq([
+      "version[auth_methods_attributes][0][name]",
+      "version[auth_methods_attributes][0][kind]",
+      "version[auth_methods_attributes][0][note]"
+    ])
+  end
+
+  # A project's first candidate holds neither, so the form submits no blocks
+  # and no auth methods at all.
+  it "adds the first entity and the first auth method to a form that holds none" do
+    post schema_edit_path, params: { op: "add_entity", new_entity: "Customer" }
+    expect(form_fields["version[entities_attributes][0][name]"]).to eq("Customer")
+
+    post schema_edit_path, params: { op: "add_auth_method", new_auth_method: "UserToken" }
+    expect(form_fields["version[auth_methods_attributes][0][name]"]).to eq("UserToken")
+  end
 end

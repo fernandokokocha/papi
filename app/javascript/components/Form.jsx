@@ -1,6 +1,5 @@
 import React, {useEffect, useState} from 'react'
 import EndpointList from "@/components/EndpointList.jsx";
-import AuthMethodList from "@/components/AuthMethodList.jsx";
 import {v4 as uuidv4} from "uuid";
 import deserialize from "@/helpers/deserialize.js";
 import {entityNamesIn} from "@/helpers/entityReferences.js";
@@ -25,23 +24,6 @@ const isNewEndpointColliding = (verb, path, e) => {
         })
 
     return newEndpointColliding;
-}
-
-const newAuthMethodError = (newAuthMethod, authMethods) => {
-    if (newAuthMethod.trim() === "") {
-        return "An auth method needs a name"
-    }
-
-    const colliding = authMethods.filter((authMethod) => (authMethod.type !== 'removed'))
-        .some((authMethod) => (authMethod.name === newAuthMethod))
-
-    return colliding ? "This auth method already exists" : null
-}
-
-const checkAuthMethodsReferences = (endpoints, authMethods) => {
-    authMethods.forEach((authMethod) => {
-        authMethod.is_referenced = endpoints.some((endpoint) => (endpoint.auth === authMethod.name))
-    })
 }
 
 const checkEntitiesReferences = (endpoints, entities) => {
@@ -70,18 +52,12 @@ const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, c
     const [newPath, setNewPath] = useState("/resource")
     const [newVerb, setNewVerb] = useState("verb_get")
     const [addEndpointDisabled, setAddEndpointDisabled] = useState(() => isNewEndpointColliding(newVerb, newPath, endpoints))
-    const [newAuthMethod, setNewAuthMethod] = useState("UserToken")
-    const [authMethodError, setAuthMethodError] = useState(() => newAuthMethodError(newAuthMethod, authMethods))
 
     const validateNewEndpoint = (verb, path, e) => {
         setAddEndpointDisabled(isNewEndpointColliding(verb, path, e))
     }
 
-    const validateNewAuthMethod = (newAuthMethod, authMethods) => {
-        setAuthMethodError(newAuthMethodError(newAuthMethod, authMethods))
-    }
-
-    const validate = (endpointsToSend, entitiesToSend, authMethodsToSend) => {
+    const validate = (endpointsToSend, entitiesToSend) => {
         let newNoCollisions = true;
         endpointsToSend
             .filter((endpoint) => (endpoint.type !== 'removed'))
@@ -154,18 +130,6 @@ const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, c
             return
         }
 
-        const serializedAuthMethodsToSend = JSON.stringify(authMethodsToSend
-            .filter((authMethod) => (authMethod.type !== 'removed'))
-            .map((authMethod) => ({
-                name: authMethod.name,
-                kind: authMethod.kind,
-                note: authMethod.note
-            })))
-        if (serializedAuthMethodsToSend !== serializedAuthMethods) {
-            setAnyChanges(true)
-            return
-        }
-
         setAnyChanges(false)
     }
 
@@ -177,12 +141,11 @@ const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, c
             ...endpoints.slice(indexToUpdate + 1),
         ]
 
-        validate(newEndpoints, entities, authMethods)
+        validate(newEndpoints, entities)
         validateNewEndpoint(newVerb, newPath, newEndpoints)
         setEndpoints(newEndpoints)
         checkEntitiesReferences(newEndpoints, entities)
-        checkAuthMethodsReferences(newEndpoints, authMethods)
-    }
+            }
 
     const removeEndpoint = (id) => {
         let newEndpoints = JSON.parse(JSON.stringify(endpoints))
@@ -193,7 +156,7 @@ const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, c
             newEndpoints = newEndpoints.filter((endpoint) => (endpoint.id !== id))
         }
 
-        validate(newEndpoints, entities, authMethods)
+        validate(newEndpoints, entities)
         validateNewEndpoint(newVerb, newPath, newEndpoints)
         setEndpoints(newEndpoints)
     }
@@ -213,12 +176,11 @@ const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, c
         endpointToRestore.queryParams = endpointToRestore.original_queryParams.map((p) => ({...p}))
         endpointToRestore.collision = false
 
-        validate(newEndpoints, entities, authMethods)
+        validate(newEndpoints, entities)
         validateNewEndpoint(newVerb, newPath, newEndpoints)
         setEndpoints(newEndpoints)
         checkEntitiesReferences(newEndpoints, entities)
-        checkAuthMethodsReferences(newEndpoints, authMethods)
-    }
+            }
 
     const addEndpoint = () => {
         const newEndpoints = JSON.parse(JSON.stringify(endpoints))
@@ -235,7 +197,7 @@ const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, c
             responses: []
         })
 
-        validate(newEndpoints, entities, authMethods)
+        validate(newEndpoints, entities)
         validateNewEndpoint(newVerb, newPath, newEndpoints)
         setEndpoints(newEndpoints)
     }
@@ -248,52 +210,6 @@ const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, c
     const updateNewVerb = (e) => {
         setNewVerb(e.target.value)
         validateNewEndpoint(e.target.value, newPath, endpoints)
-    }
-
-    const updateNewAuthMethod = (e) => {
-        setNewAuthMethod(e.target.value)
-        validateNewAuthMethod(e.target.value, authMethods)
-    }
-
-    const addAuthMethod = () => {
-        const newAuthMethods = JSON.parse(JSON.stringify(authMethods))
-        newAuthMethods.push({
-            type: "new",
-            id: uuidv4(),
-            name: newAuthMethod,
-            kind: "bearer",
-            note: "",
-            is_referenced: false
-        })
-        validateNewAuthMethod(newAuthMethod, newAuthMethods)
-        validate(endpoints, entities, newAuthMethods)
-        setAuthMethods(newAuthMethods)
-    }
-
-    const updateAuthMethod = (id, newAuthMethod) => {
-        const indexToUpdate = authMethods.findIndex((authMethod) => (authMethod.id === id))
-        const newAuthMethods = [
-            ...authMethods.slice(0, indexToUpdate),
-            newAuthMethod,
-            ...authMethods.slice(indexToUpdate + 1),
-        ]
-
-        validate(endpoints, entities, newAuthMethods)
-        setAuthMethods(newAuthMethods)
-    }
-
-    const removeAuthMethod = (id) => {
-        let newAuthMethods = JSON.parse(JSON.stringify(authMethods))
-        const authMethodToRemove = newAuthMethods.find((authMethod) => (authMethod.id === id))
-        if (authMethodToRemove.type === 'old') {
-            authMethodToRemove.type = 'removed'
-        } else if (authMethodToRemove.type === 'new') {
-            newAuthMethods = newAuthMethods.filter((authMethod) => (authMethod.id !== id))
-        }
-
-        validateNewAuthMethod(newAuthMethod, newAuthMethods)
-        validate(endpoints, entities, newAuthMethods)
-        setAuthMethods(newAuthMethods)
     }
 
     useEffect(() => {
@@ -355,11 +271,9 @@ const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, c
             authMethodData.original_kind = authMethodData.kind
             authMethodData.original_note = authMethodData.note
         })
-        checkAuthMethodsReferences(parsed_endpoints, parsed_auth_methods)
         setAuthMethods(parsed_auth_methods)
 
         validateNewEndpoint(newVerb, newPath, parsed_endpoints)
-        validateNewAuthMethod(newAuthMethod, parsed_auth_methods)
     }, [])
 
     const disabled = !(noCollisions && anyChanges);
@@ -395,17 +309,6 @@ const Form = ({serializedEndpoints, serializedEntities, serializedAuthMethods, c
                 comments={commentsMap.endpoints}
                 edited={anyChanges}
                 authMethods={authMethods}
-            />
-            <AuthMethodList
-                authMethods={authMethods}
-                updateAuthMethod={updateAuthMethod}
-                removeAuthMethod={removeAuthMethod}
-                addAuthMethod={addAuthMethod}
-                authMethodError={authMethodError}
-                newAuthMethod={newAuthMethod}
-                updateNewAuthMethod={updateNewAuthMethod}
-                comments={commentsMap.auth_methods}
-                edited={anyChanges}
             />
         </>
     )

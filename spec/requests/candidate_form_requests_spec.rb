@@ -9,6 +9,7 @@ describe "Candidate form requests", type: :request do
   let!(:base_version) { FactoryBot.create(:version, project: project, candidate: base_candidate, name: "v1", order: 1) }
   let!(:customer) { FactoryBot.create(:entity, version: base_version, name: "Customer", root: "{id:number,name:string}") }
   let!(:order) { FactoryBot.create(:entity, version: base_version, name: "Order", root: "{customer:Customer,total:number}") }
+  let!(:user_token) { FactoryBot.create(:auth_method, version: base_version, name: "UserToken", kind: "bearer", note: "A token from POST /session.") }
 
   before { sign_in(user) }
 
@@ -85,6 +86,46 @@ end
     controls = page.css("#entity_root_0 button[type=submit], #entity_root_0 select, #entity_root_0 input:not([type=hidden])")
     expect(controls).to be_any
     expect(controls.map { |control| control["form"] }.uniq).to eq([ SchemaForm::OPS_FORM_ID ])
+  end
+
+  it "renders each auth method's kind and note as fields the create service reads" do
+    page = form
+    fields = page.css("input[type=hidden]").to_h { |input| [ input["name"], input["value"] ] }
+
+    expect(fields["version[auth_methods_attributes][0][name]"]).to eq("UserToken")
+    expect(fields["version[auth_methods_attributes][0][kind]"]).to eq("bearer")
+    expect(fields["version[auth_methods_attributes][0][note]"]).to eq("A token from POST /session.")
+
+    expect(page.at_css("select[name='auth_methods[0][kind]']").css("option").map(&:text)).to eq(AuthMethod::KINDS)
+    expect(page.at_css("textarea[name='auth_methods[0][note]']").text).to eq("A token from POST /session.")
+  end
+
+  it "answers an auth edit with the kind and note the whole form is holding" do
+    post schema_edit_path, params: {
+      op: "auth",
+      auth_methods: { "0" => { name: "UserToken", kind: "basic", note: "Now a username and password." } }
+    }
+
+    page = Nokogiri::HTML5.fragment(response.body)
+    expect(page.at_css("input[name='version[auth_methods_attributes][0][kind]']")["value"]).to eq("basic")
+    expect(page.at_css("input[name='version[auth_methods_attributes][0][note]']")["value"]).to eq("Now a username and password.")
+    expect(page.at_css("select[name='auth_methods[0][kind]'] option[selected]").text).to eq("basic")
+  end
+
+  # The whole point of building it in place: what the editor renders is what the
+  # create service already reads.
+  it "creates a candidate whose auth method carries the edited kind and note" do
+    post project_candidates_path(project.name), params: {
+      candidate: { project_id: project.id, name: "rc2" },
+      version: {
+        name: "rc2-v1", order: 1,
+        endpoints_attributes: [ { path: "/", http_verb: "verb_get", input: "", responses: { "200" => { note: "ok", output: "Customer" } } } ],
+        entities_attributes: { "0" => { name: "Customer", root: "{id:number,name:string}" } },
+        auth_methods_attributes: { "0" => { name: "UserToken", kind: "basic", note: "Now a username and password." } }
+      }
+    }
+
+    expect(Version.last.auth_methods.find_by(name: "UserToken")).to have_attributes(kind: "basic", note: "Now a username and password.")
   end
 
   # The ops form is its own form, so it carries its own per-form CSRF token and
