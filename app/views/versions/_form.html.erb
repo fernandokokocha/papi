@@ -43,12 +43,7 @@
   </div>
 
   <%= render layout: "versions/section", locals: { label: "Entities" } do %>
-    <div class="flex flex-col gap-4">
-      <% @version.entities.each_with_index do |entity, index| %>
-        <%= render "entities/form_card", entity: entity, index: index,
-                   referenceable_names: @version.referenceable_entity_names(entity.name) %>
-      <% end %>
-    </div>
+    <%= render "entities/form_list", blocks: SchemaForm::Blocks.for_entities(@version.entities) %>
   <% end %>
 
   <div

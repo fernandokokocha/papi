@@ -3,7 +3,9 @@ import { Controller } from "@hotwired/stimulus"
 export default class extends Controller {
   static values = { url: String }
 
-  submit() {
+  submit(event) {
+    event.preventDefault()
+
     const button = document.createElement("button")
     button.type = "submit"
     button.hidden = true

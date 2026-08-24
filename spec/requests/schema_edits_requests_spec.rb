@@ -151,4 +151,153 @@ describe "Schema edit requests", type: :request do
     expect(edited_schema).to eq("{id:number,label:string}")
     expect(writes).to eq(0)
   end
+
+  def entity_edit(op, id, removed: [])
+    blocks = {
+      "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Order", root: "{id:number,customer:Customer}" },
+      "entity_root_1" => { field: "version[entities_attributes][1][root]", name: "Customer", root: "{id:string}" }
+    }
+    removed.each { |block_id| blocks[block_id][:removed] = "1" }
+
+    post schema_edit_path, params: { blocks: blocks, id: id, op: op }
+  end
+
+  def form_fields
+    Nokogiri::HTML5.fragment(response.body).css("input[type=hidden]").to_h { |input| [ input["name"], input["value"] ] }
+  end
+
+  # A removed entity is one the new version is not told about, so its card
+  # stops writing into version[entities_attributes] — and it keeps writing into
+  # the ops form, which is the only reason it can come back.
+  it "stops submitting a removed entity to the version, and keeps submitting it to itself" do
+    entity_edit("remove_entity", "entity_root_0")
+
+    expect(turbo_actions).to eq([ [ "replace", "entities" ] ])
+    expect(form_fields).not_to include("version[entities_attributes][0][name]", "version[entities_attributes][0][root]")
+    expect(form_fields["blocks[entity_root_0][root]"]).to eq("{id:number,customer:Customer}")
+    expect(form_fields["blocks[entity_root_0][removed]"]).to eq("1")
+  end
+
+  it "gives a removed entity back the fields the version reads" do
+    entity_edit("restore_entity", "entity_root_0", removed: [ "entity_root_0" ])
+
+    expect(form_fields["version[entities_attributes][0][name]"]).to eq("Order")
+    expect(form_fields["version[entities_attributes][0][root]"]).to eq("{id:number,customer:Customer}")
+    expect(form_fields).not_to include("blocks[entity_root_0][removed]")
+  end
+
+  # Turbo Drive is off, so a submitter outside a data-turbo="true" container
+  # navigates the browser to the stream instead of applying it.
+  it "puts the card's own controls inside a Turbo container too" do
+    entity_edit("remove_entity", "entity_root_0")
+
+    page = Nokogiri::HTML5.fragment(response.body)
+    controls = page.css("button[formaction*='entity']")
+    expect(controls).to be_any
+    expect(controls).to all(satisfy { |control| control.ancestors("[data-turbo='true']").any? })
+  end
+
+  it "takes a removed name out of the types the others may still choose" do
+    entity_edit("remove_entity", "entity_root_0")
+
+    expect(types_in("entity_root_1")).not_to include("Order")
+  end
+
+  # Removing Customer while Order points at it would leave a reference to a
+  # name the parser no longer knows, and withholding the control is the whole
+  # enforcement.
+  it "offers no remove control on an entity another entity references" do
+    entity_edit("restore_entity", "entity_root_0", removed: [ "entity_root_0" ])
+
+    removable = Nokogiri::HTML5.fragment(response.body).css("button[title='Remove entity']")
+      .map { |button| button["formaction"][/id=(\w+)/, 1] }
+    expect(removable).to eq([ "entity_root_0" ])
+  end
+
+  def add_entity(name, blocks_removed: [])
+    blocks = {
+      "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Order", root: "{id:number,customer:Customer}" },
+      "entity_root_1" => { field: "version[entities_attributes][1][root]", name: "Customer", root: "{id:string}" }
+    }
+    blocks_removed.each { |block_id| blocks[block_id][:removed] = "1" }
+
+    post schema_edit_path, params: { blocks: blocks, op: "add_entity", new_entity: name }
+  end
+
+  it "gives a new entity a slot of its own, a string to start from, and the flag that says it is new" do
+    add_entity("Invoice")
+
+    expect(turbo_actions).to eq([ [ "replace", "entities" ] ])
+    expect(form_fields["version[entities_attributes][2][name]"]).to eq("Invoice")
+    expect(form_fields["version[entities_attributes][2][root]"]).to eq("string")
+    expect(form_fields["blocks[entity_root_2][added]"]).to eq("1")
+  end
+
+  it "offers the new name to the entities that may reference it" do
+    add_entity("Invoice")
+
+    expect(types_in("entity_root_1")).to include("Invoice")
+  end
+
+  it "refuses a name that does not start with an uppercase letter, and hands the typing back" do
+    add_entity("invoice")
+
+    expect(response.body).to include("An entity name must start with an uppercase letter")
+    expect(form_fields).not_to include("version[entities_attributes][2][name]")
+    expect(Nokogiri::HTML5.fragment(response.body).at_css("input[name='new_entity']")["value"]).to eq("invoice")
+  end
+
+  it "refuses a name the form already has" do
+    add_entity("Customer")
+
+    expect(response.body).to include("This entity already exists")
+  end
+
+  # The name is free again the moment the entity holding it is removed, which
+  # is how an entity is replaced rather than edited.
+  it "lets a removed name be taken again" do
+    add_entity("Customer", blocks_removed: [ "entity_root_1" ])
+
+    expect(response.body).not_to include("This entity already exists")
+    expect(form_fields["version[entities_attributes][2][name]"]).to eq("Customer")
+  end
+
+  # A new entity was never in the base version, so there is nothing for it to
+  # read as removed against — its control discards the slot outright.
+  it "discards a new entity instead of marking it removed" do
+    post schema_edit_path, params: {
+      blocks: {
+        "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Order", root: "{id:number}" },
+        "entity_root_1" => { field: "version[entities_attributes][1][root]", name: "Invoice", root: "string", added: "1" }
+      },
+      id: "entity_root_1", op: "drop_entity"
+    }
+
+    expect(form_fields.keys.grep(/entities_attributes/)).to eq([ "version[entities_attributes][0][name]", "version[entities_attributes][0][root]" ])
+  end
+
+  # Dropping a slot moves every slot after it, and a name field left at the old
+  # number would write itself into a record the root field never reaches.
+  it "renumbers the slots the version reads once the set changes" do
+    post schema_edit_path, params: {
+      blocks: {
+        "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Draft", root: "string", added: "1" },
+        "entity_root_1" => { field: "version[entities_attributes][1][root]", name: "Order", root: "{id:number}" }
+      },
+      id: "entity_root_0", op: "drop_entity"
+    }
+
+    expect(form_fields["version[entities_attributes][0][name]"]).to eq("Order")
+    expect(form_fields["version[entities_attributes][0][root]"]).to eq("{id:number}")
+    expect(form_fields).not_to include("version[entities_attributes][1][name]")
+  end
+
+  # Order had to go first — Customer was unremovable while Order pointed at it
+  # — so by now the reference on the removed card names an entity the version
+  # no longer has.
+  it "reads a removed entity that points at another removed one" do
+    entity_edit("remove_entity", "entity_root_1", removed: [ "entity_root_0" ])
+
+    expect(form_fields["blocks[entity_root_0][root]"]).to eq("{id:number,customer:Customer}")
+  end
 end

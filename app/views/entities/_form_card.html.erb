@@ -1,11 +1,38 @@
-<div class="group">
-  <div class="flex items-center gap-3 rounded-t-xl border border-violet-400 bg-violet-100 px-2 py-2 text-violet-900 shadow-sm">
-    <span class="truncate font-mono text-[13px] font-medium"><%= entity.name %></span>
-    <%= hidden_field_tag "version[entities_attributes][#{index}][name]", entity.name, id: nil %>
-  </div>
+<% ops = SchemaForm::OPS_FORM_ID %>
+<div class="group" data-turbo="true">
+  <% if block.removed %>
+    <%= hidden_field_tag "blocks[#{block.id}][root]", block.root, id: nil, form: ops %>
+    <%= hidden_field_tag "blocks[#{block.id}][field]", block.field, id: nil, form: ops %>
+    <%= hidden_field_tag "blocks[#{block.id}][name]", block.name, id: nil, form: ops %>
+    <%= hidden_field_tag "blocks[#{block.id}][removed]", "1", id: nil, form: ops %>
 
-  <div class="rounded-b-xl border-x border-b border-violet-400 bg-white px-3 py-2 shadow-sm">
-    <%= render "schema_form/editor", root: entity.parsed_root, id: "entity_root_#{index}", name: entity.name,
-               field: "version[entities_attributes][#{index}][root]", referenceable_names: referenceable_names %>
-  </div>
+    <div class="flex items-center gap-3 rounded-t-xl border border-rose-700 bg-rose-700 px-2 py-2 text-white shadow-sm">
+      <span class="truncate font-mono text-[13px] font-medium line-through decoration-white/60"><%= block.name %></span>
+      <button type="submit" form="<%= ops %>" formaction="<%= schema_edit_path(id: block.id, op: "restore_entity") %>"
+              class="ml-auto shrink-0 cursor-pointer rounded px-1.5 py-0.5 text-[11px] font-medium leading-none opacity-90 hover:bg-white/25 hover:opacity-100">Restore</button>
+    </div>
+
+    <div class="rounded-b-xl border-x-2 border-b-2 border-rose-500 bg-white px-3 py-2 opacity-60 shadow-sm">
+      <%= render "endpoints/schema", lines: root.to_diff(:no_change), tints: false %>
+    </div>
+  <% else %>
+    <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm <%= block.added ? "border-emerald-700 bg-emerald-700 text-white" : "border-violet-400 bg-violet-100 text-violet-900" %>">
+      <span class="truncate font-mono text-[13px] font-medium"><%= block.name %></span>
+      <%= hidden_field_tag "version[entities_attributes][#{index}][name]", block.name, id: nil %>
+      <% if block.added %>
+        <%= hidden_field_tag "blocks[#{block.id}][added]", "1", id: nil, form: ops %>
+      <% end %>
+
+      <% unless referenced %>
+        <button type="submit" form="<%= ops %>" title="<%= block.added ? "Discard entity" : "Remove entity" %>"
+                formaction="<%= schema_edit_path(id: block.id, op: block.added ? "drop_entity" : "remove_entity") %>"
+                class="ml-auto flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded font-mono text-[13px] leading-none opacity-0 focus:opacity-100 group-hover:opacity-60 group-hover:hover:opacity-100 <%= block.added ? "hover:bg-white/25" : "hover:bg-rose-200 hover:text-rose-800" %>">&times;</button>
+      <% end %>
+    </div>
+
+    <div class="rounded-b-xl bg-white px-3 py-2 shadow-sm <%= block.added ? "border-x-2 border-b-2 border-emerald-500" : "border-x border-b border-violet-400" %>">
+      <%= render "schema_form/editor", root: root, id: block.id, name: block.name,
+                 field: block.field, referenceable_names: referenceable_names %>
+    </div>
+  <% end %>
 </div>
