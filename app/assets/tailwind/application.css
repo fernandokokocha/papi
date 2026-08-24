@@ -13,6 +13,23 @@ body {
 
 :root {
   --pinned-offset: 0px;
+  interpolate-size: allow-keywords;
+}
+
+/* ── Folding sections ── */
+
+@media (prefers-reduced-motion: no-preference) {
+  /* allow-discrete belongs inside the shorthand: as its own declaration the
+     minifier hoists it above `transition`, which resets it back to normal */
+  .fold::details-content {
+    block-size: 0;
+    overflow-y: clip;
+    transition: block-size 200ms ease, content-visibility 200ms allow-discrete;
+  }
+
+  .fold[open]::details-content {
+    block-size: auto;
+  }
 }
 
 .sidebar-link-active {
