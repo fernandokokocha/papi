@@ -17,7 +17,13 @@
       <div class="sticky top-0 z-20 flex h-[var(--pinned-offset)] items-center gap-3 bg-slate-100 px-4">
         <%= render "versions/sidebar_toggle" %>
         <span class="text-[13px] font-semibold text-slate-900"><%= heading %></span>
-        <%= render "versions/submit_bar", checks: checks %>
+
+        <div class="ml-auto flex items-center gap-3">
+          <%= link_to "Cancel", cancel_path,
+                class: "rounded-md border border-slate-400 bg-white px-3 py-1.5 text-[13px] font-semibold text-slate-900 hover:bg-slate-50" %>
+          <%= render "versions/submit_bar", checks: checks %>
+          <%= render "versions/top_link" %>
+        </div>
       </div>
 
       <div class="px-4 pb-16 pt-2">

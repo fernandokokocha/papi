@@ -1,3 +1,4 @@
 <% content_for :main_class, "w-full" %>
 
-<%= render "versions/form", heading: "Edit #{@candidate.name}" %>
+<%= render "versions/form", heading: "Edit #{@candidate.name}",
+           cancel_path: project_candidate_path(project_name: @project.name, name: @candidate.name) %>

@@ -50,22 +50,24 @@
     <% end %>
   <% end %>
 
-  <% columns.times do |column| %>
-    <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm <%= col %> <%= header_tint %>">
-      <span class="truncate font-mono text-[13px] font-medium <%= "line-through decoration-white/60" if removed %>"><%= auth_method.name %></span>
+  <div class="sticky top-[var(--pinned-offset)] z-10 col-span-2 grid grid-cols-2 gap-x-2 bg-slate-100">
+    <% columns.times do |column| %>
+      <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm <%= col %> <%= header_tint %>">
+        <span class="truncate font-mono text-[13px] font-medium <%= "line-through decoration-white/60" if removed %>"><%= auth_method.name %></span>
 
-      <% if column == columns - 1 %>
-        <% if removed %>
-          <button type="submit" form="<%= ops %>" formaction="<%= schema_edit_path(index: index, op: "restore_auth_method") %>"
-                  class="ml-auto shrink-0 cursor-pointer rounded px-1.5 py-0.5 text-[11px] font-medium leading-none opacity-90 hover:bg-white/25 hover:opacity-100">Restore</button>
-        <% else %>
-          <button type="submit" form="<%= ops %>" title="<%= auth_method.added ? "Discard auth method" : "Remove auth method" %>"
-                  formaction="<%= schema_edit_path(index: index, op: auth_method.added ? "drop_auth_method" : "remove_auth_method") %>"
-                  class="ml-auto flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded font-mono text-[13px] leading-none opacity-0 focus:opacity-100 group-hover:opacity-60 group-hover:hover:opacity-100 <%= auth_method.added ? "hover:bg-white/25" : "hover:bg-rose-200 hover:text-rose-800" %>">&times;</button>
+        <% if column == columns - 1 %>
+          <% if removed %>
+            <button type="submit" form="<%= ops %>" formaction="<%= schema_edit_path(index: index, op: "restore_auth_method") %>"
+                    class="ml-auto shrink-0 cursor-pointer rounded px-1.5 py-0.5 text-[11px] font-medium leading-none opacity-90 hover:bg-white/25 hover:opacity-100">Restore</button>
+          <% else %>
+            <button type="submit" form="<%= ops %>" title="<%= auth_method.added ? "Discard auth method" : "Remove auth method" %>"
+                    formaction="<%= schema_edit_path(index: index, op: auth_method.added ? "drop_auth_method" : "remove_auth_method") %>"
+                    class="ml-auto flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded font-mono text-[13px] leading-none opacity-0 focus:opacity-100 group-hover:opacity-60 group-hover:hover:opacity-100 <%= auth_method.added ? "hover:bg-white/25" : "hover:bg-rose-200 hover:text-rose-800" %>">&times;</button>
+          <% end %>
         <% end %>
-      <% end %>
-    </div>
-  <% end %>
+      </div>
+    <% end %>
+  </div>
 
   <% columns.times do %>
     <div class="bg-white shadow-sm <%= col %> <%= edge %> <%= dim %>"><%= render "endpoints/section_band", label: "Kind", toggle: nil %></div>

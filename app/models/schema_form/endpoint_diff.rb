@@ -1,7 +1,7 @@
 # The form reads as the diff, so an endpoint card is answered band by band
 # against the endpoint the candidate branched from.
 class SchemaForm::EndpointDiff
-  ResponseRow = Data.define(:code, :state, :before_note, :before_lines, :note_change)
+  ResponseRow = Data.define(:code, :state, :before_response, :before_lines, :note_change)
 
   def initialize(base, endpoint, blocks, auth_method)
     @base = base
@@ -64,19 +64,19 @@ class SchemaForm::EndpointDiff
     before = @base.responses.find { |response| response.code == code }
     after = @endpoint.responses.find { |response| response.code == code }
 
-    return ResponseRow.new(code: code, state: :added, before_note: nil, before_lines: nil, note_change: nil) if before.nil?
+    return ResponseRow.new(code: code, state: :added, before_response: nil, before_lines: nil, note_change: nil) if before.nil?
     return removed_row(code, before) if after.nil?
 
     block = @blocks.output_for(@endpoint.key, code)
     output = Diff::FromValues.new(before.parsed_output, @blocks.parse(block))
     note_change = before.note == after.note ? "no_change" : "type_changed"
     changed = output.any_changes? || note_change != "no_change" || notes_differ?(before, block)
-    ResponseRow.new(code: code, state: changed ? :changed : :no_change, before_note: before.note,
+    ResponseRow.new(code: code, state: changed ? :changed : :no_change, before_response: before,
                     before_lines: output.before, note_change: note_change)
   end
 
   def removed_row(code, before)
-    ResponseRow.new(code: code, state: :removed, before_note: before.note,
+    ResponseRow.new(code: code, state: :removed, before_response: before,
                     before_lines: before.parsed_output.to_diff(:removed), note_change: nil)
   end
 

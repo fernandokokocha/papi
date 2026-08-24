@@ -1,8 +1,8 @@
 <% panel = "#{block.id}_note_#{index}" %>
-<span class="ml-1.5 flex shrink-0 items-start" data-controller="note-edit">
+<span class="flex shrink-0 items-center" data-controller="note-edit">
   <button type="button" popovertarget="<%= panel %>" data-note-edit-target="badge"
           aria-label="<%= note ? "Edit note" : "Add note" %>" title="<%= note ? note.body : "Add a note" %>"
-          class="mt-[2.5px] flex h-[14px] w-[14px] cursor-pointer items-center justify-center rounded-full font-sans text-[10px] font-bold leading-none ring-1 ring-inset <%= note ? "bg-slate-300 text-slate-700 ring-slate-400/60" : "text-slate-400 opacity-0 ring-slate-300 hover:bg-slate-200 hover:text-slate-700 focus:opacity-100 group-hover/row:opacity-100" %>">i</button>
+          class="flex h-4 w-4 cursor-pointer items-center justify-center rounded-full font-sans text-[11px] font-bold leading-none ring-1 ring-inset <%= note ? "bg-slate-300 text-slate-700 ring-slate-400/60" : "text-slate-500 opacity-0 ring-slate-300 hover:bg-slate-200 hover:text-slate-900 focus:opacity-100 group-hover/row:opacity-100" %>">i</button>
 
   <span popover id="<%= panel %>" data-note-edit-target="panel" data-action="toggle->note-edit#place"
         class="fixed inset-auto m-0 w-80 rounded-lg border-0 bg-white p-2.5 shadow-xl ring-1 ring-slate-900/10">

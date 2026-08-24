@@ -35,26 +35,29 @@
     <% end %>
   <% end %>
 
-  <% columns.times do |column| %>
-    <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm <%= col %> <%= header_tint %>">
-      <span class="truncate font-mono text-[13px] font-medium <%= "line-through decoration-white/60" if removed %>"><%= block.name %></span>
+  <div class="sticky top-[var(--pinned-offset)] z-10 col-span-2 grid grid-cols-2 gap-x-2 bg-slate-100">
+    <% columns.times do |column| %>
+      <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm <%= col %> <%= header_tint %>">
+        <span class="truncate font-mono text-[13px] font-medium <%= "line-through decoration-white/60" if removed %>"><%= block.name %></span>
 
-      <% if column == columns - 1 %>
-        <% if removed %>
-          <button type="submit" form="<%= ops %>" formaction="<%= schema_edit_path(id: block.id, op: "restore_entity") %>"
-                  class="ml-auto shrink-0 cursor-pointer rounded px-1.5 py-0.5 text-[11px] font-medium leading-none opacity-90 hover:bg-white/25 hover:opacity-100">Restore</button>
-        <% elsif !referenced %>
-          <button type="submit" form="<%= ops %>" title="<%= block.added ? "Discard entity" : "Remove entity" %>"
-                  formaction="<%= schema_edit_path(id: block.id, op: block.added ? "drop_entity" : "remove_entity") %>"
-                  class="ml-auto flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded font-mono text-[13px] leading-none opacity-0 focus:opacity-100 group-hover:opacity-60 group-hover:hover:opacity-100 <%= block.added ? "hover:bg-white/25" : "hover:bg-rose-200 hover:text-rose-800" %>">&times;</button>
+        <% if column == columns - 1 %>
+          <% if removed %>
+            <button type="submit" form="<%= ops %>" formaction="<%= schema_edit_path(id: block.id, op: "restore_entity") %>"
+                    class="ml-auto shrink-0 cursor-pointer rounded px-1.5 py-0.5 text-[11px] font-medium leading-none opacity-90 hover:bg-white/25 hover:opacity-100">Restore</button>
+          <% elsif !referenced %>
+            <button type="submit" form="<%= ops %>" title="<%= block.added ? "Discard entity" : "Remove entity" %>"
+                    formaction="<%= schema_edit_path(id: block.id, op: block.added ? "drop_entity" : "remove_entity") %>"
+                    class="ml-auto flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded font-mono text-[13px] leading-none opacity-0 focus:opacity-100 group-hover:opacity-60 group-hover:hover:opacity-100 <%= block.added ? "hover:bg-white/25" : "hover:bg-rose-200 hover:text-rose-800" %>">&times;</button>
+          <% end %>
         <% end %>
-      <% end %>
-    </div>
-  <% end %>
+      </div>
+    <% end %>
+  </div>
 
   <% if columns == 2 %>
     <div class="rounded-b-xl bg-white px-3 py-2 shadow-sm <%= edge %>">
-      <%= render "endpoints/schema", lines: diff.before, tints: true %>
+      <%= render "endpoints/schema", lines: diff.before, tints: true,
+                 notes: schema_notes_by_row(base_entity, nil, diff.before) %>
     </div>
   <% end %>
 

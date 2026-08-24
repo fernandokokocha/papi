@@ -72,44 +72,46 @@
     <%= hidden_field_tag field.("[added]"), "1", id: nil, form: ops %>
   <% end %>
 
-  <% if tints %>
-    <div class="flex items-center gap-2 rounded-t-xl border px-2 py-2 shadow-sm <%= header_tint %>">
-      <%= render "endpoints/verb_badge", verb: base_endpoint.verb %>
-      <span class="truncate font-mono text-[13px] font-medium"><%= base_endpoint.path %></span>
-    </div>
-  <% end %>
-
-  <div class="flex items-center gap-2 rounded-t-xl border px-2 py-2 shadow-sm <%= col %> <%= header_tint %>">
-    <% if removed %>
-      <span class="rounded px-1.5 py-0.5 font-mono text-[12px] font-bold ring-1 ring-inset ring-white/40"><%= endpoint.verb %></span>
-      <span class="truncate font-mono text-[13px] font-medium line-through decoration-white/60"><%= endpoint.path %></span>
-      <button type="submit" form="<%= ops %>" formaction="<%= op_url.("restore_endpoint") %>"
-              class="ml-auto shrink-0 cursor-pointer rounded px-1.5 py-0.5 text-[11px] font-medium leading-none opacity-90 hover:bg-white/25 hover:opacity-100">Restore</button>
-    <% else %>
-      <span class="relative inline-flex shrink-0">
-        <%= render "endpoints/verb_badge", verb: endpoint.verb %>
-        <select name="<%= field.("[http_verb]") %>" form="<%= ops %>" aria-label="Verb"
-                data-controller="schema-edit" data-schema-edit-url-value="<%= op_url.("endpoint") %>"
-                data-action="change->schema-edit#submit"
-                class="absolute inset-0 cursor-pointer opacity-0">
-          <% Endpoint::VERB_TRANSLATIONS.each do |http_verb, verb| %>
-            <option value="<%= http_verb %>" <%= "selected" if http_verb.to_s == endpoint.http_verb %>><%= verb %></option>
-          <% end %>
-        </select>
-      </span>
-
-      <input value="<%= endpoint.path %>" size="1" aria-label="Path" name="<%= field.("[path]") %>" form="<%= ops %>"
-             data-controller="schema-edit" data-schema-edit-url-value="<%= op_url.("endpoint") %>"
-             data-action="change->schema-edit#submit keydown.enter->schema-edit#commit"
-             class="field-sizing-content min-w-0 max-w-full rounded bg-transparent px-0.5 font-mono text-[13px] font-medium leading-[20px] hover:bg-white hover:text-slate-900 focus:bg-white focus:text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-600">
-
-      <%= hidden_field_tag "version[endpoints_attributes][][http_verb]", endpoint.http_verb, id: nil %>
-      <%= hidden_field_tag "version[endpoints_attributes][][path]", endpoint.path, id: nil %>
-
-      <button type="submit" form="<%= ops %>" title="<%= endpoint.added ? "Discard endpoint" : "Remove endpoint" %>"
-              formaction="<%= op_url.(endpoint.added ? "drop_endpoint" : "remove_endpoint") %>"
-              class="ml-auto flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded font-mono text-[13px] leading-none opacity-0 focus:opacity-100 group-hover:opacity-60 group-hover:hover:opacity-100 <%= endpoint.added ? "hover:bg-white/25" : "hover:bg-rose-200 hover:text-rose-800" %>">&times;</button>
+  <div class="sticky top-[var(--pinned-offset)] z-10 col-span-2 grid grid-cols-2 gap-x-2 bg-slate-100">
+    <% if tints %>
+      <div class="flex items-center gap-2 rounded-t-xl border px-2 py-2 shadow-sm <%= header_tint %>">
+        <%= render "endpoints/verb_badge", verb: base_endpoint.verb %>
+        <span class="truncate font-mono text-[13px] font-medium"><%= base_endpoint.path %></span>
+      </div>
     <% end %>
+
+    <div class="flex items-center gap-2 rounded-t-xl border px-2 py-2 shadow-sm <%= col %> <%= header_tint %>">
+      <% if removed %>
+        <span class="rounded px-1.5 py-0.5 font-mono text-[12px] font-bold ring-1 ring-inset ring-white/40"><%= endpoint.verb %></span>
+        <span class="truncate font-mono text-[13px] font-medium line-through decoration-white/60"><%= endpoint.path %></span>
+        <button type="submit" form="<%= ops %>" formaction="<%= op_url.("restore_endpoint") %>"
+                class="ml-auto shrink-0 cursor-pointer rounded px-1.5 py-0.5 text-[11px] font-medium leading-none opacity-90 hover:bg-white/25 hover:opacity-100">Restore</button>
+      <% else %>
+        <span class="relative inline-flex shrink-0">
+          <%= render "endpoints/verb_badge", verb: endpoint.verb %>
+          <select name="<%= field.("[http_verb]") %>" form="<%= ops %>" aria-label="Verb"
+                  data-controller="schema-edit" data-schema-edit-url-value="<%= op_url.("endpoint") %>"
+                  data-action="change->schema-edit#submit"
+                  class="absolute inset-0 cursor-pointer opacity-0">
+            <% Endpoint::VERB_TRANSLATIONS.each do |http_verb, verb| %>
+              <option value="<%= http_verb %>" <%= "selected" if http_verb.to_s == endpoint.http_verb %>><%= verb %></option>
+            <% end %>
+          </select>
+        </span>
+
+        <input value="<%= endpoint.path %>" size="1" aria-label="Path" name="<%= field.("[path]") %>" form="<%= ops %>"
+               data-controller="schema-edit" data-schema-edit-url-value="<%= op_url.("endpoint") %>"
+               data-action="change->schema-edit#submit keydown.enter->schema-edit#commit"
+               class="field-sizing-content min-w-0 max-w-full rounded bg-transparent px-0.5 font-mono text-[13px] font-medium leading-[20px] hover:bg-white hover:text-slate-900 focus:bg-white focus:text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-600">
+
+        <%= hidden_field_tag "version[endpoints_attributes][][http_verb]", endpoint.http_verb, id: nil %>
+        <%= hidden_field_tag "version[endpoints_attributes][][path]", endpoint.path, id: nil %>
+
+        <button type="submit" form="<%= ops %>" title="<%= endpoint.added ? "Discard endpoint" : "Remove endpoint" %>"
+                formaction="<%= op_url.(endpoint.added ? "drop_endpoint" : "remove_endpoint") %>"
+                class="ml-auto flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded font-mono text-[13px] leading-none opacity-0 focus:opacity-100 group-hover:opacity-60 group-hover:hover:opacity-100 <%= endpoint.added ? "hover:bg-white/25" : "hover:bg-rose-200 hover:text-rose-800" %>">&times;</button>
+      <% end %>
+    </div>
   </div>
 
   <% if show_params %>
@@ -176,11 +178,9 @@
               <% end %>
             </select>
 
-            <span class="ml-auto hidden shrink-0 items-center gap-1 pl-4 group-hover/row:flex">
-              <button type="submit" form="<%= ops %>" formaction="<%= op_url.("toggle_query_param", query: position) %>" title="Toggle required"
-                      class="flex h-4 w-4 cursor-pointer items-center justify-center rounded font-mono text-[11px] leading-none text-slate-500 ring-1 ring-inset ring-slate-300 hover:bg-slate-200 hover:text-slate-900">?</button>
-              <button type="submit" form="<%= ops %>" formaction="<%= op_url.("drop_query_param", query: position) %>" title="Remove"
-                      class="flex h-4 w-4 cursor-pointer items-center justify-center rounded font-mono text-[12px] leading-none text-slate-500 ring-1 ring-inset ring-slate-300 hover:bg-rose-100 hover:text-rose-700 hover:ring-rose-300">&times;</button>
+            <span class="ml-1.5 flex shrink-0 items-center gap-1">
+              <%= render "schema_form/optional_chip", formaction: op_url.("toggle_query_param", query: position), title: "Toggle required" %>
+              <%= render "schema_form/remove_chip", formaction: op_url.("drop_query_param", query: position), title: "Remove" %>
             </span>
 
             <% if query_param.required %>
@@ -254,7 +254,8 @@
 
   <% if tints %>
     <div class="bg-white px-3 py-1 shadow-sm <%= edge %>">
-      <%= render "endpoints/schema", lines: diff.input.before, tints: true %>
+      <%= render "endpoints/schema", lines: diff.input.before, tints: true,
+                   notes: schema_notes_by_row(base_endpoint, nil, diff.input.before) %>
     </div>
   <% end %>
 
@@ -282,12 +283,13 @@
           <div class="<%= "rounded-md bg-rose-50 px-2 py-1.5" if gone %>">
             <div class="flex items-center gap-2 pb-1">
               <span class="inline-flex items-center justify-center rounded bg-gray-100 px-1.5 py-1 font-mono text-[12px] font-bold leading-none text-gray-700 ring-1 ring-inset ring-gray-300"><%= code %></span>
-              <span class="truncate text-[13px] leading-[20px] text-slate-800 <%= change_tint(row.note_change) if row.note_change %>"><%= row.before_note %></span>
+              <span class="truncate text-[13px] leading-[20px] text-slate-800 <%= change_tint(row.note_change) if row.note_change %>"><%= row.before_response.note %></span>
               <% if gone %>
                 <span class="ml-auto text-[10px] font-bold uppercase leading-none tracking-[0.08em] text-rose-800">removed</span>
               <% end %>
             </div>
-            <%= render "endpoints/schema", lines: row.before_lines, tints: !gone %>
+            <%= render "endpoints/schema", lines: row.before_lines, tints: !gone,
+                       notes: schema_notes_by_row(row.before_response, nil, row.before_lines) %>
           </div>
         <% end %>
       </div>
