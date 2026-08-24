@@ -154,7 +154,7 @@ describe CandidateComments do
       entity_whole = FactoryBot.create(:comment, :entity_scope, candidate: candidate)
       entity_line = FactoryBot.create(:comment, :entity_scope, candidate: candidate, part: "root", line: 0, anchor_snapshot: "x")
 
-      # the card is what the React edit form renders, so input rides along with no extra wiring
+      # the card is what the edit form renders, so input rides along with no extra wiring
       endpoint_card = comments.card_for_endpoint(endpoint)
       expect(endpoint_card[:whole]).to contain_exactly(whole, response_whole, input_whole)
       expect(endpoint_card[:lines]).to eq([ input_line, line ])

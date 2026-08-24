@@ -1,9 +1,9 @@
 require "json"
 
-# Addresses one node inside its notable's schema, using the path the React
-# editor already threads through every node: object attributes by name, an
-# array element as null, a one-of branch by index. Stored as JSON so both
-# sides read it with no grammar of their own.
+# Addresses one node inside its notable's schema, using the path the form
+# already threads through every node: object attributes by name, an array
+# element as null, a one-of branch by index. Stored as JSON so nothing needs a
+# grammar of its own to read it.
 class SchemaNote < ApplicationRecord
   belongs_to :notable, polymorphic: true
 

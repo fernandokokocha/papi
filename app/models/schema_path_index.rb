@@ -2,7 +2,7 @@
 # themselves rather than instrumenting the thirty-six Diff classes that emit
 # them. The emitted output is the ground truth, so this cannot drift from it.
 #
-# Paths match the ones the React editor threads through every node: an object
+# Paths match the ones the form threads through every node: an object
 # attribute by name, an array element as nil, a one-of branch by index.
 class SchemaPathIndex
   OPENERS = { "{" => :object, "[" => :array, "(" => :one_of }.freeze

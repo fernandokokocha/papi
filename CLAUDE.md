@@ -47,8 +47,8 @@ discussion is a decision record, not a plan.
 
 ## Commands
 
-- `bin/dev` — dev server. Not `bin/rails server`: it also runs the Tailwind and
-  Vite watchers, without which class changes silently no-op.
+- `bin/dev` — dev server. Not `bin/rails server`: it also runs the Tailwind
+  watcher, without which class changes silently no-op.
 - `bin/rails dev:setup` — wipe + recreate + load fixtures. Migrations are edited
   in place at this stage rather than added to.
 - `bundle exec rspec` — the suite. `test/` holds only legacy fixtures.
@@ -78,18 +78,19 @@ Customer                                reference to an Entity by name
 declared, and it serializes to the empty string. `Node::Primitive(kind: "null")`
 is JSON's `null`, a first-class type that can sit in a union like
 `(string|null)`. Nothing is legal only as a whole value: `parse_value("")`
-raises, and the editor offers "nothing" only at an endpoint input or a response
-output root.
+raises, and the form offers "nothing" only at an endpoint input or a response
+output root (`SchemaForm::Blocks#locals_for`).
 
 **A one-of has at least two branches, and no two branches share a named type.**
 `(string|string)` and a bare `(string)` are both meaningless, and a branch may
 not itself be a one-of. "Named type" means a primitive or an entity reference,
 so `({a:string}|{b:number})` is fine — two object branches have no name to
-collide. Beware: **all of this is enforced by the React editor alone**
-(`OneOfNode.jsx` withholds taken types from the other branches' `TypeSelect` and
-blocks the delete button at two branches). The parser accepts every one of these
-shapes, and no model validates them. Fix a violation at the editor, or add the
-validation deliberately — don't assume a parsed tree obeys the rule.
+collide. Beware: **all of this is enforced by the form alone**
+(`SchemaForm::Rows` hands each branch the `taken` names so the type select can
+withhold them, and marks a branch `removable` only above two). The parser
+accepts every one of these shapes, and no model validates them. Fix a violation
+at the form, or add the validation deliberately — don't assume a parsed tree
+obeys the rule.
 
 **The parser is hand-written and deliberately loose.** It has no tokenizer and
 no grammar library, and these are simplifications, not oversights — per
@@ -100,27 +101,25 @@ rather than be diagnosed:
   never appear inside `[]` or `()` without braces around it;
 - an attribute's name is everything before its first `:`.
 
-**There are two implementations and they must agree.** Ruby parses for diffing,
-validation and the mock server; the React editor parses on every keystroke via
-`app/javascript/helpers/{deserialize,serialize}.js`. A grammar change means
-touching both sides and both sets of specs. Both match a primitive by exact
-name — Ruby used to match by prefix, which read an entity named `numberOfItems`
-back as `number`. The JS side calls an entity reference `custom` because it
-cannot resolve names client-side.
+**There is one implementation, and it is Ruby's.** The parser serves diffing,
+validation, the mock server and the form alike — the form renders every schema
+server-side and re-parses on each edit, so a grammar change is one change and
+one set of specs. It matches a primitive by exact name; it used to match by
+prefix, which read an entity named `numberOfItems` back as `number`.
 
-**An entity name starts with an uppercase letter.** `Form.jsx` blocks the Add
-button otherwise and `OpenAPI::Import` capitalizes every component name, but no
-model validates it — a lowercase name parses fine, so this is convention, not
-correctness.
+**An entity name starts with an uppercase letter.** `SchemaForm::Blocks` refuses
+the name otherwise and `OpenAPI::Import` capitalizes every component name, but
+no model validates it — a lowercase name parses fine, so this is convention,
+not correctness.
 
 **Entities nest to any depth; only cycles are banned.** `Order` may reference
 `Customer`, which references `Address`, and so on — there is no depth limit.
 Cycles are rejected by `Version#entity_references_are_acyclic` (via
 `EntityReferences`), and not out of paranoia: a circle *hangs*
 `Diff::EntityToEntity` and `to_example_json` rather than raising, and a hang is
-the one failure mode simplicity-over-correctness does not cover. The editor
-won't offer a cycle-forming name at any depth (`helpers/entityReferences.js`),
-so the validation is a backstop.
+the one failure mode simplicity-over-correctness does not cover. The form
+won't offer a cycle-forming name at any depth
+(`Version#referenceable_entity_names`), so the validation is a backstop.
 
 **Expansion goes all the way down.** `Node::Entity#expand` returns
 `parsed_root.expand`, so a reference becomes its entity's body and every
@@ -177,12 +176,10 @@ glue shared between ERB and JS, and nothing checks that the suffixes match.
 
 ## Frontend
 
-**Two independent JS pipelines.** Stimulus controllers
-(`app/javascript/controllers/`) load through importmap; the React schema editor
-(`app/javascript/components/`, `entrypoints/`) builds with Vite. A local module
-imported by a Stimulus controller must be pinned in `config/importmap.rb` or it
-resolves to nothing and the controller dies silently — a green `bin/vite build`
-proves nothing about it.
+**All JavaScript is Stimulus, loaded through importmap.** There is no bundler
+and no build step — no npm, no `package.json`. A local module imported by a
+controller must be pinned in `config/importmap.rb` or it resolves to nothing and
+the controller dies silently, with no error anywhere to say so.
 
 **Turbo Drive stays off** (`Turbo.session.drive = false`). The sidebar scroll-spy
 highlight relies on native anchor navigation and full page loads. Forms that

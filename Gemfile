@@ -42,8 +42,6 @@ gem "thruster", require: false
 
 gem "amoeba"
 
-gem "vite_rails"
-
 gem "pundit", "~> 2.5"
 
 gem "aasm"

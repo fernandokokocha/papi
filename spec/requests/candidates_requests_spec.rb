@@ -240,7 +240,7 @@ describe "Candidates requests", type: :request do
       expect(response.body).not_to include("Resolve thread")
     end
 
-    it "carries input comments into the endpoint card the React form renders" do
+    it "carries input comments into the endpoint card the form renders" do
       version = FactoryBot.create(:version, project: project, candidate: candidate, name: "v1", order: 1)
       FactoryBot.create(:endpoint, version: version, path: "/users", http_verb: "verb_post", input: "{name:string}")
       candidate.comments.create!(author: user, body: "Region comment on the body", scope: "endpoint",

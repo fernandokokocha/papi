@@ -46,47 +46,6 @@ class Version < ApplicationRecord
     earlier_versions.find_by!(name: name)
   end
 
-  def existing_endpoints_for_frontend
-    endpoints.map do |endpoint|
-      {
-        http_verb: endpoint.http_verb,
-        verb: endpoint.verb,
-        path: endpoint.path,
-        auth: endpoint.auth,
-        params: endpoint.path_params.map { |param| { name: param.name, kind: param.kind } },
-        query_params: endpoint.query_params.map { |param| { name: param.name, kind: param.kind, required: param.required } },
-        note: endpoint.note,
-        input: endpoint.input,
-        schema_notes: notes_for_frontend(endpoint),
-        responses: endpoint.responses.sort_by(&:code).map { |r| { code: r.code, note: r.note, output: r.output, schema_notes: notes_for_frontend(r) } }
-      }
-    end.to_json
-  end
-
-  def existing_entities_for_frontend
-    entities.map do |entity|
-      {
-        name: entity.name,
-        root: entity.root,
-        schema_notes: notes_for_frontend(entity)
-      }
-    end.to_json
-  end
-
-  def existing_auth_methods_for_frontend
-    auth_methods.map do |auth_method|
-      {
-        name: auth_method.name,
-        kind: auth_method.kind,
-        note: auth_method.note
-      }
-    end.to_json
-  end
-
-  def notes_for_frontend(record)
-    record.schema_notes.sort_by(&:path).map { |note| { path: note.segments, body: note.body } }
-  end
-
   def to_param
     name
   end

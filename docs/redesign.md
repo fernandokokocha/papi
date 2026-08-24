@@ -146,7 +146,7 @@ nothing was lost. It is settled last, at step 70.
     Ruby: endpoints colliding, an endpoint with no responses, a path repeating
     a param name, a query param blank or named twice, entity references in a
     cycle, and nothing changed at all~~
-68. React and Vite removed
+68. ~~React and Vite removed~~
 69. `/design-preview`, rebuilt from what landed
 70. The red request specs — each re-aimed at what landed, and the gaps they
     exposed closed: reply and resolve on a candidate-level thread, and the
