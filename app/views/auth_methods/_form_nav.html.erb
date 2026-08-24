@@ -4,7 +4,7 @@
       <% auth_methods.each_with_index do |auth_method, index| %>
         <%= render "versions/sidebar_link", href: "#form-auth-#{index}",
                    title: auth_method.name, name: auth_method.name,
-                   annotation: auth_method_form_annotation(auth_method, base) %>
+                   annotation: checks.auth_method_change(auth_method) %>
       <% end %>
     <% end %>
   <% end %>

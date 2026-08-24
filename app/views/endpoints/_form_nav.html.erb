@@ -4,7 +4,7 @@
       <% endpoints.each do |endpoint| %>
         <%= render "versions/sidebar_link", href: "#form-endpoint-#{endpoint.key}",
                    title: endpoint.identity_name, name: endpoint.path, verb: endpoint.verb,
-                   annotation: endpoint_form_annotation(endpoint, blocks, auth_methods, base) %>
+                   annotation: checks.endpoint_change(endpoint) %>
       <% end %>
     <% end %>
   <% end %>

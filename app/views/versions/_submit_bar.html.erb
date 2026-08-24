@@ -1,0 +1,29 @@
+<div id="submit_bar" class="ml-auto flex items-center gap-3">
+  <% if checks.problems.any? %>
+    <details class="relative">
+      <summary class="flex cursor-pointer list-none items-center gap-1.5 rounded-md border border-rose-400 bg-rose-50 px-2.5 py-1.5 text-[13px] font-semibold text-rose-800 hover:bg-rose-100 [&::-webkit-details-marker]:hidden">
+        <svg viewBox="0 0 20 20" fill="currentColor" class="h-4 w-4 shrink-0">
+          <path d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495ZM10 6a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5A.75.75 0 0 0 10 6Zm0 8a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z"/>
+        </svg>
+        <%= pluralize(checks.problems.size, "problem") %>
+      </summary>
+      <div class="absolute right-0 z-30 mt-1 w-[26rem] rounded-md border border-slate-400 bg-white py-1 shadow-lg">
+        <% checks.problems.each do |problem| %>
+          <a href="#<%= problem.anchor %>" class="block px-3 py-1.5 text-[12px] leading-[18px] text-slate-600 hover:bg-slate-50">
+            <span class="font-mono font-medium text-slate-900"><%= problem.subject %></span>
+            <%= problem.message %>
+          </a>
+        <% end %>
+      </div>
+    </details>
+  <% elsif checks.unchanged? %>
+    <span class="text-[12px] text-slate-500">Nothing has changed yet</span>
+  <% end %>
+
+  <% if checks.submittable? %>
+    <button type="submit" form="<%= SchemaForm::FORM_ID %>"
+            class="cursor-pointer rounded-md border border-sky-800 bg-sky-700 px-3 py-1.5 text-[13px] font-semibold text-white hover:bg-sky-800">Save candidate</button>
+  <% else %>
+    <span class="cursor-not-allowed rounded-md border border-slate-400 bg-slate-200 px-3 py-1.5 text-[13px] font-semibold text-slate-500">Save candidate</span>
+  <% end %>
+</div>

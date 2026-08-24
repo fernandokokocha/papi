@@ -96,7 +96,7 @@ class SchemaEditsController < ApplicationController
       turbo_stream.replace("entities", partial: "entities/form_list",
                            locals: { blocks: edited, base: base_version, new_entity: new_entity, error: error }),
       turbo_stream.replace("entities_nav", partial: "entities/form_nav",
-                           locals: { blocks: edited, base: base_version }),
+                           locals: { blocks: edited, checks: checks_for(blocks: edited) }),
       *endpoints_stream(blocks: edited)
     ]
   end
@@ -107,7 +107,7 @@ class SchemaEditsController < ApplicationController
                            locals: { auth_methods: edited, base: base_version,
                                      new_auth_method: new_auth_method, error: error }),
       turbo_stream.replace("auth_methods_nav", partial: "auth_methods/form_nav",
-                           locals: { auth_methods: edited, base: base_version }),
+                           locals: { auth_methods: edited, checks: checks_for(auth_methods: edited) }),
       *endpoints_stream(auth_methods: edited)
     ]
   end
@@ -146,14 +146,19 @@ class SchemaEditsController < ApplicationController
 
   def endpoints_stream(endpoints: self.endpoints, auth_methods: self.auth_methods, blocks: self.blocks,
                        new_endpoint: nil, error: nil)
+    checks = checks_for(endpoints: endpoints, auth_methods: auth_methods, blocks: blocks)
     [
       turbo_stream.replace("endpoints", partial: "endpoints/form_list",
                            locals: { endpoints: endpoints, auth_methods: auth_methods, blocks: blocks,
                                      base: base_version, new_endpoint: new_endpoint, error: error }),
       turbo_stream.replace("endpoints_nav", partial: "endpoints/form_nav",
-                           locals: { endpoints: endpoints, auth_methods: auth_methods, blocks: blocks,
-                                     base: base_version })
+                           locals: { endpoints: endpoints, checks: checks }),
+      turbo_stream.replace("submit_bar", partial: "versions/submit_bar", locals: { checks: checks })
     ]
+  end
+
+  def checks_for(endpoints: self.endpoints, auth_methods: self.auth_methods, blocks: self.blocks)
+    SchemaForm::Checks.new(endpoints: endpoints, blocks: blocks, auth_methods: auth_methods, base: base_version)
   end
 
   def render_blocks

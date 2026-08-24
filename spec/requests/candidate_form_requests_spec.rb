@@ -177,6 +177,53 @@ end
     expect(Version.last.auth_methods.find_by(name: "UserToken")).to have_attributes(kind: "basic", note: "Now a username and password.")
   end
 
+  def ops_params
+    {
+      base_version_id: base_version.id,
+      endpoints: { "0" => { http_verb: "verb_get", path: "/customers/:id", auth: "UserToken", note: "One customer.",
+                            params: { "id" => "number" },
+                            query_params: { "0" => { name: "expand", kind: "boolean" } },
+                            responses: { "200" => { note: "The customer." }, "404" => { note: "No such customer." } } } },
+      blocks: {
+        "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Customer", root: "{id:number,name:string}" },
+        "entity_root_1" => { field: "version[entities_attributes][1][root]", name: "Order", root: "{customer:Customer,total:number}" },
+        "endpoint_input_0" => { field: "version[endpoints_attributes][][input]", root: "" },
+        "endpoint_output_0_200" => { field: "version[endpoints_attributes][][responses][200][output]", root: "Customer" },
+        "endpoint_output_0_404" => { field: "version[endpoints_attributes][][responses][404][output]", root: "" }
+      },
+      auth_methods: { "0" => { name: "UserToken", kind: "bearer", note: "A token from POST /session." } }
+    }
+  end
+
+  def submit_bar(params = ops_params)
+    post schema_edit_path, params: { op: "endpoint" }.merge(params)
+    Nokogiri::HTML5.fragment(response.body).at_css("#submit_bar")
+  end
+
+  # The bar is pinned above the form it submits, so its button reaches the form
+  # by id rather than by nesting.
+  it "withholds submit until the form reads as a diff, and reaches the form by id" do
+    expect(form.at_css("##{SchemaForm::FORM_ID}")).to be_present
+    expect(submit_bar.text).to include("Nothing has changed yet")
+    expect(submit_bar.at_css("button[type=submit]")).to be_nil
+
+    edited = ops_params.tap { |params| params[:endpoints]["0"][:note] = "The one customer." }
+    expect(submit_bar(edited).at_css("button[type=submit]")["form"]).to eq(SchemaForm::FORM_ID)
+  end
+
+  it "names what stops the form, and points at the card it came from" do
+    broken = ops_params.tap do |params|
+      params[:endpoints]["1"] = { http_verb: "verb_post", path: "/customers", added: "1" }
+      params[:blocks]["endpoint_input_1"] = { field: "version[endpoints_attributes][][input]", root: "" }
+    end
+    bar = submit_bar(broken)
+
+    expect(bar.text).to include("1 problem")
+    expect(bar.at_css("a")["href"]).to eq("#form-endpoint-1")
+    expect(bar.at_css("a").text.squish).to eq("POST /customers has no responses")
+    expect(bar.at_css("button[type=submit]")).to be_nil
+  end
+
   # The ops form is its own form, so it carries its own per-form CSRF token and
   # the candidate form keeps the one Rails gave it.
   it "carries a token the schema editor's action accepts" do

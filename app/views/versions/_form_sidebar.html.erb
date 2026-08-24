@@ -6,8 +6,8 @@
       <span class="truncate">Release notes</span>
     </a>
 
-    <%= render "endpoints/form_nav", endpoints: endpoints, blocks: blocks, auth_methods: auth_methods, base: base %>
-    <%= render "entities/form_nav", blocks: blocks, base: base %>
-    <%= render "auth_methods/form_nav", auth_methods: auth_methods, base: base %>
+    <%= render "endpoints/form_nav", endpoints: endpoints, checks: checks %>
+    <%= render "entities/form_nav", blocks: blocks, checks: checks %>
+    <%= render "auth_methods/form_nav", auth_methods: auth_methods, checks: checks %>
   </div>
 </aside>

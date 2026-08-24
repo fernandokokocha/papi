@@ -2,6 +2,7 @@
 <% auth_methods = SchemaForm::AuthMethods.for_version(@version.auth_methods) %>
 <% blocks = SchemaForm::Blocks.for_version(@version) %>
 <% endpoints = SchemaForm::Endpoints.for_version(@version.endpoints) %>
+<% checks = SchemaForm::Checks.new(endpoints: endpoints, blocks: blocks, auth_methods: auth_methods, base: base_version) %>
 
 <%= form_with url: schema_edit_path, id: SchemaForm::OPS_FORM_ID, data: { turbo: true } do %>
   <%= hidden_field_tag :base_version_id, base_version.id, id: nil %>
@@ -10,16 +11,17 @@
 <div class="group [--pinned-offset:2.75rem]" data-controller="sidebar" data-sidebar="open">
   <div class="flex">
     <%= render "versions/form_sidebar", endpoints: endpoints, blocks: blocks,
-               auth_methods: auth_methods, base: base_version %>
+               auth_methods: auth_methods, checks: checks %>
 
     <div class="min-w-0 flex-1">
       <div class="sticky top-0 z-20 flex h-[var(--pinned-offset)] items-center gap-3 bg-slate-100 px-4">
         <%= render "versions/sidebar_toggle" %>
         <span class="text-[13px] font-semibold text-slate-900"><%= heading %></span>
+        <%= render "versions/submit_bar", checks: checks %>
       </div>
 
       <div class="px-4 pb-16 pt-2">
-        <%= form_with model: [@project, @candidate] do |f| %>
+        <%= form_with model: [@project, @candidate], id: SchemaForm::FORM_ID do |f| %>
           <%= f.hidden_field :project_id %>
           <%= f.hidden_field :order %>
           <%= f.hidden_field :name %>
@@ -73,14 +75,6 @@
           <%= render layout: "versions/section", locals: { label: "Auth" } do %>
             <%= render "auth_methods/form_list", auth_methods: auth_methods, base: base_version %>
           <% end %>
-
-          <div
-            id="react-form"
-            data-serialized-endpoints="<%= @version.existing_endpoints_for_frontend %>"
-            data-serialized-entities="<%= @version.existing_entities_for_frontend %>"
-            data-serialized-auth-methods="<%= @version.existing_auth_methods_for_frontend %>"
-            data-comments="<%= card_comments_data(@comparison.endpoints, @comparison.entities, @comparison.auth_methods) %>"
-          ></div>
         <% end %>
       </div>
     </div>
