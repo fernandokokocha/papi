@@ -39,7 +39,8 @@ describe "Schema edit requests", type: :request do
   it "answers with the entity and endpoint lists, carrying the new schema in its hidden field" do
     edit("add", [ "address" ])
 
-    expect(turbo_actions).to eq([ [ "replace", "entities" ], [ "replace", "endpoints" ] ])
+    expect(turbo_actions).to eq([ [ "replace", "entities" ], [ "replace", "entities_nav" ],
+                                  [ "replace", "endpoints" ], [ "replace", "endpoints_nav" ] ])
     expect(edited_schema).to eq("{id:number,tags:[string],address?:{street:string,new:string},status:(string|null)}")
   end
 
@@ -176,7 +177,8 @@ describe "Schema edit requests", type: :request do
   it "stops submitting a removed entity to the version, and keeps submitting it to itself" do
     entity_edit("remove_entity", "entity_root_0")
 
-    expect(turbo_actions).to eq([ [ "replace", "entities" ], [ "replace", "endpoints" ] ])
+    expect(turbo_actions).to eq([ [ "replace", "entities" ], [ "replace", "entities_nav" ],
+                                  [ "replace", "endpoints" ], [ "replace", "endpoints_nav" ] ])
     expect(form_fields).not_to include("version[entities_attributes][0][name]", "version[entities_attributes][0][root]")
     expect(form_fields["blocks[entity_root_0][root]"]).to eq("{id:number,customer:Customer}")
     expect(form_fields["blocks[entity_root_0][removed]"]).to eq("1")
@@ -231,7 +233,8 @@ describe "Schema edit requests", type: :request do
   it "gives a new entity a slot of its own, a string to start from, and the flag that says it is new" do
     add_entity("Invoice")
 
-    expect(turbo_actions).to eq([ [ "replace", "entities" ], [ "replace", "endpoints" ] ])
+    expect(turbo_actions).to eq([ [ "replace", "entities" ], [ "replace", "entities_nav" ],
+                                  [ "replace", "endpoints" ], [ "replace", "endpoints_nav" ] ])
     expect(form_fields["version[entities_attributes][2][name]"]).to eq("Invoice")
     expect(form_fields["version[entities_attributes][2][root]"]).to eq("string")
     expect(form_fields["blocks[entity_root_2][added]"]).to eq("1")
@@ -325,7 +328,8 @@ describe "Schema edit requests", type: :request do
   it "stops submitting a removed auth method to the version, and keeps submitting it to itself" do
     auth_edit("remove_auth_method", 0)
 
-    expect(turbo_actions).to eq([ [ "replace", "auth_methods" ], [ "replace", "endpoints" ] ])
+    expect(turbo_actions).to eq([ [ "replace", "auth_methods" ], [ "replace", "auth_methods_nav" ],
+                                  [ "replace", "endpoints" ], [ "replace", "endpoints_nav" ] ])
     expect(form_fields).not_to include("version[auth_methods_attributes][0][name]", "version[auth_methods_attributes][0][kind]")
     expect(form_fields["auth_methods[0][note]"]).to eq("A token from POST /session.")
     expect(form_fields["auth_methods[0][removed]"]).to eq("1")
@@ -408,7 +412,7 @@ describe "Schema edit requests", type: :request do
   it "answers an endpoint edit with the verb, path, auth and note the whole form is holding" do
     endpoint_edit("endpoint", http_verb: "verb_post", path: "/customers", auth: "", note: "Every customer.")
 
-    expect(turbo_actions).to eq([ [ "replace", "endpoints" ] ])
+    expect(turbo_actions).to eq([ [ "replace", "endpoints" ], [ "replace", "endpoints_nav" ] ])
     expect(form_fields["version[endpoints_attributes][][http_verb]"]).to eq("verb_post")
     expect(form_fields["version[endpoints_attributes][][path]"]).to eq("/customers")
     expect(form_fields["version[endpoints_attributes][][auth]"]).to eq("")
@@ -529,7 +533,8 @@ describe "Schema edit requests", type: :request do
       endpoints: { "0" => { http_verb: "verb_get", path: "/customers", auth: "UserToken", note: "" } }
     }
 
-    expect(turbo_actions).to eq([ [ "replace", "auth_methods" ], [ "replace", "endpoints" ] ])
+    expect(turbo_actions).to eq([ [ "replace", "auth_methods" ], [ "replace", "auth_methods_nav" ],
+                                  [ "replace", "endpoints" ], [ "replace", "endpoints_nav" ] ])
     expect(form_fields["version[endpoints_attributes][][auth]"]).to eq("")
   end
 
@@ -564,7 +569,7 @@ describe "Schema edit requests", type: :request do
     endpoint_set_edit("add_endpoint", endpoints: one_endpoint, blocks: one_endpoints_blocks,
                       new_endpoint: { http_verb: "verb_post", path: "/customers" })
 
-    expect(turbo_actions).to eq([ [ "replace", "endpoints" ] ])
+    expect(turbo_actions).to eq([ [ "replace", "endpoints" ], [ "replace", "endpoints_nav" ] ])
     expect(endpoint_field_values("version[endpoints_attributes][][path]")).to eq([ "/customers/:id", "/customers" ])
     expect(endpoint_field_values("version[endpoints_attributes][][http_verb]")).to eq([ "verb_get", "verb_post" ])
     expect(form_fields["blocks[endpoint_input_1][root]"]).to eq("")

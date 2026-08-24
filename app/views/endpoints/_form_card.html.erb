@@ -43,7 +43,8 @@
 <% show_params = tints ? diff.path_params.pairs.any? : endpoint.path_params.any? %>
 <% show_query = !removed || endpoint.query_params.any? %>
 
-<div class="group grid grid-cols-2 gap-x-2" data-turbo="true">
+<div id="form-endpoint-<%= key %>" data-sidebar-target="card" data-turbo="true"
+     class="group grid grid-cols-2 gap-x-2 scroll-mt-[var(--pinned-offset)]">
   <% if removed %>
     <%= hidden_field_tag field.("[http_verb]"), endpoint.http_verb, id: nil, form: ops %>
     <%= hidden_field_tag field.("[path]"), endpoint.path, id: nil, form: ops %>

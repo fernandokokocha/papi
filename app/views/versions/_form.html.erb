@@ -1,70 +1,88 @@
 <% base_version = @candidate.base_version || Version.null_version(@project) %>
+<% auth_methods = SchemaForm::AuthMethods.for_version(@version.auth_methods) %>
+<% blocks = SchemaForm::Blocks.for_version(@version) %>
+<% endpoints = SchemaForm::Endpoints.for_version(@version.endpoints) %>
+
 <%= form_with url: schema_edit_path, id: SchemaForm::OPS_FORM_ID, data: { turbo: true } do %>
   <%= hidden_field_tag :base_version_id, base_version.id, id: nil %>
 <% end %>
 
-<%= form_with model: [@project, @candidate] do |f| %>
-  <%= f.hidden_field :project_id %>
-  <%= f.hidden_field :order %>
-  <%= f.hidden_field :name %>
-  <%= hidden_field(:version, :order) %>
-  <%= hidden_field(:version, :name) %>
+<div class="group [--pinned-offset:2.75rem]" data-controller="sidebar" data-sidebar="open">
+  <div class="flex">
+    <%= render "versions/form_sidebar", endpoints: endpoints, blocks: blocks,
+               auth_methods: auth_methods, base: base_version %>
 
-  <div class="grid grid-cols-2 gap-2 mb-6">
-    <div class="bg-white border border-gray-200 rounded-lg p-4">
-      <% if base_version.order > -1 %>
-        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Base Version</div>
-        <div class="text-lg font-semibold text-slate-900"><%= base_version.name %></div>
-        <div class="text-sm text-gray-500"><%= base_version.created_at.strftime("%Y-%m-%d") %></div>
-      <% else %>
-        <div class="text-sm text-slate-500 italic">No base version</div>
-      <% end %>
-    </div>
-    <div class="bg-white border border-gray-200 rounded-lg p-4">
-      <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">New Version</div>
-      <div class="text-lg font-semibold text-slate-900"><%= @version.name %></div>
-      <div class="text-sm text-gray-500"><%= @version.created_at.strftime("%Y-%m-%d") %></div>
-    </div>
-  </div>
+    <div class="min-w-0 flex-1">
+      <div class="sticky top-0 z-20 flex h-[var(--pinned-offset)] items-center gap-3 bg-slate-100 px-4">
+        <%= render "versions/sidebar_toggle" %>
+        <span class="text-[13px] font-semibold text-slate-900"><%= heading %></span>
+      </div>
 
-  <div class="w-1/2 ml-auto pl-1 mb-6">
-    <div class="bg-white border border-gray-200 rounded-lg p-4">
-      <%= label_tag "version_release_notes", "Release Notes", class: "block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2" %>
-      <%= text_area :version, :release_notes, rows: 5,
-            placeholder: "Describe this version — what changed, why, and anything a consumer should know.",
-            class: "w-full bg-white border border-gray-300 rounded-lg p-3 text-sm text-slate-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500" %>
-    </div>
-    <% release_notes_threads = candidate_comments.threads_for("release_notes") %>
-    <% if release_notes_threads.any? %>
-      <div class="flex flex-col gap-2 mt-3">
-        <% release_notes_threads.each do |thread| %>
-          <%= render "comments/thread", comment: thread, read_only: true %>
+      <div class="px-4 pb-16 pt-2">
+        <%= form_with model: [@project, @candidate] do |f| %>
+          <%= f.hidden_field :project_id %>
+          <%= f.hidden_field :order %>
+          <%= f.hidden_field :name %>
+          <%= hidden_field(:version, :order) %>
+          <%= hidden_field(:version, :name) %>
+
+          <div class="grid grid-cols-2 gap-2 mb-6">
+            <div class="bg-white border border-gray-200 rounded-lg p-4">
+              <% if base_version.order > -1 %>
+                <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Base Version</div>
+                <div class="text-lg font-semibold text-slate-900"><%= base_version.name %></div>
+                <div class="text-sm text-gray-500"><%= base_version.created_at.strftime("%Y-%m-%d") %></div>
+              <% else %>
+                <div class="text-sm text-slate-500 italic">No base version</div>
+              <% end %>
+            </div>
+            <div class="bg-white border border-gray-200 rounded-lg p-4">
+              <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide">New Version</div>
+              <div class="text-lg font-semibold text-slate-900"><%= @version.name %></div>
+              <div class="text-sm text-gray-500"><%= @version.created_at.strftime("%Y-%m-%d") %></div>
+            </div>
+          </div>
+
+          <div id="release-notes" data-sidebar-target="card"
+               class="w-1/2 ml-auto pl-1 mb-6 scroll-mt-[var(--pinned-offset)]">
+            <div class="bg-white border border-gray-200 rounded-lg p-4">
+              <%= label_tag "version_release_notes", "Release Notes", class: "block text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2" %>
+              <%= text_area :version, :release_notes, rows: 5,
+                    placeholder: "Describe this version — what changed, why, and anything a consumer should know.",
+                    class: "w-full bg-white border border-gray-300 rounded-lg p-3 text-sm text-slate-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500" %>
+            </div>
+            <% release_notes_threads = candidate_comments.threads_for("release_notes") %>
+            <% if release_notes_threads.any? %>
+              <div class="flex flex-col gap-2 mt-3">
+                <% release_notes_threads.each do |thread| %>
+                  <%= render "comments/thread", comment: thread, read_only: true %>
+                <% end %>
+              </div>
+            <% end %>
+          </div>
+
+          <%= render layout: "versions/section", locals: { label: "Endpoints" } do %>
+            <%= render "endpoints/form_list", endpoints: endpoints,
+                       auth_methods: auth_methods, blocks: blocks, base: base_version %>
+          <% end %>
+
+          <%= render layout: "versions/section", locals: { label: "Entities" } do %>
+            <%= render "entities/form_list", blocks: blocks, base: base_version %>
+          <% end %>
+
+          <%= render layout: "versions/section", locals: { label: "Auth" } do %>
+            <%= render "auth_methods/form_list", auth_methods: auth_methods, base: base_version %>
+          <% end %>
+
+          <div
+            id="react-form"
+            data-serialized-endpoints="<%= @version.existing_endpoints_for_frontend %>"
+            data-serialized-entities="<%= @version.existing_entities_for_frontend %>"
+            data-serialized-auth-methods="<%= @version.existing_auth_methods_for_frontend %>"
+            data-comments="<%= card_comments_data(@comparison.endpoints, @comparison.entities, @comparison.auth_methods) %>"
+          ></div>
         <% end %>
       </div>
-    <% end %>
+    </div>
   </div>
-
-  <% auth_methods = SchemaForm::AuthMethods.for_version(@version.auth_methods) %>
-  <% blocks = SchemaForm::Blocks.for_version(@version) %>
-
-  <%= render layout: "versions/section", locals: { label: "Endpoints" } do %>
-    <%= render "endpoints/form_list", endpoints: SchemaForm::Endpoints.for_version(@version.endpoints),
-               auth_methods: auth_methods, blocks: blocks, base: base_version %>
-  <% end %>
-
-  <%= render layout: "versions/section", locals: { label: "Entities" } do %>
-    <%= render "entities/form_list", blocks: blocks, base: base_version %>
-  <% end %>
-
-  <%= render layout: "versions/section", locals: { label: "Auth" } do %>
-    <%= render "auth_methods/form_list", auth_methods: auth_methods, base: base_version %>
-  <% end %>
-
-  <div
-    id="react-form"
-    data-serialized-endpoints="<%= @version.existing_endpoints_for_frontend %>"
-    data-serialized-entities="<%= @version.existing_entities_for_frontend %>"
-    data-serialized-auth-methods="<%= @version.existing_auth_methods_for_frontend %>"
-    data-comments="<%= card_comments_data(@comparison.endpoints, @comparison.entities, @comparison.auth_methods) %>"
-  ></div>
-<% end %>
+</div>

@@ -1,0 +1,14 @@
+<% tint = {
+     "added" => "bg-emerald-100 hover:bg-emerald-200",
+     "removed" => "bg-rose-100 hover:bg-rose-200",
+     "changed" => "bg-amber-100 hover:bg-amber-200"
+   } %>
+<% tint.default = "hover:bg-white" %>
+<a href="<%= href %>"
+   title="<%= title %>"
+   data-sidebar-target="link"
+   class="flex h-6 items-center gap-2 pl-2 pr-2 <%= tint[annotation] %>">
+  <% if local_assigns[:verb] %><%= render "endpoints/verb_badge", verb: verb %><% end %>
+  <span class="truncate font-mono text-[12px] text-slate-800 [.sidebar-link-active_&]:font-semibold [.sidebar-link-active_&]:text-slate-900"><%= name %></span>
+  <%= local_assigns[:badge] %>
+</a>

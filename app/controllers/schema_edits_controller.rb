@@ -95,7 +95,9 @@ class SchemaEditsController < ApplicationController
     render turbo_stream: [
       turbo_stream.replace("entities", partial: "entities/form_list",
                            locals: { blocks: edited, base: base_version, new_entity: new_entity, error: error }),
-      endpoints_stream(blocks: edited)
+      turbo_stream.replace("entities_nav", partial: "entities/form_nav",
+                           locals: { blocks: edited, base: base_version }),
+      *endpoints_stream(blocks: edited)
     ]
   end
 
@@ -104,7 +106,9 @@ class SchemaEditsController < ApplicationController
       turbo_stream.replace("auth_methods", partial: "auth_methods/form_list",
                            locals: { auth_methods: edited, base: base_version,
                                      new_auth_method: new_auth_method, error: error }),
-      endpoints_stream(auth_methods: edited)
+      turbo_stream.replace("auth_methods_nav", partial: "auth_methods/form_nav",
+                           locals: { auth_methods: edited, base: base_version }),
+      *endpoints_stream(auth_methods: edited)
     ]
   end
 
@@ -142,9 +146,14 @@ class SchemaEditsController < ApplicationController
 
   def endpoints_stream(endpoints: self.endpoints, auth_methods: self.auth_methods, blocks: self.blocks,
                        new_endpoint: nil, error: nil)
-    turbo_stream.replace("endpoints", partial: "endpoints/form_list",
-                         locals: { endpoints: endpoints, auth_methods: auth_methods, blocks: blocks,
-                                   base: base_version, new_endpoint: new_endpoint, error: error })
+    [
+      turbo_stream.replace("endpoints", partial: "endpoints/form_list",
+                           locals: { endpoints: endpoints, auth_methods: auth_methods, blocks: blocks,
+                                     base: base_version, new_endpoint: new_endpoint, error: error }),
+      turbo_stream.replace("endpoints_nav", partial: "endpoints/form_nav",
+                           locals: { endpoints: endpoints, auth_methods: auth_methods, blocks: blocks,
+                                     base: base_version })
+    ]
   end
 
   def render_blocks

@@ -1,0 +1,11 @@
+<div id="entities_nav">
+  <% if blocks.entities.any? %>
+    <%= render layout: "versions/sidebar_section", locals: { label: "Entities" } do %>
+      <% blocks.entities.each do |block| %>
+        <%= render "versions/sidebar_link", href: "#form-entity-#{block.id}",
+                   title: block.name, name: block.name,
+                   annotation: entity_form_annotation(block, blocks, base) %>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>

@@ -35,7 +35,8 @@
    else
      "rounded-b-xl border-b border-violet-400"
    end %>
-<div class="group grid grid-cols-2 gap-x-2" data-turbo="true">
+<div id="form-auth-<%= index %>" data-sidebar-target="card" data-turbo="true"
+     class="group grid grid-cols-2 gap-x-2 scroll-mt-[var(--pinned-offset)]">
   <%= hidden_field_tag "auth_methods[#{index}][name]", auth_method.name, id: nil, form: ops %>
 
   <% if removed %>

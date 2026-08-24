@@ -140,8 +140,8 @@ nothing was lost. It is settled last, at step 70.
 63. ~~Candidate form — entities read as the diff: before and after columns~~
 64. ~~Candidate form — auth methods read as the diff, band by band~~
 65. ~~Candidate form — endpoints read as the diff, band by band~~
-66. Candidate form — the sidebar, over the endpoints, entities and auth the
-    form holds
+66. ~~Candidate form — the sidebar, over the endpoints, entities and auth the
+    form holds~~
 67. Candidate form — the submit bar, and the checks behind it, answered by
     Ruby: endpoints colliding, an endpoint with no responses, a path repeating
     a param name, a query param blank or named twice, entity references in a

@@ -1,12 +1,3 @@
-<% tint = {
-     "added" => "bg-emerald-100 hover:bg-emerald-200",
-     "removed" => "bg-rose-100 hover:bg-rose-200",
-     "changed" => "bg-amber-100 hover:bg-amber-200"
-   } %>
-<% tint.default = "hover:bg-white" %>
-<% row_class = "flex h-6 items-center gap-2 pl-2 pr-2" %>
-<% name_class = "truncate font-mono text-[12px] text-slate-800 [.sidebar-link-active_&]:font-semibold [.sidebar-link-active_&]:text-slate-900" %>
-
 <aside class="sticky top-0 h-screen w-64 shrink-0 overflow-y-auto overflow-x-hidden border-r border-slate-400 transition-[width] duration-200 ease-out group-data-[sidebar=collapsed]:w-0 group-data-[sidebar=collapsed]:border-r-0">
   <div class="flex w-64 flex-col px-3 pb-2">
     <% if @candidate %>
@@ -28,14 +19,9 @@
     <% if @comparison.endpoints.any? %>
       <%= render layout: "versions/sidebar_section", locals: { label: "Endpoints" } do %>
         <% @comparison.endpoints.each do |endpoint| %>
-          <a href="#endpoint-<%= endpoint.page_url %>"
-             title="<%= endpoint.name %>"
-             data-sidebar-target="link"
-             class="<%= row_class %> <%= tint[endpoint.annotation] %>">
-            <%= render "endpoints/verb_badge", verb: endpoint.verb %>
-            <span class="<%= name_class %>"><%= endpoint.path %></span>
-            <%= sidebar_count_badge(CommentAnchor.for_endpoint(endpoint)) %>
-          </a>
+          <%= render "versions/sidebar_link", href: "#endpoint-#{endpoint.page_url}", title: endpoint.name,
+                     annotation: endpoint.annotation, verb: endpoint.verb, name: endpoint.path,
+                     badge: sidebar_count_badge(CommentAnchor.for_endpoint(endpoint)) %>
         <% end %>
       <% end %>
     <% end %>
@@ -43,13 +29,9 @@
     <% if @comparison.entities.any? %>
       <%= render layout: "versions/sidebar_section", locals: { label: "Entities" } do %>
         <% @comparison.entities.each do |entity| %>
-          <a href="#entity-<%= entity.name %>"
-             title="<%= entity.name %>"
-             data-sidebar-target="link"
-             class="<%= row_class %> <%= tint[entity.annotation] %>">
-            <span class="<%= name_class %>"><%= entity.name %></span>
-            <%= sidebar_count_badge(CommentAnchor.for_entity(entity)) %>
-          </a>
+          <%= render "versions/sidebar_link", href: "#entity-#{entity.name}", title: entity.name,
+                     annotation: entity.annotation, name: entity.name,
+                     badge: sidebar_count_badge(CommentAnchor.for_entity(entity)) %>
         <% end %>
       <% end %>
     <% end %>
@@ -57,13 +39,9 @@
     <% if @comparison.auth_methods.any? %>
       <%= render layout: "versions/sidebar_section", locals: { label: "Auth" } do %>
         <% @comparison.auth_methods.each do |auth_method| %>
-          <a href="#auth-<%= auth_method.name %>"
-             title="<%= auth_method.name %>"
-             data-sidebar-target="link"
-             class="<%= row_class %> <%= tint[auth_method.annotation] %>">
-            <span class="<%= name_class %>"><%= auth_method.name %></span>
-            <%= sidebar_count_badge(CommentAnchor.for_auth_method(auth_method)) %>
-          </a>
+          <%= render "versions/sidebar_link", href: "#auth-#{auth_method.name}", title: auth_method.name,
+                     annotation: auth_method.annotation, name: auth_method.name,
+                     badge: sidebar_count_badge(CommentAnchor.for_auth_method(auth_method)) %>
         <% end %>
       <% end %>
     <% end %>
