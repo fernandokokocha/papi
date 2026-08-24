@@ -96,7 +96,8 @@ class SchemaEditsController < ApplicationController
   def render_auth_methods(edited, new_auth_method: "", error: nil)
     render turbo_stream: [
       turbo_stream.replace("auth_methods", partial: "auth_methods/form_list",
-                           locals: { auth_methods: edited, new_auth_method: new_auth_method, error: error }),
+                           locals: { auth_methods: edited, base: base_version,
+                                     new_auth_method: new_auth_method, error: error }),
       endpoints_stream(auth_methods: edited)
     ]
   end

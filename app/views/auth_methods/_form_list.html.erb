@@ -2,7 +2,8 @@
 <% error = local_assigns[:error] %>
 <div id="auth_methods" class="flex flex-col gap-4">
   <% auth_methods.each_with_index do |auth_method, index| %>
-    <%= render "auth_methods/form_card", auth_method: auth_method, index: index %>
+    <%= render "auth_methods/form_card", auth_method: auth_method, index: index,
+               base_auth_method: base.auth_methods.find { |method| method.identity_name == auth_method.name } %>
   <% end %>
 
   <div class="rounded-xl border border-dashed border-slate-300 px-2 py-2" data-turbo="true">

@@ -1,60 +1,119 @@
 <% ops = SchemaForm::OPS_FORM_ID %>
-<div class="group" data-turbo="true">
+<% removed = auth_method.removed %>
+<% added = base_auth_method.nil? && !removed %>
+<% notes = DiffText::FromNotes.new(base_auth_method&.note, auth_method.note) unless added || removed %>
+<% kind_change = !added && !removed && base_auth_method.kind != auth_method.kind ? "type_changed" : "no_change" %>
+<% changed = kind_change == "type_changed" || notes&.any_changes? %>
+<% columns = added || removed ? 1 : 2 %>
+<% tints = columns == 2 %>
+<% dim = "opacity-60" if removed %>
+<% col = if added then "col-start-2" elsif removed then "col-start-1" else "" end %>
+<% header_tint = if added
+     "border-emerald-700 bg-emerald-700 text-white"
+   elsif removed
+     "border-rose-700 bg-rose-700 text-white"
+   elsif changed
+     "border-amber-400 bg-amber-100 text-slate-900"
+   else
+     "border-violet-400 bg-violet-100 text-violet-900"
+   end %>
+<% edge = if added
+     "border-x-2 border-emerald-500"
+   elsif removed
+     "border-x-2 border-rose-500"
+   elsif changed
+     "border-x border-amber-400"
+   else
+     "border-x border-violet-400"
+   end %>
+<% edge_bottom = if added
+     "rounded-b-xl border-b-2 border-emerald-500"
+   elsif removed
+     "rounded-b-xl border-b-2 border-rose-500"
+   elsif changed
+     "rounded-b-xl border-b border-amber-400"
+   else
+     "rounded-b-xl border-b border-violet-400"
+   end %>
+<div class="group grid grid-cols-2 gap-x-2" data-turbo="true">
   <%= hidden_field_tag "auth_methods[#{index}][name]", auth_method.name, id: nil, form: ops %>
 
-  <% if auth_method.removed %>
+  <% if removed %>
     <%= hidden_field_tag "auth_methods[#{index}][kind]", auth_method.kind, id: nil, form: ops %>
     <%= hidden_field_tag "auth_methods[#{index}][note]", auth_method.note, id: nil, form: ops %>
     <%= hidden_field_tag "auth_methods[#{index}][removed]", "1", id: nil, form: ops %>
-
-    <div class="flex items-center gap-3 rounded-t-xl border border-rose-700 bg-rose-700 px-2 py-2 text-white shadow-sm">
-      <span class="truncate font-mono text-[13px] font-medium line-through decoration-white/60"><%= auth_method.name %></span>
-      <button type="submit" form="<%= ops %>" formaction="<%= schema_edit_path(index: index, op: "restore_auth_method") %>"
-              class="ml-auto shrink-0 cursor-pointer rounded px-1.5 py-0.5 text-[11px] font-medium leading-none opacity-90 hover:bg-white/25 hover:opacity-100">Restore</button>
-    </div>
-
-    <div class="rounded-b-xl border-x-2 border-b-2 border-rose-500 bg-white pb-3 opacity-60 shadow-sm">
-      <%= render "endpoints/section_band", label: "Kind", toggle: nil %>
-      <div class="px-3 py-1 font-mono text-[12px] leading-[18px] text-slate-700"><%= auth_method.kind %></div>
-      <%= render "endpoints/section_band", label: "Note", toggle: nil %>
-      <div class="whitespace-pre-line px-3 py-1 text-[13px] leading-[20px] text-slate-800"><%= auth_method.note %></div>
-    </div>
   <% else %>
-    <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm <%= auth_method.added ? "border-emerald-700 bg-emerald-700 text-white" : "border-violet-400 bg-violet-100 text-violet-900" %>">
-      <span class="truncate font-mono text-[13px] font-medium"><%= auth_method.name %></span>
-      <%= hidden_field_tag "version[auth_methods_attributes][#{index}][name]", auth_method.name, id: nil %>
-      <% if auth_method.added %>
-        <%= hidden_field_tag "auth_methods[#{index}][added]", "1", id: nil, form: ops %>
+    <%= hidden_field_tag "version[auth_methods_attributes][#{index}][name]", auth_method.name, id: nil %>
+    <% if auth_method.added %>
+      <%= hidden_field_tag "auth_methods[#{index}][added]", "1", id: nil, form: ops %>
+    <% end %>
+  <% end %>
+
+  <% columns.times do |column| %>
+    <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm <%= col %> <%= header_tint %>">
+      <span class="truncate font-mono text-[13px] font-medium <%= "line-through decoration-white/60" if removed %>"><%= auth_method.name %></span>
+
+      <% if column == columns - 1 %>
+        <% if removed %>
+          <button type="submit" form="<%= ops %>" formaction="<%= schema_edit_path(index: index, op: "restore_auth_method") %>"
+                  class="ml-auto shrink-0 cursor-pointer rounded px-1.5 py-0.5 text-[11px] font-medium leading-none opacity-90 hover:bg-white/25 hover:opacity-100">Restore</button>
+        <% else %>
+          <button type="submit" form="<%= ops %>" title="<%= auth_method.added ? "Discard auth method" : "Remove auth method" %>"
+                  formaction="<%= schema_edit_path(index: index, op: auth_method.added ? "drop_auth_method" : "remove_auth_method") %>"
+                  class="ml-auto flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded font-mono text-[13px] leading-none opacity-0 focus:opacity-100 group-hover:opacity-60 group-hover:hover:opacity-100 <%= auth_method.added ? "hover:bg-white/25" : "hover:bg-rose-200 hover:text-rose-800" %>">&times;</button>
+        <% end %>
       <% end %>
-
-      <button type="submit" form="<%= ops %>" title="<%= auth_method.added ? "Discard auth method" : "Remove auth method" %>"
-              formaction="<%= schema_edit_path(index: index, op: auth_method.added ? "drop_auth_method" : "remove_auth_method") %>"
-              class="ml-auto flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded font-mono text-[13px] leading-none opacity-0 focus:opacity-100 group-hover:opacity-60 group-hover:hover:opacity-100 <%= auth_method.added ? "hover:bg-white/25" : "hover:bg-rose-200 hover:text-rose-800" %>">&times;</button>
-    </div>
-
-    <div class="rounded-b-xl bg-white pb-3 shadow-sm <%= auth_method.added ? "border-x-2 border-b-2 border-emerald-500" : "border-x border-b border-violet-400" %>">
-      <%= render "endpoints/section_band", label: "Kind", toggle: nil %>
-      <div class="px-3 py-1">
-        <%= hidden_field_tag "version[auth_methods_attributes][#{index}][kind]", auth_method.kind, id: nil %>
-        <select name="auth_methods[<%= index %>][kind]" form="<%= ops %>" aria-label="Kind"
-                data-controller="schema-edit"
-                data-schema-edit-url-value="<%= schema_edit_path(op: "auth") %>"
-                data-action="change->schema-edit#submit"
-                class="cursor-pointer appearance-none rounded bg-white px-1.5 font-mono text-[12px] leading-[18px] text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-600">
-          <% AuthMethod::KINDS.each do |kind| %>
-            <option <%= "selected" if kind == auth_method.kind %>><%= kind %></option>
-          <% end %>
-        </select>
-      </div>
-
-      <%= render "endpoints/section_band", label: "Note", toggle: nil %>
-      <div class="px-3 py-1">
-        <%= hidden_field_tag "version[auth_methods_attributes][#{index}][note]", auth_method.note, id: nil %>
-        <%= text_area_tag "auth_methods[#{index}][note]", auth_method.note, id: nil, form: ops, rows: 2,
-              data: { controller: "schema-edit", action: "change->schema-edit#submit",
-                      schema_edit_url_value: schema_edit_path(op: "auth") },
-              class: "w-full resize-y rounded bg-slate-50 px-2 py-1 text-[13px] leading-[20px] text-slate-800 ring-1 ring-inset ring-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-600" %>
-      </div>
     </div>
   <% end %>
+
+  <% columns.times do %>
+    <div class="bg-white shadow-sm <%= col %> <%= edge %> <%= dim %>"><%= render "endpoints/section_band", label: "Kind", toggle: nil %></div>
+  <% end %>
+
+  <% if tints %>
+    <div class="bg-white px-3 py-1 shadow-sm <%= col %> <%= edge %>">
+      <div class="border-l-2 border-transparent pl-1.5 font-mono text-[12px] leading-[18px] text-slate-900 <%= change_tint(kind_change) %>"><%= base_auth_method.kind %></div>
+    </div>
+  <% end %>
+
+  <div class="bg-white px-3 py-1 shadow-sm <%= col %> <%= edge %> <%= dim %>">
+    <% if removed %>
+      <div class="border-l-2 border-transparent pl-1.5 font-mono text-[12px] leading-[18px] text-slate-900"><%= auth_method.kind %></div>
+    <% else %>
+      <%= hidden_field_tag "version[auth_methods_attributes][#{index}][kind]", auth_method.kind, id: nil %>
+      <select name="auth_methods[<%= index %>][kind]" form="<%= ops %>" aria-label="Kind"
+              data-controller="schema-edit"
+              data-schema-edit-url-value="<%= schema_edit_path(op: "auth") %>"
+              data-action="change->schema-edit#submit"
+              class="cursor-pointer appearance-none rounded bg-white px-1.5 font-mono text-[12px] leading-[18px] text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-600">
+        <% AuthMethod::KINDS.each do |kind| %>
+          <option <%= "selected" if kind == auth_method.kind %>><%= kind %></option>
+        <% end %>
+      </select>
+    <% end %>
+  </div>
+
+  <% columns.times do %>
+    <div class="bg-white shadow-sm <%= col %> <%= edge %> <%= dim %>"><%= render "endpoints/section_band", label: "Note", toggle: nil %></div>
+  <% end %>
+
+  <% if tints %>
+    <div class="bg-white px-3 py-1 pb-3 shadow-sm <%= col %> <%= edge %> <%= edge_bottom %>">
+      <% notes.before.each do |line| %>
+        <div class="min-h-[20px] border-l-2 border-transparent pl-1.5 pr-2 text-[13px] leading-[20px] text-slate-800 <%= change_tint(line.change) %>"><%= line.whole_line %></div>
+      <% end %>
+    </div>
+  <% end %>
+
+  <div class="bg-white px-3 py-1 pb-3 shadow-sm <%= col %> <%= edge %> <%= edge_bottom %> <%= dim %>">
+    <% if removed %>
+      <div class="whitespace-pre-line border-l-2 border-transparent pl-1.5 pr-2 text-[13px] leading-[20px] text-slate-800"><%= auth_method.note %></div>
+    <% else %>
+      <%= hidden_field_tag "version[auth_methods_attributes][#{index}][note]", auth_method.note, id: nil %>
+      <%= text_area_tag "auth_methods[#{index}][note]", auth_method.note, id: nil, form: ops, rows: 2,
+            data: { controller: "schema-edit", action: "change->schema-edit#submit",
+                    schema_edit_url_value: schema_edit_path(op: "auth") },
+            class: "w-full resize-y rounded bg-slate-50 px-2 py-1 text-[13px] leading-[20px] text-slate-800 ring-1 ring-inset ring-slate-200 focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-600" %>
+    <% end %>
+  </div>
 </div>

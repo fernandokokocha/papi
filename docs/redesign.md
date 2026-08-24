@@ -138,7 +138,7 @@ nothing was lost. It is settled last, at step 70.
     and each response~~
 62. ~~Candidate form — endpoints added, removed and restored~~
 63. ~~Candidate form — entities read as the diff: before and after columns~~
-64. Candidate form — auth methods read as the diff, band by band
+64. ~~Candidate form — auth methods read as the diff, band by band~~
 65. Candidate form — endpoints read as the diff, band by band
 66. Candidate form — the sidebar, over the endpoints, entities and auth the
     form holds

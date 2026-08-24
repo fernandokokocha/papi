@@ -57,7 +57,7 @@
   <% end %>
 
   <%= render layout: "versions/section", locals: { label: "Auth" } do %>
-    <%= render "auth_methods/form_list", auth_methods: auth_methods %>
+    <%= render "auth_methods/form_list", auth_methods: auth_methods, base: base_version %>
   <% end %>
 
   <div
