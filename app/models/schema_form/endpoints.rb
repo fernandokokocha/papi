@@ -51,11 +51,12 @@ class SchemaForm::Endpoints
     (map { |endpoint| endpoint.key.to_i }.max.to_i + 1).to_s
   end
 
+  # A new card goes to the head of the list, where the page has just been taken.
   def adding(key, http_verb, path)
-    self.class.new(@endpoints + [
+    self.class.new([
       SchemaForm::Endpoint.new(key: key, http_verb: http_verb, path: path, auth: "", note: "",
                                param_kinds: {}, query_params: [], responses: [], added: true)
-    ])
+    ] + @endpoints)
   end
 
   def dropping(key)

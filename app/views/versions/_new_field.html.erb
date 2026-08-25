@@ -1,0 +1,37 @@
+<% ops = SchemaForm::OPS_FORM_ID %>
+<% open = local_assigns[:open] %>
+<% error = local_assigns[:error] %>
+<% op, field_name, label, placeholder =
+     { "endpoint" => [ "add_endpoint", "new_endpoint[path]", "New endpoint path", "/customers/:id" ],
+       "entity" => [ "add_entity", "new_entity", "New entity name", "MyResource" ],
+       "auth" => [ "add_auth_method", "new_auth_method", "New auth method name", "UserToken" ] }[kind] %>
+<%# url_for keeps "host" for itself, so the field that asked travels as asked_by. %>
+<% url = schema_edit_path(op: op, asked_by: host) %>
+
+<div data-new-form-target="field" data-kind="<%= kind %>" data-turbo="true" class="p-1 <%= "hidden" unless open %>">
+  <div class="flex items-center gap-1.5 rounded bg-white px-1.5 py-1 ring-2 <%= error ? "ring-rose-500" : "ring-sky-600" %>">
+    <% if kind == "endpoint" %>
+      <select name="new_endpoint[http_verb]" form="<%= ops %>" aria-label="New endpoint verb" <%= "disabled" unless open %>
+              class="cursor-pointer rounded bg-white font-mono text-[11px] font-bold text-slate-700 focus:outline-none">
+        <% Endpoint::VERB_TRANSLATIONS.each do |http_verb, verb| %>
+          <option value="<%= http_verb %>" <%= "selected" if http_verb.to_s == local_assigns[:verb] %>><%= verb %></option>
+        <% end %>
+      </select>
+    <% end %>
+
+    <%= text_field_tag field_name, local_assigns[:value], id: nil, form: ops, placeholder: placeholder,
+          autocomplete: "off", disabled: !open, aria: { label: label },
+          data: { controller: "schema-edit", action: "keydown.enter->schema-edit#submit keydown.esc->new-form#close",
+                  schema_edit_url_value: url },
+          class: "min-w-0 flex-1 bg-transparent font-mono text-[13px] leading-[18px] text-slate-800 placeholder-slate-400 focus:outline-none" %>
+
+    <button type="submit" form="<%= ops %>" formaction="<%= url %>" <%= "disabled" unless open %>
+            class="shrink-0 cursor-pointer rounded bg-slate-900 px-2 py-0.5 text-[11px] font-semibold text-white hover:bg-slate-700">Add</button>
+    <button type="button" data-action="new-form#close" aria-label="Cancel"
+            class="shrink-0 cursor-pointer rounded px-1 font-mono text-[13px] leading-none text-slate-400 hover:text-slate-900">&times;</button>
+  </div>
+
+  <% if error %>
+    <div class="px-1 pt-1 text-[11px] text-rose-700"><%= error %></div>
+  <% end %>
+</div>

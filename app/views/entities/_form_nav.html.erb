@@ -1,11 +1,13 @@
-<div id="entities_nav">
-  <% if blocks.entities.any? %>
-    <%= render layout: "versions/sidebar_section", locals: { label: "Entities" } do %>
-      <% blocks.entities.each do |block| %>
-        <%= render "versions/sidebar_link", href: "#form-entity-#{block.id}",
-                   title: block.name, name: block.name,
-                   annotation: checks.entity_change(block) %>
-      <% end %>
+<% asking = local_assigns[:asking] %>
+<div id="entities_nav" data-controller="new-form" data-new-form-host-value="entities_nav"
+     data-new-form-open-value="<%= "entity" if asking %>">
+  <%= render layout: "versions/sidebar_section", locals: { label: "Entities", add_kind: "entity" } do %>
+    <%= render "versions/new_field", kind: "entity", host: "entities_nav", open: asking.present?,
+               value: asking&.fetch(:value), error: asking&.fetch(:error) %>
+    <% blocks.entities.each do |block| %>
+      <%= render "versions/sidebar_link", href: "#form-entity-#{block.id}",
+                 title: block.name, name: block.name,
+                 annotation: checks.entity_change(block) %>
     <% end %>
   <% end %>
 </div>

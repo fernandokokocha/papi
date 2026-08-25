@@ -93,6 +93,30 @@ end
     expect(controls.map { |control| control["form"] }.uniq).to eq([ SchemaForm::OPS_FORM_ID ])
   end
 
+  # A card is asked for in the bar menu or on the sidebar section it belongs to,
+  # and both hosts write into the one ops form, so every field starts closed and
+  # disabled and only the one being filled in submits.
+  it "offers the three new-card fields in the bar menu and on every sidebar section" do
+    page = form
+
+    expect(page.css("[data-new-form-host-value]").map { |host| host["data-new-form-host-value"] })
+      .to match_array(%w[menu endpoints_nav entities_nav auth_methods_nav])
+
+    fields = page.css("[data-new-form-target=field]")
+    expect(fields.map { |field| field["data-kind"] }).to match_array(%w[endpoint entity auth] * 2)
+    expect(fields).to all(satisfy { |field| field["class"].include?("hidden") })
+    expect(fields.css("input, select, button[type=submit]")).to all(satisfy { |control| control["disabled"] })
+  end
+
+  # Turbo Drive is off, so a submitter outside a data-turbo="true" container
+  # navigates the browser to the stream instead of applying it.
+  it "puts the new-card submitters inside a Turbo container of their own" do
+    submitters = form.css("[data-new-form-target=field] button[type=submit]")
+
+    expect(submitters.map { |button| button["formaction"] }).to all(include("asked_by="))
+    expect(submitters).to all(satisfy { |button| button.ancestors("[data-turbo='true']").any? })
+  end
+
   it "renders each endpoint's verb, path, params, query, auth and note as fields the create service reads" do
     fields = form.css("input[type=hidden]").to_h { |input| [ input["name"], input["value"] ] }
 

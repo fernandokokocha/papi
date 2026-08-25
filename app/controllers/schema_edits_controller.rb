@@ -67,11 +67,11 @@ class SchemaEditsController < ApplicationController
     twin = blocks.removed_twin(name)
 
     if error
-      render_entities(blocks, new_entity: name, error: error)
+      render_entities(blocks, asking: asking("entity", value: name, error: error))
     elsif twin
-      render_entities(blocks.restoring(twin.id))
+      render_entities(blocks.restoring(twin.id), landed: twin.name)
     else
-      render_entities(blocks.adding(name))
+      render_entities(blocks.adding(name), landed: name)
     end
   end
 
@@ -81,35 +81,57 @@ class SchemaEditsController < ApplicationController
     twin = auth_methods.removed_twin_position(name)
 
     if error
-      render_auth_methods(auth_methods, new_auth_method: name, error: error)
+      render_auth_methods(auth_methods, asking: asking("auth", value: name, error: error))
     elsif twin
-      render_auth_methods(auth_methods.restoring(twin))
+      render_auth_methods(auth_methods.restoring(twin), landed: name)
     else
-      render_auth_methods(auth_methods.adding(name))
+      render_auth_methods(auth_methods.adding(name), landed: name)
     end
+  end
+
+  # The field that asked lives either in the bar menu or in one sidebar section,
+  # and only that one reopens carrying what was typed.
+  def asking(kind, value:, error:, verb: nil)
+    { kind: kind, value: value, verb: verb, error: error, host: params[:asked_by] }
+  end
+
+  def asking_for(host, asking)
+    asking if asking && asking[:host] == host
+  end
+
+  # Only the ops the new-field submits touch the menu, and they close it unless
+  # it is the one being reopened on an error.
+  def menu_stream(asking)
+    return [] if params[:asked_by].blank?
+
+    [ turbo_stream.replace("new_menu", partial: "versions/new_menu",
+                           locals: { asking: asking_for("menu", asking) }) ]
   end
 
   # An entity the form no longer holds is one an input may no longer name, and
   # a new one is a name every input may take from now on, so the endpoints are
   # answered along with the entities. The same holds of the auth methods.
-  def render_entities(edited, new_entity: "", error: nil)
+  def render_entities(edited, asking: nil, landed: nil)
     render turbo_stream: [
       turbo_stream.replace("entities", partial: "entities/form_list",
-                           locals: { blocks: edited, base: base_version, new_entity: new_entity, error: error }),
+                           locals: { blocks: edited, base: base_version, landed: landed }),
       turbo_stream.replace("entities_nav", partial: "entities/form_nav",
-                           locals: { blocks: edited, checks: checks_for(blocks: edited) }),
-      *endpoints_stream(blocks: edited)
+                           locals: { blocks: edited, checks: checks_for(blocks: edited),
+                                     asking: asking_for("entities_nav", asking) }),
+      *endpoints_stream(blocks: edited),
+      *menu_stream(asking)
     ]
   end
 
-  def render_auth_methods(edited, new_auth_method: "", error: nil)
+  def render_auth_methods(edited, asking: nil, landed: nil)
     render turbo_stream: [
       turbo_stream.replace("auth_methods", partial: "auth_methods/form_list",
-                           locals: { auth_methods: edited, base: base_version,
-                                     new_auth_method: new_auth_method, error: error }),
+                           locals: { auth_methods: edited, base: base_version, landed: landed }),
       turbo_stream.replace("auth_methods_nav", partial: "auth_methods/form_nav",
-                           locals: { auth_methods: edited, checks: checks_for(auth_methods: edited) }),
-      *endpoints_stream(auth_methods: edited)
+                           locals: { auth_methods: edited, checks: checks_for(auth_methods: edited),
+                                     asking: asking_for("auth_methods_nav", asking) }),
+      *endpoints_stream(auth_methods: edited),
+      *menu_stream(asking)
     ]
   end
 
@@ -131,13 +153,17 @@ class SchemaEditsController < ApplicationController
     twin = endpoints.removed_twin(http_verb, path)
 
     if error
-      render turbo_stream: endpoints_stream(new_endpoint: { http_verb: http_verb, path: path }, error: error)
+      asked = asking("endpoint", value: path, verb: http_verb, error: error)
+      render turbo_stream: endpoints_stream(asking: asked) + menu_stream(asked)
     elsif twin
-      render_endpoints(endpoints.restoring(twin.key), blocks.restoring_endpoint(twin.key))
+      render turbo_stream: endpoints_stream(endpoints: endpoints.restoring(twin.key),
+                                            blocks: blocks.restoring_endpoint(twin.key),
+                                            landed: twin.key) + menu_stream(nil)
     else
       added = endpoints.next_key
       render turbo_stream: endpoints_stream(endpoints: endpoints.adding(added, http_verb, path),
-                                            blocks: blocks.adding_endpoint(added))
+                                            blocks: blocks.adding_endpoint(added),
+                                            landed: added) + menu_stream(nil)
     end
   end
 
@@ -146,14 +172,15 @@ class SchemaEditsController < ApplicationController
   end
 
   def endpoints_stream(endpoints: self.endpoints, auth_methods: self.auth_methods, blocks: self.blocks,
-                       new_endpoint: nil, error: nil)
+                       asking: nil, landed: nil)
     checks = checks_for(endpoints: endpoints, auth_methods: auth_methods, blocks: blocks)
     [
       turbo_stream.replace("endpoints", partial: "endpoints/form_list",
                            locals: { endpoints: endpoints, auth_methods: auth_methods, blocks: blocks,
-                                     base: base_version, new_endpoint: new_endpoint, error: error }),
+                                     base: base_version, landed: landed }),
       turbo_stream.replace("endpoints_nav", partial: "endpoints/form_nav",
-                           locals: { endpoints: endpoints, checks: checks }),
+                           locals: { endpoints: endpoints, checks: checks,
+                                     asking: asking_for("endpoints_nav", asking) }),
       turbo_stream.replace("submit_bar", partial: "versions/submit_bar", locals: { checks: checks })
     ]
   end

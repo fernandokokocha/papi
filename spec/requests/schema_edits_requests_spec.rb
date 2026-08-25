@@ -222,25 +222,35 @@ describe "Schema edit requests", type: :request do
     expect(removable).to eq([ "entity_root_0" ])
   end
 
-  def add_entity(name, blocks_removed: [])
+  def add_entity(name, blocks_removed: [], host: "menu")
     blocks = {
       "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Order", root: "{id:number,customer:Customer}" },
       "entity_root_1" => { field: "version[entities_attributes][1][root]", name: "Customer", root: "{id:string}" }
     }
     blocks_removed.each { |block_id| blocks[block_id][:removed] = "1" }
 
-    post schema_edit_path, params: { blocks: blocks, op: "add_entity", new_entity: name }
+    post schema_edit_path, params: { blocks: blocks, op: "add_entity", new_entity: name, asked_by: host }
   end
 
-  it "gives a new entity a slot of its own, a string to start from, and the flag that says it is new" do
+  # A new card goes to the head of its list, and the slots below it are stamped
+  # afresh, so the entity that was slot 0 is now slot 1.
+  it "gives a new entity the first slot, a string to start from, and the flag that says it is new" do
     add_entity("Invoice")
 
     expect(turbo_actions).to eq([ [ "replace", "entities" ], [ "replace", "entities_nav" ],
                                   [ "replace", "endpoints" ], [ "replace", "endpoints_nav" ],
-                                  [ "replace", "submit_bar" ] ])
-    expect(form_fields["version[entities_attributes][2][name]"]).to eq("Invoice")
-    expect(form_fields["version[entities_attributes][2][root]"]).to eq("string")
-    expect(form_fields["blocks[entity_root_2][added]"]).to eq("1")
+                                  [ "replace", "submit_bar" ], [ "replace", "new_menu" ] ])
+    expect(form_fields["version[entities_attributes][0][name]"]).to eq("Invoice")
+    expect(form_fields["version[entities_attributes][0][root]"]).to eq("string")
+    expect(form_fields["blocks[entity_root_0][added]"]).to eq("1")
+    expect(form_fields["version[entities_attributes][1][name]"]).to eq("Order")
+  end
+
+  it "takes the page to the card it just made" do
+    add_entity("Invoice")
+
+    landing = Nokogiri::HTML5.fragment(response.body).css("[data-controller=landing]")
+    expect(landing.map { |card| card["id"] }).to eq([ "form-entity-entity_root_0" ])
   end
 
   it "offers the new name to the entities that may reference it" do
@@ -249,12 +259,27 @@ describe "Schema edit requests", type: :request do
     expect(types_in("entity_root_1")).to include("Invoice")
   end
 
+  # The refusal goes back to the field that asked, so the bar menu reopens
+  # holding the typing and the sidebar field stays closed and empty.
   it "refuses a name that does not start with an uppercase letter, and hands the typing back" do
     add_entity("invoice")
 
     expect(response.body).to include("An entity name must start with an uppercase letter")
     expect(form_fields).not_to include("version[entities_attributes][2][name]")
-    expect(Nokogiri::HTML5.fragment(response.body).at_css("input[name='new_entity']")["value"]).to eq("invoice")
+    expect(asked_in("new_menu", "new_entity")).to eq("invoice")
+    expect(asked_in("entities_nav", "new_entity")).to eq("")
+  end
+
+  it "hands the typing back to the sidebar when the sidebar asked" do
+    add_entity("invoice", host: "entities_nav")
+
+    expect(asked_in("entities_nav", "new_entity")).to eq("invoice")
+    expect(asked_in("new_menu", "new_entity")).to eq("")
+  end
+
+  def asked_in(target, name)
+    Nokogiri::HTML5.fragment(response.body)
+      .at_css("turbo-stream[target='#{target}'] input[name='#{name}']")["value"].to_s
   end
 
   it "refuses a name the form already has" do
@@ -314,7 +339,7 @@ describe "Schema edit requests", type: :request do
     expect(form_fields["blocks[entity_root_0][root]"]).to eq("{id:number,customer:Customer}")
   end
 
-  def auth_edit(op, index = nil, removed: [], added: [], new_auth_method: nil)
+  def auth_edit(op, index = nil, removed: [], added: [], new_auth_method: nil, host: nil)
     auth_methods = {
       "0" => { name: "UserToken", kind: "bearer", note: "A token from POST /session." },
       "1" => { name: "AdminBasic", kind: "basic", note: "Operator credentials." }
@@ -322,7 +347,8 @@ describe "Schema edit requests", type: :request do
     removed.each { |position| auth_methods[position][:removed] = "1" }
     added.each { |position| auth_methods[position][:added] = "1" }
 
-    post schema_edit_path, params: { auth_methods: auth_methods, index: index, op: op, new_auth_method: new_auth_method }.compact
+    post schema_edit_path, params: { auth_methods: auth_methods, index: index, op: op,
+                                     new_auth_method: new_auth_method, asked_by: host }.compact
   end
 
   # A removed auth method is one the new version is not told about, so its card
@@ -348,21 +374,23 @@ describe "Schema edit requests", type: :request do
   end
 
   it "gives a new auth method a bearer to start from, and the flag that says it is new" do
-    auth_edit("add_auth_method", new_auth_method: "ServiceKey")
+    auth_edit("add_auth_method", new_auth_method: "ServiceKey", host: "menu")
 
-    expect(form_fields["version[auth_methods_attributes][2][name]"]).to eq("ServiceKey")
-    expect(form_fields["version[auth_methods_attributes][2][kind]"]).to eq("bearer")
-    expect(form_fields["version[auth_methods_attributes][2][note]"]).to eq("")
-    expect(form_fields["auth_methods[2][added]"]).to eq("1")
+    expect(form_fields["version[auth_methods_attributes][0][name]"]).to eq("ServiceKey")
+    expect(form_fields["version[auth_methods_attributes][0][kind]"]).to eq("bearer")
+    expect(form_fields["version[auth_methods_attributes][0][note]"]).to eq("")
+    expect(form_fields["auth_methods[0][added]"]).to eq("1")
+    expect(form_fields["version[auth_methods_attributes][1][name]"]).to eq("UserToken")
   end
 
   it "refuses a nameless auth method, and refuses a name the form already has" do
-    auth_edit("add_auth_method", new_auth_method: "")
+    auth_edit("add_auth_method", new_auth_method: "", host: "menu")
     expect(response.body).to include("An auth method needs a name")
 
-    auth_edit("add_auth_method", new_auth_method: "AdminBasic")
+    auth_edit("add_auth_method", new_auth_method: "AdminBasic", host: "menu")
     expect(response.body).to include("This auth method already exists")
     expect(form_fields).not_to include("version[auth_methods_attributes][2][name]")
+    expect(asked_in("new_menu", "new_auth_method")).to eq("AdminBasic")
   end
 
   it "restores a removed auth method instead of adding a twin of it" do
@@ -572,13 +600,13 @@ describe "Schema edit requests", type: :request do
   # A new endpoint takes the next key, not the next position: the keys are what
   # its schema blocks are named after, and a position moves when a card goes.
   it "adds an endpoint holding the verb and path it was given, and an input that is nothing" do
-    endpoint_set_edit("add_endpoint", endpoints: one_endpoint, blocks: one_endpoints_blocks,
+    endpoint_set_edit("add_endpoint", endpoints: one_endpoint, blocks: one_endpoints_blocks, asked_by: "menu",
                       new_endpoint: { http_verb: "verb_post", path: "/customers" })
 
     expect(turbo_actions).to eq([ [ "replace", "endpoints" ], [ "replace", "endpoints_nav" ],
-                              [ "replace", "submit_bar" ] ])
-    expect(endpoint_field_values("version[endpoints_attributes][][path]")).to eq([ "/customers/:id", "/customers" ])
-    expect(endpoint_field_values("version[endpoints_attributes][][http_verb]")).to eq([ "verb_get", "verb_post" ])
+                                  [ "replace", "submit_bar" ], [ "replace", "new_menu" ] ])
+    expect(endpoint_field_values("version[endpoints_attributes][][path]")).to eq([ "/customers", "/customers/:id" ])
+    expect(endpoint_field_values("version[endpoints_attributes][][http_verb]")).to eq([ "verb_post", "verb_get" ])
     expect(form_fields["blocks[endpoint_input_1][root]"]).to eq("")
     expect(form_fields["endpoints[1][added]"]).to eq("1")
   end
@@ -586,15 +614,16 @@ describe "Schema edit requests", type: :request do
   # Param names are ours, so /customers/:id and /customers/:customer_id are the
   # same endpoint and the second one may not be added.
   it "refuses an endpoint whose verb and path shape the form already holds" do
-    endpoint_set_edit("add_endpoint", endpoints: one_endpoint, blocks: one_endpoints_blocks,
+    endpoint_set_edit("add_endpoint", endpoints: one_endpoint, blocks: one_endpoints_blocks, asked_by: "menu",
                       new_endpoint: { http_verb: "verb_get", path: "/customers/:customer_id" })
 
     expect(response.body).to include("This endpoint already exists")
     expect(endpoint_field_values("version[endpoints_attributes][][path]")).to eq([ "/customers/:id" ])
+    expect(asked_in("new_menu", "new_endpoint[path]")).to eq("/customers/:customer_id")
   end
 
   it "refuses an endpoint with no path" do
-    endpoint_set_edit("add_endpoint", endpoints: one_endpoint, blocks: one_endpoints_blocks,
+    endpoint_set_edit("add_endpoint", endpoints: one_endpoint, blocks: one_endpoints_blocks, asked_by: "menu",
                       new_endpoint: { http_verb: "verb_get", path: "" })
 
     expect(response.body).to include("An endpoint needs a path")

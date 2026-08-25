@@ -1,11 +1,13 @@
-<div id="endpoints_nav">
-  <% if endpoints.any? %>
-    <%= render layout: "versions/sidebar_section", locals: { label: "Endpoints" } do %>
-      <% endpoints.each do |endpoint| %>
-        <%= render "versions/sidebar_link", href: "#form-endpoint-#{endpoint.key}",
-                   title: endpoint.identity_name, name: endpoint.path, verb: endpoint.verb,
-                   annotation: checks.endpoint_change(endpoint) %>
-      <% end %>
+<% asking = local_assigns[:asking] %>
+<div id="endpoints_nav" data-controller="new-form" data-new-form-host-value="endpoints_nav"
+     data-new-form-open-value="<%= "endpoint" if asking %>">
+  <%= render layout: "versions/sidebar_section", locals: { label: "Endpoints", add_kind: "endpoint" } do %>
+    <%= render "versions/new_field", kind: "endpoint", host: "endpoints_nav", open: asking.present?,
+               value: asking&.fetch(:value), verb: asking&.fetch(:verb), error: asking&.fetch(:error) %>
+    <% endpoints.each do |endpoint| %>
+      <%= render "versions/sidebar_link", href: "#form-endpoint-#{endpoint.key}",
+                 title: endpoint.identity_name, name: endpoint.path, verb: endpoint.verb,
+                 annotation: checks.endpoint_change(endpoint) %>
     <% end %>
   <% end %>
 </div>

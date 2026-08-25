@@ -24,6 +24,7 @@
      "border-x border-b border-violet-400"
    end %>
 <div id="form-entity-<%= block.id %>" data-sidebar-target="card" data-turbo="true"
+     data-controller="<%= "landing" if landed %>"
      class="group grid grid-cols-2 gap-x-2 scroll-mt-[var(--pinned-offset)]">
   <% if removed %>
     <%= render "schema_form/ops_fields", block: block %>

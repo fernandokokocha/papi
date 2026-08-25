@@ -1,11 +1,13 @@
-<div id="auth_methods_nav">
-  <% if auth_methods.any? %>
-    <%= render layout: "versions/sidebar_section", locals: { label: "Auth" } do %>
-      <% auth_methods.each_with_index do |auth_method, index| %>
-        <%= render "versions/sidebar_link", href: "#form-auth-#{index}",
-                   title: auth_method.name, name: auth_method.name,
-                   annotation: checks.auth_method_change(auth_method) %>
-      <% end %>
+<% asking = local_assigns[:asking] %>
+<div id="auth_methods_nav" data-controller="new-form" data-new-form-host-value="auth_methods_nav"
+     data-new-form-open-value="<%= "auth" if asking %>">
+  <%= render layout: "versions/sidebar_section", locals: { label: "Auth", add_kind: "auth" } do %>
+    <%= render "versions/new_field", kind: "auth", host: "auth_methods_nav", open: asking.present?,
+               value: asking&.fetch(:value), error: asking&.fetch(:error) %>
+    <% auth_methods.each_with_index do |auth_method, index| %>
+      <%= render "versions/sidebar_link", href: "#form-auth-#{index}",
+                 title: auth_method.name, name: auth_method.name,
+                 annotation: checks.auth_method_change(auth_method) %>
     <% end %>
   <% end %>
 </div>

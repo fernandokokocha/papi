@@ -1,0 +1,21 @@
+<% asking = local_assigns[:asking] %>
+
+<div id="new_menu" class="relative" data-controller="new-form" data-new-form-host-value="menu"
+     data-new-form-open-value="<%= asking&.fetch(:kind) %>"
+     data-action="click@window->new-form#closeOnOutsideClick keydown.esc@window->new-form#close">
+  <button type="button" data-action="new-form#toggle"
+          class="cursor-pointer rounded-md border border-slate-400 bg-white px-3 py-1.5 text-[13px] font-semibold text-slate-900 hover:bg-slate-50">
+    New <span class="text-slate-400">▾</span>
+  </button>
+
+  <div data-new-form-target="panel"
+       class="absolute right-0 top-full z-30 mt-1 hidden w-72 rounded-lg border border-slate-400 bg-white p-1 shadow-lg">
+    <% { "endpoint" => "Endpoint", "entity" => "Entity", "auth" => "Auth method" }.each do |kind, label| %>
+      <button type="button" data-new-form-target="item" data-kind="<%= kind %>" data-action="new-form#ask"
+              class="flex w-full cursor-pointer items-center rounded px-2 py-1.5 text-left text-[13px] text-slate-800 hover:bg-slate-100"><%= label %></button>
+      <% asked = asking if asking&.fetch(:kind) == kind %>
+      <%= render "versions/new_field", kind: kind, host: "menu", open: asked.present?,
+                 value: asked&.fetch(:value), verb: asked&.fetch(:verb), error: asked&.fetch(:error) %>
+    <% end %>
+  </div>
+</div>

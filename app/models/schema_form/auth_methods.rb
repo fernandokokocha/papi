@@ -27,7 +27,7 @@ class SchemaForm::AuthMethods
   end
 
   def adding(name)
-    self.class.new(@auth_methods + [ SchemaForm::AuthMethod.new(name: name, kind: NEW_KIND, note: "", added: true) ])
+    self.class.new([ SchemaForm::AuthMethod.new(name: name, kind: NEW_KIND, note: "", added: true) ] + @auth_methods)
   end
 
   def dropping(position)

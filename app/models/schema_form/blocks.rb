@@ -116,7 +116,7 @@ class SchemaForm::Blocks
   end
 
   def adding(name)
-    self.class.new(@blocks + [ SchemaForm::Block.new(id: nil, field: nil, name: name, root: NEW_ROOT, added: true) ]).renumbering
+    self.class.new([ SchemaForm::Block.new(id: nil, field: nil, name: name, root: NEW_ROOT, added: true) ] + @blocks).renumbering
   end
 
   def dropping(id)

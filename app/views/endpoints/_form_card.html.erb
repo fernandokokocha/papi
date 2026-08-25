@@ -44,6 +44,7 @@
 <% show_query = !removed || endpoint.query_params.any? %>
 
 <div id="form-endpoint-<%= key %>" data-sidebar-target="card" data-turbo="true"
+     data-controller="<%= "landing" if landed %>"
      class="group grid grid-cols-2 gap-x-2 scroll-mt-[var(--pinned-offset)]">
   <% if removed %>
     <%= hidden_field_tag field.("[http_verb]"), endpoint.http_verb, id: nil, form: ops %>

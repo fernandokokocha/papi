@@ -1,23 +1,7 @@
-<% new_auth_method = local_assigns[:new_auth_method] %>
-<% error = local_assigns[:error] %>
 <div id="auth_methods" class="flex flex-col gap-4">
   <% auth_methods.each_with_index do |auth_method, index| %>
     <%= render "auth_methods/form_card", auth_method: auth_method, index: index,
+               landed: local_assigns[:landed] == auth_method.name,
                base_auth_method: base.auth_methods.find { |method| method.identity_name == auth_method.name } %>
   <% end %>
-
-  <div class="rounded-xl border border-dashed border-slate-300 px-2 py-2" data-turbo="true">
-    <div class="flex items-center gap-2">
-      <span class="select-none font-mono text-[13px] leading-[18px] text-slate-400">+</span>
-      <%= text_field_tag :new_auth_method, new_auth_method, id: nil, form: SchemaForm::OPS_FORM_ID, placeholder: "UserToken",
-            autocomplete: "off", data: { controller: "schema-edit", action: "keydown.enter->schema-edit#submit",
-                                         schema_edit_url_value: schema_edit_path(op: "add_auth_method") },
-            class: "w-48 rounded bg-white px-1.5 font-mono text-[13px] leading-[18px] text-slate-700 placeholder-slate-400 ring-1 ring-inset #{error ? "ring-rose-400" : "ring-slate-300"} focus:outline-none focus:ring-2 focus:ring-sky-600" %>
-      <button type="submit" form="<%= SchemaForm::OPS_FORM_ID %>" formaction="<%= schema_edit_path(op: "add_auth_method") %>"
-              class="cursor-pointer rounded px-2 py-0.5 text-[11px] font-medium text-slate-600 ring-1 ring-inset ring-slate-300 hover:bg-white hover:text-slate-900">Add auth method</button>
-      <% if error %>
-        <span class="text-[11px] text-rose-700"><%= error %></span>
-      <% end %>
-    </div>
-  </div>
 </div>
