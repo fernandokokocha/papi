@@ -8,7 +8,24 @@
   <%= hidden_field_tag :base_version_id, base_version.id, id: nil %>
 <% end %>
 
-<div class="group [--pinned-offset:2.75rem]" data-controller="sidebar" data-sidebar="open">
+<div class="group [--pinned-offset:2.75rem]" data-sidebar="open"
+     data-controller="sidebar ops-lock ops-metrics"
+     data-action="turbo:submit-start@document->ops-lock#lock turbo:submit-end@document->ops-lock#unlock
+                  turbo:before-fetch-request@document->ops-metrics#request
+                  turbo:before-fetch-response@document->ops-metrics#response
+                  turbo:submit-end@document->ops-metrics#report">
+  <div data-ops-lock-target="backdrop" class="fixed inset-0 z-40 hidden cursor-wait bg-white/50">
+    <div class="flex h-[var(--pinned-offset)] items-center justify-center">
+      <span class="flex items-center gap-2 rounded-md border border-slate-400 bg-white px-3 py-1.5 text-[13px] font-semibold text-slate-900 shadow-sm">
+        <svg viewBox="0 0 24 24" fill="none" class="h-4 w-4 animate-spin text-slate-500">
+          <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" class="opacity-25"/>
+          <path d="M12 2a10 10 0 0 1 10 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        Updating…
+      </span>
+    </div>
+  </div>
+
   <div class="flex">
     <%= render "versions/form_sidebar", endpoints: endpoints, blocks: blocks,
                auth_methods: auth_methods, checks: checks %>
