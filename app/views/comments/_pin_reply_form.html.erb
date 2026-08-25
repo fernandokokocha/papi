@@ -1,4 +1,4 @@
-<%= form_with model: Comment.new, url: project_candidate_comments_path(parent.candidate.project.name, parent.candidate.name), data: { turbo: true } do |form| %>
+<%= form_with model: Comment.new, url: project_candidate_comments_path(parent.candidate.project.name, parent.candidate.name) do |form| %>
   <%= form.hidden_field :parent_id, value: parent.id %>
   <%= form.text_area :body, rows: 3, required: true, placeholder: "Write a reply…",
         class: "w-full resize-y rounded border border-slate-300 bg-white px-2 py-1.5 text-[12px] leading-5 text-slate-800 placeholder-slate-400 focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500" %>

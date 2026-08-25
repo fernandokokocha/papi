@@ -25,7 +25,7 @@
         </button>
         <% if !read_only && policy(comment).resolve? %>
           <%= button_to "Reopen", project_candidate_comment_resolution_path(comment.candidate.project.name, comment.candidate.name, comment),
-                method: :delete, params: { line_badge: line_badge }, form: { data: { turbo: true } },
+                method: :delete, params: { line_badge: line_badge },
                 class: "shrink-0 bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-xs font-medium px-3 py-1.5 rounded cursor-pointer" %>
         <% end %>
       </div>

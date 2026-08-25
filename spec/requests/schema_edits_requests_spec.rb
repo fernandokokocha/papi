@@ -194,16 +194,6 @@ describe "Schema edit requests", type: :request do
     expect(form_fields).not_to include("blocks[entity_root_0][removed]")
   end
 
-  # Turbo Drive is off, so a submitter outside a data-turbo="true" container
-  # navigates the browser to the stream instead of applying it.
-  it "puts the card's own controls inside a Turbo container too" do
-    entity_edit("remove_entity", "entity_root_0")
-
-    page = Nokogiri::HTML5.fragment(response.body)
-    controls = page.css("button[formaction*='entity']")
-    expect(controls).to be_any
-    expect(controls).to all(satisfy { |control| control.ancestors("[data-turbo='true']").any? })
-  end
 
   it "takes a removed name out of the types the others may still choose" do
     entity_edit("remove_entity", "entity_root_0")

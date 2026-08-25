@@ -12,7 +12,7 @@ class ApprovalsController < ApplicationController
     @approval = @candidate.approvals.find_by!(user: Current.user)
     authorize @approval
     @approval.destroy
-    redirect_to project_candidate_path(@project.name, @candidate.name)
+    redirect_to project_candidate_path(@project.name, @candidate.name), status: :see_other
   end
 
   private

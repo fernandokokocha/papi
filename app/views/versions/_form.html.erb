@@ -4,7 +4,7 @@
 <% endpoints = SchemaForm::Endpoints.for_version(@version.endpoints) %>
 <% checks = SchemaForm::Checks.new(endpoints: endpoints, blocks: blocks, auth_methods: auth_methods, base: base_version) %>
 
-<%= form_with url: schema_edit_path, id: SchemaForm::OPS_FORM_ID, data: { turbo: true } do %>
+<%= form_with url: schema_edit_path, id: SchemaForm::OPS_FORM_ID do %>
   <%= hidden_field_tag :base_version_id, base_version.id, id: nil %>
 <% end %>
 

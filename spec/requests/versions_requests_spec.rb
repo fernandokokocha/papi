@@ -155,12 +155,17 @@ describe "Version requests", type: :request do
       expect(response.body).not_to include("resolved-thread")
     end
 
-    it "offers the OpenAPI export" do
+    # Drive would fetch the export and fail to render it: it is a download,
+    # not a page.
+    it "offers the OpenAPI export, opted out of Turbo" do
       sign_in(user)
       get project_version_path(project.name, version.name)
 
-      expect(response.body).to include("Export OpenAPI")
-      expect(response.body).to include(project_version_openapi_path(project_name: project.name, version_name: version.name))
+      path = project_version_openapi_path(project_name: project.name, version_name: version.name)
+      link = Nokogiri::HTML5(response.body).at_css("a[href='#{path}']")
+
+      expect(link.text).to include("Export OpenAPI")
+      expect(link["data-turbo"]).to eq("false")
     end
   end
 end

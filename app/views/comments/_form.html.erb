@@ -1,4 +1,4 @@
-<%= form_with model: Comment.new, url: project_candidate_comments_path(candidate.project.name, candidate.name), data: { turbo: true } do |form| %>
+<%= form_with model: Comment.new, url: project_candidate_comments_path(candidate.project.name, candidate.name) do |form| %>
   <% if parent %>
     <%= form.hidden_field :parent_id, value: parent.id %>
     <% if local_assigns[:line_badge] %>

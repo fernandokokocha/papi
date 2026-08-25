@@ -77,16 +77,13 @@ end
     expect(Version.last.entities.find_by(name: "Customer").root).to eq("{id:number,name:string,vip:boolean}")
   end
 
-  # Turbo Drive is off, so an op is only intercepted when both the form it
-  # belongs to and the element that submits it opt in. Miss either and the
-  # browser navigates to the raw stream.
-  it "puts the editor's controls in a Turbo form of their own" do
+  # Nested forms are illegal, so the editor's controls reach their form by id
+  # rather than by sitting inside it.
+  it "puts the editor's controls in an ops form of their own" do
     page = form
     ops = page.at_css("form##{SchemaForm::OPS_FORM_ID}")
 
-    expect(ops["data-turbo"]).to eq("true")
     expect(ops["action"]).to eq(schema_edit_path)
-    expect(page.at_css("#entity_root_0")["data-turbo"]).to eq("true")
 
     controls = page.css("#entity_root_0 button[type=submit], #entity_root_0 select, #entity_root_0 input:not([type=hidden])")
     expect(controls).to be_any
@@ -108,13 +105,13 @@ end
     expect(fields.css("input, select, button[type=submit]")).to all(satisfy { |control| control["disabled"] })
   end
 
-  # Turbo Drive is off, so a submitter outside a data-turbo="true" container
-  # navigates the browser to the stream instead of applying it.
-  it "puts the new-card submitters inside a Turbo container of their own" do
+  # The field that asked has to travel with the op, or an error reopens the
+  # wrong host.
+  it "tells the new-card submitters which host asked" do
     submitters = form.css("[data-new-form-target=field] button[type=submit]")
 
+    expect(submitters).to be_any
     expect(submitters.map { |button| button["formaction"] }).to all(include("asked_by="))
-    expect(submitters).to all(satisfy { |button| button.ancestors("[data-turbo='true']").any? })
   end
 
   it "renders each endpoint's verb, path, params, query, auth and note as fields the create service reads" do

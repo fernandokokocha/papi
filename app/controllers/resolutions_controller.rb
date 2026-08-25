@@ -24,7 +24,7 @@ class ResolutionsController < ApplicationController
   def respond_with_thread
     respond_to do |format|
       format.turbo_stream
-      format.html { redirect_to project_candidate_path(@project.name, @candidate.name) }
+      format.html { redirect_to project_candidate_path(@project.name, @candidate.name), status: :see_other }
     end
   end
 end

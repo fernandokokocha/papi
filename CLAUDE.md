@@ -181,11 +181,20 @@ and no build step — no npm, no `package.json`. A local module imported by a
 controller must be pinned in `config/importmap.rb` or it resolves to nothing and
 the controller dies silently, with no error anywhere to say so.
 
-**Turbo Drive stays off** (`Turbo.session.drive = false`). The sidebar scroll-spy
-highlight relies on native anchor navigation and full page loads. Forms that
-need Turbo Streams opt in per element with `data: { turbo: true }`. Always bind
-`form_with` to an explicit model: an unbound `form_with scope: :x` picks up `@x`
-from the rendering controller and prefills itself.
+**Turbo Drive is on**, so every form and link is intercepted unless it opts out.
+Two consequences. A redirect after anything but `POST` must say
+`status: :see_other`: `fetch` rewrites the method to `GET` only on a 302 from a
+POST, so a 302 after `PATCH` or `DELETE` is replayed with the same method —
+`candidates#update` would `PATCH` itself. And a response that is not a page
+needs `data: { turbo: false }` on the link that reaches it; `OpenAPIController`
+is the only one, and it `send_data`s a file.
+
+Drive was off until 2026-08-25, to protect a `:target` rule that highlighted the
+anchored card (`fa567a8`). That CSS died with the v1 stylesheet — the scroll-spy
+highlight is `sidebar_controller.js` now, and owes Drive nothing.
+
+Always bind `form_with` to an explicit model: an unbound `form_with scope: :x`
+picks up `@x` from the rendering controller and prefills itself.
 
 **Design.** `/design-preview` (`app/views/design_preview/show.html.erb`) is the
 palette, rendered. Read it rather than a written spec, and extend it when a new

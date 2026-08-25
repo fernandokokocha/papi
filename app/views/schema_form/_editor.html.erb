@@ -1,6 +1,6 @@
 <% op_url = ->(op, row, value = nil) { schema_edit_path(id: block.id, op: op, path: row.path, value: value) } %>
 <% ops = SchemaForm::OPS_FORM_ID %>
-<div id="<%= block.id %>" data-turbo="true" class="overflow-hidden rounded-md bg-slate-50 py-2 ring-1 ring-inset ring-slate-200">
+<div id="<%= block.id %>" class="overflow-hidden rounded-md bg-slate-50 py-2 ring-1 ring-inset ring-slate-200">
   <%= hidden_field_tag block.field, root.serialize, id: nil %>
   <%= render "schema_form/notes", name: block.notes_field, notes: block.notes %>
   <%= render "schema_form/ops_fields", block: block %>

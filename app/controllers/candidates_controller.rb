@@ -58,6 +58,6 @@ class CandidatesController < ApplicationController
     authorize @candidate
 
     Candidate::Update.new(@candidate, params).call
-    redirect_to project_candidate_path(name: @candidate.name, project_name: @project.name)
+    redirect_to project_candidate_path(name: @candidate.name, project_name: @project.name), status: :see_other
   end
 end

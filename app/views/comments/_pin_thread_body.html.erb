@@ -24,11 +24,11 @@
 
   <% if thread.resolved? && policy(thread).reopen? %>
     <%= button_to "Reopen", project_candidate_comment_resolution_path(thread.candidate.project.name, thread.candidate.name, thread),
-          method: :delete, form: { class: "shrink-0", data: { turbo: true } },
+          method: :delete, form: { class: "shrink-0" },
           class: "cursor-pointer rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-50" %>
   <% elsif policy(thread).resolve? %>
     <%= button_to "Resolve", project_candidate_comment_resolution_path(thread.candidate.project.name, thread.candidate.name, thread),
-          form: { class: "shrink-0", data: { turbo: true } },
+          form: { class: "shrink-0" },
           class: "cursor-pointer rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 hover:bg-slate-50" %>
   <% end %>
 </div>

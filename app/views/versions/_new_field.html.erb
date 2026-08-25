@@ -8,7 +8,7 @@
 <%# url_for keeps "host" for itself, so the field that asked travels as asked_by. %>
 <% url = schema_edit_path(op: op, asked_by: host) %>
 
-<div data-new-form-target="field" data-kind="<%= kind %>" data-turbo="true" class="p-1 <%= "hidden" unless open %>">
+<div data-new-form-target="field" data-kind="<%= kind %>" class="p-1 <%= "hidden" unless open %>">
   <div class="flex items-center gap-1.5 rounded bg-white px-1.5 py-1 ring-2 <%= error ? "ring-rose-500" : "ring-sky-600" %>">
     <% if kind == "endpoint" %>
       <select name="new_endpoint[http_verb]" form="<%= ops %>" aria-label="New endpoint verb" <%= "disabled" unless open %>
