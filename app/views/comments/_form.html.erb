@@ -20,7 +20,6 @@
     <% end %>
   <% end %>
   <%= form.text_area :body, rows: 3, required: true,
-        placeholder: parent ? "Write a reply…" : "Leave a comment…",
         class: "w-full bg-white border border-gray-300 rounded-lg p-3 text-sm text-slate-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500" %>
   <div class="flex justify-end gap-2 mt-2">
     <% if parent %>

@@ -65,11 +65,12 @@ def feed
   expect(response.body).to include(project_path(project.name))
 end
 
-it "tells an empty project it has no activity" do
+it "renders an empty stream for a project with no activity" do
     sign_in(author)
 
     get project_timeline_path(project.name)
 
-    expect(response.body).to include("No activity yet")
+    expect(response.status).to eq(200)
+    expect(response.body).not_to include("divide-y divide-slate-200")
   end
 end

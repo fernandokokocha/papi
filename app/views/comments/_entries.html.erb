@@ -1,0 +1,12 @@
+<% [ thread, *thread.replies.sort_by(&:created_at) ].each_with_index do |comment, index| %>
+  <div class="<%= "mt-3 border-l-2 border-slate-200 pl-3" if index > 0 %>">
+    <div class="mb-1 flex items-center gap-2">
+      <span class="truncate text-[13px] font-semibold text-slate-800"><%= comment.author.email_address %></span>
+      <% if comment.by_candidate_author? %>
+        <span class="shrink-0 rounded-full border border-slate-200 px-1.5 text-[11px] font-medium text-slate-600">Author</span>
+      <% end %>
+      <span class="ml-auto shrink-0 text-[12px] text-slate-600"><%= comment.created_at.strftime("%-d %b %Y") %></span>
+    </div>
+    <div class="whitespace-pre-wrap text-[13px] leading-6 text-slate-700"><%= comment.body %></div>
+  </div>
+<% end %>

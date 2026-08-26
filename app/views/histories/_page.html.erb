@@ -11,10 +11,10 @@
       <div class="shrink-0">
         <% if source.project %>
           <%= link_to "← #{source.name}", project_version_path(project_name: @project.name, name: source.name),
-                class: "rounded-md border border-slate-300 bg-white px-3 py-1.5 font-mono text-[13px] font-semibold text-slate-900 hover:bg-slate-50" %>
+                class: "rounded-md border border-slate-400 bg-white px-3 py-1.5 font-mono text-[13px] font-semibold text-slate-900 hover:bg-slate-50" %>
         <% else %>
           <%= link_to "← #{source.candidate.name}", project_candidate_path(@project.name, source.candidate.name),
-                class: "rounded-md border border-slate-300 bg-white px-3 py-1.5 font-mono text-[13px] font-semibold text-slate-900 hover:bg-slate-50" %>
+                class: "rounded-md border border-slate-400 bg-white px-3 py-1.5 font-mono text-[13px] font-semibold text-slate-900 hover:bg-slate-50" %>
         <% end %>
       </div>
     </div>
@@ -37,14 +37,6 @@
     </aside>
 
     <div class="min-w-0 flex-1 pb-16">
-      <% if @milestones.empty? %>
-        <div class="px-4 pt-10">
-          <div class="rounded-xl border border-dashed border-slate-300 bg-white/60 px-6 py-10 text-center text-[13px] text-slate-600">
-            No published history yet — this <%= noun %> is new in a candidate.
-          </div>
-        </div>
-      <% end %>
-
       <% @milestones.each do |milestone| %>
         <%= render "histories/milestone", milestone: milestone, card: card %>
       <% end %>

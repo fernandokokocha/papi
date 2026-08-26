@@ -31,9 +31,9 @@
   <% end %>
 
   <div data-margin-note-target="panel" hidden
-       class="absolute right-full top-0 z-30 mr-2 flex max-h-96 w-80 flex-col rounded-lg border border-slate-300 bg-white text-left font-normal shadow-lg">
+       class="absolute right-full top-0 z-30 mr-2 flex max-h-96 w-80 flex-col rounded-lg border border-slate-400 bg-white text-left font-normal shadow-lg">
     <div class="flex shrink-0 items-center gap-2 border-b border-slate-200 px-2.5 py-1.5">
-      <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-slate-700 ring-1 ring-inset ring-slate-300"><%= comment_kind_style(anchor.kind)[:label] %></span>
+      <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-slate-700 ring-1 ring-inset ring-slate-200"><%= comment_kind_style(anchor.kind)[:label] %></span>
       <span class="truncate text-[11px] text-slate-600"><%= sublabel %></span>
       <% if count > 1 %>
         <span class="ml-auto shrink-0 text-[11px] text-slate-600"><%= pluralize(count, "thread") %></span>
@@ -43,20 +43,20 @@
     <% unless count.zero? %>
       <div class="min-h-0 overflow-y-auto p-2.5">
         <% threads.each_with_index do |thread, thread_index| %>
-          <div class="pin-fresh <%= "mt-3 border-t border-slate-300 pt-3" if thread_index > 0 %>">
+          <div class="pin-fresh <%= "mt-3 border-t border-slate-200 pt-3" if thread_index > 0 %>">
             <%= render "comments/pin_thread", thread: thread %>
           </div>
         <% end %>
 
         <% if outdated.any? %>
-          <div class="<%= "mt-3 border-t border-slate-300 pt-3" if threads.any? %>">
+          <div class="<%= "mt-3 border-t border-slate-200 pt-3" if threads.any? %>">
             <div class="mb-2 flex items-center gap-2">
               <span class="shrink-0 text-[10px] font-bold uppercase tracking-[0.08em] text-slate-500">Outdated</span>
               <span class="h-px flex-1 bg-slate-200"></span>
             </div>
             <% outdated.each_with_index do |thread, thread_index| %>
               <div class="<%= "mt-3 border-t border-slate-200 pt-3" if thread_index > 0 %>">
-                <div class="mb-1.5 rounded border border-dashed border-slate-300 bg-slate-50 px-1.5 py-1 font-mono text-[11px] leading-4 text-slate-600">
+                <div class="mb-1.5 rounded border border-dashed border-slate-200 bg-slate-50 px-1.5 py-1 font-mono text-[11px] leading-4 text-slate-600">
                   <span class="font-sans text-[10px] uppercase tracking-wide text-slate-500">line <%= thread.line %> of</span>
                   <span class="break-all"><%= thread.anchor_snapshot %></span>
                 </div>

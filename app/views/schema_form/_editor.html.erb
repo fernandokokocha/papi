@@ -32,7 +32,7 @@
 
         <% if row.bracket %>
           <span class="relative inline-flex">
-            <span class="rounded px-0.5 font-mono text-[12px] leading-[18px] text-slate-700 ring-1 ring-transparent group-hover/row:ring-slate-300"><%= row.bracket %></span>
+            <span class="rounded px-0.5 font-mono text-[12px] leading-[18px] text-slate-700 ring-1 ring-transparent group-hover/row:ring-slate-400"><%= row.bracket %></span>
             <%= render "schema_form/type_select", row: row, referenceable_names: referenceable_names,
                        nothing: nothing && row.path.empty?,
                        url: op_url.("change_type", row, "__VALUE__"),

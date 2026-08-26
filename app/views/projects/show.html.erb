@@ -2,13 +2,7 @@
 
 <%= render "projects/header", project: @project, active: :releases %>
 
-<% if @project.history.empty? %>
-  <div class="px-6 pt-10">
-    <div class="rounded-xl border border-dashed border-slate-300 bg-white/60 px-6 py-10 text-center text-[13px] text-slate-600">
-      No candidates yet — nothing has been proposed for this project.
-    </div>
-  </div>
-<% else %>
+<% unless @project.history.empty? %>
   <% current_version = @project.latest_version %>
 
   <div class="grid grid-cols-[10rem_1fr] gap-x-6 border-b border-slate-400 px-6 py-2">
@@ -16,7 +10,7 @@
     <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Candidate</span>
   </div>
 
-  <div class="divide-y divide-slate-300 border-b border-slate-400 bg-white">
+  <div class="divide-y divide-slate-200 border-b border-slate-400 bg-white">
     <% @project.history.each do |candidate| %>
       <% version = candidate.promoted_version %>
       <% threads = candidate.comments.count { |comment| comment.parent_id.nil? } %>

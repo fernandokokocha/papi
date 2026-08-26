@@ -218,7 +218,7 @@
       <select name="<%= field.("[auth]") %>" form="<%= ops %>" aria-label="Auth"
               data-controller="schema-edit" data-schema-edit-url-value="<%= op_url.("endpoint") %>"
               data-action="change->schema-edit#submit"
-              class="field-sizing-content cursor-pointer appearance-none rounded bg-slate-200 px-1 font-mono text-[12px] leading-[18px] text-slate-700 ring-1 ring-inset ring-slate-400 hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-600">
+              class="field-sizing-content cursor-pointer appearance-none rounded bg-slate-200 px-1 font-mono text-[12px] leading-[18px] text-slate-700 ring-1 ring-inset ring-slate-400 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-600">
         <option value="">none</option>
         <% auth_methods.each do |auth_method| %>
           <option <%= "selected" if auth_method == chosen %>><%= auth_method.name %></option>
@@ -313,7 +313,7 @@
                 <span class="text-[10px] font-bold uppercase leading-none tracking-[0.08em] text-emerald-800">added</span>
               <% end %>
               <button type="submit" form="<%= ops %>" formaction="<%= op_url.("drop_response", code: code) %>" title="Remove response"
-                      class="flex h-4 w-4 shrink-0 cursor-pointer items-center justify-center rounded font-mono text-[12px] leading-none text-slate-500 opacity-0 ring-1 ring-inset ring-slate-300 hover:bg-rose-100 hover:text-rose-700 hover:ring-rose-300 focus:opacity-100 group-hover/response:opacity-100">&times;</button>
+                      class="flex h-4 w-4 shrink-0 cursor-pointer items-center justify-center rounded font-mono text-[12px] leading-none text-slate-500 opacity-0 ring-1 ring-inset ring-slate-400 hover:bg-rose-100 hover:text-rose-700 hover:ring-rose-300 focus:opacity-100 group-hover/response:opacity-100">&times;</button>
               <%= hidden_field_tag "version[endpoints_attributes][][responses][#{code}][note]", response.note, id: nil %>
             <% end %>
           </div>
@@ -332,7 +332,7 @@
       <% if !removed && column == columns - 1 && endpoint.unused_codes.any? %>
         <div class="flex items-center gap-2">
           <select name="new_response[<%= key %>]" form="<%= ops %>" aria-label="New response code"
-                  class="cursor-pointer appearance-none rounded bg-white px-1.5 font-mono text-[12px] leading-[18px] text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-600">
+                  class="cursor-pointer appearance-none rounded bg-white px-1.5 font-mono text-[12px] leading-[18px] text-slate-700 ring-1 ring-inset ring-slate-400 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-sky-600">
             <% endpoint.unused_codes.each do |unused| %>
               <option><%= unused %></option>
             <% end %>

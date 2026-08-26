@@ -197,7 +197,36 @@ Always bind `form_with` to an explicit model: an unbound `form_with scope: :x`
 picks up `@x` from the rendering controller and prefills itself.
 
 **Design.** `/design-preview` (`app/views/design_preview/show.html.erb`) is the
-palette, rendered. Read it rather than a written spec, and extend it when a new
-element type appears. Shared styles live in `app/assets/tailwind/application.css`
-— there is no `app/assets/stylesheets/`. Tailwind classes must be complete
-literal strings; never interpolate a class name.
+palette, rendered. Read it rather than a written spec.
+
+**It is part of the change, not a follow-up.** A change to the visual language —
+a new element type, a colour or size retired, a treatment unified, a component
+restyled — is finished when the preview shows it. Leaving it stale is how the
+preview stops being the record. Some changes are local enough not to reach it;
+if the preview has nothing to say about yours, say so out loud rather than
+skipping it silently.
+
+Its controller is `def show; end` and its markup is static, deliberately: it
+holds atoms and card chrome — the things with no page of their own — and links
+out for anything composed. Do not give it a fake-data harness to render real
+cards through; that harness rotted once already and took the preview with it.
+The card stubs are hand-written and must be kept level with the partials they
+imitate.
+
+Shared styles live in `app/assets/tailwind/application.css` — there is no
+`app/assets/stylesheets/`. Tailwind classes must be complete literal strings;
+never interpolate a class name.
+
+**Two greys carry every line.** `slate-400` bounds a surface on the page or
+marks anything clickable — card, panel, input, select, button, chip ring.
+`slate-200` separates parts inside one — row dividers, band hairlines, panel
+splits, the reply indent. There is no third weight; `slate-300` was retired
+because it read as neither.
+
+**Absence is a dash or nothing at all.** `—` where a value is missing from a
+row, an empty page where a list has no rows, an empty field where a form has no
+value. Do not write a sentence explaining that something is empty. Two things
+survive that rule and are not precedents: the submit bar says *Nothing has
+changed yet*, because it is the only account of why Save is disabled, and the
+approvals row says *No approvals yet*, because that is a standing fact about the
+candidate rather than a gap.

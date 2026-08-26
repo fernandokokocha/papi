@@ -1,162 +1,535 @@
-<div class="grid grid-cols-2 gap-6 mb-6">
+<% content_for :main_class, "w-full" %>
 
-  <div class="bg-white rounded p-6 flex flex-col gap-5 border border-gray-200">
-    <div>
-      <p class="text-gray-900 font-semibold text-lg">Project: My API</p>
-      <p class="text-gray-500 text-sm mt-1">Last updated 2026-01-10</p>
-    </div>
+<%# ── Type ─────────────────────────────────────────────────────────────── %>
 
+<section class="border-b border-slate-400 px-6 py-6">
+  <h2 class="text-[16px] font-semibold text-slate-800">Type</h2>
+
+<div class="mt-4 divide-y divide-slate-200 border-y border-slate-400 bg-white">
+  <div class="flex items-center gap-6 px-4 py-3">
+    <span class="w-64 shrink-0 font-mono text-[11px] text-slate-500">text-2xl font-normal tracking-tight</span>
+    <span class="text-2xl font-normal tracking-tight text-slate-900">Page title</span>
+  </div>
+  <div class="flex items-center gap-6 px-4 py-3">
+    <span class="w-64 shrink-0 font-mono text-[11px] text-slate-500">text-[16px] font-semibold</span>
+    <span class="text-[16px] font-semibold text-slate-800">Section heading</span>
+  </div>
+  <div class="flex items-center gap-6 px-4 py-3">
+    <span class="w-64 shrink-0 font-mono text-[11px] text-slate-500">text-[13px]</span>
+    <span class="flex items-baseline gap-6">
+      <span class="text-[13px] text-slate-700">Body and control text</span>
+      <span class="font-mono text-[13px] font-bold text-slate-900">v9 /users/:id Customer</span>
+    </span>
+  </div>
+  <div class="flex items-center gap-6 px-4 py-3">
+    <span class="w-64 shrink-0 font-mono text-[11px] text-slate-500">text-[12px] text-slate-600</span>
+    <span class="flex items-baseline gap-6">
+      <span class="text-[12px] text-slate-600">Dates, authorship, counts, hints</span>
+      <span class="font-mono text-[12px] text-slate-700">  id: number</span>
+    </span>
+  </div>
+  <div class="flex items-center gap-6 px-4 py-3">
+    <span class="w-64 shrink-0 font-mono text-[11px] text-slate-500">text-[10px] font-bold uppercase tracking-[0.12em]</span>
+    <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Eyebrow and field label</span>
+  </div>
+</div>
+</section>
+
+<%# ── Buttons ──────────────────────────────────────────────────────────── %>
+
+<section class="border-b border-slate-400 px-6 py-6">
+  <h2 class="text-[16px] font-semibold text-slate-800">Buttons</h2>
+
+  <div class="mt-4 flex flex-wrap items-center gap-2">
+    <button class="cursor-pointer rounded-md border border-sky-800 bg-sky-700 px-3 py-1.5 text-[13px] font-semibold text-white hover:bg-sky-800">Save candidate</button>
+    <button class="cursor-pointer rounded-md border border-slate-400 bg-white px-3 py-1.5 text-[13px] font-semibold text-slate-900 hover:bg-slate-50">Export OpenAPI</button>
+    <button class="cursor-pointer rounded-md border border-emerald-800 bg-emerald-700 px-3 py-1.5 text-[13px] font-semibold text-white hover:bg-emerald-800">Merge</button>
+    <button class="cursor-pointer rounded-md border border-rose-300 bg-white px-3 py-1.5 text-[13px] font-semibold text-rose-700 hover:border-rose-400 hover:bg-rose-50">Reject</button>
+    <span class="cursor-not-allowed rounded-md border border-slate-400 bg-slate-200 px-3 py-1.5 text-[13px] font-semibold text-slate-500">New candidate</span>
+  </div>
+
+  <div class="mt-6 grid grid-cols-3 gap-6">
     <div>
-      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">State badges</p>
-      <div class="flex gap-2 flex-wrap">
-        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-yellow-50 text-yellow-700 border border-yellow-200">Open</span>
-        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Merged</span>
-        <span class="text-xs font-semibold px-2.5 py-1 rounded-full bg-red-50 text-red-700 border border-red-200">Rejected</span>
+      <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Links</p>
+      <div class="mt-2 flex items-center gap-4">
+        <a href="#" class="text-[13px] text-sky-700 hover:underline">A link inside prose</a>
+        <a href="#" class="font-mono text-[13px] font-bold text-sky-700 hover:underline">v8</a>
       </div>
     </div>
-
     <div>
-      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Input</p>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Email address</label>
-      <input type="text" placeholder="you@example.com"
-             class="w-full border border-gray-300 rounded px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-sky-500">
+      <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Segmented nav</p>
+      <nav class="mt-2 inline-flex divide-x divide-slate-400 overflow-hidden rounded-md border border-slate-400 bg-white font-mono text-[12px] font-bold">
+        <a href="#" class="inline-flex w-20 items-center justify-center py-1 text-slate-900 hover:bg-slate-50">← v8</a>
+        <span class="inline-flex w-20 items-center justify-center bg-slate-100 py-1 text-slate-500">→</span>
+      </nav>
+    </div>
+  </div>
+</section>
+
+<%# ── Form controls ────────────────────────────────────────────────────── %>
+
+<section class="border-b border-slate-400 px-6 py-6">
+  <h2 class="text-[16px] font-semibold text-slate-800">Form controls</h2>
+
+  <div class="mt-4 grid grid-cols-2 gap-6">
+    <div class="border border-slate-400 bg-white p-4">
+      <label class="block text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Project name</label>
+      <input type="text" placeholder="payments-api"
+             class="mt-1 w-full rounded-md border border-slate-400 bg-white px-3 py-2 text-[13px] text-slate-900 placeholder-slate-400 focus:border-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-200">
+
+      <label class="mt-4 block text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Release notes</label>
+      <textarea rows="3" placeholder="What changed, and why."
+                class="mt-1 w-full rounded-md border border-slate-400 bg-white px-3 py-2 text-[13px] text-slate-900 placeholder-slate-400 focus:border-sky-600 focus:outline-none focus:ring-2 focus:ring-sky-200"></textarea>
+
+      <div class="mt-4 rounded border border-rose-300 bg-rose-50 px-3 py-2 text-[12px] text-rose-800">Name has already been taken</div>
     </div>
 
     <div>
-      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Select</p>
-      <label class="block text-sm font-medium text-gray-700 mb-1">Compared with</label>
-      <select class="border border-gray-300 rounded px-3 py-2 bg-white text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-sky-500">
-        <option>v9</option>
+      <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">On the page</p>
+      <select class="mt-1 cursor-pointer rounded-md border border-slate-400 bg-white px-2 py-1 font-mono text-[13px] font-bold text-slate-900 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-sky-400">
         <option>v8</option>
         <option>v7</option>
       </select>
-      <p class="text-xs text-gray-400 mt-2">Card variant — carries the name typography it replaces</p>
-      <select class="border border-gray-300 rounded px-2 py-1 bg-white text-lg font-semibold text-gray-900 focus:outline-none focus:ring-2 focus:ring-sky-500">
-        <option>v9</option>
-        <option>v8</option>
-        <option>v7</option>
-      </select>
-    </div>
 
-    <div>
-      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Monospace / code</p>
-      <div class="bg-gray-100 text-gray-800 font-mono text-xs rounded p-3">GET /api/users → 200 OK</div>
+      <p class="mt-5 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">In the schema editor</p>
+      <div class="mt-1 flex items-center gap-1.5">
+        <input type="text" value="email"
+               class="w-32 rounded border border-slate-400 bg-white px-1.5 py-0.5 font-mono text-[12px] text-slate-900 focus:border-sky-600 focus:outline-none">
+        <span class="font-mono text-[12px] text-slate-500">:</span>
+        <select class="cursor-pointer rounded border border-slate-400 bg-white px-1.5 py-0.5 font-mono text-[12px] text-slate-900 focus:outline-none focus:ring-2 focus:ring-sky-200">
+          <option>string</option>
+          <option>number</option>
+        </select>
+        <span class="cursor-pointer rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[11px] text-slate-600 ring-1 ring-inset ring-slate-200 hover:bg-slate-200">?</span>
+      </div>
+
+      <p class="mt-5 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Reply</p>
+      <button type="button" class="mt-1 w-72 cursor-text rounded border border-slate-400 bg-white px-2 py-1 text-left text-[12px] text-slate-500 hover:bg-slate-50">Reply…</button>
+    </div>
+  </div>
+</section>
+
+<%# ── Badges ───────────────────────────────────────────────────────────── %>
+
+<section class="border-b border-slate-400 px-6 py-6">
+  <h2 class="text-[16px] font-semibold text-slate-800">Badges</h2>
+
+<div class="mt-4 grid grid-cols-2 gap-6">
+  <div>
+    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Verb</p>
+    <div class="mt-2 flex flex-col gap-2">
+      <% [ "bg-slate-100", "bg-amber-100", "bg-emerald-700", "bg-rose-700" ].each do |ground| %>
+        <div class="flex flex-wrap gap-1.5 rounded px-2 py-1.5 <%= ground %>">
+          <% %w[GET POST PUT PATCH DELETE].each do |verb| %>
+            <%= render "endpoints/verb_badge", verb: verb %>
+          <% end %>
+        </div>
+      <% end %>
     </div>
   </div>
 
-  <div class="bg-white rounded p-6 flex flex-col gap-6 border border-gray-200">
-
-    <div>
-      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Primary</p>
-      <div class="flex gap-2 flex-wrap">
-        <button class="bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded font-medium">Save</button>
-        <button class="bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded font-medium">Create project</button>
-        <button class="bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded font-medium">Submit</button>
-      </div>
+  <div>
+    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Candidate state</p>
+    <div class="mt-2 flex flex-wrap gap-1.5">
+      <span class="inline-block rounded-full bg-amber-600 px-3 py-1 text-[13px] font-semibold text-white">Open</span>
+      <span class="inline-block rounded-full bg-emerald-600 px-3 py-1 text-[13px] font-semibold text-white">Merged</span>
+      <span class="inline-block rounded-full bg-rose-600 px-3 py-1 text-[13px] font-semibold text-white">Rejected</span>
     </div>
-
-    <div>
-      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Secondary — A · sky outline</p>
-      <div class="flex gap-2 flex-wrap">
-        <button class="bg-white text-sky-700 border border-sky-300 text-sm px-4 py-2 rounded font-medium">Edit</button>
-        <button class="bg-white text-sky-700 border border-sky-300 text-sm px-4 py-2 rounded font-medium">View details</button>
-        <button class="bg-white text-sky-700 border border-sky-300 text-sm px-4 py-2 rounded font-medium">Cancel</button>
-      </div>
-    </div>
-
-    <div>
-      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Secondary — B · gray fill</p>
-      <div class="flex gap-2 flex-wrap">
-        <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm px-4 py-2 rounded font-medium">Edit</button>
-        <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm px-4 py-2 rounded font-medium">View details</button>
-        <button class="bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm px-4 py-2 rounded font-medium">Cancel</button>
-      </div>
-    </div>
-
-    <div>
-      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Secondary — C · gray outline</p>
-      <div class="flex gap-2 flex-wrap">
-        <button class="bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-sm px-4 py-2 rounded font-medium">Edit</button>
-        <button class="bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-sm px-4 py-2 rounded font-medium">View details</button>
-        <button class="bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-sm px-4 py-2 rounded font-medium">Cancel</button>
-      </div>
-    </div>
-
-    <div>
-      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Merge &amp; Reject — filled, badge-matched</p>
-      <div class="flex gap-2 flex-wrap">
-        <button class="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-4 py-2 rounded font-medium">Merge</button>
-        <button class="bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-2 rounded font-medium">Reject</button>
-      </div>
-    </div>
-
   </div>
 </div>
+</section>
 
-<div class="bg-white rounded p-6 flex flex-col gap-5 border border-gray-200">
-  <p class="text-gray-900 font-semibold text-lg">Endpoints</p>
-  <div class="flex flex-col gap-2">
-    <%= render "endpoints/endpoint_diff", endpoint: @unchanged_endpoints[1], previous_endpoint: @unchanged_endpoints[0], expanded: false %>
-    <%= render "endpoints/endpoint_diff", endpoint: @diff_endpoints[1], previous_endpoint: @diff_endpoints[0], expanded: false %>
-    <%= render "endpoints/endpoint_new", endpoint: @new_endpoint, expanded: false %>
-    <%= render "endpoints/endpoint_removed", endpoint: @removed_endpoint, expanded: false %>
-  </div>
-</div>
+<%# ── Schema lines ─────────────────────────────────────────────────────── %>
 
-<div class="bg-white rounded mt-4 p-6 flex flex-col gap-5 border border-gray-200">
-  <p class="text-gray-900 font-semibold text-lg">Entities</p>
-  <div class="flex flex-col gap-2">
-    <%= render "versions/entity_diff", entity: @unchanged_entities[1], previous_entity: @unchanged_entities[0], expanded: false %>
-    <%= render "versions/entity_diff", entity: @diff_entities[1], previous_entity: @diff_entities[0], expanded: false %>
-    <%= render "versions/entity_added", entity: @new_entity, expanded: false %>
-    <%= render "versions/entity_removed", entity: @removed_entity, expanded: false %>
-  </div>
-</div>
+<section class="border-b border-slate-400 px-6 py-6">
+  <h2 class="text-[16px] font-semibold text-slate-800">Schema lines</h2>
 
-<div class="bg-white rounded mt-4 p-6 flex flex-col gap-5 border border-gray-200">
-  <p class="text-gray-900 font-semibold text-lg">Auth methods</p>
-  <div class="flex flex-col gap-2">
-    <%= render "versions/auth_method_diff", auth_method: @unchanged_auth_methods[1], previous_auth_method: @unchanged_auth_methods[0] %>
-    <%= render "versions/auth_method_diff", auth_method: @diff_auth_methods[1], previous_auth_method: @diff_auth_methods[0] %>
-    <%= render "versions/auth_method_added", auth_method: @new_auth_method %>
-    <%= render "versions/auth_method_removed", auth_method: @removed_auth_method %>
-  </div>
-</div>
-
-<div class="bg-white rounded mt-4 p-6 border border-gray-200">
-  <p class="text-gray-900 font-semibold text-lg mb-1">Note cards</p>
-  <p class="text-gray-500 text-sm mb-5">The hover card behind a <span class="line-note"><span class="line-note-badge">i</span></span> badge, shown open.</p>
-
-  <div class="grid grid-cols-3 gap-5">
+  <div class="mt-4 grid grid-cols-2 gap-6">
     <div>
-      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Unchanged</p>
-      <div class="line-note-card">Opaque. Don't parse it, and don't assume ids are ordered — they are only unique.</div>
+      <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Types</p>
+      <div class="mt-2 flex flex-wrap gap-1.5 font-mono text-[12px]">
+        <% %w[string number boolean null custom nothing].each do |class_name| %>
+          <span class="rounded px-1 ring-1 ring-inset <%= type_tint(class_name) %>"><%= class_name == "custom" ? "Customer" : class_name %></span>
+        <% end %>
+      </div>
     </div>
 
     <div>
-      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-2">Changed</p>
-      <div class="line-note-card">
-        <span class="note-was">Lowercased on write. Globally unique.</span>
-        <span class="note-now">Lowercased on write. Unique per project, not globally, so the same address can appear in two projects.</span>
+      <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Changes</p>
+      <div class="mt-2 overflow-hidden rounded-md bg-slate-50 py-2 ring-1 ring-inset ring-slate-200">
+        <% number = 0 %>
+        <% [
+             [ nil, "{" ],
+             [ "no_change", "  id: ", "number" ],
+             [ "added", "  role: ", "string" ],
+             [ "type_changed", "  count: ", "number" ],
+             [ "removed", "  legacy_id: ", "number" ],
+             [ nil, "}" ],
+             [ "blank" ]
+           ].each do |change, pre, type| %>
+          <% number += 1 if pre %>
+          <div class="flex min-h-[18px] border-l-2 border-transparent pr-2.5 <%= change_tint(change) %>">
+            <span class="w-8 shrink-0 select-none pr-2 text-right font-mono text-[11px] leading-[18px] text-slate-500"><%= number if pre %></span>
+            <span class="whitespace-pre font-mono text-[12px] leading-[18px] text-slate-700"><%= pre %><% if type %><span class="rounded px-1 ring-1 ring-inset <%= type_tint(type) %>"><%= type %></span><% end %></span>
+          </div>
+        <% end %>
       </div>
     </div>
   </div>
 
-  <p class="text-xs font-semibold text-gray-400 uppercase tracking-wide mt-6 mb-2">Badge tints</p>
-  <div class="font-mono text-xs bg-white border border-gray-200 rounded p-3 inline-block">
-    <div class="line no_change">  id: <span class="number">number</span><span class="line-note"><span class="line-note-badge">i</span></span></div>
-    <div class="line no_change">  email: <span class="string">string</span><span class="line-note"><span class="line-note-badge changed">i</span></span></div>
-    <div class="line added">  status: <span class="string">string</span><span class="line-note"><span class="line-note-badge added">i</span></span></div>
-    <div class="line removed">  legacy_id: <span class="number">number</span><span class="line-note"><span class="line-note-badge removed">i</span></span></div>
-  </div>
-</div>
-
-<div class="bg-white rounded mt-4 p-6 border border-gray-200">
-  <p class="text-gray-900 font-semibold text-lg mb-1">Comment cards</p>
-  <p class="text-gray-500 text-sm mb-5">One thread per kind, rendered from the real <span class="font-mono text-xs bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded">comments/thread</span> partial — includes a reply and a resolved thread.</p>
-  <div class="flex flex-col gap-3 max-w-2xl">
-    <% @preview_comments.each do |comment| %>
-      <%= render "comments/thread", comment: comment %>
+  <p class="mt-5 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Note badge</p>
+  <div class="mt-2 overflow-hidden rounded-md bg-slate-50 py-2 ring-1 ring-inset ring-slate-200">
+    <% [
+         [ :no_change, "bg-slate-300 text-slate-700 ring-slate-400/60", "  id: ", "number", "Opaque. Don't parse it, and don't assume ids are ordered." ],
+         [ :changed, "bg-amber-500 text-white ring-amber-600", "  email: ", "string", "Unique per project, not globally." ],
+         [ :added, "bg-emerald-500 text-white ring-emerald-600", "  role: ", "string", "One of admin, member, guest." ],
+         [ :removed, "bg-rose-500 text-white ring-rose-600", "  legacy_id: ", "number", "Retired with v7." ]
+       ].each_with_index do |(state, tint, pre, type, body), row| %>
+      <div class="flex min-h-[18px] border-l-2 border-transparent pr-2.5">
+        <span class="w-8 shrink-0 select-none pr-2 text-right font-mono text-[11px] leading-[18px] text-slate-500"><%= row + 1 %></span>
+        <span class="whitespace-pre font-mono text-[12px] leading-[18px] text-slate-700"><%= pre %><span class="rounded px-1 ring-1 ring-inset <%= type_tint(type) %>"><%= type %></span></span>
+        <span class="ml-1.5 flex shrink-0 items-start" data-controller="note-card"
+              data-action="mouseenter->note-card#show mouseleave->note-card#hide focusin->note-card#show focusout->note-card#hide">
+          <button type="button" tabindex="0"
+                  class="mt-[2.5px] flex h-[14px] w-[14px] cursor-help items-center justify-center rounded-full font-sans text-[10px] font-bold leading-none ring-1 ring-inset <%= tint %>">i</button>
+          <span data-note-card-target="card" popover="manual"
+                class="fixed inset-auto m-0 w-72 overflow-visible rounded-lg border-0 bg-white p-3 text-[12px] font-normal leading-[1.5] text-slate-700 shadow-xl ring-1 ring-slate-900/10">
+            <% case state
+               when :changed %>
+              <span class="block rounded bg-rose-100 px-1.5 py-1 text-slate-700 line-through decoration-rose-400/70">Lowercased on write. Globally unique.</span>
+              <span class="mt-1.5 block rounded bg-emerald-100 px-1.5 py-1"><%= body %></span>
+            <% when :added %>
+              <span class="block rounded bg-emerald-100 px-1.5 py-1"><%= body %></span>
+            <% when :removed %>
+              <span class="block rounded bg-rose-100 px-1.5 py-1 text-slate-700 line-through decoration-rose-400/70"><%= body %></span>
+            <% else %>
+              <%= body %>
+            <% end %>
+          </span>
+        </span>
+      </div>
     <% end %>
   </div>
+</section>
+
+<%# ── Card chrome ──────────────────────────────────────────────────────── %>
+
+<section class="border-b border-slate-400 px-6 py-6">
+  <h2 class="text-[16px] font-semibold text-slate-800">Card chrome</h2>
+
+  <% unchanged_rows = [ [ nil, "{" ], [ "no_change", "  id: ", "number" ], [ nil, "}" ] ] %>
+  <% before_rows = [ [ nil, "{" ], [ "no_change", "  id: ", "number" ], [ "blank" ], [ nil, "}" ] ] %>
+  <% after_rows = [ [ nil, "{" ], [ "no_change", "  id: ", "number" ], [ "added", "  role: ", "string" ], [ nil, "}" ] ] %>
+  <% whole_rows = [ [ nil, "{" ], [ nil, "  id: ", "number" ], [ nil, "  role: ", "string" ], [ nil, "}" ] ] %>
+
+  <div class="mt-4 flex flex-col gap-6">
+    <% [
+         [ "Endpoint · unchanged", "", "border-slate-400 bg-slate-100 text-slate-900",
+           "border-x border-slate-400", "rounded-b-xl border-b border-slate-400", "opacity-60",
+           [ unchanged_rows, unchanged_rows ] ],
+         [ "Endpoint · changed", "", "border-amber-400 bg-amber-100 text-slate-900",
+           "border-x border-slate-400", "rounded-b-xl border-b border-slate-400", "opacity-60",
+           [ before_rows, after_rows ] ],
+         [ "Endpoint · added", "col-start-2", "border-emerald-700 bg-emerald-700 text-white",
+           "col-start-2 border-x-2 border-emerald-500", "rounded-b-xl border-b-2 border-emerald-500", "opacity-90",
+           [ whole_rows ] ],
+         [ "Endpoint · removed", "col-start-1", "border-rose-700 bg-rose-700 text-white",
+           "col-start-1 border-x-2 border-rose-500", "rounded-b-xl border-b-2 border-rose-500", "opacity-90",
+           [ whole_rows ] ]
+       ].each do |label, col, header_tint, edge, edge_bottom, affordance, columns| %>
+      <div>
+        <p class="mb-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600"><%= label %></p>
+        <div class="grid grid-cols-2 gap-x-2">
+          <% columns.size.times do %>
+            <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm <%= col %> <%= header_tint %>">
+              <span class="truncate font-mono text-[13px] font-medium"><%= render "endpoints/verb_badge", verb: "GET" %> /users/:id</span>
+              <div class="ml-auto flex items-center gap-2">
+                <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded <%= affordance %>">
+                  <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="10" cy="10" r="7"/><path d="M10 6v4l2.5 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+                <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded <%= affordance %>">
+                  <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </span>
+              </div>
+            </div>
+          <% end %>
+
+          <% columns.size.times do %>
+            <div class="bg-white shadow-sm <%= edge %>">
+              <div class="flex h-7 items-center gap-2 px-3 pt-2">
+                <span class="text-[10px] font-bold uppercase leading-none tracking-[0.08em] text-slate-700">Responses</span>
+                <span class="h-px flex-1 bg-slate-200"></span>
+              </div>
+            </div>
+          <% end %>
+
+          <% columns.each do |rows| %>
+            <div class="bg-white px-3 py-2 shadow-sm <%= edge %> <%= edge_bottom %>">
+              <div class="mb-2 flex items-center gap-2">
+                <span class="inline-flex items-center justify-center rounded bg-gray-100 px-1.5 py-1 font-mono text-[12px] font-bold leading-none text-gray-700 ring-1 ring-inset ring-gray-300">200</span>
+                <span class="truncate text-[13px] text-gray-600">Success</span>
+              </div>
+              <div class="overflow-hidden rounded-md bg-slate-50 py-2 ring-1 ring-inset ring-slate-200">
+                <% number = 0 %>
+                <% rows.each do |change, pre, type| %>
+                  <% number += 1 if pre %>
+                  <div class="flex min-h-[18px] border-l-2 border-transparent pr-2.5 <%= change_tint(change) %>">
+                    <span class="w-8 shrink-0 select-none pr-2 text-right font-mono text-[11px] leading-[18px] text-slate-500"><%= number if pre %></span>
+                    <span class="whitespace-pre font-mono text-[12px] leading-[18px] text-slate-700"><%= pre %><% if type %><span class="rounded px-1 ring-1 ring-inset <%= type_tint(type) %>"><%= type %></span><% end %></span>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+    <% end %>
+
+<% [
+     [ "Entity · unchanged", "", "border-violet-400 bg-violet-100 text-violet-900",
+       "border-x border-violet-400", "rounded-b-xl border-b border-violet-400", "opacity-60", [ unchanged_rows, unchanged_rows ] ],
+     [ "Entity · changed", "", "border-amber-400 bg-amber-100 text-slate-900",
+       "border-x border-amber-400", "rounded-b-xl border-b border-amber-400", "opacity-60", [ before_rows, after_rows ] ],
+     [ "Entity · added", "col-start-2", "border-emerald-700 bg-emerald-700 text-white",
+       "col-start-2 border-x-2 border-emerald-500", "rounded-b-xl border-b-2 border-emerald-500", "opacity-90", [ whole_rows ] ],
+     [ "Entity · removed", "col-start-1", "border-rose-700 bg-rose-700 text-white",
+       "col-start-1 border-x-2 border-rose-500", "rounded-b-xl border-b-2 border-rose-500", "opacity-90", [ whole_rows ] ]
+   ].each do |label, col, header_tint, edge, edge_bottom, affordance, columns| %>
+  <div>
+    <p class="mb-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600"><%= label %></p>
+    <div class="grid grid-cols-2 gap-x-2">
+      <% columns.size.times do %>
+        <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm <%= col %> <%= header_tint %>">
+          <span class="truncate font-mono text-[13px] font-medium">Customer</span>
+          <div class="ml-auto flex items-center gap-2">
+            <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded <%= affordance %>">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75"><circle cx="10" cy="10" r="7"/><path d="M10 6v4l2.5 2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded <%= affordance %>">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </div>
+        </div>
+      <% end %>
+      <% columns.each do |rows| %>
+        <div class="bg-white px-3 py-2 shadow-sm <%= edge %> <%= edge_bottom %>">
+          <div class="overflow-hidden rounded-md bg-slate-50 py-2 ring-1 ring-inset ring-slate-200">
+            <% number = 0 %>
+            <% rows.each do |change, pre, type| %>
+              <% number += 1 if pre %>
+              <div class="flex min-h-[18px] border-l-2 border-transparent pr-2.5 <%= change_tint(change) %>">
+                <span class="w-8 shrink-0 select-none pr-2 text-right font-mono text-[11px] leading-[18px] text-slate-500"><%= number if pre %></span>
+                <span class="whitespace-pre font-mono text-[12px] leading-[18px] text-slate-700"><%= pre %><% if type %><span class="rounded px-1 ring-1 ring-inset <%= type_tint(type) %>"><%= type %></span><% end %></span>
+              </div>
+            <% end %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+<% [
+     [ "Auth method · unchanged", "", "border-sky-400 bg-sky-100 text-sky-900",
+       "border-x border-sky-400", "rounded-b-xl border-b border-sky-400", "opacity-60",
+       [ [ "bearer", nil, "Token from POST /sessions" ], [ "bearer", nil, "Token from POST /sessions" ] ] ],
+     [ "Auth method · changed", "", "border-amber-400 bg-amber-100 text-slate-900",
+       "border-x border-amber-400", "rounded-b-xl border-b border-amber-400", "opacity-60",
+       [ [ "bearer", "type_changed", "Token from POST /sessions" ], [ "basic", "type_changed", "Operator credentials." ] ] ],
+     [ "Auth method · added", "col-start-2", "border-emerald-700 bg-emerald-700 text-white",
+       "col-start-2 border-x-2 border-emerald-500", "rounded-b-xl border-b-2 border-emerald-500", "opacity-90",
+       [ [ "bearer", nil, "Machine-to-machine calls." ] ] ],
+     [ "Auth method · removed", "col-start-1", "border-rose-700 bg-rose-700 text-white",
+       "col-start-1 border-x-2 border-rose-500", "rounded-b-xl border-b-2 border-rose-500", "opacity-90",
+       [ [ "basic", nil, "Retired in favour of UserToken." ] ] ]
+   ].each do |label, col, header_tint, edge, edge_bottom, affordance, columns| %>
+  <div>
+    <p class="mb-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600"><%= label %></p>
+    <div class="grid grid-cols-2 gap-x-2">
+      <% columns.size.times do %>
+        <div class="flex items-center gap-3 rounded-t-xl border px-2 py-2 shadow-sm <%= col %> <%= header_tint %>">
+          <span class="truncate font-mono text-[13px] font-medium">UserToken</span>
+          <div class="ml-auto flex items-center gap-2">
+            <span class="flex h-5 w-5 shrink-0 items-center justify-center rounded <%= affordance %>">
+              <svg class="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 8l5 5 5-5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </div>
+        </div>
+      <% end %>
+
+      <% columns.size.times do %>
+        <div class="bg-white shadow-sm <%= col %> <%= edge %>">
+          <div class="flex h-7 items-center gap-2 px-3 pt-2">
+            <span class="text-[10px] font-bold uppercase leading-none tracking-[0.08em] text-slate-700">Kind</span>
+            <span class="h-px flex-1 bg-slate-200"></span>
+          </div>
+        </div>
+      <% end %>
+      <% columns.each do |kind, kind_change, note| %>
+        <div class="bg-white px-3 py-2 shadow-sm <%= col %> <%= edge %>">
+          <div class="border-l-2 border-transparent pl-1.5 font-mono text-[12px] leading-[18px] text-slate-900 <%= change_tint(kind_change) %>"><%= kind %></div>
+        </div>
+      <% end %>
+
+      <% columns.size.times do %>
+        <div class="bg-white shadow-sm <%= col %> <%= edge %>">
+          <div class="flex h-7 items-center gap-2 px-3 pt-2">
+            <span class="text-[10px] font-bold uppercase leading-none tracking-[0.08em] text-slate-700">Note</span>
+            <span class="h-px flex-1 bg-slate-200"></span>
+          </div>
+        </div>
+      <% end %>
+      <% columns.each_with_index do |(kind, kind_change, note), index| %>
+        <div class="bg-white px-3 py-2 shadow-sm <%= col %> <%= edge %> <%= edge_bottom %>">
+          <div class="min-h-[20px] border-l-2 border-transparent pl-1.5 pr-2 text-sm leading-[20px] text-gray-700 <%= change_tint(kind_change && (index.zero? ? "removed" : "added")) %>"><%= note %></div>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+  </div>
+</section>
+
+<%# ── Comment layer ────────────────────────────────────────────────────── %>
+
+<section class="border-b border-slate-400 px-6 py-6">
+  <h2 class="text-[16px] font-semibold text-slate-800">Comment layer</h2>
+
+  <div class="mt-4 grid grid-cols-4 gap-4">
+    <% [
+         [ "Nothing here yet", "empty", 0 ],
+         [ "One open thread", "open", 1 ],
+         [ "Three threads", "open", 3 ],
+         [ "All resolved", "resolved", 2 ]
+       ].each do |label, kind, count| %>
+      <div class="comment-host rounded-md bg-white px-3 py-3 ring-1 ring-inset ring-slate-200">
+        <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600"><%= label %></p>
+        <div class="anchor-strip mt-2 flex items-center font-sans">
+          <span class="anchor-line pointer-events-none h-px flex-1"></span>
+          <div class="relative">
+            <% if kind == "open" %>
+              <span class="pin-fresh hidden"><span data-live-thread></span></span>
+            <% elsif kind == "resolved" %>
+              <span class="pin-fresh hidden"></span>
+            <% end %>
+            <button type="button" class="anchor-pin flex h-7 w-7 cursor-pointer items-center justify-center rounded-full bg-white <%= "anchor-pin-empty" if count.zero? %>">
+              <% unless count.zero? %>
+                <svg class="pin-icon-bubble h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M4.5 4h11A1.5 1.5 0 0 1 17 5.5v6a1.5 1.5 0 0 1-1.5 1.5H8.6L5 16v-3h-.5A1.5 1.5 0 0 1 3 11.5v-6A1.5 1.5 0 0 1 4.5 4Z" stroke-linejoin="round"/></svg>
+                <svg class="pin-icon-check h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.25"><path d="M4.5 10.5 8 14l7.5-8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <% end %>
+              <svg class="pin-icon-plus h-4 w-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.25"><path d="M10 4.5v11M4.5 10h11" stroke-linecap="round"/></svg>
+            </button>
+            <% if count > 1 %>
+              <span class="anchor-pin-count pointer-events-none absolute -bottom-0.5 -left-0.5 flex h-3.5 min-w-3.5 items-center justify-center rounded-full px-1 text-[9px] font-bold leading-none"><%= count %></span>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mt-6 grid grid-cols-2 gap-6">
+    <div>
+      <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Thread, in the margin panel</p>
+      <div class="mt-2 w-80 rounded-lg border border-slate-400 bg-white shadow-lg">
+        <div class="flex items-center gap-2 border-b border-slate-200 px-2.5 py-1.5">
+          <span class="inline-flex items-center rounded bg-slate-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-slate-700 ring-1 ring-inset ring-slate-200">Response</span>
+          <span class="truncate text-[11px] text-slate-600">line 3</span>
+        </div>
+        <div class="p-2.5">
+<div>
+  <div class="mb-1 flex items-center gap-2">
+    <span class="truncate text-[13px] font-semibold text-slate-800">two@example.com</span>
+    <span class="ml-auto shrink-0 text-[12px] text-slate-600">24 Aug 2026</span>
+  </div>
+  <div class="whitespace-pre-wrap text-[13px] leading-6 text-slate-700">Should this be nullable?</div>
 </div>
+<div class="mt-3 border-l-2 border-slate-200 pl-3">
+  <div class="mb-1 flex items-center gap-2">
+    <span class="truncate text-[13px] font-semibold text-slate-800">one@example.com</span>
+    <span class="shrink-0 rounded-full border border-slate-200 px-1.5 text-[11px] font-medium text-slate-600">Author</span>
+    <span class="ml-auto shrink-0 text-[12px] text-slate-600">25 Aug 2026</span>
+  </div>
+  <div class="whitespace-pre-wrap text-[13px] leading-6 text-slate-700">No — it is always present.</div>
+</div>
+          <div class="mt-2 flex items-start gap-1.5">
+            <button type="button" class="min-w-0 flex-1 cursor-text rounded border border-slate-400 bg-white px-2 py-1 text-left text-[12px] text-slate-500 hover:bg-slate-50">Reply…</button>
+            <span class="shrink-0 cursor-pointer rounded border border-slate-400 bg-white px-2 py-1 text-[12px] font-medium text-slate-700 hover:bg-slate-50">Resolve</span>
+          </div>
+        </div>
+      </div>
+
+      <p class="mt-4 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Resolved, collapsed</p>
+      <div class="mt-2 flex w-80 cursor-pointer items-center gap-1.5 rounded bg-slate-100 px-1.5 py-1 text-left ring-1 ring-inset ring-slate-200 hover:bg-slate-200">
+        <svg class="h-3.5 w-3.5 shrink-0 text-slate-600" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4.5 10.5 8 14l7.5-8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="truncate text-[11px] text-slate-700">Resolved by two@example.com</span>
+        <span class="ml-auto shrink-0 text-[11px] text-slate-600">2 comments</span>
+      </div>
+
+      <p class="mt-4 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Outdated</p>
+      <div class="mt-2 w-80 rounded border border-dashed border-slate-200 bg-slate-50 px-1.5 py-1 font-mono text-[11px] leading-4 text-slate-600">
+        <span class="font-sans text-[10px] uppercase tracking-wide text-slate-500">line 3 of</span>
+        <span class="break-all">  legacy_id: number</span>
+      </div>
+    </div>
+
+    <div>
+      <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Conversation thread</p>
+      <div class="mt-2 rounded-xl border border-slate-400 bg-white p-4 shadow-sm">
+        <div>
+          <div class="mb-1 flex items-center gap-2">
+            <span class="truncate text-[13px] font-semibold text-slate-800">one@example.com</span>
+            <span class="shrink-0 rounded-full border border-slate-200 px-1.5 text-[11px] font-medium text-slate-600">Author</span>
+            <span class="ml-auto shrink-0 text-[12px] text-slate-600">23 Aug 2026</span>
+          </div>
+          <div class="whitespace-pre-wrap text-[13px] leading-6 text-slate-700">Ready for another pass whenever you have a minute.</div>
+        </div>
+        <div class="mt-3 border-l-2 border-slate-200 pl-3">
+          <div class="mb-1 flex items-center gap-2">
+            <span class="truncate text-[13px] font-semibold text-slate-800">two@example.com</span>
+            <span class="ml-auto shrink-0 text-[12px] text-slate-600">24 Aug 2026</span>
+          </div>
+          <div class="whitespace-pre-wrap text-[13px] leading-6 text-slate-700">Looks good. One question on the 200 body.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<%# ── Sidebar ──────────────────────────────────────────────────────────── %>
+
+<section class="px-6 py-6">
+  <h2 class="text-[16px] font-semibold text-slate-800">Sidebar</h2>
+
+  <div class="mt-4 h-96 w-64 overflow-y-auto border-r border-slate-400">
+    <div class="flex w-64 flex-col px-3 pb-2">
+      <a href="#" class="-mx-3 flex h-7 items-center gap-2 pl-7 pr-2 text-[12px] font-semibold text-slate-800 hover:bg-white">
+        <span class="truncate">Conversation</span>
+        <span class="ml-auto shrink-0 text-slate-600"><%= render "comments/count_badge", count: 2 %></span>
+      </a>
+      <a href="#" class="-mx-3 flex h-7 items-center gap-2 pl-7 pr-2 text-[12px] font-semibold text-slate-800 hover:bg-white">
+        <span class="truncate">Release notes</span>
+      </a>
+
+      <%= render layout: "versions/sidebar_section", locals: { label: "Endpoints" } do %>
+        <%= render "versions/sidebar_link", href: "#", title: "GET /users", name: "/users", verb: "GET", annotation: nil %>
+        <%= render "versions/sidebar_link", href: "#", title: "POST /users", name: "/users", verb: "POST", annotation: "added",
+                   badge: tag.span(render("comments/count_badge", count: 1), class: "ml-auto shrink-0 text-slate-600") %>
+        <div class="sidebar-link-active">
+          <%= render "versions/sidebar_link", href: "#", title: "GET /users/:id", name: "/users/:id", verb: "GET", annotation: "changed" %>
+        </div>
+        <%= render "versions/sidebar_link", href: "#", title: "DELETE /users/:id", name: "/users/:id", verb: "DELETE", annotation: "removed" %>
+      <% end %>
+
+      <%= render layout: "versions/sidebar_section", locals: { label: "Entities" } do %>
+        <%= render "versions/sidebar_link", href: "#", title: "Customer", name: "Customer", annotation: nil %>
+        <%= render "versions/sidebar_link", href: "#", title: "PaginationMeta", name: "PaginationMeta", annotation: "added" %>
+      <% end %>
+
+      <%= render layout: "versions/sidebar_section", locals: { label: "Auth" } do %>
+        <%= render "versions/sidebar_link", href: "#", title: "UserToken", name: "UserToken", annotation: "changed" %>
+        <%= render "versions/sidebar_link", href: "#", title: "LegacyKey", name: "LegacyKey", annotation: "removed" %>
+      <% end %>
+    </div>
+  </div>
+</section>

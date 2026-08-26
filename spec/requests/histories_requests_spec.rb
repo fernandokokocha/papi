@@ -27,7 +27,7 @@ describe "History requests", type: :request do
       expect(response.body).to include("email")
     end
 
-    it "explains itself when no published version carries the entity" do
+    it "renders an empty page when no published version carries the entity" do
       unpublished_candidate = FactoryBot.create(:candidate, name: "open", project: project, order: 3)
       unpublished = FactoryBot.create(:version, project: nil, candidate: unpublished_candidate, name: "rc-v1", order: 1)
       fresh = FactoryBot.create(:entity, version: unpublished, name: "Invoice", root: "{id:number}")
@@ -36,7 +36,7 @@ describe "History requests", type: :request do
       get project_entity_history_path(project_name: project.name, entity_id: fresh.id)
 
       expect(response.status).to eq(200)
-      expect(response.body).to include("No published history yet")
+      expect(response.body).not_to include("Became")
     end
 
     it "refuses a member of another group" do
