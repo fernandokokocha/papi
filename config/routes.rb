@@ -22,11 +22,11 @@ Rails.application.routes.draw do
       resource :openapi, only: [ :show ], controller: "open_api"
       match "*", via: :all, to: "test_server#version", constraints: VersionTestServerConstraint.new
     end
-    resources :endpoints, only: [ :show ] do
+    resources :endpoints, only: [] do
       resource :history, only: [ :show ], controller: "endpoint_histories"
       resource :card, only: [ :show ], controller: "endpoint_cards"
     end
-    resources :entities, only: [ :show ] do
+    resources :entities, only: [] do
       resource :history, only: [ :show ], controller: "entity_histories"
       resource :card, only: [ :show ], controller: "entity_cards"
     end

@@ -35,8 +35,9 @@ logical identity instead (see Comment anchoring).
 
 Two things are rendered from a spec: a side-by-side diff against the previous
 version, and a mock server (`TestServerController`) that answers real HTTP
-requests under `/projects/:p/versions/:v/*` with example JSON built from the
-declared response schema.
+requests with example JSON built from the declared response schema. It serves a
+published version under `/projects/:p/versions/:v/*` and an open candidate under
+`/projects/:p/candidates/:c/*`, so a proposal is runnable before it is merged.
 
 ## Working here
 
@@ -148,13 +149,13 @@ stay row-aligned for side-by-side rendering.
   object reads as `no_change`. Every app-level "did this change?" question —
   `differs_from?`, `any_changes?` — goes through here.
 - *Structural identity* ("did the parser build the tree I wrote, in that
-  order?") is `Node#==`, and its only caller is the parser spec. It stays
-  positional: order is semantically meaningless but materially preserved,
-  because it drives diff line order, `to_example_json` key order, and the
-  serialize round trip.
+  order?") is `Node#==`, and only specs call it — the parser spec, and the few
+  tree assertions in `endpoint_spec`. It stays positional: order is semantically
+  meaningless but materially preserved, because it drives diff line order,
+  `to_example_json` key order, and the serialize round trip.
 
-Do not "fix" `Node#==` to be order-insensitive — that only weakens the parser
-spec's one assertion.
+Do not "fix" `Node#==` to be order-insensitive — that only weakens those
+assertions.
 
 ## Comment anchoring
 
@@ -170,9 +171,9 @@ comparing, never on write, or labels render as `GET /user/:`.
 
 `dom_id` is an MD5 of the key because the key holds paths and symbols that are
 invalid in HTML ids. Ruby is its only producer; JS only consumes ids Ruby
-rendered, so the key formula can change freely. Its derived ids
-(`<dom_id>_form`, `_line_threads`, `sidebar_count_<dom_id>`) are untyped string
-glue shared between ERB and JS, and nothing checks that the suffixes match.
+rendered, so the key formula can change freely. Its derived id
+(`sidebar_count_<dom_id>`) is untyped string glue shared between ERB and JS,
+and nothing checks that the suffix matches.
 
 ## Frontend
 

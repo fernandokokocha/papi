@@ -12,15 +12,6 @@ module NotesHelper
     end.to_h
   end
 
-  def schema_note_badge(note)
-    return "".html_safe if note.nil?
-
-    tag.span(class: "line-note") do
-      safe_join([ tag.span("i", class: "line-note-badge #{note.state}"),
-                  tag.span(note_card_content(note), class: "line-note-card line-note-body") ])
-    end
-  end
-
   private
 
   def notes_of(record)
@@ -35,12 +26,5 @@ module NotesHelper
     return RenderedNote.new(body: body, state: :no_change) if body == was
 
     RenderedNote.new(body: body, was: was, state: :changed)
-  end
-
-  def note_card_content(note)
-    return note.body if note.state == :no_change
-
-    safe_join([ (tag.span(note.was, class: "note-was") if note.was.present?),
-                tag.span(note.body, class: "note-now") ].compact)
   end
 end
