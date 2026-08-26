@@ -1,7 +1,7 @@
 <% base_version = @candidate.base_version || Version.null_version(@project) %>
-<% auth_methods = SchemaForm::AuthMethods.for_version(@version.auth_methods) %>
-<% blocks = SchemaForm::Blocks.for_version(@version) %>
-<% endpoints = SchemaForm::Endpoints.for_version(@version.endpoints) %>
+<% auth_methods = SchemaForm::AuthMethods.for_version(@version.auth_methods, base_version) %>
+<% blocks = SchemaForm::Blocks.for_version(@version, base_version) %>
+<% endpoints = SchemaForm::Endpoints.for_version(@version.endpoints, base_version) %>
 <% checks = SchemaForm::Checks.new(endpoints: endpoints, blocks: blocks, auth_methods: auth_methods, base: base_version) %>
 
 <%= form_with url: schema_edit_path, id: SchemaForm::OPS_FORM_ID do %>

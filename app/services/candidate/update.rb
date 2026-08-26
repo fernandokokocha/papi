@@ -13,7 +13,7 @@ class Candidate::Update
       @version.entities.destroy_all
       @version.auth_methods.destroy_all
 
-      params[:version][:endpoints_attributes] = params[:version][:endpoints_attributes].map do |endpoint_attr|
+      params[:version][:endpoints_attributes] = submitted_endpoints.map do |endpoint_attr|
         {
           path: endpoint_attr[:path],
           http_verb: endpoint_attr[:http_verb],
@@ -32,6 +32,12 @@ class Candidate::Update
   end
 
   private
+
+  # A candidate may take the last endpoint away, and a form holding none submits
+  # no endpoints_attributes at all: the key is absent, not empty.
+  def submitted_endpoints
+    params[:version][:endpoints_attributes] || []
+  end
 
   def format_params(params_hash)
     return [] unless params_hash

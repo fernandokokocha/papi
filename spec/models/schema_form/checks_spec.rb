@@ -12,9 +12,9 @@ describe SchemaForm::Checks do
   let!(:ok) { FactoryBot.create(:response, endpoint: endpoint, code: "200", note: "The customer.", output: "Customer") }
 
   let(:held) { Version.find(base.id) }
-  let(:endpoints) { SchemaForm::Endpoints.for_version(held.endpoints) }
-  let(:blocks) { SchemaForm::Blocks.for_version(held) }
-  let(:auth_methods) { SchemaForm::AuthMethods.for_version(held.auth_methods) }
+  let(:endpoints) { SchemaForm::Endpoints.for_version(held.endpoints, held) }
+  let(:blocks) { SchemaForm::Blocks.for_version(held, held) }
+  let(:auth_methods) { SchemaForm::AuthMethods.for_version(held.auth_methods, held) }
 
   def checks(endpoints: self.endpoints, blocks: self.blocks, auth_methods: self.auth_methods)
     described_class.new(endpoints: endpoints, blocks: blocks, auth_methods: auth_methods, base: held)

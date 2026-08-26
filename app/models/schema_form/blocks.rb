@@ -14,31 +14,45 @@ class SchemaForm::Blocks
     end)
   end
 
-  def self.for_entities(entities)
-    new(entities.map do |entity|
-      SchemaForm::Block.new(id: nil, field: nil, name: entity.name, root: entity.root,
-                            notes: SchemaForm::Note.for_record(entity))
-    end).renumbering
+  # Removed blocks go last so that renumbering leaves the slots the version is
+  # actually built from at the head, where the list rendering them agrees with
+  # the slot each one was stamped with.
+  def self.for_entities(entities, removed = [])
+    new(entities.map { |entity| entity_block(entity) } +
+        removed.map { |entity| entity_block(entity, removed: true) }).renumbering
   end
 
-  def self.for_version(version)
-    for_entities(version.entities) + new(version.endpoints.each_with_index.flat_map do |endpoint, index|
-      key = index.to_s
-      [ input_block(key, endpoint.input, SchemaForm::Note.for_record(endpoint)) ] +
-        endpoint.responses.sort_by(&:code).map do |response|
-          output_block(key, response.code, response.output, SchemaForm::Note.for_record(response))
-        end
-    end)
+  def self.entity_block(entity, removed: false)
+    SchemaForm::Block.new(id: nil, field: nil, name: entity.name, root: entity.root,
+                          notes: SchemaForm::Note.for_record(entity), removed: removed)
   end
 
-  def self.input_block(key, root, notes = [])
+  def self.for_version(version, base)
+    for_entities(version.entities, removed_entities(version.entities, base)) +
+      new(SchemaForm::Endpoints.live_and_removed(version.endpoints, base)
+        .each_with_index.flat_map do |(endpoint, removed), index|
+          key = index.to_s
+          [ input_block(key, endpoint.input, SchemaForm::Note.for_record(endpoint), removed: removed) ] +
+            endpoint.responses.sort_by(&:code).map do |response|
+              output_block(key, response.code, response.output, SchemaForm::Note.for_record(response), removed: removed)
+            end
+        end)
+  end
+
+  def self.removed_entities(entities, base)
+    base.entities.reject do |record|
+      entities.any? { |entity| entity.identity_name == record.identity_name }
+    end
+  end
+
+  def self.input_block(key, root, notes = [], removed: false)
     SchemaForm::Block.new(id: input_id(key), field: "version[endpoints_attributes][][input]",
                           notes_field: "version[endpoints_attributes][][schema_notes]",
-                          name: nil, root: root, notes: notes)
+                          name: nil, root: root, notes: notes, removed: removed)
   end
 
-  def self.output_block(key, code, root, notes = [])
-    SchemaForm::Block.new(id: output_id(key, code), name: nil, root: root, notes: notes,
+  def self.output_block(key, code, root, notes = [], removed: false)
+    SchemaForm::Block.new(id: output_id(key, code), name: nil, root: root, notes: notes, removed: removed,
                           field: "version[endpoints_attributes][][responses][#{code}][output]",
                           notes_field: "version[endpoints_attributes][][responses][#{code}][schema_notes]")
   end

@@ -23,8 +23,19 @@ class SchemaForm::Endpoints
     end)
   end
 
-  def self.for_version(endpoints)
-    new(endpoints.each_with_index.map do |endpoint, index|
+  # A removal is nowhere in the version — the endpoint simply is not in it — so
+  # the card it reopens as comes from the base. Blocks keys an endpoint's
+  # schemas off the same sequence, so the ordering is settled here once and read
+  # from there rather than worked out twice.
+  def self.live_and_removed(endpoints, base)
+    endpoints.map { |endpoint| [ endpoint, false ] } +
+      base.endpoints.reject { |record|
+        endpoints.any? { |endpoint| endpoint.identity_name == record.identity_name }
+      }.map { |record| [ record, true ] }
+  end
+
+  def self.for_version(endpoints, base)
+    new(live_and_removed(endpoints, base).each_with_index.map do |(endpoint, removed), index|
       SchemaForm::Endpoint.new(
         key: index.to_s, http_verb: endpoint.http_verb, path: endpoint.path,
         auth: endpoint.auth.to_s, note: endpoint.note.to_s,
@@ -34,7 +45,8 @@ class SchemaForm::Endpoints
         end,
         responses: endpoint.responses.sort_by(&:code).map do |response|
           SchemaForm::Response.new(code: response.code, note: response.note)
-        end
+        end,
+        removed: removed
       )
     end)
   end

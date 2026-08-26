@@ -48,6 +48,16 @@ describe "Candidates requests", type: :request do
       expect(response).to redirect_to(project_candidate_path(project.name, "rc1"))
     end
 
+    it "creates a candidate that declares no endpoints, which submits none at all" do
+      sign_in(user)
+
+      post project_candidates_path(project.name), params: valid_params.deep_merge(version: { endpoints_attributes: nil })
+
+      expect(response.status).to eq(302)
+      expect(Version.last.endpoints).to be_empty
+      expect(Version.last.entities.map(&:name)).to eq([ "User" ])
+    end
+
     it "persists response note and output through real controller params" do
       sign_in(user)
       post project_candidates_path(project.name), params: valid_params
@@ -165,6 +175,18 @@ describe "Candidates requests", type: :request do
       expect(response).to redirect_to(project_candidate_path(project.name, "rc1"))
     end
 
+    it "saves a candidate whose last endpoint was taken away, which submits no endpoints at all" do
+      sign_in(admin)
+      post project_candidates_path(project.name), params: valid_params
+      candidate_name = Candidate.last.name
+
+      patch project_candidate_path(project_name: project.name, name: candidate_name),
+            params: valid_params.deep_merge(version: { endpoints_attributes: nil })
+
+      expect(response.status).to eq(303)
+      expect(Version.last.endpoints).to be_empty
+    end
+
     it "does not accept if regular user from the group" do
       sign_in(admin)
       post project_candidates_path(project.name), params: valid_params
@@ -256,6 +278,60 @@ describe "Candidates requests", type: :request do
       expect(body).to include("Region comment on the body")
       expect(body).to include("Line comment on the body")
       expect(body).to include("verb_post /users")
+    end
+
+    it "reopens the removals the candidate holds, which live only in the base" do
+      version = FactoryBot.create(:version, project: project, candidate: candidate, name: "v1", order: 1)
+      doomed = FactoryBot.create(:endpoint, version: base_version, http_verb: "verb_post", path: "/doomed",
+                                 input: "{note:string}")
+      FactoryBot.create(:response, endpoint: doomed, code: "201", note: "Made", output: "{id:number}")
+      FactoryBot.create(:entity, version: base_version, name: "Doomed", root: "{a:string}")
+      FactoryBot.create(:auth_method, version: base_version, name: "DoomedAuth", kind: "bearer")
+      FactoryBot.create(:endpoint, version: version, http_verb: "verb_get", path: "/kept")
+
+      sign_in(admin)
+      get edit_project_candidate_path(project.name, candidate.name)
+
+      body = CGI.unescapeHTML(response.body)
+      expect(body).to include("/doomed")
+      expect(body).to include("Doomed")
+      expect(body).to include("DoomedAuth")
+      expect(body).to include("note")
+      expect(body).to include("Made")
+      expect(body.scan("Restore").size).to eq(3)
+      expect(body.scan(/name="((?:endpoints|blocks|auth_methods)\[[^"]*\]\[removed\])"/).flatten)
+        .to eq([ "endpoints[1][removed]", "blocks[endpoint_input_1][removed]",
+                 "blocks[endpoint_output_1_201][removed]", "blocks[entity_root_0][removed]",
+                 "auth_methods[0][removed]" ])
+    end
+
+    it "reads the same removals the candidate page reads" do
+      version = FactoryBot.create(:version, project: project, candidate: candidate, name: "v1", order: 1)
+      FactoryBot.create(:endpoint, version: base_version, http_verb: "verb_get", path: "/doomed")
+      FactoryBot.create(:endpoint, version: version, http_verb: "verb_get", path: "/kept")
+
+      sign_in(admin)
+      get project_candidate_path(project.name, candidate.name)
+      shown = response.body.include?("/doomed")
+
+      get edit_project_candidate_path(project.name, candidate.name)
+
+      expect(shown).to be(true)
+      expect(response.body.include?("/doomed")).to eq(shown)
+    end
+
+    it "keeps a candidate whose only change is a removal savable when it is reopened" do
+      version = FactoryBot.create(:version, project: project, candidate: candidate, name: "v1", order: 1)
+      doomed = FactoryBot.create(:endpoint, version: base_version, http_verb: "verb_get", path: "/doomed")
+      base_kept = FactoryBot.create(:endpoint, version: base_version, http_verb: "verb_get", path: "/kept")
+      kept = FactoryBot.create(:endpoint, version: version, http_verb: "verb_get", path: "/kept")
+      [ doomed, base_kept, kept ].each { |endpoint| FactoryBot.create(:response, endpoint: endpoint, code: "200", note: "ok") }
+
+      sign_in(admin)
+      get edit_project_candidate_path(project.name, candidate.name)
+
+      expect(response.body).to include("Save candidate</button>")
+      expect(response.body).not_to include("Nothing has changed yet")
     end
 
     it "renders a project's first candidate, which has nothing to be based on" do

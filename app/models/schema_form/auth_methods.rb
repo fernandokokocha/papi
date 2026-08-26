@@ -12,9 +12,16 @@ class SchemaForm::AuthMethods
     end)
   end
 
-  def self.for_version(auth_methods)
-    new(auth_methods.map do |auth_method|
-      SchemaForm::AuthMethod.new(name: auth_method.name, kind: auth_method.kind, note: auth_method.note)
+  def self.for_version(auth_methods, base)
+    removed = base.auth_methods.reject do |record|
+      auth_methods.any? { |auth_method| auth_method.identity_name == record.identity_name }
+    end
+
+    live_and_removed = auth_methods.map { |auth_method| [ auth_method, false ] } +
+                       removed.map { |record| [ record, true ] }
+
+    new(live_and_removed.map do |record, removal|
+      SchemaForm::AuthMethod.new(name: record.name, kind: record.kind, note: record.note, removed: removal)
     end)
   end
 

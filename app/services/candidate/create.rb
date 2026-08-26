@@ -37,8 +37,14 @@ class Candidate::Create
     params[:candidate][:decided_at] = nil
   end
 
+  # A candidate may take the last endpoint away, and a form holding none submits
+  # no endpoints_attributes at all: the key is absent, not empty.
+  def submitted_endpoints
+    params[:version][:endpoints_attributes] || []
+  end
+
   def formatted_endpoints
-    params[:version][:endpoints_attributes].map do |endpoint_attr|
+    submitted_endpoints.map do |endpoint_attr|
       {
         path: endpoint_attr[:path],
         http_verb: endpoint_attr[:http_verb],
