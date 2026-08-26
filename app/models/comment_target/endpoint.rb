@@ -11,7 +11,6 @@ class CommentTarget::Endpoint
   def scope = "endpoint"
   def parts = %w[whole note input auth]
   def required = %i[endpoint_path endpoint_http_verb]
-  def label_segments = [ "#{Endpoint.verb_word(http_verb)} #{path}" ]
 
   def record(version)
     Endpoint.find_by_identity(version, path, http_verb)

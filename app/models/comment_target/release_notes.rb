@@ -4,5 +4,4 @@ class CommentTarget::ReleaseNotes
   def scope = "release_notes"
   def parts = %w[whole]
   def required = []
-  def label_segments = []
 end

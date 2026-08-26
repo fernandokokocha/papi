@@ -1,6 +1,6 @@
 <% if @comment.reply? %>
   <%= turbo_stream.replace dom_id(@comment.parent) do %>
-    <%= render "comments/pin_thread", thread: @comment.parent %>
+    <%= render "comments/thread", thread: @comment.parent %>
   <% end %>
 <% elsif @comment.scope == "candidate" %>
   <%= turbo_stream.remove "no_comments_message" %>

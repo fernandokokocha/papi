@@ -127,13 +127,14 @@ describe "Candidates requests", type: :request do
     end
 
     it "links a merged candidate to its version" do
-      merged = FactoryBot.create(:candidate, project: project, name: "rc1", aasm_state: "merged")
+      merged = FactoryBot.create(:candidate, project: project, name: "rc1", aasm_state: "merged",
+                                 decided_by: author, decided_at: Time.current)
       version = FactoryBot.create(:version, project: project, candidate: merged, name: "v1", order: 1)
       sign_in(user)
 
       get project_candidate_path(project.name, merged.name)
 
-      expect(response.body).to include("View version")
+      expect(response.body).to include("Merged")
       expect(response.body).to include(project_version_path(project.name, version.name))
     end
 
@@ -247,7 +248,7 @@ describe "Candidates requests", type: :request do
     let(:base_version) { FactoryBot.create(:version, project: project, candidate: base_candidate, name: "base", order: 1) }
     let(:candidate) { FactoryBot.create(:candidate, name: "rc9", project: project, base_version: base_version) }
 
-    it "renders anchored comments read-only in the form data" do
+    it "keeps comments out of the form, which edits rather than reviews" do
       version = FactoryBot.create(:version, project: project, candidate: candidate, name: "v1", order: 1)
       FactoryBot.create(:endpoint, version: version, path: "/users", http_verb: "verb_get")
       candidate.comments.create!(author: user, body: "Please paginate", scope: "endpoint", part: "whole", endpoint_path: "/users", endpoint_http_verb: 0)
@@ -257,12 +258,13 @@ describe "Candidates requests", type: :request do
 
       expect(response).to have_http_status(:ok)
       body = CGI.unescapeHTML(response.body)
-      expect(body).to include("Please paginate")
-      expect(body).to include("verb_get /users")
-      expect(response.body).not_to include("Resolve thread")
+      expect(body).to include(%(value="verb_get"))
+      expect(body).to include(%(value="/users"))
+      expect(body).not_to include("Please paginate")
+      expect(response.body).not_to include("anchor-pin")
     end
 
-    it "carries input comments into the endpoint card the form renders" do
+    it "renders the input schema the endpoint card holds, comments or not" do
       version = FactoryBot.create(:version, project: project, candidate: candidate, name: "v1", order: 1)
       FactoryBot.create(:endpoint, version: version, path: "/users", http_verb: "verb_post", input: "{name:string}")
       candidate.comments.create!(author: user, body: "Region comment on the body", scope: "endpoint",
@@ -275,9 +277,11 @@ describe "Candidates requests", type: :request do
       get edit_project_candidate_path(project.name, candidate.name)
 
       body = CGI.unescapeHTML(response.body)
-      expect(body).to include("Region comment on the body")
-      expect(body).to include("Line comment on the body")
-      expect(body).to include("verb_post /users")
+      expect(body).to include(%(value="verb_post"))
+      expect(body).to include(%(value="/users"))
+      expect(body).to include("name")
+      expect(body).not_to include("Region comment on the body")
+      expect(body).not_to include("Line comment on the body")
     end
 
     it "reopens the removals the candidate holds, which live only in the base" do
@@ -342,16 +346,8 @@ describe "Candidates requests", type: :request do
       get edit_project_candidate_path(project.name, first_candidate.name)
 
       expect(response).to have_http_status(:ok)
-      expect(response.body).to include("No base version")
-    end
-
-    it "sends an empty comments map for a candidate with no comments" do
-      FactoryBot.create(:version, project: project, candidate: candidate, name: "v1", order: 1)
-
-      sign_in(admin)
-      get edit_project_candidate_path(project.name, candidate.name)
-
-      expect(CGI.unescapeHTML(response.body)).to include(%({"endpoints":{},"entities":{},"auth_methods":{}}))
+      expect(response.body).to include("Compared with")
+      expect(response.body).to include(%(<span class="font-mono text-[13px] text-slate-500">—</span>))
     end
 
     it "does not accept if regular user from the group" do
@@ -413,15 +409,28 @@ describe "Candidates requests", type: :request do
       expect(response.body).to include("Author")
     end
 
-    it "renders the new-comment form and a reply trigger per thread" do
+    it "offers reply on a candidate-level thread, and resolve to its candidate's author" do
       candidate = FactoryBot.create :candidate, project: project, name: "rc9", author: author
-      FactoryBot.create :comment, candidate: candidate, author: author, body: "Root comment"
+      thread = FactoryBot.create :comment, candidate: candidate, author: author, body: "Root comment"
 
-      sign_in(user)
+      sign_in(author)
       get project_candidate_path(project.name, candidate.name)
 
-      expect(response.body).to include("Leave a comment…")
       expect(response.body).to include("Reply…")
+      expect(response.body).to include(project_candidate_comment_resolution_path(project.name, candidate.name, thread))
+      expect(response.body).to include(">Resolve<")
+    end
+
+    it "collapses a resolved candidate-level thread behind who resolved it" do
+      candidate = FactoryBot.create :candidate, project: project, name: "rc9", author: author
+      FactoryBot.create :comment, :resolved, candidate: candidate, author: author, resolved_by: author, body: "Root comment"
+
+      sign_in(author)
+      get project_candidate_path(project.name, candidate.name)
+
+      expect(response.body).to include("data-controller=\"resolved-thread\"")
+      expect(response.body).to include("Resolved by #{author.email_address}")
+      expect(response.body).to include("Reopen")
     end
   end
 
@@ -437,11 +446,12 @@ describe "Candidates requests", type: :request do
 
       expect(response.body).to include("Endpoint thread body")
       expect(response.body).to include("Entity thread body")
-      expect(response.body).to include("💬")
-      expect(response.body).to include("data-comment-region")
+      expect(response.body).to include("anchor-pin")
+      expect(response.body).to include(CommentAnchor.new(scope: "endpoint", part: "whole", endpoint_path: "/", endpoint_http_verb: 0).dom_id)
+      expect(response.body).to include(CommentAnchor.new(scope: "entity", part: "whole", entity_name: "User").dom_id)
     end
 
-    it "renders output-line threads below the response on first (collapsed) load" do
+    it "hangs output-line threads off the line's margin pin, the drifted one apart" do
       sign_in(user)
       post project_candidates_path(project.name), params: {
         candidate: { project_id: project.id, name: "rc1" },
@@ -469,45 +479,16 @@ describe "Candidates requests", type: :request do
 
       get project_candidate_path(project.name, candidate.name)
 
-      expect(response.body).to include("GET /users → 200 → output · line 2")
-      expect(response.body).to include("GET /users → 200 → output · line 1")
+      output_anchor = CommentAnchor.new(scope: "response", part: "output",
+                                        endpoint_path: "/users", endpoint_http_verb: 0, response_code: "200")
+      expect(response.body).to include(output_anchor.with_line(2).dom_id)
       expect(response.body).to include("Do clients page through items[]")
-      expect(response.body).to include("Outdated")            # the drifted [User] snapshot
+      expect(response.body).to include(">Line<")               # the kind chip on the pin panel
+      expect(response.body).to include("Outdated")             # the drifted [User] snapshot
       expect(response.body).to include("[User]")               # snapshot shown for archeology
-      expect(response.body).to include(">Collapsed<")          # fresh line-2 comment, still collapsed
     end
 
-    it "marks pickable trees with normalized expanded-tree indices on the collapsed page" do
-      sign_in(user)
-      post project_candidates_path(project.name), params: {
-        candidate: { project_id: project.id, name: "rc1" },
-        version: {
-          name: "v1",
-          order: 1,
-          endpoints_attributes: [
-            { path: "/users",
-              http_verb: "verb_get",
-              input: "",
-              responses: { "200" => { note: "List users", output: "{total:number,items:[User]}" } } }
-          ],
-          entities_attributes: [
-            { name: "User", root: "{id:number,email:string,name:string}" }
-          ]
-        }
-      }
-      candidate = Candidate.find_by!(name: "rc1")
-
-      get project_candidate_path(project.name, candidate.name)
-
-      expect(response.body).to include('data-line-pick="comment_anchor_')
-      expect(response.body).to include('data-line-pick-label="GET /users → 200 → output"')
-      expect(response.body).to include('data-line-pick-label="User → root"')
-      expect(response.body).not_to include("data-line-pick-snapshot")
-      expect(response.body).to include('data-line-index="9"')   # the "]" row, normalized past the collapsed User subtree
-      expect(response.body).to include('data-line-index="10"')  # the closing "}" of the output tree
-    end
-
-    it "renders a hidden line compose form per pickable block" do
+    it "pins every schema line at its normalized expanded-tree index on the collapsed page" do
       sign_in(user)
       post project_candidates_path(project.name), params: {
         candidate: { project_id: project.id, name: "rc1" },
@@ -532,16 +513,43 @@ describe "Candidates requests", type: :request do
       output_anchor = CommentAnchor.new(scope: "response", part: "output",
                                         endpoint_path: "/users", endpoint_http_verb: 0, response_code: "200")
       root_anchor = CommentAnchor.new(scope: "entity", part: "root", entity_name: "User")
-      expect(response.body).to include("id=\"#{output_anchor.dom_id}_form\"")
-      expect(response.body).to include("id=\"#{output_anchor.dom_id}_form_home\"")
-      expect(response.body).to include("id=\"#{output_anchor.dom_id}_line_threads\"")
-      expect(response.body).to include("id=\"#{root_anchor.dom_id}_form\"")
-      expect(response.body).to include('name="comment[line]"')
-      expect(response.body).to include('name="expanded"')
-      expect(response.body).to include("data-pick-label")
+      expect(response.body).to include(output_anchor.with_line(0).dom_id)
+      expect(response.body).to include(root_anchor.with_line(0).dom_id)
+      expect(response.body).to include(output_anchor.with_line(9).dom_id)   # the "]" row, normalized past the collapsed User subtree
+      expect(response.body).to include(output_anchor.with_line(10).dom_id)  # the closing "}" of the output tree
     end
 
-    it "makes the input block pickable alongside the response output" do
+    it "renders one parked composer that every margin pin borrows" do
+      sign_in(user)
+      post project_candidates_path(project.name), params: {
+        candidate: { project_id: project.id, name: "rc1" },
+        version: {
+          name: "v1",
+          order: 1,
+          endpoints_attributes: [
+            { path: "/users",
+              http_verb: "verb_get",
+              input: "",
+              responses: { "200" => { note: "List users", output: "{total:number,items:[User]}" } } }
+          ],
+          entities_attributes: [
+            { name: "User", root: "{id:number,email:string,name:string}" }
+          ]
+        }
+      }
+      candidate = Candidate.find_by!(name: "rc1")
+
+      get project_candidate_path(project.name, candidate.name)
+
+      expect(response.body.scan("data-composer-target=\"home\"").size).to eq(1)
+      expect(response.body.scan("data-composer-target=\"form\"").size).to eq(1)
+      expect(response.body).to include('name="comment[line]"')
+      expect(response.body).to include('name="sublabel"')
+      expect(response.body).to include("data-composer-slot")
+      expect(response.body).to include("data-comment-anchor")
+    end
+
+    it "pins the input block's lines alongside the response output's" do
       sign_in(user)
       post project_candidates_path(project.name), params: {
         candidate: { project_id: project.id, name: "rc1" },
@@ -564,14 +572,15 @@ describe "Candidates requests", type: :request do
       get project_candidate_path(project.name, candidate.name)
 
       input_anchor = CommentAnchor.new(scope: "endpoint", part: "input", endpoint_path: "/users", endpoint_http_verb: 1)
-      expect(response.body).to include('data-line-pick-label="POST /users → input"')
-      expect(response.body).to include("id=\"#{input_anchor.dom_id}_form\"")
-      expect(response.body).to include("id=\"#{input_anchor.dom_id}_form_home\"")
-      expect(response.body).to include("id=\"#{input_anchor.dom_id}_line_threads\"")
-      expect(response.body).to include("data-comment-region=\"#{input_anchor.dom_id}\"")
+      output_anchor = CommentAnchor.new(scope: "response", part: "output",
+                                        endpoint_path: "/users", endpoint_http_verb: 1, response_code: "201")
+      expect(response.body).to include("id=\"#{input_anchor.dom_id}\"")
+      expect(response.body).to include(input_anchor.with_line(0).dom_id)
+      expect(response.body).to include(input_anchor.with_line(1).dom_id)
+      expect(response.body).to include(output_anchor.with_line(0).dom_id)
     end
 
-    it "renders input-line threads below the block on first (collapsed) load" do
+    it "hangs input-line threads off the line's margin pin, the drifted one apart" do
       sign_in(user)
       post project_candidates_path(project.name), params: {
         candidate: { project_id: project.id, name: "rc1" },
@@ -599,10 +608,11 @@ describe "Candidates requests", type: :request do
 
       get project_candidate_path(project.name, candidate.name)
 
-      expect(response.body).to include("POST /users → input · line 2")
+      input_anchor = CommentAnchor.new(scope: "endpoint", part: "input", endpoint_path: "/users", endpoint_http_verb: 1)
+      expect(response.body).to include(input_anchor.with_line(2).dom_id)
       expect(response.body).to include("Should email be optional on create?")
+      expect(response.body).to include(">Line<")       # the kind chip on the pin panel
       expect(response.body).to include("Outdated")     # the drifted {name:string} snapshot
-      expect(response.body).to include(">Collapsed<")  # fresh line-2 comment, still collapsed
     end
 
     it "labels an input region thread with the Input kind chip, not a raw part chip" do
@@ -625,9 +635,10 @@ describe "Candidates requests", type: :request do
 
       get project_candidate_path(project.name, candidate.name)
 
+      input_anchor = CommentAnchor.new(scope: "endpoint", part: "input", endpoint_path: "/users", endpoint_http_verb: 1)
       expect(response.body).to include("This body should take the whole profile")
       expect(response.body).to include(">Input<")                     # the kind chip
-      expect(response.body).to include("POST /users → input")         # the anchor label beside it
+      expect(response.body).to include("id=\"#{input_anchor.dom_id}\"")
       expect(response.body).not_to include(">input<")                 # never the raw part as its own chip
     end
 
@@ -658,7 +669,7 @@ describe "Candidates requests", type: :request do
 
       get project_candidate_path(project.name, candidate.name)
 
-      expect(response.body).to include("Resolve thread")
+      expect(response.body).to include(">Resolve<")
       expect(response.body).to include("Resolved by #{user.email_address}")
       expect(response.body).to include("data-controller=\"resolved-thread\"")
     end

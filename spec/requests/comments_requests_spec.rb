@@ -121,7 +121,7 @@ describe "Comments requests", type: :request do
         post_param_comment
 
         expect(Comment.last.param_name).to eq("id")
-        expect(Comment.last.anchor.label).to eq("GET /users/:id → :id")
+        expect(Comment.last.anchor.key).to eq(anchor.key)
         expect(Comment.last.anchor_snapshot).to be_nil
       end
 

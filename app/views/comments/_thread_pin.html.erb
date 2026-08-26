@@ -44,7 +44,7 @@
       <div class="min-h-0 overflow-y-auto p-2.5">
         <% threads.each_with_index do |thread, thread_index| %>
           <div class="pin-fresh <%= "mt-3 border-t border-slate-200 pt-3" if thread_index > 0 %>">
-            <%= render "comments/pin_thread", thread: thread %>
+            <%= render "comments/thread", thread: thread %>
           </div>
         <% end %>
 
@@ -60,7 +60,7 @@
                   <span class="font-sans text-[10px] uppercase tracking-wide text-slate-500">line <%= thread.line %> of</span>
                   <span class="break-all"><%= thread.anchor_snapshot %></span>
                 </div>
-                <%= render "comments/pin_thread", thread: thread %>
+                <%= render "comments/thread", thread: thread %>
               </div>
             <% end %>
           </div>

@@ -10,7 +10,6 @@ class CommentTarget::Entity
   def scope = "entity"
   def parts = %w[whole root]
   def required = %i[entity_name]
-  def label_segments = [ name ]
 
   def record(version)
     version.entities.find_by(name: name)

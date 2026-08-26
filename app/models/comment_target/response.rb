@@ -14,7 +14,6 @@ class CommentTarget::Response
   def scope = "response"
   def parts = %w[whole note output]
   def required = %i[endpoint_path endpoint_http_verb response_code]
-  def label_segments = [ "#{Endpoint.verb_word(http_verb)} #{path}", code ]
 
   def record(version)
     Endpoint.find_by_identity(version, path, http_verb).responses.find_by(code: code)

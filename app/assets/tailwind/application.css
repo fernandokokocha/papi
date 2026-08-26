@@ -36,12 +36,6 @@ body {
 
 /* ── Comment mode ── */
 
-.anchor-highlight {
-  outline: 2px solid var(--color-sky-400);
-  outline-offset: -2px;
-  border-radius: 0.5rem;
-}
-
 .margin-note-open { z-index: 40; }
 
 /* ── Margin comment pins ── */

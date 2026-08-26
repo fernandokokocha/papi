@@ -16,11 +16,4 @@ class CommentTarget::Param
   def scope = "param"
   def parts = %w[whole]
   def required = %i[endpoint_path endpoint_http_verb param_name param_location]
-  def label_segments = [ "#{Endpoint.verb_word(http_verb)} #{path}", token ]
-
-  private
-
-  def token
-    location == "query" ? "?#{name}" : ":#{name}"
-  end
 end

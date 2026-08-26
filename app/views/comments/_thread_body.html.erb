@@ -1,20 +1,23 @@
-<% line_badge = local_assigns[:line_badge] %>
-<% read_only = local_assigns[:read_only] %>
-<%= render "comments/comment", comment: comment, line_badge: line_badge %>
-<div id="<%= dom_id(comment, :replies) %>" class="pl-5">
-  <% comment.replies.sort_by(&:created_at).each do |reply| %>
-    <%= render "comments/reply", reply: reply %>
-  <% end %>
-</div>
-<% unless read_only %>
-  <div id="<%= dom_id(comment, :reply_form) %>" class="border-t border-gray-200 px-3 py-2.5" data-controller="reply">
-    <%= render "comments/reply_form", parent: comment, line_badge: line_badge %>
-  </div>
-  <% if policy(comment).resolve? && !comment.resolved? %>
-    <div class="border-t border-gray-200 px-3 py-1.5 flex justify-end">
-      <%= button_to "Resolve thread", project_candidate_comment_resolution_path(comment.candidate.project.name, comment.candidate.name, comment),
-            params: { line_badge: line_badge },
-            class: "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 text-xs font-medium px-3 py-1.5 rounded cursor-pointer" %>
+<%= render "comments/entries", thread: thread %>
+
+<div class="mt-2 flex items-start gap-1.5" data-controller="reply">
+  <% if policy(thread).create? %>
+    <div class="min-w-0 flex-1">
+      <button type="button" data-reply-target="trigger" data-action="reply#show"
+              class="w-full cursor-text rounded border border-slate-400 bg-white px-2 py-1 text-left text-[12px] text-slate-500 hover:bg-slate-50">Reply…</button>
+      <div data-reply-target="form" hidden>
+        <%= render "comments/reply_form", parent: thread %>
+      </div>
     </div>
   <% end %>
-<% end %>
+
+  <% if thread.resolved? && policy(thread).reopen? %>
+    <%= button_to "Reopen", project_candidate_comment_resolution_path(thread.candidate.project.name, thread.candidate.name, thread),
+          method: :delete, form: { class: "shrink-0" },
+          class: "cursor-pointer rounded border border-slate-400 bg-white px-2 py-1 text-[12px] font-medium text-slate-700 hover:bg-slate-50" %>
+  <% elsif policy(thread).resolve? %>
+    <%= button_to "Resolve", project_candidate_comment_resolution_path(thread.candidate.project.name, thread.candidate.name, thread),
+          form: { class: "shrink-0" },
+          class: "cursor-pointer rounded border border-slate-400 bg-white px-2 py-1 text-[12px] font-medium text-slate-700 hover:bg-slate-50" %>
+  <% end %>
+</div>

@@ -160,30 +160,6 @@ describe CommentAnchor do
     end
   end
 
-  describe "#label" do
-    it "reads response output down to the line" do
-      a = anchor(scope: "response", part: "output", line: 0,
-                 endpoint_path: "/users", endpoint_http_verb: 0, response_code: "200")
-      expect(a.label).to eq("GET /users → 200 → output · line 0")
-    end
-
-    it "reads an entity root" do
-      a = anchor(scope: "entity", part: "root", line: 0, entity_name: "User")
-      expect(a.label).to eq("User → root · line 0")
-    end
-
-    it "reads an endpoint input" do
-      a = anchor(scope: "endpoint", part: "input", line: 2, endpoint_path: "/users", endpoint_http_verb: 1)
-      expect(a.label).to eq("POST /users → input · line 2")
-    end
-
-    it "reads a param, keeping the endpoint's own param names" do
-      a = anchor(scope: "param", part: "whole",
-                 endpoint_path: "/users/:id", endpoint_http_verb: 0, param_name: "id")
-      expect(a.label).to eq("GET /users/:id → :id")
-    end
-  end
-
   describe "#kind" do
     it "names the coarse kind, preferring line over part over scope" do
       expect(anchor(scope: "candidate", part: "whole", line: nil,
@@ -227,7 +203,6 @@ describe CommentAnchor do
       built = described_class.for_auth_method(AuthMethod.new(name: "UserToken", kind: "bearer"))
 
       expect(built.key).to eq([ "auth_method", nil, nil, nil, nil, nil, nil, "UserToken", "whole", nil ])
-      expect(built.label).to eq("UserToken")
       expect(built.kind).to eq(:auth)
     end
 
@@ -302,13 +277,6 @@ describe CommentAnchor do
 
       expect(path.key).not_to eq(query.key)
       expect(path.dom_id).not_to eq(query.dom_id)
-    end
-
-    it "labels a query param with a question mark and a path param with a colon" do
-      endpoint = FactoryBot.build(:endpoint, path: "/users", http_verb: "verb_get")
-
-      expect(described_class.for_endpoint_param(endpoint, "q", "query").label).to eq("GET /users → ?q")
-      expect(described_class.for_endpoint_param(endpoint, "q", "path").label).to eq("GET /users → :q")
     end
   end
 
@@ -395,7 +363,6 @@ describe CommentAnchor do
       expect(built.key).to eq([ "release_notes", nil, nil, nil, nil, nil, nil, nil, "whole", nil ])
       expect(built.errors).to eq([])
       expect(built.kind).to eq(:release_notes)
-      expect(built.label).to eq("")
     end
 
     it "takes no line, because prose has no line the next edit leaves in place" do

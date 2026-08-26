@@ -42,30 +42,29 @@ describe "Version requests", type: :request do
       expect(response.body).to include("decider@example.com")
     end
 
-    it "offers both ways into a new candidate" do
+    it "offers a new candidate, and exports the version it is showing" do
       merged = FactoryBot.create(:candidate, project: project, aasm_state: "merged")
       merged_version = FactoryBot.create(:version, project: project, candidate: merged, name: "v1", order: 1)
       sign_in(user)
       get project_version_path(project.name, merged_version.name)
 
-      expect(response.body).to include(new_project_openapi_import_path(project_name: project.name))
       expect(response.body).to include(new_project_candidate_path(project_name: project.name))
+      expect(response.body).to include(project_version_openapi_path(project_name: project.name, version_name: "v1"))
     end
 
-    it "grays both of them out while a candidate is open" do
+    it "grays the new candidate out while one is open" do
       sign_in(user)
       get project_version_path(project.name, version.name)
 
-      expect(response.body).to include("Import OpenAPI")
-      expect(response.body).not_to include(new_project_openapi_import_path(project_name: project.name))
+      expect(response.body).to include("New candidate")
       expect(response.body).not_to include(new_project_candidate_path(project_name: project.name))
     end
 
-    it "links to the candidate that produced the version" do
+    it "names the candidate that produced the version, and links to it" do
       sign_in(user)
       get project_version_path(project.name, version.name)
 
-      expect(response.body).to include("View candidate")
+      expect(response.body).to include("Version #{version.name} from")
       expect(response.body).to include(project_candidate_path(project.name, candidate.name))
     end
 
@@ -99,7 +98,7 @@ describe "Version requests", type: :request do
       sign_in(user)
       get project_version_path(project.name, version.name)
 
-      expect(response.body).to include(">Params</div>")
+      expect(response.body).to include(">Params</span>")
       expect(response.body).to include(":taskId")
     end
 
@@ -112,7 +111,7 @@ describe "Version requests", type: :request do
       sign_in(user)
       get project_version_path(project.name, version.name)
 
-      expect(response.body).to include(">Query</div>")
+      expect(response.body).to include(">Query</span>")
       expect(response.body).to include("page?")
       expect(response.body).to include(%(data-clipboard-query-value="page=number&amp;q=string"))
     end
@@ -125,7 +124,7 @@ describe "Version requests", type: :request do
       get project_version_path(project.name, version.name)
 
       expect(response.status).to eq(200)
-      expect(response.body).not_to include(">Params</div>")
+      expect(response.body).not_to include(">Params</span>")
     end
 
     it "does not render candidate comment threads on the version page" do

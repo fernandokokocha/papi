@@ -4,5 +4,4 @@ class CommentTarget::Candidate
   def scope = "candidate"
   def parts = %w[whole]
   def required = []
-  def label_segments = []
 end

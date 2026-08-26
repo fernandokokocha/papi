@@ -57,9 +57,9 @@ describe "Release notes requests", type: :request do
 
     get project_candidate_path(project.name, candidate.name)
 
-    expect(response.body).to include("Release Notes")
-    expect(response.body).to include("<p class=\"text-sm text-gray-700\">Adds the search endpoint.</p>")
-    expect(response.body).to include("<p class=\"text-sm text-gray-700\">Asked for by the mobile team.</p>")
+    expect(response.body).to include("Release notes")
+    expect(response.body).to include("<p>Adds the search endpoint.</p>")
+    expect(response.body).to include("<p>Asked for by the mobile team.</p>")
   end
 
   it "renders the notes on the published version page" do
@@ -107,7 +107,7 @@ describe "Release notes requests", type: :request do
 
       get project_candidate_path(project.name, Candidate.last.name)
 
-      expect(response.body).to include("No release notes")
+      expect(response.body).to include("Release notes")
       expect(response.body).to include(CommentAnchor.for_release_notes.dom_id)
     end
 
@@ -119,8 +119,8 @@ describe "Release notes requests", type: :request do
 
       get project_version_path(project.name, candidate.reload.promoted_version.name)
 
-      expect(response.body).not_to include("No release notes")
       expect(response.body).not_to include("Release notes")
+      expect(response.body).not_to include(CommentAnchor.for_release_notes.dom_id)
     end
 
     it "counts the threads in the sidebar" do
@@ -135,15 +135,15 @@ describe "Release notes requests", type: :request do
       expect(CandidateComments.for(candidate).sidebar_count(CommentAnchor.for_release_notes)).to eq(2)
     end
 
-    it "shows the feedback read-only beside the textarea while the author edits" do
+    it "stays off the editor, which is where the notes are written rather than read" do
       sign_in(admin)
       candidate = create_candidate
       comment_on_release_notes(candidate, "Too terse")
 
       get edit_project_candidate_path(project_name: project.name, name: candidate.name)
 
-      expect(response.body).to include("Too terse")
-      expect(response.body).not_to include("Resolve thread")
+      expect(response.body).to include("Adds the search endpoint.")
+      expect(response.body).not_to include("Too terse")
     end
 
     it "survives the merge, staying on the candidate that raised it" do
@@ -165,7 +165,7 @@ describe "Release notes requests", type: :request do
 
     get new_project_candidate_path(project_name: project.name)
 
-    expect(response.body).to include("Release Notes")
+    expect(response.body).to include("Release notes")
     expect(response.body).not_to include("Adds the search endpoint.")
   end
 end

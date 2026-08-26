@@ -180,13 +180,6 @@ def without_line
     "comment_anchor_#{Digest::MD5.hexdigest(key.map(&:to_s).join("\x1f"))}"
   end
 
-  def label
-    segments = target.label_segments
-    segments += [ part ] unless part == "whole"
-    head = segments.join(" → ")
-    line ? "#{head} · line #{line}" : head
-  end
-
   def kind
     return :line if line
     return :note if part == "note"

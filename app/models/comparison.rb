@@ -18,6 +18,10 @@ class Comparison
     @after = after
   end
 
+  def release_notes?
+    before.release_notes.present? || after.release_notes.present?
+  end
+
   def endpoints
     @endpoints ||= Version::CategorizeByName.new(before.endpoints, after.endpoints).call
   end

@@ -21,6 +21,27 @@ describe "Projects requests", type: :request do
       expect(response.body).to include(project_version_path(project.name, "v1"))
       expect(response.body).to include(project_candidate_path(project.name, "rc1"))
     end
+
+    it "offers both ways into a new candidate" do
+      sign_in(user)
+
+      get project_path(project.name)
+
+      expect(response.body).to include(new_project_openapi_import_path(project_name: project.name))
+      expect(response.body).to include(new_project_candidate_path(project_name: project.name))
+    end
+
+    it "grays both of them out while a candidate is open" do
+      FactoryBot.create(:candidate, project: project, name: "rc1")
+      sign_in(user)
+
+      get project_path(project.name)
+
+      expect(response.body).to include("Import OpenAPI")
+      expect(response.body).to include("New candidate")
+      expect(response.body).not_to include(new_project_openapi_import_path(project_name: project.name))
+      expect(response.body).not_to include(new_project_candidate_path(project_name: project.name))
+    end
   end
 
   describe "#create" do
