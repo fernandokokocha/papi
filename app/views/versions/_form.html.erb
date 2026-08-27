@@ -10,6 +10,7 @@
 
 <div class="group [--pinned-offset:2.75rem]" data-sidebar="open"
      data-controller="sidebar ops-lock ops-metrics"
+     data-ops-lock-form-id-value="<%= SchemaForm::FORM_ID %>"
      data-action="turbo:submit-start@document->ops-lock#lock turbo:submit-end@document->ops-lock#unlock
                   turbo:before-fetch-request@document->ops-metrics#request
                   turbo:before-fetch-response@document->ops-metrics#response

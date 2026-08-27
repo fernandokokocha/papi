@@ -360,6 +360,13 @@ end
     expect(submit_bar(edited).at_css("button[type=submit]")["form"]).to eq(SchemaForm::FORM_ID)
   end
 
+  # Saving straight out of an edited field is swallowed: the blur fires an op,
+  # which covers the bar and re-renders the button before the click can land.
+  # The lock replays that save, and reaches the form by the id named here.
+  it "tells the ops lock which form a swallowed save replays" do
+    expect(form.at_css("[data-controller~=ops-lock]")["data-ops-lock-form-id-value"]).to eq(SchemaForm::FORM_ID)
+  end
+
   it "names what stops the form, and points at the card it came from" do
     broken = ops_params.tap do |params|
       params[:endpoints]["1"] = { http_verb: "verb_post", path: "/customers", added: "1" }
