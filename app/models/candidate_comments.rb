@@ -1,6 +1,4 @@
 class CandidateComments
-  EMPTY_CARD = { whole: [], lines: [] }.freeze
-
   LineComments = Data.define(:fresh, :outdated) do
     def by_line
       fresh.group_by(&:line)
@@ -21,16 +19,16 @@ class CandidateComments
 
   def initialize(roots)
     @by_anchor = {}
-    @endpoint_cards = {}
-    @entity_cards = {}
-    @auth_method_cards = {}
-    @release_notes_card = { whole: [], lines: [] }
-    @candidate_card = { whole: [], lines: [] }
+    @endpoint_counts = Hash.new(0)
+    @entity_counts = Hash.new(0)
+    @auth_method_counts = Hash.new(0)
+    @release_notes_count = 0
+    @candidate_count = 0
     @output_line_comments = {}
     @root_line_comments = {}
     @input_line_comments = {}
     roots.each { |comment| file(comment) }
-    sort_line_buckets
+    sort_line_comments
   end
 
   def threads_for(scope, endpoint: nil, entity: nil, auth_method: nil, response_code: nil, param_name: nil, param_location: nil, part: nil)
@@ -56,7 +54,13 @@ class CandidateComments
   end
 
   def sidebar_count(anchor)
-    card_for_anchor(anchor).values.sum(&:size)
+    case anchor.scope
+    when "candidate"     then @candidate_count
+    when "release_notes" then @release_notes_count
+    when "entity"        then @entity_counts[anchor.entity_name]
+    when "auth_method"   then @auth_method_counts[anchor.auth_method_name]
+    else @endpoint_counts[[ anchor.endpoint_identity_path, anchor.endpoint_http_verb ]]
+    end
   end
 
   def response_output_lines(endpoint, response_code)
@@ -93,7 +97,7 @@ class CandidateComments
     case comment.scope
     when "endpoint", "response", "param"
       key = comment_endpoint_key(comment)
-      into_card(@endpoint_cards, key, comment)
+      @endpoint_counts[key] += 1
       if comment.scope == "response" && comment.part == "output" && comment.line
         (@output_line_comments[[ *key, comment.response_code ]] ||= []) << comment
       end
@@ -101,40 +105,18 @@ class CandidateComments
         (@input_line_comments[key] ||= []) << comment
       end
     when "entity"
-      into_card(@entity_cards, comment.entity_name, comment)
+      @entity_counts[comment.entity_name] += 1
       (@root_line_comments[comment.entity_name] ||= []) << comment if comment.part == "root" && comment.line
     when "auth_method"
-      into_card(@auth_method_cards, comment.auth_method_name, comment)
+      @auth_method_counts[comment.auth_method_name] += 1
     when "release_notes"
-      @release_notes_card[:whole] << comment
+      @release_notes_count += 1
     when "candidate"
-      @candidate_card[:whole] << comment
+      @candidate_count += 1
     end
   end
 
-  def into_card(cards, key, comment)
-    card = (cards[key] ||= { whole: [], lines: [] })
-    (comment.line ? card[:lines] : card[:whole]) << comment
-  end
-
-  def card_for_anchor(anchor)
-    if anchor.scope == "candidate"
-      @candidate_card
-    elsif anchor.scope == "release_notes"
-      @release_notes_card
-    elsif anchor.scope == "entity"
-      @entity_cards.fetch(anchor.entity_name, EMPTY_CARD)
-    elsif anchor.scope == "auth_method"
-      @auth_method_cards.fetch(anchor.auth_method_name, EMPTY_CARD)
-    else
-      @endpoint_cards.fetch([ anchor.endpoint_identity_path, anchor.endpoint_http_verb ], EMPTY_CARD)
-    end
-  end
-
-  def sort_line_buckets
-    (@endpoint_cards.values + @entity_cards.values + @auth_method_cards.values).each do |card|
-      card[:lines].sort_by! { |comment| [ comment.line, comment.created_at ] }
-    end
+  def sort_line_comments
     (@output_line_comments.values + @root_line_comments.values + @input_line_comments.values).each do |list|
       list.sort_by! { |comment| [ comment.line, comment.created_at ] }
     end
