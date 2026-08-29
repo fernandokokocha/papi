@@ -39,7 +39,7 @@ describe "Release notes requests", type: :request do
     patch project_candidate_path(project_name: project.name, name: candidate.name),
           params: valid_params.deep_merge(version: { release_notes: "Reworded." })
 
-    expect(candidate.latest_version.reload.release_notes).to eq("Reworded.")
+    expect(candidate.proposed_version.reload.release_notes).to eq("Reworded.")
   end
 
   it "prefills the editor with what is already on the candidate's version" do

@@ -3,7 +3,7 @@ class Candidate::Reject
 
   def initialize(candidate, decided_by: Current.user)
     @candidate = candidate
-    @version = @candidate.latest_version
+    @version = @candidate.proposed_version
     @project = @candidate.project
     @decided_by = decided_by
   end

@@ -2,7 +2,7 @@ class Candidate < ApplicationRecord
   include AASM
 
   belongs_to :project
-  has_many :versions
+  has_one :version
   has_many :comments
   has_many :approvals, dependent: :destroy
   has_many :approvers, through: :approvals, source: :user
@@ -12,13 +12,12 @@ class Candidate < ApplicationRecord
 
   scope :open, -> { where(aasm_state: "open") }
 
-  def latest_version
-    versions.order(order: :desc).first || Version.null_version(project)
+  def proposed_version
+    version || Version.null_version(project)
   end
 
   def promoted_version
-    return nil unless merged?
-    versions.max_by(&:order)
+    version if merged?
   end
 
   def to_param

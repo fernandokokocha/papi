@@ -26,6 +26,21 @@ describe Candidate do
     end
   end
 
+  describe "#proposed_version" do
+    it "answers a null version when the candidate has none" do
+      candidate = FactoryBot.create(:candidate)
+
+      expect(candidate.proposed_version.order).to eq(-1)
+    end
+
+    it "answers the candidate's version" do
+      candidate = FactoryBot.create(:candidate)
+      version = FactoryBot.create(:version, candidate: candidate)
+
+      expect(candidate.proposed_version).to eq(version)
+    end
+  end
+
   describe "#promoted_version" do
     it "returns the merged candidate's version" do
       candidate = FactoryBot.create(:candidate, aasm_state: "merged")

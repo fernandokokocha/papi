@@ -117,7 +117,7 @@ describe Candidate::Create do
       service = Candidate::Create.new(query_params)
       service.call
 
-      endpoint = service.candidate.latest_version.endpoints.first
+      endpoint = service.candidate.proposed_version.endpoints.first
       expect(endpoint.query_params.map { |p| [ p.name, p.kind, p.required ] })
         .to eq([ [ "page", "number", false ], [ "q", "string", true ] ])
     end
@@ -126,7 +126,7 @@ describe Candidate::Create do
       service = Candidate::Create.new(query_params)
       service.call
 
-      expect(service.candidate.latest_version.endpoints.first.path_params).to eq([])
+      expect(service.candidate.proposed_version.endpoints.first.path_params).to eq([])
     end
   end
 

@@ -17,7 +17,7 @@
             <%= render "comments/conversation" %>
           <% end %>
         <% end %>
-        <%= render "versions/release_notes_section" if commenting || @comparison.release_notes? %>
+        <%= render "versions/release_notes_section" if release_notes_section? %>
         <%= render "versions/endpoints_and_entities" %>
         <%= render "comments/composer" if commenting %>
       </div>

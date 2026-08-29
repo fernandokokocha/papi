@@ -15,8 +15,10 @@ describe OpenAPI::Import do
     service
   end
 
+  # Read back rather than taken from the import: entities and auth methods are
+  # ordered by the association's scope, which only runs on a database read.
   def version(service)
-    service.candidate.latest_version
+    service.candidate.proposed_version.reload
   end
 
   def endpoint(service, name)

@@ -4,11 +4,7 @@ class Comparison
   end
 
   def self.for_candidate(candidate)
-    new(candidate.base_version || Version.null_version(candidate.project), candidate.latest_version)
-  end
-
-  def self.none
-    new(Version.new, Version.new)
+    new(candidate.base_version || Version.null_version(candidate.project), candidate.proposed_version)
   end
 
   attr_reader :before, :after
@@ -23,14 +19,14 @@ class Comparison
   end
 
   def endpoints
-    @endpoints ||= Version::CategorizeByName.new(before.endpoints, after.endpoints).call
+    @endpoints ||= CategorizeByName.new(before.endpoints, after.endpoints).call
   end
 
   def entities
-    @entities ||= Version::CategorizeByName.new(before.entities, after.entities).call
+    @entities ||= CategorizeByName.new(before.entities, after.entities).call
   end
 
   def auth_methods
-    @auth_methods ||= Version::CategorizeByName.new(before.auth_methods, after.auth_methods).call
+    @auth_methods ||= CategorizeByName.new(before.auth_methods, after.auth_methods).call
   end
 end

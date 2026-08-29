@@ -9,7 +9,7 @@
       </a>
     <% end %>
 
-    <% if @candidate || @comparison.release_notes? %>
+    <% if release_notes_section? %>
       <a href="#release-notes"
          data-sidebar-target="link"
          class="-mx-3 flex h-7 items-center gap-2 pl-7 pr-2 text-[12px] font-semibold text-slate-800 hover:bg-white">

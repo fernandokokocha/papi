@@ -72,9 +72,9 @@ class OpenAPI::Import
   # serialized JSON; here it goes through Diff, so a reordered object counts as
   # the no_change it is.
   def unchanged?(version)
-    categorized = Version::CategorizeByName.new(base_version.endpoints, version.endpoints).call +
-      Version::CategorizeByName.new(base_version.entities, version.entities).call +
-      Version::CategorizeByName.new(base_version.auth_methods, version.auth_methods).call
+    categorized = Comparison::CategorizeByName.new(base_version.endpoints, version.endpoints).call +
+      Comparison::CategorizeByName.new(base_version.entities, version.entities).call +
+      Comparison::CategorizeByName.new(base_version.auth_methods, version.auth_methods).call
 
     categorized.all? { |record| record.annotation == "unchanged" }
   end

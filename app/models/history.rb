@@ -21,9 +21,9 @@ class History
     new(project) { |version| version.entities.find_by(name: entity.name) }
   end
 
-  def initialize(project, &resolve)
+  def initialize(project, &find_in_version)
     @project = project
-    @resolve = resolve
+    @find_in_version = find_in_version
   end
 
   # A milestone is diffed against the version that last touched the thing, not
@@ -34,7 +34,7 @@ class History
     reference = nil
 
     @project.versions.order(:order).each_with_object([]) do |version, list|
-      current = @resolve.call(version)
+      current = @find_in_version.call(version)
 
       if current.nil?
         list << Milestone.new(version: version, kind: :removed, before: reference) if reference

@@ -8,7 +8,7 @@ class Candidate::Update
 
   def call
     ActiveRecord::Base.transaction do
-      @version = @candidate.versions.last
+      @version = @candidate.version
       @version.endpoints.destroy_all
       @version.entities.destroy_all
       @version.auth_methods.destroy_all

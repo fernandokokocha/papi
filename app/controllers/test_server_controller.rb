@@ -17,7 +17,7 @@ class TestServerController < ApplicationController
   def candidate
     project = Project.find_by!(name: request.params[:project_name])
     candidate = Candidate.find_by!(name: request.params[:candidate_name], project: project)
-    version = candidate.latest_version
+    version = candidate.proposed_version
     endpoint = Endpoint.from_candidate_request(request, version)
     return if refuse_unauthorized(endpoint)
 

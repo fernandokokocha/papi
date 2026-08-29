@@ -36,7 +36,7 @@ describe Candidate::Merge do
     create_service = Candidate::Create.new(valid_params(project))
     create_service.call
     @candidate = create_service.candidate
-    @version = @candidate.latest_version
+    @version = @candidate.proposed_version
   end
 
   subject { Candidate::Merge.new(@candidate) }

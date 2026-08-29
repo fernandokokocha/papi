@@ -168,7 +168,7 @@ describe "Importing an OpenAPI document and exporting it back" do
     service.call
     Candidate::Merge.new(service.candidate, decided_by: user).call
 
-    OpenAPI::Export.new(service.candidate.latest_version.reload).call
+    OpenAPI::Export.new(service.candidate.proposed_version.reload).call
   end
 
   it "keeps the paths, the schemas and nothing Papi cannot hold" do

@@ -18,7 +18,6 @@ class CandidatesController < ApplicationController
     @candidate.created_at = Time.zone.now
     @candidate.updated_at = Time.zone.now
     @candidate.base_version = @project.latest_version
-    @comparison = Comparison.none
 
     @version = @candidate.base_version.amoeba_dup
     @version.order = 1
@@ -47,8 +46,7 @@ class CandidatesController < ApplicationController
     @candidate = Candidate.find_by!(name: params[:name], project: @project)
     authorize @candidate
 
-    @version = @candidate.latest_version
-    @comparison = Comparison.for_candidate(@candidate)
+    @version = @candidate.proposed_version
   end
 
   def update

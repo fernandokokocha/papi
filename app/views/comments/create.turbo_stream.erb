@@ -18,7 +18,7 @@
   <%= turbo_stream.replace anchor.dom_id do %>
     <%= render "comments/rail_body", anchor: anchor,
                threads: candidate_comments.threads_at(anchor),
-               outdated: candidate_comments.outdated_lines_under(anchor, @candidate.latest_version),
+               outdated: candidate_comments.outdated_lines_under(anchor, @candidate.proposed_version),
                sublabel: params[:sublabel] %>
   <% end %>
   <% sidebar_anchor = CommentAnchor.sidebar_for(@comment) %>

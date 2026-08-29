@@ -26,9 +26,15 @@ module CommentsHelper
   end
 
   def can_comment?
-    return @can_comment unless @can_comment.nil?
+    return @can_comment if defined?(@can_comment)
 
     @can_comment = @candidate.present? && policy(Comment.new(candidate: @candidate)).create?
+  end
+
+  # An empty release-notes region survives only where it can be commented on,
+  # and the section and its sidebar link have to agree about that.
+  def release_notes_section?
+    @candidate.present? || @comparison.release_notes?
   end
 
   def sidebar_count_dom_id(anchor)

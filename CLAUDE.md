@@ -25,7 +25,12 @@ What it adds:
 
 A `Project` holds a chain of published `Version`s and a stream of `Candidate`s —
 the pull requests, `open → merged | rejected` (AASM). Merging a candidate
-promotes its latest version.
+promotes its version.
+
+**A candidate holds exactly one version** (`has_one :version`) — editing one
+overwrites that version in place rather than appending a second, so there is no
+per-edit history to read. `Candidate#proposed_version` is the reader, and it
+answers a `Version.null_version` when there is none.
 
 A version owns `Endpoint`s (verb + path + path/query params + input schema +
 `Response`s) and `Entity`s (named reusable schemas). Cutting a new version
@@ -172,8 +177,9 @@ comparing, never on write, or labels render as `GET /user/:`.
 `dom_id` is an MD5 of the key because the key holds paths and symbols that are
 invalid in HTML ids. Ruby is its only producer; JS only consumes ids Ruby
 rendered, so the key formula can change freely. Its derived id
-(`sidebar_count_<dom_id>`) is untyped string glue shared between ERB and JS,
-and nothing checks that the suffix matches.
+(`sidebar_count_<dom_id>`) is untyped string glue between the badge that renders
+it and the turbo streams that target it — `sidebar_count_dom_id` is the only
+thing keeping the two spellings in step, so both sides go through it.
 
 ## Frontend
 

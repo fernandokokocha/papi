@@ -7,8 +7,14 @@ class CandidateComments
     end
   end
 
+  def self.none
+    new([])
+  end
+
+  # The version page renders the same cards with no candidate behind them, so
+  # asking it for comments has to answer emptily rather than not be asked.
   def self.for(candidate)
-    return new([]) unless candidate
+    return none unless candidate
 
     new(candidate.comments.where(parent_id: nil).includes(:author, replies: :author).order(:created_at))
   end
@@ -20,10 +26,10 @@ class CandidateComments
     @auth_method_cards = {}
     @release_notes_card = { whole: [], lines: [] }
     @candidate_card = { whole: [], lines: [] }
-    @response_lines = {}
-    @entity_lines = {}
-    @input_lines = {}
-    roots.each { |comment| index(comment) }
+    @output_line_comments = {}
+    @root_line_comments = {}
+    @input_line_comments = {}
+    roots.each { |comment| file(comment) }
     sort_line_buckets
   end
 
@@ -49,42 +55,30 @@ class CandidateComments
     by_freshness(bucket, line_anchor.current_output(version)).outdated
   end
 
-  def card_for_endpoint(endpoint)
-    @endpoint_cards.fetch(endpoint_key(endpoint), EMPTY_CARD)
-  end
-
-  def card_for_entity(entity)
-    @entity_cards.fetch(entity.name, EMPTY_CARD)
-  end
-
-  def card_for_auth_method(auth_method)
-    @auth_method_cards.fetch(auth_method.name, EMPTY_CARD)
-  end
-
   def sidebar_count(anchor)
     card_for_anchor(anchor).values.sum(&:size)
   end
 
   def response_output_lines(endpoint, response_code)
     current_output = endpoint.responses.find { |r| r.code == response_code }&.output
-    by_freshness(@response_lines.fetch([ *endpoint_key(endpoint), response_code ], []), current_output)
+    by_freshness(@output_line_comments.fetch([ *endpoint_key(endpoint), response_code ], []), current_output)
   end
 
   def entity_root_lines(entity)
-    by_freshness(@entity_lines.fetch(entity.name, []), entity.root)
+    by_freshness(@root_line_comments.fetch(entity.name, []), entity.root)
   end
 
   def endpoint_input_lines(endpoint)
-    by_freshness(@input_lines.fetch(endpoint_key(endpoint), []), endpoint.input)
+    by_freshness(@input_line_comments.fetch(endpoint_key(endpoint), []), endpoint.input)
   end
 
   private
 
   def line_bucket(anchor)
     case anchor.part
-    when "output" then @response_lines.fetch([ anchor.endpoint_identity_path, anchor.endpoint_http_verb, anchor.response_code ], [])
-    when "input"  then @input_lines.fetch([ anchor.endpoint_identity_path, anchor.endpoint_http_verb ], [])
-    when "root"   then @entity_lines.fetch(anchor.entity_name, [])
+    when "output" then @output_line_comments.fetch([ anchor.endpoint_identity_path, anchor.endpoint_http_verb, anchor.response_code ], [])
+    when "input"  then @input_line_comments.fetch([ anchor.endpoint_identity_path, anchor.endpoint_http_verb ], [])
+    when "root"   then @root_line_comments.fetch(anchor.entity_name, [])
     end
   end
 
@@ -93,7 +87,7 @@ class CandidateComments
     LineComments.new(fresh: fresh, outdated: outdated)
   end
 
-  def index(comment)
+  def file(comment)
     (@by_anchor[comment.anchor_key] ||= []) << comment
 
     case comment.scope
@@ -101,14 +95,14 @@ class CandidateComments
       key = comment_endpoint_key(comment)
       into_card(@endpoint_cards, key, comment)
       if comment.scope == "response" && comment.part == "output" && comment.line
-        (@response_lines[[ *key, comment.response_code ]] ||= []) << comment
+        (@output_line_comments[[ *key, comment.response_code ]] ||= []) << comment
       end
       if comment.scope == "endpoint" && comment.part == "input" && comment.line
-        (@input_lines[key] ||= []) << comment
+        (@input_line_comments[key] ||= []) << comment
       end
     when "entity"
       into_card(@entity_cards, comment.entity_name, comment)
-      (@entity_lines[comment.entity_name] ||= []) << comment if comment.part == "root" && comment.line
+      (@root_line_comments[comment.entity_name] ||= []) << comment if comment.part == "root" && comment.line
     when "auth_method"
       into_card(@auth_method_cards, comment.auth_method_name, comment)
     when "release_notes"
@@ -141,7 +135,7 @@ class CandidateComments
     (@endpoint_cards.values + @entity_cards.values + @auth_method_cards.values).each do |card|
       card[:lines].sort_by! { |comment| [ comment.line, comment.created_at ] }
     end
-    (@response_lines.values + @entity_lines.values + @input_lines.values).each do |list|
+    (@output_line_comments.values + @root_line_comments.values + @input_line_comments.values).each do |list|
       list.sort_by! { |comment| [ comment.line, comment.created_at ] }
     end
   end

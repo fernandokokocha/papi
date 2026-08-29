@@ -39,7 +39,7 @@ describe "OpenAPI import requests", type: :request do
 
     candidate = project.candidates.sole
     expect(response).to redirect_to(project_candidate_path(project_name: "Shop", name: candidate.name))
-    expect(candidate.latest_version.endpoints.map(&:name)).to eq([ "GET /users" ])
+    expect(candidate.proposed_version.endpoints.map(&:name)).to eq([ "GET /users" ])
     expect(candidate.author).to eq(user)
   end
 

@@ -1,13 +1,13 @@
 require "rails_helper"
 
-describe Version::CategorizeByName do
+describe Comparison::CategorizeByName do
   let!(:group) { Group.create!(name: "g") }
   let!(:project) { Project.create!(name: "p", group: group) }
   let!(:v1) { FactoryBot.create(:version, project: project, name: "v1") }
   let!(:v2) { FactoryBot.create(:version, project: project, name: "v2") }
 
   def categorize(previous, current)
-    Version::CategorizeByName.new(previous, current).call
+    Comparison::CategorizeByName.new(previous, current).call
   end
 
   it "pairs an endpoint whose param was renamed, rather than replacing it" do

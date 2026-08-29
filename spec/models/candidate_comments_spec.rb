@@ -21,10 +21,10 @@ describe CandidateComments do
       expect(comments.threads_for("endpoint", endpoint: renamed, part: "whole")).to eq([ thread ])
     end
 
-    it "keeps the endpoint's comment card" do
+    it "keeps the endpoint's sidebar count" do
       comment_on("/users/:id", :endpoint_scope)
 
-      expect(comments.card_for_endpoint(renamed)[:whole].size).to eq(1)
+      expect(comments.sidebar_count(CommentAnchor.for_endpoint(renamed))).to eq(1)
     end
 
     it "keeps an input line comment attached" do
@@ -47,8 +47,7 @@ describe CandidateComments do
 
       expect(none.threads_for("endpoint", endpoint: endpoint)).to eq([])
       expect(none.sidebar_count(CommentAnchor.for_endpoint(endpoint))).to eq(0)
-      expect(none.card_for_endpoint(endpoint)).to eq(whole: [], lines: [])
-      expect(none.card_for_entity(entity)).to eq(whole: [], lines: [])
+      expect(none.sidebar_count(CommentAnchor.for_entity(entity))).to eq(0)
       expect(none.response_output_lines(endpoint, "200")).to eq(described_class::LineComments.new(fresh: [], outdated: []))
       expect(none.entity_root_lines(entity)).to eq(described_class::LineComments.new(fresh: [], outdated: []))
       expect(none.endpoint_input_lines(endpoint)).to eq(described_class::LineComments.new(fresh: [], outdated: []))
@@ -120,10 +119,9 @@ describe CandidateComments do
       expect(comments.threads_for("param", endpoint: renamed, param_name: "user_id", param_location: "path")).to eq([])
     end
 
-    it "counts into the endpoint's card and sidebar count" do
+    it "counts into the endpoint's sidebar count" do
       FactoryBot.create(:comment, :param_scope, candidate: candidate)
 
-      expect(comments.card_for_endpoint(param_endpoint)[:whole].size).to eq(1)
       expect(comments.sidebar_count(CommentAnchor.for_endpoint(param_endpoint))).to eq(1)
     end
   end
@@ -144,26 +142,19 @@ describe CandidateComments do
     end
   end
 
-  describe "#card_for_endpoint / #card_for_entity" do
-    it "splits a card's threads into whole-scope and line-anchored" do
-      whole = FactoryBot.create(:comment, :endpoint_scope, candidate: candidate)
-      response_whole = FactoryBot.create(:comment, :response_scope, candidate: candidate)
-      line = FactoryBot.create(:comment, :response_scope, candidate: candidate, part: "output", line: 2, anchor_snapshot: "x")
-      input_whole = FactoryBot.create(:comment, :endpoint_input, candidate: candidate)
-      input_line = FactoryBot.create(:comment, :endpoint_input, candidate: candidate, line: 1, anchor_snapshot: "x")
-      entity_whole = FactoryBot.create(:comment, :entity_scope, candidate: candidate)
-      entity_line = FactoryBot.create(:comment, :entity_scope, candidate: candidate, part: "root", line: 0, anchor_snapshot: "x")
+  describe "line-anchored threads in the count" do
+    it "counts them alongside the whole-scope ones, under the target they hang from" do
+      FactoryBot.create(:comment, :endpoint_scope, candidate: candidate)
+      FactoryBot.create(:comment, :response_scope, candidate: candidate)
+      FactoryBot.create(:comment, :response_scope, candidate: candidate, part: "output", line: 2, anchor_snapshot: "x")
+      FactoryBot.create(:comment, :endpoint_input, candidate: candidate)
+      FactoryBot.create(:comment, :endpoint_input, candidate: candidate, line: 1, anchor_snapshot: "x")
+      FactoryBot.create(:comment, :entity_scope, candidate: candidate)
+      FactoryBot.create(:comment, :entity_scope, candidate: candidate, part: "root", line: 0, anchor_snapshot: "x")
 
-      # the card is what the edit form renders, so input rides along with no extra wiring
-      endpoint_card = comments.card_for_endpoint(endpoint)
-      expect(endpoint_card[:whole]).to contain_exactly(whole, response_whole, input_whole)
-      expect(endpoint_card[:lines]).to eq([ input_line, line ])
-
-      entity_card = comments.card_for_entity(entity)
-      expect(entity_card[:whole]).to eq([ entity_whole ])
-      expect(entity_card[:lines]).to eq([ entity_line ])
-
-      expect(comments.card_for_endpoint(other_endpoint)).to eq(whole: [], lines: [])
+      expect(comments.sidebar_count(CommentAnchor.for_endpoint(endpoint))).to eq(5)
+      expect(comments.sidebar_count(CommentAnchor.for_entity(entity))).to eq(2)
+      expect(comments.sidebar_count(CommentAnchor.for_endpoint(other_endpoint))).to eq(0)
     end
   end
 
@@ -249,12 +240,6 @@ describe CandidateComments do
       expect(comments.threads_for("auth_method", auth_method: other_method, part: "whole")).to eq([])
     end
 
-    it "builds the method's comment card" do
-      FactoryBot.create(:comment, :auth_method_scope, candidate: candidate)
-
-      expect(comments.card_for_auth_method(auth_method)[:whole].size).to eq(1)
-    end
-
     it "counts a method's threads in the sidebar" do
       FactoryBot.create(:comment, :auth_method_scope, candidate: candidate)
 
@@ -267,8 +252,8 @@ describe CandidateComments do
       thread = FactoryBot.create(:comment, :endpoint_auth, candidate: candidate)
 
       expect(comments.threads_for("endpoint", endpoint: endpoint, part: "auth")).to eq([ thread ])
-      expect(comments.card_for_endpoint(endpoint)[:whole]).to eq([ thread ])
-      expect(comments.card_for_auth_method(auth_method)[:whole]).to eq([])
+      expect(comments.sidebar_count(CommentAnchor.for_endpoint(endpoint))).to eq(1)
+      expect(comments.sidebar_count(CommentAnchor.for_auth_method(auth_method))).to eq(0)
     end
   end
 end

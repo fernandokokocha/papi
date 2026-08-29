@@ -19,6 +19,6 @@ class Comment::Create
   def assign_anchor(anchor_params)
     anchor = CommentAnchor.from_params(anchor_params)
     @comment.assign_attributes(anchor.to_columns)
-    @comment.anchor_snapshot = anchor.current_output(@candidate.latest_version) if anchor.line
+    @comment.anchor_snapshot = anchor.current_output(@candidate.proposed_version) if anchor.line
   end
 end

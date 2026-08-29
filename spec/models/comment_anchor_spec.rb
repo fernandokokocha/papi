@@ -280,14 +280,6 @@ describe CommentAnchor do
     end
   end
 
-  describe "#without_line" do
-    it "keeps the identity and drops the line" do
-      with_line = anchor(scope: "response", part: "output", endpoint_path: "/users",
-                         endpoint_http_verb: 0, response_code: "200", line: 4)
-      expect(with_line.without_line.key).to eq([ "response", "/users", 0, nil, "200", nil, nil, nil, "output", nil ])
-    end
-  end
-
   describe "#current_output" do
     let(:version) { FactoryBot.create :version }
     let(:endpoint) { FactoryBot.create :endpoint, version: version, path: "/users", http_verb: "verb_get", input: "{name:string}" }

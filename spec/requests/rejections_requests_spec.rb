@@ -42,7 +42,7 @@ describe "Rejections requests", type: :request do
         sign_in(admin)
         post project_candidates_path(project.name), params: valid_params
         @candidate = Candidate.last
-        @candidate_version = @candidate.latest_version
+        @candidate_version = @candidate.proposed_version
       end
 
       it "merges a candidate if admin from the group" do
