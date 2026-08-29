@@ -12,6 +12,7 @@ class CommentTarget::Response
   end
 
   def scope = "response"
+  def kind = :response
   def parts = %w[whole note output]
   def required = %i[endpoint_path endpoint_http_verb response_code]
 

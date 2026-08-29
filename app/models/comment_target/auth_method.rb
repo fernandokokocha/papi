@@ -8,6 +8,7 @@ class CommentTarget::AuthMethod
   end
 
   def scope = "auth_method"
+  def kind = :auth
   def parts = %w[whole note]
   def required = %i[auth_method_name]
 

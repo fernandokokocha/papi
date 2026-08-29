@@ -9,6 +9,7 @@ class CommentTarget::Endpoint
   end
 
   def scope = "endpoint"
+  def kind = :endpoint
   def parts = %w[whole note input auth]
   def required = %i[endpoint_path endpoint_http_verb]
 

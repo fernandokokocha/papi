@@ -1,13 +1,15 @@
 require "digest/md5"
 
 class CommentAnchor
-  IDENTITY_COLUMNS = %i[endpoint_path endpoint_http_verb entity_name response_code param_name param_location auth_method_name].freeze
   LINE_PARTS = %w[note output root input].freeze
+  # A part that names a kind of its own outranks the target's; every other part
+  # (whole, root, output) reads as whatever is being commented on.
+  PART_KINDS = { "note" => :note, "input" => :input, "auth" => :auth }.freeze
   COLUMNS = %i[scope part line endpoint_path endpoint_http_verb entity_name response_code param_name param_location auth_method_name].freeze
   # A region pin also carries the outdated line threads of the block below it,
   # so it has to know which part those lines live on.
   REGION_LINE_PARTS = { %w[response whole] => "output", %w[endpoint input] => "input", %w[entity whole] => "root" }.freeze
-  private_constant :IDENTITY_COLUMNS, :LINE_PARTS, :REGION_LINE_PARTS
+  private_constant :LINE_PARTS, :PART_KINDS, :REGION_LINE_PARTS
 
   def self.parts_for(scope)
     CommentTarget.parts_for(scope)
@@ -57,7 +59,7 @@ class CommentAnchor
     target.required.each do |column|
       result << [ column, "is required for scope #{scope}" ] if @identity[column].blank?
     end
-    (IDENTITY_COLUMNS - target.required).each do |column|
+    (CommentTarget.identity_columns - target.required).each do |column|
       result << [ column, "must be blank for scope #{scope}" ] if @identity[column].present?
     end
 
@@ -174,17 +176,7 @@ class CommentAnchor
 
   def kind
     return :line if line
-    return :note if part == "note"
-    return :input if part == "input"
-    return :auth if part == "auth"
-    case scope
-    when "endpoint"      then :endpoint
-    when "entity"        then :entity
-    when "response"      then :response
-    when "param"         then :param
-    when "auth_method"   then :auth
-    when "release_notes" then :release_notes
-    else :conversation
-    end
+
+    PART_KINDS.fetch(part) { target.kind }
   end
 end

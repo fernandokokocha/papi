@@ -14,6 +14,7 @@ class CommentTarget::Param
   end
 
   def scope = "param"
+  def kind = :param
   def parts = %w[whole]
   def required = %i[endpoint_path endpoint_http_verb param_name param_location]
 end

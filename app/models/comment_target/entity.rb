@@ -8,6 +8,7 @@ class CommentTarget::Entity
   end
 
   def scope = "entity"
+  def kind = :entity
   def parts = %w[whole root]
   def required = %i[entity_name]
 
