@@ -62,14 +62,17 @@ discussion is a decision record, not a plan.
 
 ## The schema DSL
 
-The core of the app.
+The core of the app. It lives under `Schema::` in `app/models/schema/` — the
+parser, the `Node` tree it builds, and the two indexes that read line positions
+off a rendered tree. `SchemaForm::` is the editor built on top and is a
+different thing; `SchemaNote` is an ActiveRecord model and is a third.
 
 **A whole schema is one string in one column** — `endpoints.input`,
 `responses.output`, `entities.root`. There are no schema tables and no JSON
 columns; the database knows nothing about the structure. Every read parses the
-string into a `Node::*` tree (`JSONSchemaParser`), every write serializes a tree
-back (`Node#serialize`), and the round trip is exact. Nothing may cache a parsed
-tree across a write.
+string into a `Schema::Node::*` tree (`Schema::Parser`), every write serializes
+a tree back (`Schema::Node#serialize`), and the round trip is exact. Nothing may
+cache a parsed tree across a write.
 
 ```
 string | number | boolean | null        primitives
@@ -77,15 +80,15 @@ string | number | boolean | null        primitives
 [T]                                     array
 (A|B)                                   one-of
 Customer                                reference to an Entity by name
-                                        empty string → Node::Nothing
+                                        empty string → Schema::Node::Nothing
 ```
 
-**`Nothing` is not `null`.** `Node::Nothing` is *absence* — nothing was
-declared, and it serializes to the empty string. `Node::Primitive(kind: "null")`
-is JSON's `null`, a first-class type that can sit in a union like
-`(string|null)`. Nothing is legal only as a whole value: `parse_value("")`
-raises, and the form offers "nothing" only at an endpoint input or a response
-output root (`SchemaForm::Blocks#locals_for`).
+**`Nothing` is not `null`.** `Schema::Node::Nothing` is *absence* — nothing was
+declared, and it serializes to the empty string.
+`Schema::Node::Primitive(kind: "null")` is JSON's `null`, a first-class type
+that can sit in a union like `(string|null)`. Nothing is legal only as a whole
+value: `parse_value("")` raises, and the form offers "nothing" only at an
+endpoint input or a response output root (`SchemaForm::Blocks#locals_for`).
 
 **A one-of has at least two branches, and no two branches share a named type.**
 `(string|string)` and a bare `(string)` are both meaningless, and a branch may
@@ -121,30 +124,36 @@ not correctness.
 **Entities nest to any depth; only cycles are banned.** `Order` may reference
 `Customer`, which references `Address`, and so on — there is no depth limit.
 Cycles are rejected by `Version#entity_references_are_acyclic` (via
-`EntityReferences`), and not out of paranoia: a circle *hangs*
+`Schema::EntityReferences`), and not out of paranoia: a circle *hangs*
 `Diff::EntityToEntity` and `to_example_json` rather than raising, and a hang is
 the one failure mode simplicity-over-correctness does not cover. The form
 won't offer a cycle-forming name at any depth
 (`Version#referenceable_entity_names`), so the validation is a backstop.
 
-**Expansion goes all the way down.** `Node::Entity#expand` returns
+**Expansion goes all the way down.** `Schema::Node::Entity#expand` returns
 `parsed_root.expand`, so a reference becomes its entity's body and every
 reference inside that body is replaced too, down to primitives. Nothing bounds
 the recursion but `Version#entity_references_are_acyclic` — a circle recurses
 forever rather than raising, which is the other reason cycles are banned.
 
-`ExpandedLineIndex#rows_for` has to agree with it. It counts a collapsed
-reference as `Entity#to_lines`, which is expanded for exactly that reason, so
+`Schema::ExpandedLineIndex#rows_for` has to agree with it. It counts a collapsed
+reference as `Schema::Node::Entity#to_lines`, which is expanded for that reason, so
 the index a comment anchors to survives expanding the block above it. Change one
 and the other has to move with it.
 
 ## Diff
 
+Everything that compares lives under `Diff::` in `app/models/diff/`, at two
+levels. The record-level entry points — `Diff::FromEndpoints`,
+`Diff::FromResponses`, `Diff::FromParams`, `Diff::FromAuth`, `Diff::FromNotes` —
+answer "did this record change?"; the schema-value level below them is
+`Diff::FromValues`.
+
 `Diff::FromValues` dispatches on the pair of node classes by constantizing
-`Diff::<Before>To<After>` — six node types, so thirty-six classes in
-`app/models/diff/`. Adding a node type means adding its full row and column.
-Output is two `Diff::Lines` columns padded with blank lines so before and after
-stay row-aligned for side-by-side rendering.
+`Diff::<Before>To<After>` — six node types, so thirty-six classes. Adding a node
+type means adding its full row and column. Output is two `Diff::Lines` columns
+padded with blank lines so before and after stay row-aligned for side-by-side
+rendering. (`Diff::TextLine` is the note diff's line, and is not `Diff::Line`.)
 
 **Two different equalities live in two different layers. Keep them there.**
 
@@ -154,12 +163,12 @@ stay row-aligned for side-by-side rendering.
   object reads as `no_change`. Every app-level "did this change?" question —
   `differs_from?`, `any_changes?` — goes through here.
 - *Structural identity* ("did the parser build the tree I wrote, in that
-  order?") is `Node#==`, and only specs call it — the parser spec, and the few
-  tree assertions in `endpoint_spec`. It stays positional: order is semantically
+  order?") is `Schema::Node#==`, and only specs call it — the parser spec, and
+  the few tree assertions in `endpoint_spec`. It stays positional: order is semantically
   meaningless but materially preserved, because it drives diff line order,
   `to_example_json` key order, and the serialize round trip.
 
-Do not "fix" `Node#==` to be order-insensitive — that only weakens those
+Do not "fix" `Schema::Node#==` to be order-insensitive — that only weakens those
 assertions.
 
 ## Comment anchoring

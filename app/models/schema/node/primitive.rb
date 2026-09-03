@@ -1,0 +1,46 @@
+class Schema::Node::Primitive
+  attr_accessor :kind
+
+  def initialize(kind: "string")
+    @kind = kind
+  end
+
+  def to_diff(change, indent = 0)
+    Diff::Lines.new([
+      Diff::Line.new(kind.to_s, change, indent)
+    ])
+  end
+
+  def to_example_json
+    case kind
+    when "string"
+      '"abc"'
+    when "number"
+      "0"
+    when "boolean"
+      "true"
+    when "null"
+      "null"
+    end
+  end
+
+  def serialize
+    kind.to_s
+  end
+
+  def ==(other)
+    self.class == other.class && kind == other.kind
+  end
+
+  def expand
+    self
+  end
+
+  def expandable?
+    false
+  end
+
+  def entity_names
+    []
+  end
+end

@@ -6,7 +6,7 @@ module NotesHelper
     previous = notes_of(previous_record)
     return {} if current.empty? && previous.empty?
 
-    SchemaPathIndex.new(lines).first_row_per_path.filter_map do |path, row|
+    Schema::PathIndex.new(lines).first_row_per_path.filter_map do |path, row|
       next unless current.key?(path) || previous.key?(path)
       [ row, rendered_note(current[path], previous[path], previous_record) ]
     end.to_h

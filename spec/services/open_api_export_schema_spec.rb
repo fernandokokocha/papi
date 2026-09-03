@@ -2,7 +2,7 @@ require "rails_helper"
 
 describe OpenAPI::ExportSchema do
   def schema(value, entities: [])
-    OpenAPI::ExportSchema.new(JSONSchemaParser.new(entities).parse_value(value)).call
+    OpenAPI::ExportSchema.new(Schema::Parser.new(entities).parse_value(value)).call
   end
 
   it "maps every primitive onto its JSON Schema type" do
@@ -79,6 +79,6 @@ describe OpenAPI::ExportSchema do
   end
 
   it "refuses to express nothing" do
-    expect { OpenAPI::ExportSchema.new(Node::Nothing.new).call }.to raise_error(/no JSON Schema equivalent/)
+    expect { OpenAPI::ExportSchema.new(Schema::Node::Nothing.new).call }.to raise_error(/no JSON Schema equivalent/)
   end
 end

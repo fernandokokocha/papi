@@ -8,8 +8,8 @@ class Diff::OneOfToOneOf
     branch_count = [ value1.branches.length, value2.branches.length ].max
     branch_count.times do |position|
       subdiff = Diff::FromValues.new(
-        value1.branches[position] || Node::Nothing.new,
-        value2.branches[position] || Node::Nothing.new,
+        value1.branches[position] || Schema::Node::Nothing.new,
+        value2.branches[position] || Schema::Node::Nothing.new,
         indent + 1
       )
       before.concat(subdiff.before)

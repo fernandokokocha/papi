@@ -183,7 +183,7 @@ class SchemaForm::Blocks
   # itself have been removed by then, so display parses against every name the
   # form still holds rather than against the version being built.
   def parse(block)
-    parser = JSONSchemaParser.new(all_records)
+    parser = Schema::Parser.new(all_records)
     block.entity? ? parser.parse_value(block.root) : parser.parse_whole_value(block.root)
   end
 
@@ -207,7 +207,7 @@ class SchemaForm::Blocks
   end
 
   def parse_against_all(root)
-    JSONSchemaParser.new(all_records).parse_whole_value(root)
+    Schema::Parser.new(all_records).parse_whole_value(root)
   end
 
   def mapping(id)

@@ -22,11 +22,11 @@ class Version < ApplicationRecord
   end
 
   def referenceable_entity_names(from)
-    entities.map(&:name) - EntityReferences.new(entities).names_reaching(from)
+    entities.map(&:name) - Schema::EntityReferences.new(entities).names_reaching(from)
   end
 
   def entity_referenced?(name)
-    EntityReferences.new(entities).names_reaching(name).size > 1
+    Schema::EntityReferences.new(entities).names_reaching(name).size > 1
   end
 
   def previous
@@ -65,7 +65,7 @@ class Version < ApplicationRecord
   end
 
   def entity_references_are_acyclic
-    cycle = EntityReferences.new(entities).cycle
+    cycle = Schema::EntityReferences.new(entities).cycle
     return if cycle.nil?
 
     errors.add(:entities, "reference each other in a circle: #{cycle.join(' → ')}")

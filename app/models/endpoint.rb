@@ -75,7 +75,7 @@ class Endpoint < ApplicationRecord
   end
 
   def parsed_input(expanded: false)
-    parser = JSONSchemaParser.new(version.entities)
+    parser = Schema::Parser.new(version.entities)
     value = parser.parse_whole_value(input)
     expanded ? value.expand : value
   end
@@ -102,7 +102,7 @@ class Endpoint < ApplicationRecord
   end
 
   def differs_from?(previous)
-    DiffEndpoint::FromEndpoints.new(previous, self).any_changes?
+    Diff::FromEndpoints.new(previous, self).any_changes?
   end
 
   def self.from_version_request(request, version)

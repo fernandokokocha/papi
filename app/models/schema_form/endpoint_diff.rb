@@ -11,19 +11,19 @@ class SchemaForm::EndpointDiff
   end
 
   def path_params
-    @path_params ||= DiffParams::FromParams.new(@base.path_params, path_param_records)
+    @path_params ||= Diff::FromParams.new(@base.path_params, path_param_records)
   end
 
   def query_params
-    @query_params ||= DiffParams::FromParams.new(@base.query_params, query_param_records)
+    @query_params ||= Diff::FromParams.new(@base.query_params, query_param_records)
   end
 
   def auth
-    @auth ||= DiffAuth::FromAuth.new(@base.auth_method, @auth_method)
+    @auth ||= Diff::FromAuth.new(@base.auth_method, @auth_method)
   end
 
   def note
-    @note ||= DiffText::FromNotes.new(@base.note, @endpoint.note)
+    @note ||= Diff::FromNotes.new(@base.note, @endpoint.note)
   end
 
   def input

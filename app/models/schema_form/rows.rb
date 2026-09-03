@@ -31,23 +31,23 @@ class SchemaForm::Rows
   end
 
   # Both rows of a labelled block name the same node, and a note belongs on the
-  # first — which is what SchemaPathIndex reads back off the rendered lines.
+  # first — which is what Schema::PathIndex reads back off the rendered lines.
   def block(node, path, note_path, indent, labelled: false, **identity)
     opening_note_path = labelled ? nil : note_path
 
     case node
-    when Node::Object
+    when Schema::Node::Object
       inside = node.object_attributes.flat_map do |attribute|
         rows_for(attribute.value, path + [ attribute.name ], note_path + [ attribute.name ], indent + 1,
                  name: attribute.name, optional: attribute.optional, removable: true)
       end
       [ opening("object", "{", path, opening_note_path, indent, **identity) ] + inside +
         [ add(path, indent + 1, "attribute"), closing("}", path, indent) ]
-    when Node::Array
+    when Schema::Node::Array
       [ opening("array", "[", path, opening_note_path, indent, **identity) ] +
         rows_for(node.value, path + [ ARRAY_SEGMENT ], note_path + [ nil ], indent + 1) +
         [ closing("]", path, indent) ]
-    when Node::OneOf
+    when Schema::Node::OneOf
       inside = node.branches.each_with_index.flat_map do |branch, index|
         rows_for(branch, path + [ index.to_s ], note_path + [ index ], indent + 1,
                  taken: named_types(node.branches) - [ named_type(branch) ],
@@ -59,7 +59,7 @@ class SchemaForm::Rows
   end
 
   def leaf?(node)
-    node.is_a?(Node::Primitive) || node.is_a?(Node::Entity) || node.is_a?(Node::Nothing)
+    node.is_a?(Schema::Node::Primitive) || node.is_a?(Schema::Node::Entity) || node.is_a?(Schema::Node::Nothing)
   end
 
   def named_types(branches)
@@ -68,8 +68,8 @@ class SchemaForm::Rows
 
   def named_type(branch)
     case branch
-    when Node::Primitive then branch.kind
-    when Node::Entity then branch.entity.name
+    when Schema::Node::Primitive then branch.kind
+    when Schema::Node::Entity then branch.entity.name
     end
   end
 
@@ -79,8 +79,8 @@ class SchemaForm::Rows
 
   def type_of(node)
     case node
-    when Node::Entity then node.entity.name
-    when Node::Nothing then SchemaForm::Operation::NOTHING
+    when Schema::Node::Entity then node.entity.name
+    when Schema::Node::Nothing then SchemaForm::Operation::NOTHING
     else node.kind
     end
   end

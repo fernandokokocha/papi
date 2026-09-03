@@ -1,7 +1,7 @@
 <% ops = SchemaForm::OPS_FORM_ID %>
 <% removed = auth_method.removed %>
 <% added = base_auth_method.nil? && !removed %>
-<% notes = DiffText::FromNotes.new(base_auth_method&.note, auth_method.note) unless added || removed %>
+<% notes = Diff::FromNotes.new(base_auth_method&.note, auth_method.note) unless added || removed %>
 <% kind_change = !added && !removed && base_auth_method.kind != auth_method.kind ? "type_changed" : "no_change" %>
 <% changed = kind_change == "type_changed" || notes&.any_changes? %>
 <% columns = added || removed ? 1 : 2 %>

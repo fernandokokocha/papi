@@ -197,6 +197,6 @@ describe OpenAPI::ImportSchema do
     }
     node = OpenAPI::ImportSchema.new(schema).call
 
-    expect(JSONSchemaParser.new.parse_value(node.serialize)).to eq(node)
+    expect(Schema::Parser.new.parse_value(node.serialize)).to eq(node)
   end
 end

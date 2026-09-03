@@ -98,6 +98,6 @@ class OpenAPI::Export
   end
 
   def nothing?(node)
-    node.is_a?(Node::Nothing)
+    node.is_a?(Schema::Node::Nothing)
   end
 end

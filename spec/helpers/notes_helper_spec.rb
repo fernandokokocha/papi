@@ -5,7 +5,7 @@ describe NotesHelper, type: :helper do
   let(:attachment) do
     Entity.new(name: "Attachment", root: "{id:number,url:string}", version: version)
   end
-  let(:parser) { JSONSchemaParser.new([ attachment ]) }
+  let(:parser) { Schema::Parser.new([ attachment ]) }
 
   def entity_with(root, notes)
     entity = Entity.new(name: "Thing", root: root, version: version)

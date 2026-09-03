@@ -122,7 +122,7 @@ class OpenAPI::Import
     requirement ? requirement.keys.first : ""
   end
 
-  # Node::Entity refers to an Entity record, so the entities exist before any
+  # Schema::Node::Entity refers to an Entity record, so the entities exist before any
   # schema is read and are filled in once every reference can be resolved.
   def entities
     @entities ||= schemas.keys.to_h { |name| [ name, Entity.new(name: capitalized(name)) ] }
@@ -244,7 +244,7 @@ class OpenAPI::Import
   # attributes. A whole value says that better as nothing — which is a whole
   # value only: nested, and at an entity root, `{}` has to stand.
   def nothing_to_declare?(node)
-    node.is_a?(Node::Object) && node.object_attributes.empty?
+    node.is_a?(Schema::Node::Object) && node.object_attributes.empty?
   end
 
   def node(schema)

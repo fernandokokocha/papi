@@ -11,7 +11,7 @@ describe Entity, "#parsed_root" do
 
     referenced = order.reload.parsed_root.object_attributes.first.value
 
-    expect(referenced).to be_a(Node::Entity)
+    expect(referenced).to be_a(Schema::Node::Entity)
     expect(referenced.entity.name).to eq("Customer")
   end
 
@@ -61,9 +61,9 @@ describe Entity, "#parsed_root expanded" do
     customer = order.reload.parsed_root(expanded: true).object_attributes.first.value
     address = customer.object_attributes.first.value
 
-    expect(customer).to be_a(Node::Object)
-    expect(address).to be_a(Node::Object)
-    expect(address.object_attributes.first.value).to be_a(Node::Primitive)
+    expect(customer).to be_a(Schema::Node::Object)
+    expect(address).to be_a(Schema::Node::Object)
+    expect(address.object_attributes.first.value).to be_a(Schema::Node::Primitive)
   end
 end
 

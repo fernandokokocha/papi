@@ -166,18 +166,18 @@ describe Endpoint, "#parsed_input" do
 
   it "is nothing when the endpoint takes no request body" do
     endpoint = FactoryBot.create(:endpoint, version: version)
-    expect(endpoint.parsed_input).to eq(Node::Nothing.new)
+    expect(endpoint.parsed_input).to eq(Schema::Node::Nothing.new)
   end
 
   it "parses the schema like any other value" do
     endpoint = FactoryBot.create(:endpoint, version: version, input: "[string]")
-    expect(endpoint.parsed_input).to eq(Node::Array.new(value: Node::Primitive.new(kind: "string")))
+    expect(endpoint.parsed_input).to eq(Schema::Node::Array.new(value: Schema::Node::Primitive.new(kind: "string")))
   end
 
   it "resolves entity references against its own version" do
     entity = FactoryBot.create(:entity, version: version, name: "User", root: "{id:number}")
     endpoint = FactoryBot.create(:endpoint, version: version, input: "User")
-    expect(endpoint.reload.parsed_input).to eq(Node::Entity.new(entity: entity))
+    expect(endpoint.reload.parsed_input).to eq(Schema::Node::Entity.new(entity: entity))
   end
 
   it "expands entity references on request" do
@@ -185,8 +185,8 @@ describe Endpoint, "#parsed_input" do
     endpoint = FactoryBot.create(:endpoint, version: version, input: "User")
 
     expect(endpoint.reload.parsed_input(expanded: true))
-      .to eq(Node::Object.new(object_attributes: [
-        Node::ObjectAttribute.new(name: "id", value: Node::Primitive.new(kind: "number"))
+      .to eq(Schema::Node::Object.new(object_attributes: [
+        Schema::Node::ObjectAttribute.new(name: "id", value: Schema::Node::Primitive.new(kind: "number"))
       ]))
   end
 end

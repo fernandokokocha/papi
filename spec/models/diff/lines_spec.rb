@@ -2,7 +2,7 @@ require "rails_helper"
 
 describe Diff::Lines do
   def parse(schema)
-    JSONSchemaParser.new([]).parse_whole_value(schema)
+    Schema::Parser.new([]).parse_whole_value(schema)
   end
 
   describe "#nothing?" do

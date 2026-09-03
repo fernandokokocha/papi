@@ -7,7 +7,7 @@ describe "OneOf diffs", type: :model do
 
   def default_entities = [ entity("Resource", "{a:string}"), entity("Other", "{a:string}") ]
 
-  def parse(source, entities) = JSONSchemaParser.new(entities).parse_value(source)
+  def parse(source, entities) = Schema::Parser.new(entities).parse_value(source)
 
   def cell(line)
     return "" if line.change == :blank

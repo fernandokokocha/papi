@@ -1,5 +1,5 @@
 class SchemaForm::Operation
-  PRIMITIVE_KINDS = JSONSchemaParser::PRIMITIVE_KINDS
+  PRIMITIVE_KINDS = Schema::Parser::PRIMITIVE_KINDS
   STRUCTURES = [ "object", "array", "one-of" ].freeze
   NOTHING = "nothing".freeze
   TYPES = (PRIMITIVE_KINDS + STRUCTURES).freeze
@@ -31,26 +31,26 @@ class SchemaForm::Operation
 
     parent = node_at(path[0..-2])
     case parent
-    when Node::Object then attribute_at(path).value = replacement
-    when Node::Array then parent.value = replacement
-    when Node::OneOf then parent.branches[path.last.to_i] = replacement
+    when Schema::Node::Object then attribute_at(path).value = replacement
+    when Schema::Node::Array then parent.value = replacement
+    when Schema::Node::OneOf then parent.branches[path.last.to_i] = replacement
     end
   end
 
   def remove(path)
     parent = node_at(path[0..-2])
     case parent
-    when Node::Object then parent.object_attributes.delete(attribute_at(path))
-    when Node::OneOf then parent.branches.delete_at(path.last.to_i)
+    when Schema::Node::Object then parent.object_attributes.delete(attribute_at(path))
+    when Schema::Node::OneOf then parent.branches.delete_at(path.last.to_i)
     end
   end
 
   def add(path)
     node = node_at(path)
     case node
-    when Node::Object
-      node.object_attributes << Node::ObjectAttribute.new(name: unused_name(node), value: Node::Primitive.new)
-    when Node::OneOf
+    when Schema::Node::Object
+      node.object_attributes << Schema::Node::ObjectAttribute.new(name: unused_name(node), value: Schema::Node::Primitive.new)
+    when Schema::Node::OneOf
       node.branches << unused_branch(node.branches)
     end
   end
@@ -63,20 +63,20 @@ class SchemaForm::Operation
   end
 
   def unused_branch(branches)
-    taken = branches.filter_map { |branch| branch.kind if branch.is_a?(Node::Primitive) }
+    taken = branches.filter_map { |branch| branch.kind if branch.is_a?(Schema::Node::Primitive) }
     kind = PRIMITIVE_KINDS.find { |k| !taken.include?(k) }
 
-    kind ? Node::Primitive.new(kind: kind) : Node::Object.new
+    kind ? Schema::Node::Primitive.new(kind: kind) : Schema::Node::Object.new
   end
 
   def build(type)
     case type
-    when NOTHING then Node::Nothing.new
-    when "object" then Node::Object.new
-    when "array" then Node::Array.new(value: Node::Primitive.new)
-    when "one-of" then Node::OneOf.new(branches: [ Node::Primitive.new(kind: "string"), Node::Primitive.new(kind: "number") ])
-    when *PRIMITIVE_KINDS then Node::Primitive.new(kind: type)
-    else Node::Entity.new(entity: @entities.find { |entity| entity.name == type })
+    when NOTHING then Schema::Node::Nothing.new
+    when "object" then Schema::Node::Object.new
+    when "array" then Schema::Node::Array.new(value: Schema::Node::Primitive.new)
+    when "one-of" then Schema::Node::OneOf.new(branches: [ Schema::Node::Primitive.new(kind: "string"), Schema::Node::Primitive.new(kind: "number") ])
+    when *PRIMITIVE_KINDS then Schema::Node::Primitive.new(kind: type)
+    else Schema::Node::Entity.new(entity: @entities.find { |entity| entity.name == type })
     end
   end
 
@@ -90,9 +90,9 @@ class SchemaForm::Operation
 
   def child_of(node, segment)
     case node
-    when Node::Object then node.object_attributes.find { |attribute| attribute.name == segment }.value
-    when Node::Array then node.value
-    when Node::OneOf then node.branches[segment.to_i]
+    when Schema::Node::Object then node.object_attributes.find { |attribute| attribute.name == segment }.value
+    when Schema::Node::Array then node.value
+    when Schema::Node::OneOf then node.branches[segment.to_i]
     end
   end
 end

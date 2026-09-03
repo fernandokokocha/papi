@@ -20,15 +20,15 @@ class OpenAPI::ExportSchema
 
   def schema
     case @node
-    when Node::Primitive
+    when Schema::Node::Primitive
       { "type" => @node.kind }
-    when Node::Object
+    when Schema::Node::Object
       object
-    when Node::Array
+    when Schema::Node::Array
       { "type" => "array", "items" => schema_for(@node.value, nil) }
-    when Node::OneOf
+    when Schema::Node::OneOf
       { "oneOf" => @node.branches.each_with_index.map { |branch, index| schema_for(branch, index) } }
-    when Node::Entity
+    when Schema::Node::Entity
       { "$ref" => "#/components/schemas/#{@node.entity.name}" }
     else
       raise "#{@node.class} has no JSON Schema equivalent"

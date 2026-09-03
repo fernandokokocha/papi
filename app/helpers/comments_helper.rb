@@ -50,6 +50,6 @@ module CommentsHelper
   def line_index_for(lines, entities)
     return nil unless @candidate
 
-    ExpandedLineIndex.new(lines, entities).to_a
+    Schema::ExpandedLineIndex.new(lines, entities).to_a
   end
 end

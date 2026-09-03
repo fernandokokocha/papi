@@ -8,7 +8,7 @@
 <% tints = columns == 2 %>
 <% reach = removed ? "left-[calc(50%-4px)]" : "left-full" %>
 <% region_reach = "#{reach} group-has-[>input:checked]:hidden" %>
-<% notes = DiffText::FromNotes.new(previous&.note, auth_method.note) %>
+<% notes = Diff::FromNotes.new(previous&.note, auth_method.note) %>
 <% kind_change = changed && previous.kind != auth_method.kind ? "type_changed" : "no_change" %>
 <% header_tint = if added
      "border-emerald-700 bg-emerald-700 text-white"

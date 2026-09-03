@@ -5,7 +5,7 @@
 <% previous = removed ? endpoint : (endpoint.previous || null) %>
 <% current = removed ? null : endpoint %>
 <% side = removed ? :first : :last %>
-<% diff = DiffEndpoint::FromEndpoints.new(previous, current, expanded: expanded) %>
+<% diff = Diff::FromEndpoints.new(previous, current, expanded: expanded) %>
 <% path_params = diff.path_params.pairs %>
 <% query_params = diff.query_params.pairs %>
 <% show_auth = previous.auth.present? || current.auth.present? %>

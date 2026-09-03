@@ -1,0 +1,40 @@
+class Schema::Node::Array
+  attr_accessor :value
+
+  def initialize(value: Schema::Node::Nothing.new)
+    @value = value
+  end
+
+  def to_example_json
+    inside = %W[#{value.to_example_json} #{value.to_example_json} #{value.to_example_json}]
+    "[ #{inside.join(", ")} ]"
+  end
+
+  def to_diff(change, indent = 0)
+    ret = Diff::Lines.new([ Diff::Line.new("[", change, indent) ])
+    ret.concat(value.to_diff(change, indent + 1))
+    ret.concat([ Diff::Line.new("]", change, indent) ])
+    ret
+  end
+
+  def serialize
+    "[#{value.serialize}]"
+  end
+
+  def ==(other)
+    (self.class == other.class) && self.value == other.value
+  end
+
+  def expand
+    value_expanded = value.expand
+    Schema::Node::Array.new(value: value_expanded)
+  end
+
+  def expandable?
+    value.expandable?
+  end
+
+  def entity_names
+    value.entity_names
+  end
+end

@@ -8,7 +8,7 @@ class Diff::ObjectToObject
     value2.object_attributes.each do |oa|
       matching = value1.object_attributes.find { |a| a.name == oa.name }
 
-      subdiff = Diff::FromValues.new(matching ? matching.value : Node::Nothing.new, oa.value, indent + 1)
+      subdiff = Diff::FromValues.new(matching ? matching.value : Schema::Node::Nothing.new, oa.value, indent + 1)
       subdiff.add_parent(matching ? matching.label : oa.label, oa.label)
       subdiff.mark_parents(:type_changed) if matching && matching.optional != oa.optional
 
@@ -19,7 +19,7 @@ class Diff::ObjectToObject
     value1.object_attributes.each do |oa|
       next if value2.object_attributes.any? { |a| a.name == oa.name }
 
-      subdiff = Diff::FromValues.new(oa.value, Node::Nothing.new, indent + 1)
+      subdiff = Diff::FromValues.new(oa.value, Schema::Node::Nothing.new, indent + 1)
       subdiff.add_parent(oa.label, oa.label)
 
       before.concat(subdiff.before)

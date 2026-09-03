@@ -15,7 +15,7 @@ class Entity < ApplicationRecord
   scope :sort_by_name, -> { order([ :name ]) }
 
   def parsed_root(expanded: false)
-    parser = JSONSchemaParser.new(version.entities)
+    parser = Schema::Parser.new(version.entities)
     value = parser.parse_value(root)
     expanded ? value.expand : value
   end

@@ -50,7 +50,7 @@ class SchemaForm::Checks
     return "added" if base_auth_method.nil?
     return "changed" if base_auth_method.kind != auth_method.kind
 
-    "changed" if DiffText::FromNotes.new(base_auth_method.note, auth_method.note).any_changes?
+    "changed" if Diff::FromNotes.new(base_auth_method.note, auth_method.note).any_changes?
   end
 
   private
@@ -101,7 +101,7 @@ class SchemaForm::Checks
   end
 
   def circular
-    cycle = EntityReferences.new(@blocks.version.entities).cycle
+    cycle = Schema::EntityReferences.new(@blocks.version.entities).cycle
     return [] if cycle.nil?
 
     [ Problem.new(anchor: "form-entity-#{@blocks.entities.find { |block| block.name == cycle.first }.id}",

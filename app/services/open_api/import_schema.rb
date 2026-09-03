@@ -39,7 +39,7 @@ class OpenAPI::ImportSchema
     return object if object_schema?(@schema)
     return array if type == "array"
 
-    Node::Primitive.new(kind: kind)
+    Schema::Node::Primitive.new(kind: kind)
   end
 
   def type
@@ -57,14 +57,14 @@ class OpenAPI::ImportSchema
   def object
     required = @schema["required"] || []
     attributes = (@schema["properties"] || {}).map do |name, value|
-      Node::ObjectAttribute.new(name: name, value: node_for(value, name), optional: !required.include?(name))
+      Schema::Node::ObjectAttribute.new(name: name, value: node_for(value, name), optional: !required.include?(name))
     end
 
-    Node::Object.new(object_attributes: attributes)
+    Schema::Node::Object.new(object_attributes: attributes)
   end
 
   def array
-    Node::Array.new(value: node_for(@schema["items"] || {}, nil))
+    Schema::Node::Array.new(value: node_for(@schema["items"] || {}, nil))
   end
 
   # An enum without a type still has one — the type of the values it lists.
@@ -85,7 +85,7 @@ class OpenAPI::ImportSchema
     name = reference.delete_prefix(REF_PREFIX)
     raise OpenAPI::Invalid, "Cannot resolve the reference #{reference}" unless reference.start_with?(REF_PREFIX) && @entities.key?(name)
 
-    Node::Entity.new(entity: @entities.fetch(name))
+    Schema::Node::Entity.new(entity: @entities.fetch(name))
   end
 
   # allOf composes objects, so importing it means merging them into one. A
@@ -107,7 +107,7 @@ class OpenAPI::ImportSchema
   end
 
   def with_null(node)
-    one_of_nodes(flattened(node) + [ Node::Primitive.new(kind: "null") ])
+    one_of_nodes(flattened(node) + [ Schema::Node::Primitive.new(kind: "null") ])
   end
 
   def one_of(schemas)
@@ -119,15 +119,15 @@ class OpenAPI::ImportSchema
   def one_of_nodes(nodes)
     branches = nodes.each_with_index.uniq { |node, index| named(node) || index }.map(&:first)
 
-    branches.one? ? branches.first : Node::OneOf.new(branches: branches)
+    branches.one? ? branches.first : Schema::Node::OneOf.new(branches: branches)
   end
 
   def flattened(node)
-    node.is_a?(Node::OneOf) ? node.branches : [ node ]
+    node.is_a?(Schema::Node::OneOf) ? node.branches : [ node ]
   end
 
   def named(node)
-    node.serialize if node.is_a?(Node::Primitive) || node.is_a?(Node::Entity)
+    node.serialize if node.is_a?(Schema::Node::Primitive) || node.is_a?(Schema::Node::Entity)
   end
 
   # A branch, an allOf merge and a nullable wrapper all rebuild the tree, so

@@ -1,0 +1,52 @@
+class Schema::Node::Object
+  attr_accessor :object_attributes
+
+  def initialize(object_attributes: [])
+    @object_attributes = object_attributes
+  end
+
+  def to_example_json
+    attrs = object_attributes.map do |oa|
+      oa.to_example_json
+    end
+
+    "{ " + attrs.join(", ") + " }"
+  end
+
+  def to_diff(change, indent = 0)
+    ret = Diff::Lines.new([ Diff::Line.new("{", change, indent) ])
+
+    object_attributes.each do |oa|
+      attribute_lines = oa.value.to_diff(change, indent + 1)
+      attribute_lines.add_parent(oa.label)
+      ret.concat(attribute_lines)
+    end
+
+    ret.concat([ Diff::Line.new("}", change, indent) ])
+    ret
+  end
+
+  def serialize
+    "{#{object_attributes.map(&:serialize).join(",")}}"
+  end
+
+  def ==(other)
+    (self.class == other.class) && (object_attributes == other.object_attributes)
+  end
+
+  def expand
+    Schema::Node::Object.new(
+      object_attributes: object_attributes.map { |oa|
+        Schema::Node::ObjectAttribute.new(name: oa.name, value: oa.value.expand, optional: oa.optional)
+      }
+    )
+  end
+
+  def expandable?
+    object_attributes.any? { |oa| oa.value.expandable? }
+  end
+
+  def entity_names
+    object_attributes.flat_map(&:entity_names)
+  end
+end

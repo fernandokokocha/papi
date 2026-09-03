@@ -6,7 +6,7 @@
     <option <%= "selected" if row.type == SchemaForm::Operation::NOTHING %>><%= SchemaForm::Operation::NOTHING %></option>
   <% end %>
   <optgroup label="Primitive">
-    <% (JSONSchemaParser::PRIMITIVE_KINDS - row.taken).each do |kind| %>
+    <% (Schema::Parser::PRIMITIVE_KINDS - row.taken).each do |kind| %>
       <option <%= "selected" if kind == row.type %>><%= kind %></option>
     <% end %>
   </optgroup>
