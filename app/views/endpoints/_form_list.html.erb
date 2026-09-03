@@ -1,8 +1,9 @@
+<%# locals: (endpoints:, auth_methods:, blocks:, base:, landed: nil) %>
 <div id="endpoints" class="flex flex-col gap-4">
   <% endpoints.each do |endpoint| %>
     <%= render "endpoints/form_card", endpoint: endpoint, blocks: blocks,
                auth_methods: auth_methods.reject(&:removed),
-               landed: local_assigns[:landed] == endpoint.key,
+               landed: landed == endpoint.key,
                base_endpoint: base.endpoints.find { |record| record.identity_name == endpoint.identity_name } %>
   <% end %>
 </div>

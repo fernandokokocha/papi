@@ -1,8 +1,7 @@
-<% outdated = local_assigns[:outdated] || [] %>
-<% count = threads.size + outdated.size %>
+<%# locals: (anchor:, threads:, outdated:, sublabel:, composable:) %>
 <%# A removed record has no current text to snapshot, so its lines keep the
     threads they already carry but offer no + to start another. %>
-<% composable = local_assigns.fetch(:composable, true) %>
+<% count = threads.size + outdated.size %>
 <div class="relative"
      data-controller="margin-note"
      data-action="click@window->margin-note#dismiss keydown.esc@window->margin-note#close"

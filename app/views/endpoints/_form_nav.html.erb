@@ -1,4 +1,4 @@
-<% asking = local_assigns[:asking] %>
+<%# locals: (endpoints:, checks:, asking: nil) %>
 <div id="endpoints_nav" data-controller="new-form" data-new-form-host-value="endpoints_nav"
      data-new-form-open-value="<%= "endpoint" if asking %>">
   <%= render layout: "versions/sidebar_section", locals: { label: "Endpoints", add_kind: "endpoint" } do %>

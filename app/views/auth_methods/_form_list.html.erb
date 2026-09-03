@@ -1,7 +1,8 @@
+<%# locals: (auth_methods:, base:, landed: nil) %>
 <div id="auth_methods" class="flex flex-col gap-4">
   <% auth_methods.each_with_index do |auth_method, index| %>
     <%= render "auth_methods/form_card", auth_method: auth_method, index: index,
-               landed: local_assigns[:landed] == auth_method.name,
+               landed: landed == auth_method.name,
                base_auth_method: base.auth_methods.find { |method| method.identity_name == auth_method.name } %>
   <% end %>
 </div>

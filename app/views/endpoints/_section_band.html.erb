@@ -1,6 +1,7 @@
+<%# locals: (label:, toggle: nil, pin: nil) %>
 <div class="comment-host flex h-7 items-center gap-2 px-3 pt-2">
   <span class="text-[10px] font-bold uppercase leading-none tracking-[0.08em] text-slate-700"><%= label %></span>
   <span class="h-px flex-1 bg-slate-200"></span>
   <%= toggle %>
-  <%= local_assigns[:pin] %>
+  <%= pin %>
 </div>

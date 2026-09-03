@@ -1,6 +1,5 @@
+<%# locals: (kind:, host:, open:, value:, error:, verb: nil) %>
 <% ops = SchemaForm::OPS_FORM_ID %>
-<% open = local_assigns[:open] %>
-<% error = local_assigns[:error] %>
 <% op, field_name, label, placeholder =
      { "endpoint" => [ "add_endpoint", "new_endpoint[path]", "New endpoint path", "/customers/:id" ],
        "entity" => [ "add_entity", "new_entity", "New entity name", "MyResource" ],
@@ -13,13 +12,13 @@
     <% if kind == "endpoint" %>
       <select name="new_endpoint[http_verb]" form="<%= ops %>" aria-label="New endpoint verb" <%= "disabled" unless open %>
               class="cursor-pointer rounded bg-white font-mono text-[11px] font-bold text-slate-700 focus:outline-none">
-        <% Endpoint::VERB_TRANSLATIONS.each do |http_verb, verb| %>
-          <option value="<%= http_verb %>" <%= "selected" if http_verb.to_s == local_assigns[:verb] %>><%= verb %></option>
+        <% Endpoint::VERB_TRANSLATIONS.each do |http_verb, verb_label| %>
+          <option value="<%= http_verb %>" <%= "selected" if http_verb.to_s == verb %>><%= verb_label %></option>
         <% end %>
       </select>
     <% end %>
 
-    <%= text_field_tag field_name, local_assigns[:value], id: nil, form: ops, placeholder: placeholder,
+    <%= text_field_tag field_name, value, id: nil, form: ops, placeholder: placeholder,
           autocomplete: "off", disabled: !open, aria: { label: label },
           data: { controller: "schema-edit", action: "keydown.enter->schema-edit#submit keydown.esc->new-form#close",
                   schema_edit_url_value: url },

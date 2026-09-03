@@ -11,7 +11,7 @@ describe Schema::PathIndex do
     value = parser.parse_whole_value(schema)
     value = value.expand if expanded
     lines = value.to_diff(:no_change)
-    described_class.new(lines).to_a.each_with_index.map { |path, row| [ lines.lines[row].whole_line, path ] }
+    lines.lines.map(&:whole_line).zip(described_class.new(lines).to_a)
   end
 
   it "names each attribute of a flat object" do

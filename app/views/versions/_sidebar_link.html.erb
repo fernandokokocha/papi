@@ -1,3 +1,4 @@
+<%# locals: (href:, title:, name:, annotation:, verb: nil, badge: nil) %>
 <% tint = {
      "added" => "bg-emerald-100 hover:bg-emerald-200",
      "removed" => "bg-rose-100 hover:bg-rose-200",
@@ -8,7 +9,7 @@
    title="<%= title %>"
    data-sidebar-target="link"
    class="flex h-6 items-center gap-2 pl-2 pr-2 <%= tint[annotation] %>">
-  <% if local_assigns[:verb] %><%= render "endpoints/verb_badge", verb: verb %><% end %>
+  <% if verb %><%= render "endpoints/verb_badge", verb: verb %><% end %>
   <span class="truncate font-mono text-[12px] text-slate-800 [.sidebar-link-active_&]:font-semibold [.sidebar-link-active_&]:text-slate-900"><%= name %></span>
-  <%= local_assigns[:badge] %>
+  <%= badge %>
 </a>

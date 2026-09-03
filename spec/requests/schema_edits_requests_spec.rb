@@ -272,6 +272,11 @@ describe "Schema edit requests", type: :request do
       .at_css("turbo-stream[target='#{target}'] input[name='#{name}']")["value"].to_s
   end
 
+  def asked_verb_in(target)
+    Nokogiri::HTML5.fragment(response.body)
+      .at_css("turbo-stream[target='#{target}'] select[name='new_endpoint[http_verb]'] option[selected]")["value"]
+  end
+
   it "refuses a name the form already has" do
     add_entity("Customer")
 
@@ -610,6 +615,13 @@ describe "Schema edit requests", type: :request do
     expect(response.body).to include("This endpoint already exists")
     expect(endpoint_field_values("version[endpoints_attributes][][path]")).to eq([ "/customers/:id" ])
     expect(asked_in("new_menu", "new_endpoint[path]")).to eq("/customers/:customer_id")
+  end
+
+  it "reopens the refused endpoint's field on the verb that was asked for" do
+    endpoint_set_edit("add_endpoint", endpoints: one_endpoint, blocks: one_endpoints_blocks, asked_by: "menu",
+                      new_endpoint: { http_verb: "verb_delete", path: "" })
+
+    expect(asked_verb_in("new_menu")).to eq("verb_delete")
   end
 
   it "refuses an endpoint with no path" do

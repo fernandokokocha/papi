@@ -1,10 +1,11 @@
+<%# locals: (blocks:, base:, landed: nil) %>
 <div id="entities" class="flex flex-col gap-4">
   <% blocks.entities.each_with_index do |block, index| %>
     <%= render "entities/form_card", block: block, index: index,
                root: blocks.parse(block), record: blocks.record_for(block),
                base_entity: base.entities.find { |entity| entity.identity_name == block.name },
                referenceable_names: blocks.referenceable_names(block),
-               landed: local_assigns[:landed] == block.name,
+               landed: landed == block.name,
                referenced: blocks.referenced?(block) %>
   <% end %>
 </div>
