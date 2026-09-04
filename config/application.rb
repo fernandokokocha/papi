@@ -25,6 +25,14 @@ module Papi
 
     config.time_zone = "Europe/Warsaw"
 
+    config.action_mailer.smtp_settings = {
+      address: "ssl0.ovh.net",
+      port: 587,
+      user_name: Rails.application.credentials.dig(:smtp, :mailbox),
+      password: Rails.application.credentials.dig(:smtp, :password),
+      authentication: :plain
+    }
+
     config.generators do |g|
       g.factory_bot dir: "spec/factories"
     end

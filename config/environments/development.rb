@@ -31,8 +31,12 @@ Rails.application.configure do
   # Store uploaded files on the local file system (see config/storage.yml for options).
   config.active_storage.service = :local
 
-  # Don't care if the mailer can't send.
-  config.action_mailer.raise_delivery_errors = false
+  config.action_mailer.delivery_method = ENV.fetch("MAIL_DELIVERY", "file").to_sym
+
+  # Rails ships this false. On, so that MAIL_DELIVERY=smtp reports a bad
+  # credential instead of silently swallowing it.
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.preview_paths << Rails.root.join("spec/mailers/previews").to_s
 
   # Make template changes take effect immediately.
   config.action_mailer.perform_caching = false

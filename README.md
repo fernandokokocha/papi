@@ -43,6 +43,24 @@ To quickly reset and populate dev database, use custom rake task (`lib/tasks/dev
 bin/rails dev:setup
 ```
 
+## Mail in development
+
+By default, mail is written to `tmp/mails` as `.eml` files rather than sent.
+
+With `bin/dev` running, every mailer can also be rendered in the browser at
+<http://localhost:3000/rails/mailers> without sending anything. The previews live in
+`spec/mailers/previews` and render against the dev database.
+
+To send through the real SMTP server instead — the only way to check the credentials
+or where a message lands — set `MAIL_DELIVERY`:
+
+```
+MAIL_DELIVERY=smtp bin/dev
+```
+
+Opt-in on purpose: the default cannot email a real person by accident, and cannot
+spend the sending quota that the domain's personal mail shares.
+
 ## Tests
 
 `bundle exec rspec`
