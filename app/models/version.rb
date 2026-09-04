@@ -8,7 +8,10 @@ class Version < ApplicationRecord
   accepts_nested_attributes_for :entities
   accepts_nested_attributes_for :auth_methods
 
-  validates :name, uniqueness: { scope: :project_id }
+  # Only a published version is named within a project. A candidate's version is
+  # named after its candidate and belongs to no project, so two projects whose
+  # candidates reach the same number both hold an "rc4-v1" and neither is wrong.
+  validates :name, uniqueness: { scope: :project_id }, if: -> { project_id.present? }
   validate :endpoints_are_distinct_to_a_client
   validate :entity_references_are_acyclic
 

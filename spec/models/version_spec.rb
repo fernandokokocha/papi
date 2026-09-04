@@ -69,3 +69,32 @@ describe Version, "release notes" do
     expect(version.reload.release_notes).to eq("Adds the search endpoint.")
   end
 end
+
+describe Version, "names" do
+  let(:group) { Group.create!(name: "g") }
+  let(:project) { Project.create!(name: "p", group: group) }
+  let(:other_project) { Project.create!(name: "q", group: group) }
+
+  it "rejects two versions of one project sharing a name" do
+    FactoryBot.create(:version, project: project, name: "v1")
+    duplicate = FactoryBot.build(:version, project: project, name: "v1")
+
+    expect(duplicate).not_to be_valid
+    expect(duplicate.errors[:name]).to eq([ "has already been taken" ])
+  end
+
+  it "accepts the same name in two projects" do
+    FactoryBot.create(:version, project: project, name: "v1")
+
+    expect(FactoryBot.build(:version, project: other_project, name: "v1")).to be_valid
+  end
+
+  # A candidate's version belongs to no project and is named after its
+  # candidate, so two projects whose candidates both reach rc4 collide unless
+  # the uniqueness question is only asked of published versions.
+  it "accepts two candidate versions sharing a name across projects" do
+    FactoryBot.create(:version, project: nil, name: "rc4-v1")
+
+    expect(FactoryBot.build(:version, project: nil, name: "rc4-v1")).to be_valid
+  end
+end
