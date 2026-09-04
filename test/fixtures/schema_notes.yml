@@ -1,14 +1,419 @@
-p1v3_user_id:    { notable: p1v3_user (Entity), path: '["id"]', body: "Opaque. Don't parse it, and don't assume ids are ordered — they are only unique." }
-p1v4_user_id:    { notable: p1v4_user (Entity), path: '["id"]', body: "Opaque. Don't parse it, and don't assume ids are ordered — they are only unique." }
+# ===== ledgerly v1 =====
+p1v1_n1:
+  notable: p1v1_e_money (Entity)
+  path: '["amount"]'
+  body: An integer in the currency's smallest unit. 1250 EUR is €12.50, and 1250 JPY is ¥1250 — the yen has no minor unit.
 
-p1v3_user_email: { notable: p1v3_user (Entity), path: '["email"]', body: "Lowercased on write. Globally unique." }
-p1v4_user_email: { notable: p1v4_user (Entity), path: '["email"]', body: "Lowercased on write. Unique per project, not globally, so the same address can appear in two projects." }
+# ===== ledgerly v2 =====
+p1v2_n1:
+  notable: p1v2_e_money (Entity)
+  path: '["amount"]'
+  body: An integer in the currency's smallest unit. 1250 EUR is €12.50, and 1250 JPY is ¥1250 — the yen has no minor unit.
 
-p1v3_session_token:      { notable: p1v3_session (Entity), path: '["token"]', body: "Shown once, at creation. There is no endpoint that reads it back." }
-p1v4_session_expires_at: { notable: p1v4_session (Entity), path: '["expires_at"]', body: "Absolute, not a duration. A token past this instant is rejected with 401." }
+# ===== ledgerly v3 =====
+p1v3_n1:
+  notable: p1v3_e_money (Entity)
+  path: '["amount"]'
+  body: An integer in the currency's smallest unit. 1250 EUR is €12.50, and 1250 JPY is ¥1250 — the yen has no minor unit.
+p1v3_n2:
+  notable: p1v3_e_payment_method (Entity)
+  path: '["type"]'
+  body: 'Says which branch of `details` to read: `card` or `bank_account`. Read it rather than sniffing the fields.'
 
-p1v3_attachments_list_body: { notable: p1v3_attachments_list_200 (Response), path: '[null]', body: "Ordered newest first. Paging is by cursor, not offset." }
-p1v4_attachments_list_body: { notable: p1v4_attachments_list_200 (Response), path: '[null]', body: "Ordered newest first. Paging is by cursor, not offset." }
+# ===== candidate rc4-v1 =====
+p1rc4v_n1:
+  notable: p1rc4v_e_money (Entity)
+  path: '["amount"]'
+  body: An integer in the currency's smallest unit. 1250 EUR is €12.50, and 1250 JPY is ¥1250 — the yen has no minor unit.
+p1rc4v_n2:
+  notable: p1rc4v_e_payment_method (Entity)
+  path: '["type"]'
+  body: 'Says which branch of `details` to read: `card` or `bank_account`. Read it rather than sniffing the fields.'
 
-p1v3_sessions_create_email: { notable: p1v3_sessions_create (Endpoint), path: '["email"]', body: "Matched case-insensitively, unlike everywhere else in the API." }
-p1v4_sessions_create_email: { notable: p1v4_sessions_create (Endpoint), path: '["email"]', body: "Matched case-insensitively, unlike everywhere else in the API." }
+# ===== ledgerly v4 =====
+p1v4_n1:
+  notable: p1v4_e_money (Entity)
+  path: '["amount"]'
+  body: An integer in the currency's smallest unit. 1250 EUR is €12.50, and 1250 JPY is ¥1250 — the yen has no minor unit.
+p1v4_n2:
+  notable: p1v4_e_payment_method (Entity)
+  path: '["type"]'
+  body: 'Says which branch of `details` to read: `card` or `bank_account`. Read it rather than sniffing the fields.'
+p1v4_n3:
+  notable: p1v4_e_charge (Entity)
+  path: '["status"]'
+  body: One of `pending`, `succeeded` or `failed`. A failed charge is never retried automatically — create a new one.
+p1v4_n4:
+  notable: p1v4_charges_list_200 (Response)
+  path: '["next_cursor"]'
+  body: Pass it back as `starting_after` to read the next page. Null on the last page.
+
+# ===== ledgerly v5 =====
+p1v5_n1:
+  notable: p1v5_e_money (Entity)
+  path: '["amount"]'
+  body: An integer in the currency's smallest unit. 1250 EUR is €12.50, and 1250 JPY is ¥1250 — the yen has no minor unit.
+p1v5_n2:
+  notable: p1v5_e_payment_method (Entity)
+  path: '["type"]'
+  body: 'Says which branch of `details` to read: `card` or `bank_account`. Read it rather than sniffing the fields.'
+p1v5_n3:
+  notable: p1v5_e_charge (Entity)
+  path: '["status"]'
+  body: One of `pending`, `succeeded` or `failed`. A failed charge is never retried automatically — create a new one.
+p1v5_n4:
+  notable: p1v5_charges_list_200 (Response)
+  path: '["next_cursor"]'
+  body: Pass it back as `starting_after` to read the next page. Null on the last page.
+p1v5_n5:
+  notable: p1v5_e_webhook_endpoint (Entity)
+  path: '["secret"]'
+  body: Returned once, when the endpoint is registered. Sign every delivery against it. We cannot show it to you again.
+p1v5_n6:
+  notable: p1v5_e_event (Entity)
+  path: '["type"]'
+  body: Dotted, and always `<resource>.<past tense verb>` — `charge.succeeded`, `refund.created`. New types appear without a version bump, so match on a prefix rather than an exact list.
+
+# ===== candidate rc7-v1 =====
+p1rc7v_n1:
+  notable: p1rc7v_e_money (Entity)
+  path: '["amount"]'
+  body: An integer in the currency's smallest unit. 1250 EUR is €12.50, and 1250 JPY is ¥1250 — the yen has no minor unit.
+p1rc7v_n2:
+  notable: p1rc7v_e_payment_method (Entity)
+  path: '["type"]'
+  body: 'Says which branch of `details` to read: `card` or `bank_account`. Read it rather than sniffing the fields.'
+p1rc7v_n3:
+  notable: p1rc7v_e_charge (Entity)
+  path: '["status"]'
+  body: One of `pending`, `succeeded` or `failed`. A failed charge is never retried automatically — create a new one.
+p1rc7v_n4:
+  notable: p1rc7v_charges_list_200 (Response)
+  path: '["next_cursor"]'
+  body: Pass it back as `starting_after` to read the next page. Null on the last page.
+p1rc7v_n5:
+  notable: p1rc7v_e_webhook_endpoint (Entity)
+  path: '["secret"]'
+  body: Returned once, when the endpoint is registered. Sign every delivery against it. We cannot show it to you again.
+p1rc7v_n6:
+  notable: p1rc7v_e_event (Entity)
+  path: '["type"]'
+  body: Dotted, and always `<resource>.<past tense verb>` — `charge.succeeded`, `refund.created`. New types appear without a version bump, so match on a prefix rather than an exact list.
+
+# ===== ledgerly v6 =====
+p1v6_n1:
+  notable: p1v6_e_money (Entity)
+  path: '["amount"]'
+  body: An integer in the currency's smallest unit. 1250 EUR is €12.50, and 1250 JPY is ¥1250 — the yen has no minor unit.
+p1v6_n2:
+  notable: p1v6_e_payment_method (Entity)
+  path: '["type"]'
+  body: 'Says which branch of `details` to read: `card` or `bank_account`. Read it rather than sniffing the fields.'
+p1v6_n3:
+  notable: p1v6_e_charge (Entity)
+  path: '["status"]'
+  body: One of `pending`, `succeeded` or `failed`. A failed charge is never retried automatically — create a new one.
+p1v6_n4:
+  notable: p1v6_charges_list_200 (Response)
+  path: '["next_cursor"]'
+  body: Pass it back as `starting_after` to read the next page. Null on the last page.
+p1v6_n5:
+  notable: p1v6_e_webhook_endpoint (Entity)
+  path: '["secret"]'
+  body: Returned once, when the endpoint is registered. Sign every delivery against it. We cannot show it to you again.
+p1v6_n6:
+  notable: p1v6_e_event (Entity)
+  path: '["type"]'
+  body: Dotted, and always `<resource>.<past tense verb>` — `charge.succeeded`, `refund.created`. New types appear without a version bump, so match on a prefix rather than an exact list.
+p1v6_n7:
+  notable: p1v6_e_payout (Entity)
+  path: '["arrival_date"]'
+  body: The banking day we expect the money to land, not the day we sent it. It can move later if the destination bank holds the transfer.
+
+# ===== ledgerly v7 =====
+p1v7_n1:
+  notable: p1v7_e_money (Entity)
+  path: '["amount"]'
+  body: An integer in the currency's smallest unit. 1250 EUR is €12.50, and 1250 JPY is ¥1250 — the yen has no minor unit.
+p1v7_n2:
+  notable: p1v7_e_payment_method (Entity)
+  path: '["type"]'
+  body: 'Says which branch of `details` to read: `card` or `bank_account`. Read it rather than sniffing the fields.'
+p1v7_n3:
+  notable: p1v7_e_charge (Entity)
+  path: '["status"]'
+  body: One of `pending`, `succeeded` or `failed`. A failed charge is never retried automatically — create a new one.
+p1v7_n4:
+  notable: p1v7_charges_list_200 (Response)
+  path: '["next_cursor"]'
+  body: Pass it back as `starting_after` to read the next page. Null on the last page.
+p1v7_n5:
+  notable: p1v7_e_webhook_endpoint (Entity)
+  path: '["secret"]'
+  body: Returned once, when the endpoint is registered. Sign every delivery against it. We cannot show it to you again.
+p1v7_n6:
+  notable: p1v7_e_event (Entity)
+  path: '["type"]'
+  body: Dotted, and always `<resource>.<past tense verb>` — `charge.succeeded`, `refund.created`. New types appear without a version bump, so match on a prefix rather than an exact list.
+p1v7_n7:
+  notable: p1v7_e_payout (Entity)
+  path: '["arrival_date"]'
+  body: The banking day we expect the money to land, not the day we sent it. It can move later if the destination bank holds the transfer.
+p1v7_n8:
+  notable: p1v7_e_refund (Entity)
+  path: '["status"]'
+  body: One of `pending`, `succeeded` or `failed`. A card refund can take five working days to reach `succeeded`.
+
+# ===== ledgerly v8 =====
+p1v8_n1:
+  notable: p1v8_e_money (Entity)
+  path: '["amount"]'
+  body: An integer in the currency's smallest unit. 1250 EUR is €12.50, and 1250 JPY is ¥1250 — the yen has no minor unit.
+p1v8_n2:
+  notable: p1v8_e_payment_method (Entity)
+  path: '["type"]'
+  body: 'Says which branch of `details` to read: `card` or `bank_account`. Read it rather than sniffing the fields.'
+p1v8_n3:
+  notable: p1v8_e_charge (Entity)
+  path: '["status"]'
+  body: One of `pending`, `succeeded` or `failed`. A failed charge is never retried automatically — create a new one.
+p1v8_n4:
+  notable: p1v8_charges_list_200 (Response)
+  path: '["next_cursor"]'
+  body: Pass it back as `starting_after` to read the next page. Null on the last page.
+p1v8_n5:
+  notable: p1v8_e_webhook_endpoint (Entity)
+  path: '["secret"]'
+  body: Returned once, when the endpoint is registered. Sign every delivery against it. We cannot show it to you again.
+p1v8_n6:
+  notable: p1v8_e_event (Entity)
+  path: '["type"]'
+  body: Dotted, and always `<resource>.<past tense verb>` — `charge.succeeded`, `refund.created`. New types appear without a version bump, so match on a prefix rather than an exact list.
+p1v8_n7:
+  notable: p1v8_e_payout (Entity)
+  path: '["arrival_date"]'
+  body: The banking day we expect the money to land, not the day we sent it. It can move later if the destination bank holds the transfer.
+p1v8_n8:
+  notable: p1v8_e_refund (Entity)
+  path: '["status"]'
+  body: One of `pending`, `succeeded` or `failed`. A card refund can take five working days to reach `succeeded`.
+p1v8_n9:
+  notable: p1v8_e_dispute (Entity)
+  path: '["evidence_due_by"]'
+  body: Set by the card network, not by us. Evidence submitted after it is discarded and the dispute is lost by default.
+
+# ===== candidate rc11-v1 =====
+p1rc11v_n1:
+  notable: p1rc11v_e_payment_method (Entity)
+  path: '["type"]'
+  body: 'Says which branch of `details` to read: `card` or `bank_account`. Read it rather than sniffing the fields.'
+p1rc11v_n2:
+  notable: p1rc11v_e_charge (Entity)
+  path: '["status"]'
+  body: One of `pending`, `succeeded` or `failed`. A failed charge is never retried automatically — create a new one.
+p1rc11v_n3:
+  notable: p1rc11v_charges_list_200 (Response)
+  path: '["next_cursor"]'
+  body: Pass it back as `starting_after` to read the next page. Null on the last page.
+p1rc11v_n4:
+  notable: p1rc11v_e_webhook_endpoint (Entity)
+  path: '["secret"]'
+  body: Returned once, when the endpoint is registered. Sign every delivery against it. We cannot show it to you again.
+p1rc11v_n5:
+  notable: p1rc11v_e_event (Entity)
+  path: '["type"]'
+  body: Dotted, and always `<resource>.<past tense verb>` — `charge.succeeded`, `refund.created`. New types appear without a version bump, so match on a prefix rather than an exact list.
+p1rc11v_n6:
+  notable: p1rc11v_e_payout (Entity)
+  path: '["arrival_date"]'
+  body: The banking day we expect the money to land, not the day we sent it. It can move later if the destination bank holds the transfer.
+p1rc11v_n7:
+  notable: p1rc11v_e_refund (Entity)
+  path: '["status"]'
+  body: One of `pending`, `succeeded` or `failed`. A card refund can take five working days to reach `succeeded`.
+p1rc11v_n8:
+  notable: p1rc11v_e_dispute (Entity)
+  path: '["evidence_due_by"]'
+  body: Set by the card network, not by us. Evidence submitted after it is discarded and the dispute is lost by default.
+p1rc11v_n9:
+  notable: p1rc11v_e_money (Entity)
+  path: '["amount"]'
+  body: 'A decimal string in the currency''s major unit: "12.50", not 1250. Parse it with whatever your language uses for exact decimals, never with a float.'
+
+# ===== ledgerly v9 =====
+p1v9_n1:
+  notable: p1v9_e_money (Entity)
+  path: '["amount"]'
+  body: An integer in the currency's smallest unit. 1250 EUR is €12.50, and 1250 JPY is ¥1250 — the yen has no minor unit.
+p1v9_n2:
+  notable: p1v9_e_payment_method (Entity)
+  path: '["type"]'
+  body: 'Says which branch of `details` to read: `card` or `bank_account`. Read it rather than sniffing the fields.'
+p1v9_n3:
+  notable: p1v9_e_charge (Entity)
+  path: '["status"]'
+  body: One of `pending`, `succeeded` or `failed`. A failed charge is never retried automatically — create a new one.
+p1v9_n4:
+  notable: p1v9_charges_list_200 (Response)
+  path: '["next_cursor"]'
+  body: Pass it back as `starting_after` to read the next page. Null on the last page.
+p1v9_n5:
+  notable: p1v9_e_webhook_endpoint (Entity)
+  path: '["secret"]'
+  body: Returned once, when the endpoint is registered. Sign every delivery against it. We cannot show it to you again.
+p1v9_n6:
+  notable: p1v9_e_event (Entity)
+  path: '["type"]'
+  body: Dotted, and always `<resource>.<past tense verb>` — `charge.succeeded`, `refund.created`. New types appear without a version bump, so match on a prefix rather than an exact list.
+p1v9_n7:
+  notable: p1v9_e_payout (Entity)
+  path: '["arrival_date"]'
+  body: The banking day we expect the money to land, not the day we sent it. It can move later if the destination bank holds the transfer.
+p1v9_n8:
+  notable: p1v9_e_refund (Entity)
+  path: '["status"]'
+  body: One of `pending`, `succeeded` or `failed`. A card refund can take five working days to reach `succeeded`.
+p1v9_n9:
+  notable: p1v9_e_dispute (Entity)
+  path: '["evidence_due_by"]'
+  body: Set by the card network, not by us. Evidence submitted after it is discarded and the dispute is lost by default.
+p1v9_n10:
+  notable: p1v9_e_price (Entity)
+  path: '["interval"]'
+  body: One of `day`, `week`, `month` or `year`. A price's interval cannot be edited — create a new price and move the subscriptions.
+
+# ===== ledgerly v10 =====
+p1v10_n1:
+  notable: p1v10_e_money (Entity)
+  path: '["amount"]'
+  body: An integer in the currency's smallest unit. 1250 EUR is €12.50, and 1250 JPY is ¥1250 — the yen has no minor unit.
+p1v10_n2:
+  notable: p1v10_e_payment_method (Entity)
+  path: '["type"]'
+  body: 'Says which branch of `details` to read: `card` or `bank_account`. Read it rather than sniffing the fields.'
+p1v10_n3:
+  notable: p1v10_e_charge (Entity)
+  path: '["status"]'
+  body: One of `pending`, `succeeded` or `failed`. A failed charge is never retried automatically — create a new one.
+p1v10_n4:
+  notable: p1v10_charges_list_200 (Response)
+  path: '["next_cursor"]'
+  body: Pass it back as `starting_after` to read the next page. Null on the last page.
+p1v10_n5:
+  notable: p1v10_e_webhook_endpoint (Entity)
+  path: '["secret"]'
+  body: Returned once, when the endpoint is registered. Sign every delivery against it. We cannot show it to you again.
+p1v10_n6:
+  notable: p1v10_e_event (Entity)
+  path: '["type"]'
+  body: Dotted, and always `<resource>.<past tense verb>` — `charge.succeeded`, `refund.created`. New types appear without a version bump, so match on a prefix rather than an exact list.
+p1v10_n7:
+  notable: p1v10_e_payout (Entity)
+  path: '["arrival_date"]'
+  body: The banking day we expect the money to land, not the day we sent it. It can move later if the destination bank holds the transfer.
+p1v10_n8:
+  notable: p1v10_e_refund (Entity)
+  path: '["status"]'
+  body: One of `pending`, `succeeded` or `failed`. A card refund can take five working days to reach `succeeded`.
+p1v10_n9:
+  notable: p1v10_e_dispute (Entity)
+  path: '["evidence_due_by"]'
+  body: Set by the card network, not by us. Evidence submitted after it is discarded and the dispute is lost by default.
+p1v10_n10:
+  notable: p1v10_e_price (Entity)
+  path: '["interval"]'
+  body: One of `day`, `week`, `month` or `year`. A price's interval cannot be edited — create a new price and move the subscriptions.
+p1v10_n11:
+  notable: p1v10_e_balance (Entity)
+  path: '["available",null]'
+  body: One entry per currency, and a currency with nothing in it is omitted rather than sent as zero.
+p1v10_n12:
+  notable: p1v10_e_error (Entity)
+  path: '["details",null,"field"]'
+  body: Dotted, and relative to the request body — `line_items.0.amount`, not `body.line_items[0].amount`.
+
+# ===== candidate rc14-v1 =====
+p1rc14v_n1:
+  notable: p1rc14v_e_money (Entity)
+  path: '["amount"]'
+  body: An integer in the currency's smallest unit. 1250 EUR is €12.50, and 1250 JPY is ¥1250 — the yen has no minor unit.
+p1rc14v_n2:
+  notable: p1rc14v_e_payment_method (Entity)
+  path: '["type"]'
+  body: 'Says which branch of `details` to read: `card` or `bank_account`. Read it rather than sniffing the fields.'
+p1rc14v_n3:
+  notable: p1rc14v_e_charge (Entity)
+  path: '["status"]'
+  body: One of `pending`, `succeeded` or `failed`. A failed charge is never retried automatically — create a new one.
+p1rc14v_n4:
+  notable: p1rc14v_charges_list_200 (Response)
+  path: '["next_cursor"]'
+  body: Pass it back as `starting_after` to read the next page. Null on the last page.
+p1rc14v_n5:
+  notable: p1rc14v_e_webhook_endpoint (Entity)
+  path: '["secret"]'
+  body: Returned once, when the endpoint is registered. Sign every delivery against it. We cannot show it to you again.
+p1rc14v_n6:
+  notable: p1rc14v_e_event (Entity)
+  path: '["type"]'
+  body: Dotted, and always `<resource>.<past tense verb>` — `charge.succeeded`, `refund.created`. New types appear without a version bump, so match on a prefix rather than an exact list.
+p1rc14v_n7:
+  notable: p1rc14v_e_payout (Entity)
+  path: '["arrival_date"]'
+  body: The banking day we expect the money to land, not the day we sent it. It can move later if the destination bank holds the transfer.
+p1rc14v_n8:
+  notable: p1rc14v_e_refund (Entity)
+  path: '["status"]'
+  body: One of `pending`, `succeeded` or `failed`. A card refund can take five working days to reach `succeeded`.
+p1rc14v_n9:
+  notable: p1rc14v_e_dispute (Entity)
+  path: '["evidence_due_by"]'
+  body: Set by the card network, not by us. Evidence submitted after it is discarded and the dispute is lost by default.
+p1rc14v_n10:
+  notable: p1rc14v_e_price (Entity)
+  path: '["interval"]'
+  body: One of `day`, `week`, `month` or `year`. A price's interval cannot be edited — create a new price and move the subscriptions.
+p1rc14v_n11:
+  notable: p1rc14v_e_balance (Entity)
+  path: '["available",null]'
+  body: One entry per currency, and a currency with nothing in it is omitted rather than sent as zero.
+p1rc14v_n12:
+  notable: p1rc14v_e_error (Entity)
+  path: '["details",null,"field"]'
+  body: Dotted, and relative to the request body — `line_items.0.amount`, not `body.line_items[0].amount`.
+p1rc14v_n13:
+  notable: p1rc14v_customers_update (Endpoint)
+  path: '["metadata",null,"key"]'
+  body: At most 40 characters, and unique within the customer. Sending the same key twice keeps the last one.
+
+# ===== statuspage v1 =====
+p2v1_n1:
+  notable: p2v1_e_component (Entity)
+  path: '["status"]'
+  body: One of `operational`, `degraded`, `partial_outage` or `major_outage`, worst-first when a component has more than one signal.
+
+# ===== statuspage v2 =====
+p2v2_n1:
+  notable: p2v2_e_component (Entity)
+  path: '["status"]'
+  body: One of `operational`, `degraded`, `partial_outage` or `major_outage`, worst-first when a component has more than one signal.
+
+# ===== statuspage v3 =====
+p2v3_n1:
+  notable: p2v3_e_component (Entity)
+  path: '["status"]'
+  body: One of `operational`, `degraded`, `partial_outage` or `major_outage`, worst-first when a component has more than one signal.
+p2v3_n2:
+  notable: p2v3_e_subscriber (Entity)
+  path: '["confirmed"]'
+  body: False until the address answers the confirmation mail. An unconfirmed subscriber is mailed nothing but that one message.
+
+# ===== candidate rc4-v1 =====
+p2rc4v_n1:
+  notable: p2rc4v_e_component (Entity)
+  path: '["status"]'
+  body: One of `operational`, `degraded`, `partial_outage` or `major_outage`, worst-first when a component has more than one signal.
+p2rc4v_n2:
+  notable: p2rc4v_e_subscriber (Entity)
+  path: '["confirmed"]'
+  body: False until the address answers the confirmation mail. An unconfirmed subscriber is mailed nothing but that one message.

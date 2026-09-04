@@ -1,25 +1,33 @@
 <% password_digest = BCrypt::Password.create("password") %>
 
-one:
-  email_address: one@example.com
+# Everyone signs in with the password "password".
+mira:
+  email_address: mira@drugowcy.dev
   password_digest: <%= password_digest %>
   role: 1
-  group: g1
+  group: drugowcy
 
-two:
-  email_address: two@example.com
+tomek:
+  email_address: tomek@drugowcy.dev
   password_digest: <%= password_digest %>
   role: 0
-  group: g1
+  group: drugowcy
 
-three:
-  email_address: three@example.com
+anka:
+  email_address: anka@drugowcy.dev
+  password_digest: <%= password_digest %>
+  role: 0
+  group: drugowcy
+
+piotr:
+  email_address: piotr@drugowcy.dev
   password_digest: <%= password_digest %>
   role: 1
-  group: g2
+  group: drugowcy
 
-four:
-  email_address: four@example.com
+# The one account that must see none of it.
+zenek:
+  email_address: zenek@tajna.org
   password_digest: <%= password_digest %>
-  role: 0
-  group: g1
+  role: 1
+  group: tajna

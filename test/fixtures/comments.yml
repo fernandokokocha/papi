@@ -1,531 +1,778 @@
-c4_flag_root:
-  candidate: candidate4
-  author: one
-  body: "Should we gate this behind a flag before merging?"
+<%
+  # The three schemas rc14 pins lines against. A snapshot is the stored string,
+  # so a thread whose snapshot is one of the `_was` values reads as outdated.
+  patch_input = "{email?:string,name?:string,default_payment_method_id:(string|null),metadata?:[{key:string,value:string}]}"
+  patch_input_was = "{email?:string,name?:string,default_payment_method_id:(string|null)}"
+  charge_root = "{id:string,amount:Money,status:string,refunded:boolean,description:(string|null),customer_id:(string|null),payment_method:(PaymentMethod|null),created_at:string}"
+  charge_root_was = "{id:string,amount:Money,status:string,refunded:boolean,customer_id:(string|null),created_at:string}"
+%>
+
+# ===== Ledgerly rc14, open: the conversation =====
+rc14_scope:
+  candidate: p1rc14
+  author: anka
+  body: "Three changes in one candidate is one too many. If the /events move is contentious I will split it out and land the rest."
   scope: candidate
   part: whole
-  created_at: 2025-04-01 10:00:00
-
-c4_flag_reply:
-  candidate: candidate4
-  author: two
-  parent: c4_flag_root
-  body: "Good call — I'll gate it and push an update."
+  created_at: 2025-10-28 12:10:00
+rc14_scope_reply:
+  candidate: p1rc14
+  author: mira
+  parent: rc14_scope
+  body: "Keep them together. They ship in the same week either way, and one release note is easier to read than three."
   scope: candidate
   part: whole
-  created_at: 2025-04-01 11:15:00
+  created_at: 2025-10-28 15:35:00
 
-c4_rename_root:
-  candidate: candidate4
-  author: two
-  body: "Renamed the endpoint for consistency with the others in this version."
+rc14_platforms_told:
+  candidate: p1rc14
+  author: mira
+  body: "Has anyone told the two platforms about the /events move? They are the only callers that will notice."
   scope: candidate
   part: whole
-  created_at: 2025-04-02 09:30:00
-
-c4_users_list_root:
-  candidate: candidate4
-  author: one
-  body: "Pagination looks right, but should total include soft-deleted users?"
-  scope: endpoint
-  endpoint_path: /users
-  endpoint_http_verb: 0
+  created_at: 2025-10-29 09:20:00
+rc14_platforms_told_reply:
+  candidate: p1rc14
+  author: anka
+  parent: rc14_platforms_told
+  body: "Both mailed on Monday. Neither reads the log today — they take the deliveries."
+  scope: candidate
   part: whole
-  created_at: 2025-04-02 10:00:00
+  created_at: 2025-10-29 09:48:00
 
-c4_users_list_reply:
-  candidate: candidate4
-  author: two
-  parent: c4_users_list_root
-  body: "No — total counts active users only."
-  scope: endpoint
-  endpoint_path: /users
-  endpoint_http_verb: 0
+rc14_notes_wrong:
+  candidate: p1rc14
+  author: tomek
+  body: "The notes said v11 drops /prices entirely. It drops the POST and keeps the list."
+  scope: candidate
   part: whole
-  created_at: 2025-04-02 10:20:00
+  resolved_at: 2025-10-29 11:05:00
+  resolved_by: anka
+  created_at: 2025-10-29 10:15:00
+rc14_notes_wrong_reply:
+  candidate: p1rc14
+  author: anka
+  parent: rc14_notes_wrong
+  body: "Fixed."
+  scope: candidate
+  part: whole
+  created_at: 2025-10-29 11:04:00
 
-c4_users_update_note:
-  candidate: candidate4
-  author: two
-  body: "The note should list which fields are editable."
+# ===== Ledgerly rc14: release notes =====
+rc14_release_notes_date:
+  candidate: p1rc14
+  author: piotr
+  body: "Give a date for the SecretKey path to /events closing. \"From v11\" is not something anyone can put in a calendar."
+  scope: release_notes
+  part: whole
+  created_at: 2025-10-29 14:00:00
+rc14_release_notes_date_reply:
+  candidate: p1rc14
+  author: anka
+  parent: rc14_release_notes_date
+  body: "1 December. I will put it in once the migration mail goes out, so the two say the same thing."
+  scope: release_notes
+  part: whole
+  created_at: 2025-10-29 14:22:00
+
+# ===== Ledgerly rc14: PATCH /customers/:customerId, one thread in every placement =====
+rc14_patch_whole:
+  candidate: p1rc14
+  author: mira
+  body: "Patch rather than put, and every field optional except the one that is not. That reads right."
   scope: endpoint
-  endpoint_path: /users/me
+  endpoint_path: /customers/:customerId
+  endpoint_http_verb: 3
+  part: whole
+  created_at: 2025-10-28 16:40:00
+rc14_patch_whole_reply:
+  candidate: p1rc14
+  author: anka
+  parent: rc14_patch_whole
+  body: "The one that is not is deliberate — see the thread on the body."
+  scope: endpoint
+  endpoint_path: /customers/:customerId
+  endpoint_http_verb: 3
+  part: whole
+  created_at: 2025-10-28 16:52:00
+
+rc14_patch_whole_conflict:
+  candidate: p1rc14
+  author: tomek
+  body: "What happens when the new email already belongs to another customer? 400 and 409 are both defensible; pick one and say so."
+  scope: endpoint
+  endpoint_path: /customers/:customerId
+  endpoint_http_verb: 3
+  part: whole
+  created_at: 2025-10-30 10:05:00
+
+rc14_patch_note:
+  candidate: p1rc14
+  author: piotr
+  body: "The note should say that leaving a field out leaves it alone. Half the callers will assume the other thing."
+  scope: endpoint
+  endpoint_path: /customers/:customerId
   endpoint_http_verb: 3
   part: note
-  created_at: 2025-04-02 11:00:00
+  created_at: 2025-10-29 08:30:00
 
-c4_users_delete_removed:
-  candidate: candidate4
-  author: one
-  body: "Goodbye DELETE /users/me — account deactivation replaces it."
+rc14_patch_input:
+  candidate: p1rc14
+  author: tomek
+  body: "default_payment_method_id is the only required field on a PATCH, which is a strange shape to hand someone."
   scope: endpoint
-  endpoint_path: /users/me
-  endpoint_http_verb: 4
-  part: whole
-  created_at: 2025-04-02 11:30:00
-
-c4_user_entity_root:
-  candidate: candidate4
-  author: one
-  body: "avatar_url should be nullable — not every user uploads one."
-  scope: entity
-  entity_name: User
-  part: root
-  created_at: 2025-04-03 09:00:00
-
-c4_users_list_200_output:
-  candidate: candidate4
-  author: two
-  body: "items is now [User] inside a wrapper object — clients must adapt."
-  scope: response
-  endpoint_path: /users
-  endpoint_http_verb: 0
-  response_code: "200"
-  part: output
-  created_at: 2025-04-03 09:30:00
-
-c4_audit_logs_root:
-  candidate: candidate4
-  author: two
-  body: "New audit log listing — do we need filtering by actor from day one?"
-  scope: endpoint
-  endpoint_path: /audit-logs
-  endpoint_http_verb: 0
-  part: whole
-  created_at: 2025-04-03 10:00:00
-
-c4_tasks_list_429_removed:
-  candidate: candidate4
-  author: one
-  body: "Dropping the 429 — rate limiting moves to the gateway."
-  scope: response
-  endpoint_path: /tasks
-  endpoint_http_verb: 0
-  response_code: "429"
-  part: whole
-  created_at: 2025-04-03 10:30:00
-
-c4_users_list_200_output_line_fresh:
-  candidate: candidate4
-  author: two
-  body: "Do clients page through items[] or is total the source of truth?"
-  scope: response
-  endpoint_path: /users
-  endpoint_http_verb: 0
-  response_code: "200"
-  part: output
-  line: 2
-  anchor_snapshot: "{total:number,items:[User]}"
-  created_at: 2025-04-03 12:00:00
-
-c4_users_list_200_output_line_outdated:
-  candidate: candidate4
-  author: two
-  body: "When I flagged this, the response was still a bare [User] array."
-  scope: response
-  endpoint_path: /users
-  endpoint_http_verb: 0
-  response_code: "200"
-  part: output
-  line: 1
-  anchor_snapshot: "[User]"
-  created_at: 2025-04-03 12:30:00
-
-c4_user_entity_root_line_fresh:
-  candidate: candidate4
-  author: two
-  body: "name is required — worth documenting the max length here."
-  scope: entity
-  entity_name: User
-  part: root
-  line: 3
-  anchor_snapshot: "{id:number,email:string,name:(string|null),avatar_url:(string|null)}"
-  created_at: 2025-04-03 13:00:00
-
-c4_user_entity_root_line_outdated:
-  candidate: candidate4
-  author: one
-  body: "Back when I commented, avatar_url wasn't on User yet."
-  scope: entity
-  entity_name: User
-  part: root
-  line: 3
-  anchor_snapshot: "{id:number,email:string,name:string}"
-  created_at: 2025-04-03 13:30:00
-
-c4_users_create_input_region:
-  candidate: candidate4
-  author: one
-  body: "Making name nullable on create is a breaking change for the mobile client."
-  scope: endpoint
-  endpoint_path: /users
-  endpoint_http_verb: 1
-  part: input
-  created_at: 2025-04-03 14:00:00
-
-c4_users_create_input_region_reply:
-  candidate: candidate4
-  author: two
-  parent: c4_users_create_input_region
-  body: "It only relaxes the type — an existing client sending a name still validates."
-  scope: endpoint
-  endpoint_path: /users
-  endpoint_http_verb: 1
-  part: input
-  created_at: 2025-04-03 14:20:00
-
-c4_users_create_input_line_fresh:
-  candidate: candidate4
-  author: two
-  body: "Is avatar_url a URL we host, or one the caller supplies?"
-  scope: endpoint
-  endpoint_path: /users
-  endpoint_http_verb: 1
-  part: input
-  line: 8
-  anchor_snapshot: "{email:string,name:(string|null),password:string,avatar_url:(string|null)}"
-  created_at: 2025-04-03 14:30:00
-
-c4_users_create_input_line_outdated:
-  candidate: candidate4
-  author: one
-  body: "When I flagged this, name was still a plain required string."
-  scope: endpoint
-  endpoint_path: /users
-  endpoint_http_verb: 1
-  part: input
-  line: 2
-  anchor_snapshot: "{email:string,name:string,password:string}"
-  created_at: 2025-04-03 15:00:00
-
-c4_users_update_input_region:
-  candidate: candidate4
-  author: one
-  body: "PATCH takes a partial body — should omitting a field differ from sending null?"
-  scope: endpoint
-  endpoint_path: /users/me
+  endpoint_path: /customers/:customerId
   endpoint_http_verb: 3
   part: input
-  created_at: 2025-04-03 15:30:00
-
-c4_teams_create_input_line_entity:
-  candidate: candidate4
-  author: two
-  body: "member_ids alongside a nested team feels redundant — can the team carry them?"
+  created_at: 2025-10-29 12:15:00
+rc14_patch_input_reply:
+  candidate: p1rc14
+  author: anka
+  parent: rc14_patch_input
+  body: "Deliberate. Sending null detaches the default; leaving the field out would have meant the same thing as sending null, and callers would have detached one by accident."
   scope: endpoint
-  endpoint_path: /teams
-  endpoint_http_verb: 1
+  endpoint_path: /customers/:customerId
+  endpoint_http_verb: 3
   part: input
-  line: 7
-  anchor_snapshot: "{team:Team,member_ids:[number]}"
-  created_at: 2025-04-03 16:00:00
+  created_at: 2025-10-29 12:40:00
 
-c4_tasks_create_input_added:
-  candidate: candidate4
-  author: one
-  body: "Good that POST /tasks finally documents its body."
+rc14_patch_auth:
+  candidate: p1rc14
+  author: mira
+  body: "SecretKey is right for now, but a restricted key should be able to read a customer without being able to edit one. Not this candidate."
   scope: endpoint
-  endpoint_path: /tasks
-  endpoint_http_verb: 1
-  part: input
-  created_at: 2025-04-03 16:30:00
-
-c4_notifications_read_all_input_dropped:
-  candidate: candidate4
-  author: two
-  body: "Dropping ids[] means read-all is now unconditional — is that intended?"
-  scope: endpoint
-  endpoint_path: /notifications/read-all
-  endpoint_http_verb: 1
-  part: input
-  line: 1
-  anchor_snapshot: "{ids:[number]}"
-  created_at: 2025-04-03 17:00:00
-
-c4_exports_create_input_new_endpoint:
-  candidate: candidate4
-  author: one
-  body: "format should be an enum, not a free string."
-  scope: endpoint
-  endpoint_path: /exports
-  endpoint_http_verb: 1
-  part: input
-  created_at: 2025-04-03 17:30:00
-
-c4_tasks_show_task_id_param:
-  candidate: candidate4
-  author: one
-  body: "Narrowing taskId to a number breaks anyone passing a slug — is that deliberate?"
-  scope: param
-  endpoint_path: /tasks/:taskId
-  endpoint_http_verb: 0
-  param_name: taskId
-  param_location: path
-  part: whole
-  created_at: 2025-04-03 18:30:00
-
-c4_tasks_show_task_id_param_reply:
-  candidate: candidate4
-  author: two
-  parent: c4_tasks_show_task_id_param
-  body: "Deliberate — slugs never shipped, every caller sends the id already."
-  scope: param
-  endpoint_path: /tasks/:taskId
-  endpoint_http_verb: 0
-  param_name: taskId
-  param_location: path
-  part: whole
-  created_at: 2025-04-03 18:45:00
-
-c4_tasks_comments_comment_id_param:
-  candidate: candidate4
-  author: two
-  body: "commentId is scoped to the task, so a mismatched pair should 404 rather than 403."
-  scope: param
-  endpoint_path: /tasks/:taskId/comments/:commentId
-  endpoint_http_verb: 0
-  param_name: commentId
-  param_location: path
-  part: whole
-  created_at: 2025-04-03 19:00:00
-
-c4_users_delete_input_removed:
-  candidate: candidate4
-  author: two
-  body: "The reason/confirm body goes away with the endpoint — worth capturing elsewhere?"
-  scope: endpoint
-  endpoint_path: /users/me
-  endpoint_http_verb: 4
-  part: input
-  created_at: 2025-04-03 18:00:00
-
-# ===== kitchen sink: one thread in every possible placement on a single card =====
-ks_whole:
-  candidate: candidate4
-  author: one
-  body: "Naming this /kitchen-sink is a joke that will outlive us. Rename before merge?"
-  scope: endpoint
-  endpoint_path: /kitchen-sink/:sinkId
-  endpoint_http_verb: 3
-  part: whole
-  created_at: 2025-04-04 09:00:00
-ks_whole_reply:
-  candidate: candidate4
-  author: two
-  parent: ks_whole
-  body: "It is staying."
-  scope: endpoint
-  endpoint_path: /kitchen-sink/:sinkId
-  endpoint_http_verb: 3
-  part: whole
-  created_at: 2025-04-04 09:05:00
-ks_whole_second:
-  candidate: candidate4
-  author: two
-  body: "Second thread on the card, so the stacked-count badge shows."
-  scope: endpoint
-  endpoint_path: /kitchen-sink/:sinkId
-  endpoint_http_verb: 3
-  part: whole
-  created_at: 2025-04-04 09:10:00
-ks_param_sink_id:
-  candidate: candidate4
-  author: one
-  body: "sinkId goes string to number here — same break as taskId had."
-  scope: param
-  endpoint_path: /kitchen-sink/:sinkId
-  endpoint_http_verb: 3
-  param_name: sinkId
-  param_location: path
-  part: whole
-  created_at: 2025-04-04 09:15:00
-ks_param_verbose:
-  candidate: candidate4
-  author: two
-  body: "verbose defaults to what when it is left off?"
-  scope: param
-  endpoint_path: /kitchen-sink/:sinkId
-  endpoint_http_verb: 3
-  param_name: verbose
-  param_location: query
-  part: whole
-  created_at: 2025-04-04 09:20:00
-ks_param_depth:
-  candidate: candidate4
-  author: one
-  body: "Cap depth at something, or a client can ask for the whole graph."
-  scope: param
-  endpoint_path: /kitchen-sink/:sinkId
-  endpoint_http_verb: 3
-  param_name: depth
-  param_location: query
-  part: whole
-  created_at: 2025-04-04 09:25:00
-ks_auth:
-  candidate: candidate4
-  author: two
-  body: "Moving this from UserToken to AdminBasic locks out every current caller."
-  scope: endpoint
-  endpoint_path: /kitchen-sink/:sinkId
+  endpoint_path: /customers/:customerId
   endpoint_http_verb: 3
   part: auth
-  created_at: 2025-04-04 09:30:00
-ks_note:
-  candidate: candidate4
-  author: one
-  body: "The note says it takes tags, but tags was already there in v3."
-  scope: endpoint
-  endpoint_path: /kitchen-sink/:sinkId
+  created_at: 2025-10-29 16:10:00
+
+rc14_patch_param_customer:
+  candidate: p1rc14
+  author: tomek
+  body: "customerId in the path and default_payment_method_id in the body are both customer-shaped strings. Worth saying which owns which."
+  scope: param
+  endpoint_path: /customers/:customerId
   endpoint_http_verb: 3
-  part: note
-  created_at: 2025-04-04 09:35:00
-ks_input:
-  candidate: candidate4
-  author: two
-  body: "archived on the input rather than a separate endpoint — is that the pattern we want?"
-  scope: endpoint
-  endpoint_path: /kitchen-sink/:sinkId
+  param_name: customerId
+  param_location: path
+  part: whole
+  created_at: 2025-10-30 09:10:00
+
+rc14_patch_param_expand:
+  candidate: p1rc14
+  author: piotr
+  body: "What can expand actually take? Nothing else in this API has it, so it needs to say."
+  scope: param
+  endpoint_path: /customers/:customerId
   endpoint_http_verb: 3
-  part: input
-  created_at: 2025-04-04 09:40:00
-ks_response_200:
-  candidate: candidate4
-  author: one
-  body: "200 returning the whole User is heavy for a patch. Just the changed fields?"
+  param_name: expand
+  param_location: query
+  part: whole
+  created_at: 2025-10-30 09:25:00
+rc14_patch_param_expand_reply:
+  candidate: p1rc14
+  author: anka
+  parent: rc14_patch_param_expand
+  body: "Only default_payment_method for now. If it stays at one thing I would rather drop it than document it."
+  scope: param
+  endpoint_path: /customers/:customerId
+  endpoint_http_verb: 3
+  param_name: expand
+  param_location: query
+  part: whole
+  created_at: 2025-10-30 09:44:00
+
+rc14_patch_200:
+  candidate: p1rc14
+  author: mira
+  body: "Answering with the whole customer saves everyone a second call. Good."
   scope: response
-  endpoint_path: /kitchen-sink/:sinkId
+  endpoint_path: /customers/:customerId
   endpoint_http_verb: 3
   response_code: "200"
   part: whole
-  created_at: 2025-04-04 09:45:00
-ks_response_400:
-  candidate: candidate4
-  author: two
-  body: "400 should say which field failed, not just Error."
+  created_at: 2025-10-30 11:00:00
+
+rc14_patch_400:
+  candidate: p1rc14
+  author: anka
+  body: "400 covers a malformed email and a payment method belonging to someone else. Those want different codes in the body even if the status is shared."
   scope: response
-  endpoint_path: /kitchen-sink/:sinkId
+  endpoint_path: /customers/:customerId
   endpoint_http_verb: 3
   response_code: "400"
   part: whole
-  created_at: 2025-04-04 09:50:00
-ks_response_404:
-  candidate: candidate4
-  author: one
-  body: "404 and 403 read the same to a caller here. Worth splitting?"
+  created_at: 2025-10-30 11:12:00
+
+rc14_patch_404:
+  candidate: p1rc14
+  author: tomek
+  body: "A payment method that belongs to another customer answers 400 here and 404 on DELETE. Same situation, two answers."
   scope: response
-  endpoint_path: /kitchen-sink/:sinkId
+  endpoint_path: /customers/:customerId
   endpoint_http_verb: 3
   response_code: "404"
   part: whole
-  created_at: 2025-04-04 09:55:00
-ks_auth_method_note:
-  candidate: candidate4
-  author: two
-  body: "Say out loud who issues AdminBasic — nobody knows."
-  scope: auth_method
-  auth_method_name: AdminBasic
-  part: note
-  created_at: 2025-04-04 10:00:00
+  created_at: 2025-10-30 11:20:00
 
-# ----- kitchen sink: a line thread in every line state -----
-ks_line_label:
-  candidate: candidate4
-  author: one
-  body: "label is doing double duty as a display name and a slug. Split it?"
-  scope: endpoint
-  endpoint_path: /kitchen-sink/:sinkId
+rc14_patch_404_note:
+  candidate: p1rc14
+  author: piotr
+  body: "\"No customer has that id\" is also what a deleted customer gets. Say that, or someone will treat it as a transient failure and retry forever."
+  scope: response
+  endpoint_path: /customers/:customerId
   endpoint_http_verb: 3
-  part: input
-  line: 1
-  anchor_snapshot: "{label:string,weight:number,tags:[string],owner:User,archived:boolean}"
-  created_at: 2025-04-04 10:10:00
-ks_line_label_reply:
-  candidate: candidate4
-  author: two
-  parent: ks_line_label
-  body: "Slug is derived server-side, so one field is enough."
+  response_code: "404"
+  part: note
+  created_at: 2025-10-30 11:35:00
+
+# ----- rc14: line threads on the PATCH body -----
+rc14_line_email:
+  candidate: p1rc14
+  author: mira
+  body: "Changing an email silently unverifies it, doesn't it? Worth saying here."
   scope: endpoint
-  endpoint_path: /kitchen-sink/:sinkId
-  endpoint_http_verb: 3
-  part: input
-  line: 1
-  anchor_snapshot: "{label:string,weight:number,tags:[string],owner:User,archived:boolean}"
-  created_at: 2025-04-04 10:12:00
-ks_line_weight:
-  candidate: candidate4
-  author: two
-  body: "weight in what unit? Grams here and kilos in the report is a bug waiting."
-  scope: endpoint
-  endpoint_path: /kitchen-sink/:sinkId
+  endpoint_path: /customers/:customerId
   endpoint_http_verb: 3
   part: input
   line: 2
-  anchor_snapshot: "{label:string,weight:number,tags:[string],owner:User,archived:boolean}"
-  created_at: 2025-04-04 10:15:00
-ks_line_tag_item:
-  candidate: candidate4
-  author: one
-  body: "Are tags free text, or drawn from a fixed vocabulary?"
+  anchor_snapshot: <%= patch_input.inspect %>
+  created_at: 2025-10-29 13:05:00
+rc14_line_email_reply:
+  candidate: p1rc14
+  author: anka
+  parent: rc14_line_email
+  body: "It does, and it sends the confirmation mail. Adding it to the note."
   scope: endpoint
-  endpoint_path: /kitchen-sink/:sinkId
+  endpoint_path: /customers/:customerId
   endpoint_http_verb: 3
   part: input
-  line: 5
-  anchor_snapshot: "{label:string,weight:number,tags:[string],owner:User,archived:boolean}"
-  created_at: 2025-04-04 10:20:00
-ks_line_owner_email:
-  candidate: candidate4
-  author: two
-  body: "Sending the owner's email back on every patch leaks more than we need."
+  line: 2
+  anchor_snapshot: <%= patch_input.inspect %>
+  created_at: 2025-10-29 13:18:00
+
+rc14_line_default_pm:
+  candidate: p1rc14
+  author: tomek
+  body: "null here detaches. Say it on the line rather than in the release notes, where nobody will find it again."
   scope: endpoint
-  endpoint_path: /kitchen-sink/:sinkId
-  endpoint_http_verb: 3
-  part: input
-  line: 10
-  anchor_snapshot: "{label:string,weight:number,tags:[string],owner:User,archived:boolean}"
-  created_at: 2025-04-04 10:25:00
-ks_line_archived:
-  candidate: candidate4
-  author: one
-  body: "archived as a boolean loses when it was archived, and by whom."
-  scope: endpoint
-  endpoint_path: /kitchen-sink/:sinkId
-  endpoint_http_verb: 3
-  part: input
-  line: 22
-  anchor_snapshot: "{label:string,weight:number,tags:[string],owner:User,archived:boolean}"
-  created_at: 2025-04-04 10:30:00
-ks_line_archived_second:
-  candidate: candidate4
-  author: two
-  body: "Second thread on the same line, so the stacked count shows on a line pin."
-  scope: endpoint
-  endpoint_path: /kitchen-sink/:sinkId
-  endpoint_http_verb: 3
-  part: input
-  line: 22
-  anchor_snapshot: "{label:string,weight:number,tags:[string],owner:User,archived:boolean}"
-  created_at: 2025-04-04 10:32:00
-ks_line_outdated:
-  candidate: candidate4
-  author: one
-  body: "When I flagged this, tags was still a bare string rather than a list."
-  scope: endpoint
-  endpoint_path: /kitchen-sink/:sinkId
+  endpoint_path: /customers/:customerId
   endpoint_http_verb: 3
   part: input
   line: 4
-  anchor_snapshot: "{label:string,weight:number,tags:[string],owner:User}"
-  created_at: 2025-04-04 10:35:00
-ks_line_200_email:
-  candidate: candidate4
-  author: two
-  body: "Same leak on the way out — does a patch response need the email at all?"
+  anchor_snapshot: <%= patch_input.inspect %>
+  created_at: 2025-10-29 13:30:00
+
+rc14_line_metadata_key:
+  candidate: p1rc14
+  author: piotr
+  body: "A list of key/value pairs rather than an object means duplicate keys are expressible. What wins?"
+  scope: endpoint
+  endpoint_path: /customers/:customerId
+  endpoint_http_verb: 3
+  part: input
+  line: 12
+  anchor_snapshot: <%= patch_input.inspect %>
+  created_at: 2025-10-30 08:15:00
+rc14_line_metadata_key_reply:
+  candidate: p1rc14
+  author: anka
+  parent: rc14_line_metadata_key
+  body: "Last one wins, and there is a note on the line saying so."
+  scope: endpoint
+  endpoint_path: /customers/:customerId
+  endpoint_http_verb: 3
+  part: input
+  line: 12
+  anchor_snapshot: <%= patch_input.inspect %>
+  created_at: 2025-10-30 08:32:00
+rc14_line_metadata_key_second:
+  candidate: p1rc14
+  author: mira
+  body: "Cap the number of pairs while you are here. Nothing stops a caller sending ten thousand."
+  scope: endpoint
+  endpoint_path: /customers/:customerId
+  endpoint_http_verb: 3
+  part: input
+  line: 12
+  anchor_snapshot: <%= patch_input.inspect %>
+  created_at: 2025-10-30 08:40:00
+
+rc14_line_outdated:
+  candidate: p1rc14
+  author: mira
+  body: "When I flagged this, the body had no metadata at all and the endpoint could only ever change three things."
+  scope: endpoint
+  endpoint_path: /customers/:customerId
+  endpoint_http_verb: 3
+  part: input
+  line: 3
+  anchor_snapshot: <%= patch_input_was.inspect %>
+  created_at: 2025-10-28 17:20:00
+
+rc14_line_200_name:
+  candidate: p1rc14
+  author: tomek
+  body: "name comes back non-null, so a customer created before v7 answers here with what exactly?"
   scope: response
-  endpoint_path: /kitchen-sink/:sinkId
+  endpoint_path: /customers/:customerId
   endpoint_http_verb: 3
   response_code: "200"
   part: output
+  line: 4
+  anchor_snapshot: "Customer"
+  created_at: 2025-10-30 12:05:00
+
+# ----- rc14: the entity, and the two things that changed under it -----
+rc14_charge_whole:
+  candidate: p1rc14
+  author: tomek
+  body: "payment_method inline rather than by id makes every charge in a list four times the size. Is that paid for?"
+  scope: entity
+  entity_name: Charge
+  part: whole
+  created_at: 2025-10-29 15:00:00
+rc14_charge_whole_reply:
+  candidate: p1rc14
+  author: anka
+  parent: rc14_charge_whole
+  body: "Every screen that lists charges shows the card, so it is one call instead of fifty. Measured on the dashboard's own traffic."
+  scope: entity
+  entity_name: Charge
+  part: whole
+  created_at: 2025-10-29 15:26:00
+
+rc14_charge_line_payment_method:
+  candidate: p1rc14
+  author: mira
+  body: "Null on a charge that predates payment methods, or null on a charge paid some other way? Both, presumably, and a caller cannot tell them apart."
+  scope: entity
+  entity_name: Charge
+  part: root
+  line: 20
+  anchor_snapshot: <%= charge_root.inspect %>
+  created_at: 2025-10-29 15:40:00
+
+rc14_charge_line_description:
+  candidate: p1rc14
+  author: piotr
+  body: "description shows on the customer's statement, or only to us? That decides whether it needs a length limit."
+  scope: entity
+  entity_name: Charge
+  part: root
+  line: 10
+  anchor_snapshot: <%= charge_root.inspect %>
+  created_at: 2025-10-29 16:02:00
+
+rc14_charge_line_outdated:
+  candidate: p1rc14
+  author: tomek
+  body: "This was on customer_id before description moved in above it — the charge still had no description at all."
+  scope: entity
+  entity_name: Charge
+  part: root
+  line: 10
+  anchor_snapshot: <%= charge_root_was.inspect %>
+  created_at: 2025-10-28 18:05:00
+
+# ----- rc14: the auth move and the removal -----
+rc14_events_auth:
+  candidate: p1rc14
+  author: mira
+  body: "Moving /events to the platform key means a merchant can no longer audit their own webhook deliveries. Intended?"
+  scope: endpoint
+  endpoint_path: /events
+  endpoint_http_verb: 0
+  part: auth
+  created_at: 2025-10-29 10:40:00
+rc14_events_auth_reply:
+  candidate: p1rc14
+  author: anka
+  parent: rc14_events_auth
+  body: "Intended. They read their own events in the dashboard, which talks to the internal service."
+  scope: endpoint
+  endpoint_path: /events
+  endpoint_http_verb: 0
+  part: auth
+  created_at: 2025-10-29 10:58:00
+
+rc14_platform_key_note:
+  candidate: p1rc14
+  author: piotr
+  body: "Say who issues a platform key. The note explains the header and not the one thing anybody needs."
+  scope: auth_method
+  auth_method_name: PlatformKey
+  part: note
+  created_at: 2025-10-30 13:15:00
+
+rc14_prices_removed:
+  candidate: p1rc14
+  author: piotr
+  body: "Nothing external calls this, agreed — but the dashboard creates prices. Same code path?"
+  scope: endpoint
+  endpoint_path: /prices
+  endpoint_http_verb: 1
+  part: whole
+  created_at: 2025-10-30 13:30:00
+rc14_prices_removed_reply:
+  candidate: p1rc14
+  author: anka
+  parent: rc14_prices_removed
+  body: "No — the dashboard goes through the internal service. This endpoint has had no traffic since August."
+  scope: endpoint
+  endpoint_path: /prices
+  endpoint_http_verb: 1
+  part: whole
+  created_at: 2025-10-30 13:44:00
+
+rc14_refunds_note:
+  candidate: p1rc14
+  author: mira
+  body: "\"until the charge is exhausted\" is good. Add what happens on the request that goes one cent over."
+  scope: endpoint
+  endpoint_path: /refunds
+  endpoint_http_verb: 1
+  part: note
+  created_at: 2025-10-30 14:00:00
+
+# ===== Ledgerly rc5, merged: the pagination argument =====
+rc5_envelope:
+  candidate: p1rc5
+  author: mira
+  body: "This breaks every caller that loops over the response. Do we know who those are?"
+  scope: endpoint
+  endpoint_path: /charges
+  endpoint_http_verb: 0
+  part: whole
+  created_at: 2025-04-02 10:20:00
+rc5_envelope_reply:
+  candidate: p1rc5
+  author: tomek
+  parent: rc5_envelope
+  body: "Four accounts, all internal. Mailed them last week and two have already moved."
+  scope: endpoint
+  endpoint_path: /charges
+  endpoint_http_verb: 0
+  part: whole
+  created_at: 2025-04-02 11:05:00
+
+rc5_cursor:
+  candidate: p1rc5
+  author: piotr
+  body: "A cursor rather than a page number — good, but then limit needs a ceiling or someone will ask for a million."
+  scope: response
+  endpoint_path: /charges
+  endpoint_http_verb: 0
+  response_code: "200"
+  part: whole
+  resolved_at: 2025-04-04 09:30:00
+  resolved_by: tomek
+  created_at: 2025-04-03 14:15:00
+
+rc5_status_param:
+  candidate: p1rc5
+  author: mira
+  body: "status takes one value or a list? Every other API I have used takes a list here."
+  scope: param
+  endpoint_path: /charges
+  endpoint_http_verb: 0
+  param_name: status
+  param_location: query
+  part: whole
+  created_at: 2025-04-03 16:40:00
+
+# ===== Ledgerly rc9, merged: the breaking one =====
+rc9_name_narrowed:
+  candidate: p1rc9
+  author: mira
+  body: "Narrowing name from nullable to required breaks anyone who was branching on null. Are we certain every stored customer has one?"
+  scope: entity
+  entity_name: Customer
+  part: whole
+  created_at: 2025-07-08 09:50:00
+rc9_name_narrowed_reply:
+  candidate: p1rc9
+  author: anka
+  parent: rc9_name_narrowed
+  body: "Backfilled in June. 41 rows had an empty string, which is now the email's local part."
+  scope: entity
+  entity_name: Customer
+  part: whole
+  created_at: 2025-07-08 10:30:00
+
+rc9_payouts_gone:
+  candidate: p1rc9
+  author: tomek
+  body: "Removing POST /payouts outright rather than deprecating it first is bold. Any live callers?"
+  scope: endpoint
+  endpoint_path: /payouts
+  endpoint_http_verb: 1
+  part: whole
+  resolved_at: 2025-07-10 15:20:00
+  resolved_by: anka
+  created_at: 2025-07-09 11:15:00
+rc9_payouts_gone_reply:
+  candidate: p1rc9
+  author: anka
+  parent: rc9_payouts_gone
+  body: "None since the scheduler shipped. It could only ever race the scheduler anyway."
+  scope: endpoint
+  endpoint_path: /payouts
+  endpoint_http_verb: 1
+  part: whole
+  created_at: 2025-07-10 15:18:00
+
+rc9_wallet:
+  candidate: p1rc9
+  author: piotr
+  body: "A third branch on details means every caller's switch statement needs a default. Was it in the migration mail?"
+  scope: entity
+  entity_name: PaymentMethod
+  part: whole
+  created_at: 2025-07-11 13:00:00
+
+# ===== Ledgerly rc13, merged: richer errors =====
+rc13_error_details:
+  candidate: p1rc13
+  author: anka
+  body: "details as a list of field/issue pairs, rather than a map keyed by field — deliberate?"
+  scope: entity
+  entity_name: Error
+  part: whole
+  created_at: 2025-10-09 10:00:00
+rc13_error_details_reply:
+  candidate: p1rc13
+  author: tomek
+  parent: rc13_error_details
+  body: "Deliberate. One field can fail two ways and a map would only carry the last one."
+  scope: entity
+  entity_name: Error
+  part: whole
+  created_at: 2025-10-09 10:25:00
+
+rc13_balance_auth:
+  candidate: p1rc13
+  author: mira
+  body: "403 for a key that cannot read the balance — which keys are those? Nothing else in the API distinguishes them."
+  scope: response
+  endpoint_path: /balance
+  endpoint_http_verb: 0
+  response_code: "403"
+  part: whole
+  created_at: 2025-10-10 15:30:00
+
+rc13_event_union:
+  candidate: p1rc13
+  author: piotr
+  body: "Widening the event union is a change for existing consumers even though nothing was removed. The notes should say so out loud."
+  scope: entity
+  entity_name: Event
+  part: whole
+  resolved_at: 2025-10-12 09:15:00
+  resolved_by: tomek
+  created_at: 2025-10-11 11:45:00
+
+# ===== Statuspage rc4, rejected: why =====
+p2rc4_rename:
+  candidate: p2rc4
+  author: mira
+  body: "Every probe we run and every status page aggregator we are listed on hits /status. Renaming it to match our internal convention costs them all a change and buys us nothing."
+  scope: endpoint
+  endpoint_path: /health
+  endpoint_http_verb: 0
+  part: whole
+  created_at: 2025-08-12 09:30:00
+p2rc4_rename_reply:
+  candidate: p2rc4
+  author: piotr
+  parent: p2rc4_rename
+  body: "Fair. I had only thought about our own probes."
+  scope: endpoint
+  endpoint_path: /health
+  endpoint_http_verb: 0
+  part: whole
+  created_at: 2025-08-13 16:10:00
+
+p2rc4_alias:
+  candidate: p2rc4
+  author: anka
+  body: "If we want /health, add it alongside and leave /status where it is. A status page is the one thing that must never move."
+  scope: candidate
+  part: whole
+  created_at: 2025-08-13 17:00:00
+
+# ===== Statuspage rc3, merged =====
+p2rc3_subscriber_confirm:
+  candidate: p2rc3
+  author: mira
+  body: "An unconfirmed subscriber that never confirms — do we keep the row forever?"
+  scope: entity
+  entity_name: Subscriber
+  part: whole
+  created_at: 2025-07-25 11:20:00
+p2rc3_subscriber_confirm_reply:
+  candidate: p2rc3
+  author: piotr
+  parent: p2rc3_subscriber_confirm
+  body: "Dropped after 30 days. Not visible in the API, so it is not in the spec."
+  scope: entity
+  entity_name: Subscriber
+  part: whole
+  created_at: 2025-07-25 11:52:00
+
+p2rc3_updates_auth:
+  candidate: p2rc3
+  author: anka
+  body: "Posting an update needs the operator token but reading one does not. That asymmetry is right and worth keeping."
+  scope: endpoint
+  endpoint_path: /incidents/:incidentId/updates
+  endpoint_http_verb: 1
+  part: auth
+  created_at: 2025-07-26 14:05:00
+
+# ===== Ledgerly rc4, rejected: page numbers, argued down in favour of cursors =====
+rc4_total_is_expensive:
+  candidate: p1rc4
+  author: mira
+  body: "total means counting every charge on the account on every page request. On our largest account that is a four-second query, and the number is stale before it finishes rendering."
+  scope: response
+  endpoint_path: /charges
+  endpoint_http_verb: 0
+  response_code: "200"
+  part: whole
+  created_at: 2025-03-18 10:15:00
+rc4_total_is_expensive_reply:
+  candidate: p1rc4
+  author: tomek
+  parent: rc4_total_is_expensive
+  body: "I had not measured it on that account. If total goes, page numbers go with it — there is nothing left to page against."
+  scope: response
+  endpoint_path: /charges
+  endpoint_http_verb: 0
+  response_code: "200"
+  part: whole
+  created_at: 2025-03-19 09:40:00
+
+rc4_skips_and_repeats:
+  candidate: p1rc4
+  author: anka
+  body: "Offsets skip and repeat rows when something is created mid-walk. A ledger has things created mid-walk constantly — that is what a ledger is."
+  scope: param
+  endpoint_path: /charges
+  endpoint_http_verb: 0
+  param_name: page
+  param_location: query
+  part: whole
+  created_at: 2025-03-20 14:00:00
+
+rc4_two_breaks:
+  candidate: p1rc4
+  author: mira
+  body: "Closing this. If we ship page numbers now and move to cursors later, that is two breaking changes to the same shape in one quarter. Reopen as a cursor envelope and it goes in the same week."
+  scope: candidate
+  part: whole
+  created_at: 2025-03-25 11:15:00
+rc4_two_breaks_reply:
+  candidate: p1rc4
+  author: tomek
+  parent: rc4_two_breaks
+  body: "Agreed. Cursors it is — I will keep the envelope and swap the fields."
+  scope: candidate
+  part: whole
+  created_at: 2025-03-25 11:50:00
+
+# ===== Ledgerly rc7, rejected: replay belongs to operations, not to the contract =====
+rc7_replay_is_operational:
+  candidate: p1rc7
+  author: piotr
+  body: "Replay is an operational lever, not part of the contract. The moment it is in the spec we can never change how retries work without a version."
+  scope: endpoint
+  endpoint_path: /webhook_endpoints/:endpointId/replay
+  endpoint_http_verb: 1
+  part: whole
+  created_at: 2025-05-26 11:30:00
+rc7_replay_is_operational_reply:
+  candidate: p1rc7
+  author: anka
+  parent: rc7_replay_is_operational
+  body: "The deliveries list is the half people actually ask for. I will split it out and bring it back on its own."
+  scope: endpoint
+  endpoint_path: /webhook_endpoints/:endpointId/replay
+  endpoint_http_verb: 1
+  part: whole
+  created_at: 2025-05-28 16:05:00
+
+rc7_queued_count:
+  candidate: p1rc7
+  author: mira
+  body: "202 with a count tells a caller nothing about which events failed to queue. If half the list is outside the window, they learn a number."
+  scope: response
+  endpoint_path: /webhook_endpoints/:endpointId/replay
+  endpoint_http_verb: 1
+  response_code: "202"
+  part: whole
+  created_at: 2025-05-27 09:20:00
+
+rc7_list_is_fine:
+  candidate: p1rc7
+  author: tomek
+  body: "The list reads well on its own — succeeded as a filter is exactly what you want at 3am."
+  scope: endpoint
+  endpoint_path: /webhook_endpoints/:endpointId/deliveries
+  endpoint_http_verb: 0
+  part: whole
+  created_at: 2025-05-26 15:45:00
+
+rc7_closing:
+  candidate: p1rc7
+  author: piotr
+  body: "Closing on the replay half only. Nothing wrong with the deliveries list; it just cannot come in wearing this."
+  scope: candidate
+  part: whole
+  created_at: 2025-05-30 16:40:00
+
+# ===== Ledgerly rc11, rejected: money as a decimal string =====
+rc11_integers_since_v1:
+  candidate: p1rc11
+  author: mira
+  body: "Every amount in this API has been an integer of minor units since v1, and the v1 notes say so in as many words. This breaks every caller to fix a bug none of them has reported."
+  scope: entity
+  entity_name: Money
+  part: whole
+  created_at: 2025-08-14 10:20:00
+rc11_integers_since_v1_reply:
+  candidate: p1rc11
+  author: tomek
+  parent: rc11_integers_since_v1
+  body: "The Node client reported it. Turned out to be their own parser doing it, not ours."
+  scope: entity
+  entity_name: Money
+  part: whole
+  created_at: 2025-08-15 09:05:00
+
+rc11_string_moves_the_problem:
+  candidate: p1rc11
+  author: anka
+  body: "A decimal string moves the parsing problem rather than removing it. Now every caller has to pick a decimal library and get that right instead."
+  scope: entity
+  entity_name: Money
+  part: root
   line: 2
-  anchor_snapshot: "User"
-  created_at: 2025-04-04 10:40:00
+  anchor_snapshot: "{amount:string,currency:string}"
+  created_at: 2025-08-18 13:30:00
+
+rc11_closing:
+  candidate: p1rc11
+  author: mira
+  body: "Closing. If a client library gets this wrong we fix the library. We do not reshape the wire format of every amount we have ever sent."
+  scope: candidate
+  part: whole
+  created_at: 2025-08-20 14:25:00
+rc11_closing_reply:
+  candidate: p1rc11
+  author: tomek
+  parent: rc11_closing
+  body: "No argument. I will send the Node people a patch instead."
+  scope: candidate
+  part: whole
+  created_at: 2025-08-20 15:00:00

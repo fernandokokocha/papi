@@ -55,9 +55,12 @@ discussion is a decision record, not a plan.
 
 - `bin/dev` — dev server. Not `bin/rails server`: it also runs the Tailwind
   watcher, without which class changes silently no-op.
-- `bin/rails dev:setup` — wipe + recreate + load fixtures. Migrations are edited
-  in place at this stage rather than added to.
-- `bundle exec rspec` — the suite. `test/` holds only legacy fixtures.
+- `bin/rails dev:setup` — wipe + recreate + load fixtures, then `dev:import_petstore`,
+  which fills the Petstore project by running `OpenAPI::Import` over
+  `test/fixtures/files/petstore.json` twice: once merged to v1, once left open as
+  rc2. Migrations are edited in place at this stage rather than added to.
+- `bundle exec rspec` — the suite. It builds its own data from `spec/factories`
+  and never reads `test/fixtures`, which is dev seed data and nothing else.
 - `bin/rubocop`, `bundle exec brakeman`.
 
 ## The schema DSL

@@ -1,14 +1,57 @@
-rc3_one:
-  candidate: candidate3
-  user: one
-  created_at: 2025-03-18 09:00:00
-
-rc4_one:
-  candidate: candidate4
-  user: one
-  created_at: 2025-04-03 14:20:00
-
-rc4_four:
-  candidate: candidate4
-  user: four
-  created_at: 2025-04-04 10:05:00
+# ===== one thumbs-up per viewer =====
+p1rc3_mira:
+  candidate: p1rc3
+  user: mira
+  created_at: '2025-03-05 16:20:00'
+p1rc5_mira:
+  candidate: p1rc5
+  user: mira
+  created_at: '2025-04-07 10:00:00'
+p1rc5_piotr:
+  candidate: p1rc5
+  user: piotr
+  created_at: '2025-04-07 15:40:00'
+p1rc7_tomek:
+  candidate: p1rc7
+  user: tomek
+  created_at: '2025-05-27 09:05:00'
+p1rc8_piotr:
+  candidate: p1rc8
+  user: piotr
+  created_at: '2025-06-09 11:05:00'
+p1rc9_mira:
+  candidate: p1rc9
+  user: mira
+  created_at: '2025-07-14 09:15:00'
+p1rc9_tomek:
+  candidate: p1rc9
+  user: tomek
+  created_at: '2025-07-14 17:30:00'
+p1rc10_piotr:
+  candidate: p1rc10
+  user: piotr
+  created_at: '2025-08-04 13:50:00'
+p1rc12_mira:
+  candidate: p1rc12
+  user: mira
+  created_at: '2025-09-01 12:35:00'
+p1rc12_piotr:
+  candidate: p1rc12
+  user: piotr
+  created_at: '2025-09-01 18:10:00'
+p1rc13_mira:
+  candidate: p1rc13
+  user: mira
+  created_at: '2025-10-13 14:25:00'
+p1rc14_mira:
+  candidate: p1rc14
+  user: mira
+  created_at: '2025-10-30 09:50:00'
+p2rc2_mira:
+  candidate: p2rc2
+  user: mira
+  created_at: '2025-06-23 10:40:00'
+p2rc3_anka:
+  candidate: p2rc3
+  user: anka
+  created_at: '2025-07-28 16:00:00'

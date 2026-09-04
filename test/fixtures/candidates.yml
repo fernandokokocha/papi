@@ -1,36 +1,179 @@
-candidate1:
-  name: "rc1"
-  project: project1
+# ===== Ledgerly: ten merged, three rejected, one open =====
+p1rc1:
+  name: rc1
+  project: ledgerly
   order: 1
-  aasm_state: "merged"
-  author: two
-  decided_by: one
-  created_at: 2025-01-05 10:00:00
-  decided_at: 2025-01-10 09:00:00
-candidate2:
-  name: "rc2"
-  project: project1
+  aasm_state: merged
+  author: tomek
+  created_at: '2025-01-05 09:15:00'
+  decided_by: mira
+  decided_at: '2025-01-13 10:20:00'
+p1rc2:
+  name: rc2
+  project: ledgerly
   order: 2
-  aasm_state: "merged"
-  author: two
-  decided_by: one
-  created_at: 2025-02-08 10:00:00
-  decided_at: 2025-02-14 11:30:00
-candidate3:
-  name: "rc3"
-  project: project1
+  aasm_state: merged
+  author: tomek
+  created_at: '2025-01-29 11:40:00'
+  base_version: p1v1
+  decided_by: mira
+  decided_at: '2025-02-04 14:05:00'
+p1rc3:
+  name: rc3
+  project: ledgerly
   order: 3
-  aasm_state: "merged"
-  author: two
-  decided_by: one
-  created_at: 2025-03-14 10:00:00
-  decided_at: 2025-03-20 15:45:00
-candidate4:
-  name: "rc4"
-  project: project1
+  aasm_state: merged
+  author: anka
+  created_at: '2025-02-23 14:00:00'
+  base_version: p1v2
+  decided_by: mira
+  decided_at: '2025-03-06 09:40:00'
+p1rc4:
+  name: rc4
+  project: ledgerly
   order: 4
-  aasm_state: "merged"
-  author: two
-  decided_by: one
-  created_at: 2025-03-28 10:00:00
-  decided_at: 2025-04-05 08:15:00
+  aasm_state: rejected
+  author: tomek
+  created_at: '2025-03-16 09:30:00'
+  base_version: p1v3
+  decided_by: mira
+  decided_at: '2025-03-25 11:20:00'
+p1rc5:
+  name: rc5
+  project: ledgerly
+  order: 5
+  aasm_state: merged
+  author: tomek
+  created_at: '2025-03-30 10:20:00'
+  base_version: p1v3
+  decided_by: piotr
+  decided_at: '2025-04-08 16:30:00'
+p1rc6:
+  name: rc6
+  project: ledgerly
+  order: 6
+  aasm_state: merged
+  author: anka
+  created_at: '2025-05-06 09:00:00'
+  base_version: p1v4
+  decided_by: mira
+  decided_at: '2025-05-13 11:15:00'
+p1rc7:
+  name: rc7
+  project: ledgerly
+  order: 7
+  aasm_state: rejected
+  author: anka
+  created_at: '2025-05-22 10:00:00'
+  base_version: p1v5
+  decided_by: piotr
+  decided_at: '2025-05-30 16:45:00'
+p1rc8:
+  name: rc8
+  project: ledgerly
+  order: 8
+  aasm_state: merged
+  author: tomek
+  created_at: '2025-06-05 15:30:00'
+  base_version: p1v5
+  decided_by: mira
+  decided_at: '2025-06-10 08:50:00'
+p1rc9:
+  name: rc9
+  project: ledgerly
+  order: 9
+  aasm_state: merged
+  author: anka
+  created_at: '2025-07-02 08:45:00'
+  base_version: p1v6
+  decided_by: piotr
+  decided_at: '2025-07-15 13:25:00'
+p1rc10:
+  name: rc10
+  project: ledgerly
+  order: 10
+  aasm_state: merged
+  author: tomek
+  created_at: '2025-07-30 13:10:00'
+  base_version: p1v7
+  decided_by: mira
+  decided_at: '2025-08-05 15:00:00'
+p1rc11:
+  name: rc11
+  project: ledgerly
+  order: 11
+  aasm_state: rejected
+  author: tomek
+  created_at: '2025-08-12 09:40:00'
+  base_version: p1v8
+  decided_by: mira
+  decided_at: '2025-08-20 14:30:00'
+p1rc12:
+  name: rc12
+  project: ledgerly
+  order: 12
+  aasm_state: merged
+  author: anka
+  created_at: '2025-08-23 10:05:00'
+  base_version: p1v8
+  decided_by: mira
+  decided_at: '2025-09-02 10:10:00'
+p1rc13:
+  name: rc13
+  project: ledgerly
+  order: 13
+  aasm_state: merged
+  author: tomek
+  created_at: '2025-10-07 16:20:00'
+  base_version: p1v9
+  decided_by: piotr
+  decided_at: '2025-10-14 09:05:00'
+p1rc14:
+  name: rc14
+  project: ledgerly
+  order: 14
+  aasm_state: open
+  author: anka
+  created_at: '2025-10-28 11:40:00'
+  base_version: p1v10
+
+# ===== Statuspage: three merged, one rejected =====
+p2rc1:
+  name: rc1
+  project: statuspage
+  order: 1
+  aasm_state: merged
+  author: piotr
+  created_at: '2025-05-15 10:00:00'
+  decided_by: mira
+  decided_at: '2025-05-20 12:00:00'
+p2rc2:
+  name: rc2
+  project: statuspage
+  order: 2
+  aasm_state: merged
+  author: anka
+  created_at: '2025-06-17 09:20:00'
+  base_version: p2v1
+  decided_by: mira
+  decided_at: '2025-06-24 17:45:00'
+p2rc3:
+  name: rc3
+  project: statuspage
+  order: 3
+  aasm_state: merged
+  author: piotr
+  created_at: '2025-07-22 11:00:00'
+  base_version: p2v2
+  decided_by: mira
+  decided_at: '2025-07-29 09:30:00'
+p2rc4:
+  name: rc4
+  project: statuspage
+  order: 4
+  aasm_state: rejected
+  author: piotr
+  created_at: '2025-08-11 14:20:00'
+  base_version: p2v3
+  decided_by: mira
+  decided_at: '2025-08-14 10:15:00'

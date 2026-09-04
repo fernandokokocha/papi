@@ -1,102 +1,1559 @@
-# ===== v3 =====
-p1v3_tasks_show_task_id:
-  endpoint: p1v3_tasks_show
-  name: taskId
+# ===== ledgerly v1 =====
+p1v1_charges_show_path_chargeId:
+  endpoint: p1v1_charges_show
+  name: chargeId
   kind: string
+  location: path
+  required: true
 
-# ===== v4 (taskId narrowed from string to number) =====
-p1v4_tasks_show_task_id:
-  endpoint: p1v4_tasks_show
-  name: taskId
-  kind: number
-p1v4_tasks_comments_task_id:
-  endpoint: p1v4_tasks_comments
-  name: taskId
-  kind: number
-p1v4_tasks_comments_comment_id:
-  endpoint: p1v4_tasks_comments
-  name: commentId
-  kind: number
+# ===== ledgerly v2 =====
+p1v2_charges_show_path_chargeId:
+  endpoint: p1v2_charges_show
+  name: chargeId
+  kind: string
+  location: path
+  required: true
+p1v2_refunds_show_path_refundId:
+  endpoint: p1v2_refunds_show
+  name: refundId
+  kind: string
+  location: path
+  required: true
 
-# ===== query params on GET /users =====
-# v2 introduces pagination, v3 adds a required search and tightens page.
-p1v2_users_list_page:
-  endpoint: p1v2_users_list
+# ===== ledgerly v3 =====
+p1v3_charges_show_path_chargeId:
+  endpoint: p1v3_charges_show
+  name: chargeId
+  kind: string
+  location: path
+  required: true
+p1v3_customers_show_path_customerId:
+  endpoint: p1v3_customers_show
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v3_customer_payment_methods_path_customerId:
+  endpoint: p1v3_customer_payment_methods
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v3_refunds_show_path_refundId:
+  endpoint: p1v3_refunds_show
+  name: refundId
+  kind: string
+  location: path
+  required: true
+
+# ===== candidate rc4-v1 =====
+p1rc4v_charges_list_query_page:
+  endpoint: p1rc4v_charges_list
   name: page
   kind: number
   location: query
   required: false
-p1v2_users_list_per_page:
-  endpoint: p1v2_users_list
+p1rc4v_charges_list_query_per_page:
+  endpoint: p1rc4v_charges_list
   name: per_page
   kind: number
   location: query
   required: false
-
-p1v3_users_list_q:
-  endpoint: p1v3_users_list
-  name: q
+p1rc4v_charges_list_query_status:
+  endpoint: p1rc4v_charges_list
+  name: status
   kind: string
   location: query
+  required: false
+p1rc4v_charges_show_path_chargeId:
+  endpoint: p1rc4v_charges_show
+  name: chargeId
+  kind: string
+  location: path
   required: true
-p1v3_users_list_page:
-  endpoint: p1v3_users_list
+p1rc4v_customers_list_query_page:
+  endpoint: p1rc4v_customers_list
   name: page
   kind: number
   location: query
-  required: true
-p1v3_users_list_per_page:
-  endpoint: p1v3_users_list
+  required: false
+p1rc4v_customers_list_query_per_page:
+  endpoint: p1rc4v_customers_list
   name: per_page
   kind: number
   location: query
   required: false
-
-p1v4_users_list_q:
-  endpoint: p1v4_users_list
-  name: q
+p1rc4v_customers_list_query_email:
+  endpoint: p1rc4v_customers_list
+  name: email
   kind: string
   location: query
+  required: false
+p1rc4v_customers_show_path_customerId:
+  endpoint: p1rc4v_customers_show
+  name: customerId
+  kind: string
+  location: path
   required: true
-p1v4_users_list_page:
-  endpoint: p1v4_users_list
-  name: page
-  kind: number
-  location: query
+p1rc4v_customer_payment_methods_path_customerId:
+  endpoint: p1rc4v_customer_payment_methods
+  name: customerId
+  kind: string
+  location: path
   required: true
-p1v4_users_list_per_page:
-  endpoint: p1v4_users_list
-  name: per_page
+p1rc4v_refunds_show_path_refundId:
+  endpoint: p1rc4v_refunds_show
+  name: refundId
+  kind: string
+  location: path
+  required: true
+
+# ===== ledgerly v4 =====
+p1v4_charges_list_query_limit:
+  endpoint: p1v4_charges_list
+  name: limit
   kind: number
   location: query
   required: false
-
-# ===== kitchen sink =====
-p1v3_kitchen_sink_id:
-  endpoint: p1v3_kitchen_sink
-  name: sinkId
+p1v4_charges_list_query_starting_after:
+  endpoint: p1v4_charges_list
+  name: starting_after
   kind: string
-p1v3_kitchen_sink_verbose:
-  endpoint: p1v3_kitchen_sink
-  name: verbose
+  location: query
+  required: false
+p1v4_charges_list_query_status:
+  endpoint: p1v4_charges_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1v4_charges_show_path_chargeId:
+  endpoint: p1v4_charges_show
+  name: chargeId
+  kind: string
+  location: path
+  required: true
+p1v4_customers_list_query_limit:
+  endpoint: p1v4_customers_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v4_customers_list_query_starting_after:
+  endpoint: p1v4_customers_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v4_customers_list_query_email:
+  endpoint: p1v4_customers_list
+  name: email
+  kind: string
+  location: query
+  required: false
+p1v4_customers_show_path_customerId:
+  endpoint: p1v4_customers_show
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v4_customer_payment_methods_path_customerId:
+  endpoint: p1v4_customer_payment_methods
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v4_refunds_show_path_refundId:
+  endpoint: p1v4_refunds_show
+  name: refundId
+  kind: string
+  location: path
+  required: true
+
+# ===== ledgerly v5 =====
+p1v5_charges_list_query_limit:
+  endpoint: p1v5_charges_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v5_charges_list_query_starting_after:
+  endpoint: p1v5_charges_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v5_charges_list_query_status:
+  endpoint: p1v5_charges_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1v5_charges_show_path_chargeId:
+  endpoint: p1v5_charges_show
+  name: chargeId
+  kind: string
+  location: path
+  required: true
+p1v5_customers_list_query_limit:
+  endpoint: p1v5_customers_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v5_customers_list_query_starting_after:
+  endpoint: p1v5_customers_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v5_customers_list_query_email:
+  endpoint: p1v5_customers_list
+  name: email
+  kind: string
+  location: query
+  required: false
+p1v5_customers_show_path_customerId:
+  endpoint: p1v5_customers_show
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v5_customer_payment_methods_path_customerId:
+  endpoint: p1v5_customer_payment_methods
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v5_events_list_query_type:
+  endpoint: p1v5_events_list
+  name: type
+  kind: string
+  location: query
+  required: false
+p1v5_events_list_query_limit:
+  endpoint: p1v5_events_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v5_events_list_query_starting_after:
+  endpoint: p1v5_events_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v5_events_show_path_eventId:
+  endpoint: p1v5_events_show
+  name: eventId
+  kind: string
+  location: path
+  required: true
+p1v5_refunds_show_path_refundId:
+  endpoint: p1v5_refunds_show
+  name: refundId
+  kind: string
+  location: path
+  required: true
+p1v5_webhook_endpoints_delete_path_endpointId:
+  endpoint: p1v5_webhook_endpoints_delete
+  name: endpointId
+  kind: string
+  location: path
+  required: true
+
+# ===== candidate rc7-v1 =====
+p1rc7v_charges_list_query_limit:
+  endpoint: p1rc7v_charges_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1rc7v_charges_list_query_starting_after:
+  endpoint: p1rc7v_charges_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1rc7v_charges_list_query_status:
+  endpoint: p1rc7v_charges_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1rc7v_charges_show_path_chargeId:
+  endpoint: p1rc7v_charges_show
+  name: chargeId
+  kind: string
+  location: path
+  required: true
+p1rc7v_customers_list_query_limit:
+  endpoint: p1rc7v_customers_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1rc7v_customers_list_query_starting_after:
+  endpoint: p1rc7v_customers_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1rc7v_customers_list_query_email:
+  endpoint: p1rc7v_customers_list
+  name: email
+  kind: string
+  location: query
+  required: false
+p1rc7v_customers_show_path_customerId:
+  endpoint: p1rc7v_customers_show
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1rc7v_customer_payment_methods_path_customerId:
+  endpoint: p1rc7v_customer_payment_methods
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1rc7v_events_list_query_type:
+  endpoint: p1rc7v_events_list
+  name: type
+  kind: string
+  location: query
+  required: false
+p1rc7v_events_list_query_limit:
+  endpoint: p1rc7v_events_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1rc7v_events_list_query_starting_after:
+  endpoint: p1rc7v_events_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1rc7v_events_show_path_eventId:
+  endpoint: p1rc7v_events_show
+  name: eventId
+  kind: string
+  location: path
+  required: true
+p1rc7v_refunds_show_path_refundId:
+  endpoint: p1rc7v_refunds_show
+  name: refundId
+  kind: string
+  location: path
+  required: true
+p1rc7v_webhook_endpoints_delete_path_endpointId:
+  endpoint: p1rc7v_webhook_endpoints_delete
+  name: endpointId
+  kind: string
+  location: path
+  required: true
+p1rc7v_deliveries_list_path_endpointId:
+  endpoint: p1rc7v_deliveries_list
+  name: endpointId
+  kind: string
+  location: path
+  required: true
+p1rc7v_deliveries_list_query_succeeded:
+  endpoint: p1rc7v_deliveries_list
+  name: succeeded
   kind: boolean
   location: query
-p1v3_kitchen_sink_depth:
-  endpoint: p1v3_kitchen_sink
-  name: depth
+  required: false
+p1rc7v_deliveries_list_query_limit:
+  endpoint: p1rc7v_deliveries_list
+  name: limit
   kind: number
   location: query
-p1v4_kitchen_sink_id:
-  endpoint: p1v4_kitchen_sink
-  name: sinkId
+  required: false
+p1rc7v_deliveries_replay_path_endpointId:
+  endpoint: p1rc7v_deliveries_replay
+  name: endpointId
+  kind: string
+  location: path
+  required: true
+
+# ===== ledgerly v6 =====
+p1v6_charges_list_query_limit:
+  endpoint: p1v6_charges_list
+  name: limit
   kind: number
-p1v4_kitchen_sink_verbose:
-  endpoint: p1v4_kitchen_sink
-  name: verbose
+  location: query
+  required: false
+p1v6_charges_list_query_starting_after:
+  endpoint: p1v6_charges_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v6_charges_list_query_status:
+  endpoint: p1v6_charges_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1v6_charges_show_path_chargeId:
+  endpoint: p1v6_charges_show
+  name: chargeId
+  kind: string
+  location: path
+  required: true
+p1v6_customers_list_query_limit:
+  endpoint: p1v6_customers_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v6_customers_list_query_starting_after:
+  endpoint: p1v6_customers_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v6_customers_list_query_email:
+  endpoint: p1v6_customers_list
+  name: email
+  kind: string
+  location: query
+  required: false
+p1v6_customers_show_path_customerId:
+  endpoint: p1v6_customers_show
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v6_customer_payment_methods_path_customerId:
+  endpoint: p1v6_customer_payment_methods
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v6_events_list_query_type:
+  endpoint: p1v6_events_list
+  name: type
+  kind: string
+  location: query
+  required: false
+p1v6_events_list_query_limit:
+  endpoint: p1v6_events_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v6_events_list_query_starting_after:
+  endpoint: p1v6_events_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v6_events_show_path_eventId:
+  endpoint: p1v6_events_show
+  name: eventId
+  kind: string
+  location: path
+  required: true
+p1v6_payouts_list_query_limit:
+  endpoint: p1v6_payouts_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v6_payouts_list_query_starting_after:
+  endpoint: p1v6_payouts_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v6_payouts_list_query_status:
+  endpoint: p1v6_payouts_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1v6_payouts_show_path_payoutId:
+  endpoint: p1v6_payouts_show
+  name: payoutId
+  kind: string
+  location: path
+  required: true
+p1v6_refunds_show_path_refundId:
+  endpoint: p1v6_refunds_show
+  name: refundId
+  kind: string
+  location: path
+  required: true
+p1v6_webhook_endpoints_delete_path_endpointId:
+  endpoint: p1v6_webhook_endpoints_delete
+  name: endpointId
+  kind: string
+  location: path
+  required: true
+
+# ===== ledgerly v7 =====
+p1v7_charges_list_query_limit:
+  endpoint: p1v7_charges_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v7_charges_list_query_starting_after:
+  endpoint: p1v7_charges_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v7_charges_list_query_status:
+  endpoint: p1v7_charges_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1v7_charges_show_path_chargeId:
+  endpoint: p1v7_charges_show
+  name: chargeId
+  kind: string
+  location: path
+  required: true
+p1v7_customers_list_query_limit:
+  endpoint: p1v7_customers_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v7_customers_list_query_starting_after:
+  endpoint: p1v7_customers_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v7_customers_list_query_email:
+  endpoint: p1v7_customers_list
+  name: email
+  kind: string
+  location: query
+  required: false
+p1v7_customers_show_path_customerId:
+  endpoint: p1v7_customers_show
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v7_customers_delete_path_customerId:
+  endpoint: p1v7_customers_delete
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v7_customer_payment_methods_path_customerId:
+  endpoint: p1v7_customer_payment_methods
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v7_events_list_query_type:
+  endpoint: p1v7_events_list
+  name: type
+  kind: string
+  location: query
+  required: false
+p1v7_events_list_query_limit:
+  endpoint: p1v7_events_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v7_events_list_query_starting_after:
+  endpoint: p1v7_events_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v7_events_show_path_eventId:
+  endpoint: p1v7_events_show
+  name: eventId
+  kind: string
+  location: path
+  required: true
+p1v7_payouts_list_query_limit:
+  endpoint: p1v7_payouts_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v7_payouts_list_query_starting_after:
+  endpoint: p1v7_payouts_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v7_payouts_list_query_status:
+  endpoint: p1v7_payouts_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1v7_payouts_show_path_payoutId:
+  endpoint: p1v7_payouts_show
+  name: payoutId
+  kind: string
+  location: path
+  required: true
+p1v7_refunds_show_path_refundId:
+  endpoint: p1v7_refunds_show
+  name: refundId
+  kind: string
+  location: path
+  required: true
+p1v7_webhook_endpoints_delete_path_endpointId:
+  endpoint: p1v7_webhook_endpoints_delete
+  name: endpointId
+  kind: string
+  location: path
+  required: true
+
+# ===== ledgerly v8 =====
+p1v8_charges_list_query_limit:
+  endpoint: p1v8_charges_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v8_charges_list_query_starting_after:
+  endpoint: p1v8_charges_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v8_charges_list_query_status:
+  endpoint: p1v8_charges_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1v8_charges_show_path_chargeId:
+  endpoint: p1v8_charges_show
+  name: chargeId
+  kind: string
+  location: path
+  required: true
+p1v8_customers_list_query_limit:
+  endpoint: p1v8_customers_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v8_customers_list_query_starting_after:
+  endpoint: p1v8_customers_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v8_customers_list_query_email:
+  endpoint: p1v8_customers_list
+  name: email
+  kind: string
+  location: query
+  required: false
+p1v8_customers_show_path_customerId:
+  endpoint: p1v8_customers_show
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v8_customers_delete_path_customerId:
+  endpoint: p1v8_customers_delete
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v8_customer_payment_methods_path_customerId:
+  endpoint: p1v8_customer_payment_methods
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v8_disputes_list_query_limit:
+  endpoint: p1v8_disputes_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v8_disputes_list_query_starting_after:
+  endpoint: p1v8_disputes_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v8_disputes_list_query_status:
+  endpoint: p1v8_disputes_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1v8_disputes_show_path_disputeId:
+  endpoint: p1v8_disputes_show
+  name: disputeId
+  kind: string
+  location: path
+  required: true
+p1v8_disputes_close_path_disputeId:
+  endpoint: p1v8_disputes_close
+  name: disputeId
+  kind: string
+  location: path
+  required: true
+p1v8_events_list_query_type:
+  endpoint: p1v8_events_list
+  name: type
+  kind: string
+  location: query
+  required: false
+p1v8_events_list_query_limit:
+  endpoint: p1v8_events_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v8_events_list_query_starting_after:
+  endpoint: p1v8_events_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v8_events_show_path_eventId:
+  endpoint: p1v8_events_show
+  name: eventId
+  kind: string
+  location: path
+  required: true
+p1v8_payouts_list_query_limit:
+  endpoint: p1v8_payouts_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v8_payouts_list_query_starting_after:
+  endpoint: p1v8_payouts_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v8_payouts_list_query_status:
+  endpoint: p1v8_payouts_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1v8_payouts_show_path_payoutId:
+  endpoint: p1v8_payouts_show
+  name: payoutId
+  kind: string
+  location: path
+  required: true
+p1v8_refunds_show_path_refundId:
+  endpoint: p1v8_refunds_show
+  name: refundId
+  kind: string
+  location: path
+  required: true
+p1v8_webhook_endpoints_delete_path_endpointId:
+  endpoint: p1v8_webhook_endpoints_delete
+  name: endpointId
+  kind: string
+  location: path
+  required: true
+
+# ===== candidate rc11-v1 =====
+p1rc11v_charges_list_query_limit:
+  endpoint: p1rc11v_charges_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1rc11v_charges_list_query_starting_after:
+  endpoint: p1rc11v_charges_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1rc11v_charges_list_query_status:
+  endpoint: p1rc11v_charges_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1rc11v_charges_show_path_chargeId:
+  endpoint: p1rc11v_charges_show
+  name: chargeId
+  kind: string
+  location: path
+  required: true
+p1rc11v_customers_list_query_limit:
+  endpoint: p1rc11v_customers_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1rc11v_customers_list_query_starting_after:
+  endpoint: p1rc11v_customers_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1rc11v_customers_list_query_email:
+  endpoint: p1rc11v_customers_list
+  name: email
+  kind: string
+  location: query
+  required: false
+p1rc11v_customers_show_path_customerId:
+  endpoint: p1rc11v_customers_show
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1rc11v_customers_delete_path_customerId:
+  endpoint: p1rc11v_customers_delete
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1rc11v_customer_payment_methods_path_customerId:
+  endpoint: p1rc11v_customer_payment_methods
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1rc11v_disputes_list_query_limit:
+  endpoint: p1rc11v_disputes_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1rc11v_disputes_list_query_starting_after:
+  endpoint: p1rc11v_disputes_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1rc11v_disputes_list_query_status:
+  endpoint: p1rc11v_disputes_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1rc11v_disputes_show_path_disputeId:
+  endpoint: p1rc11v_disputes_show
+  name: disputeId
+  kind: string
+  location: path
+  required: true
+p1rc11v_disputes_close_path_disputeId:
+  endpoint: p1rc11v_disputes_close
+  name: disputeId
+  kind: string
+  location: path
+  required: true
+p1rc11v_events_list_query_type:
+  endpoint: p1rc11v_events_list
+  name: type
+  kind: string
+  location: query
+  required: false
+p1rc11v_events_list_query_limit:
+  endpoint: p1rc11v_events_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1rc11v_events_list_query_starting_after:
+  endpoint: p1rc11v_events_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1rc11v_events_show_path_eventId:
+  endpoint: p1rc11v_events_show
+  name: eventId
+  kind: string
+  location: path
+  required: true
+p1rc11v_payouts_list_query_limit:
+  endpoint: p1rc11v_payouts_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1rc11v_payouts_list_query_starting_after:
+  endpoint: p1rc11v_payouts_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1rc11v_payouts_list_query_status:
+  endpoint: p1rc11v_payouts_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1rc11v_payouts_show_path_payoutId:
+  endpoint: p1rc11v_payouts_show
+  name: payoutId
+  kind: string
+  location: path
+  required: true
+p1rc11v_refunds_show_path_refundId:
+  endpoint: p1rc11v_refunds_show
+  name: refundId
+  kind: string
+  location: path
+  required: true
+p1rc11v_webhook_endpoints_delete_path_endpointId:
+  endpoint: p1rc11v_webhook_endpoints_delete
+  name: endpointId
+  kind: string
+  location: path
+  required: true
+
+# ===== ledgerly v9 =====
+p1v9_charges_list_query_limit:
+  endpoint: p1v9_charges_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v9_charges_list_query_starting_after:
+  endpoint: p1v9_charges_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v9_charges_list_query_status:
+  endpoint: p1v9_charges_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1v9_charges_show_path_chargeId:
+  endpoint: p1v9_charges_show
+  name: chargeId
+  kind: string
+  location: path
+  required: true
+p1v9_customers_list_query_limit:
+  endpoint: p1v9_customers_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v9_customers_list_query_starting_after:
+  endpoint: p1v9_customers_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v9_customers_list_query_email:
+  endpoint: p1v9_customers_list
+  name: email
+  kind: string
+  location: query
+  required: false
+p1v9_customers_show_path_customerId:
+  endpoint: p1v9_customers_show
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v9_customers_delete_path_customerId:
+  endpoint: p1v9_customers_delete
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v9_customer_payment_methods_path_customerId:
+  endpoint: p1v9_customer_payment_methods
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v9_disputes_list_query_limit:
+  endpoint: p1v9_disputes_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v9_disputes_list_query_starting_after:
+  endpoint: p1v9_disputes_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v9_disputes_list_query_status:
+  endpoint: p1v9_disputes_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1v9_disputes_show_path_disputeId:
+  endpoint: p1v9_disputes_show
+  name: disputeId
+  kind: string
+  location: path
+  required: true
+p1v9_disputes_close_path_disputeId:
+  endpoint: p1v9_disputes_close
+  name: disputeId
+  kind: string
+  location: path
+  required: true
+p1v9_events_list_query_type:
+  endpoint: p1v9_events_list
+  name: type
+  kind: string
+  location: query
+  required: false
+p1v9_events_list_query_limit:
+  endpoint: p1v9_events_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v9_events_list_query_starting_after:
+  endpoint: p1v9_events_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v9_events_show_path_eventId:
+  endpoint: p1v9_events_show
+  name: eventId
+  kind: string
+  location: path
+  required: true
+p1v9_payouts_list_query_limit:
+  endpoint: p1v9_payouts_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v9_payouts_list_query_starting_after:
+  endpoint: p1v9_payouts_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v9_payouts_list_query_status:
+  endpoint: p1v9_payouts_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1v9_payouts_show_path_payoutId:
+  endpoint: p1v9_payouts_show
+  name: payoutId
+  kind: string
+  location: path
+  required: true
+p1v9_prices_list_query_active:
+  endpoint: p1v9_prices_list
+  name: active
   kind: boolean
   location: query
-p1v4_kitchen_sink_depth:
-  endpoint: p1v4_kitchen_sink
-  name: depth
+  required: false
+p1v9_refunds_show_path_refundId:
+  endpoint: p1v9_refunds_show
+  name: refundId
+  kind: string
+  location: path
+  required: true
+p1v9_subscriptions_list_query_customer_id:
+  endpoint: p1v9_subscriptions_list
+  name: customer_id
+  kind: string
+  location: query
+  required: false
+p1v9_subscriptions_list_query_status:
+  endpoint: p1v9_subscriptions_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1v9_subscriptions_list_query_limit:
+  endpoint: p1v9_subscriptions_list
+  name: limit
   kind: number
   location: query
+  required: false
+p1v9_subscriptions_show_path_subscriptionId:
+  endpoint: p1v9_subscriptions_show
+  name: subscriptionId
+  kind: string
+  location: path
+  required: true
+p1v9_subscriptions_delete_path_subscriptionId:
+  endpoint: p1v9_subscriptions_delete
+  name: subscriptionId
+  kind: string
+  location: path
+  required: true
+p1v9_webhook_endpoints_delete_path_endpointId:
+  endpoint: p1v9_webhook_endpoints_delete
+  name: endpointId
+  kind: string
+  location: path
+  required: true
+
+# ===== ledgerly v10 =====
+p1v10_charges_list_query_limit:
+  endpoint: p1v10_charges_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v10_charges_list_query_starting_after:
+  endpoint: p1v10_charges_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v10_charges_list_query_status:
+  endpoint: p1v10_charges_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1v10_charges_show_path_chargeId:
+  endpoint: p1v10_charges_show
+  name: chargeId
+  kind: string
+  location: path
+  required: true
+p1v10_customers_list_query_limit:
+  endpoint: p1v10_customers_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v10_customers_list_query_starting_after:
+  endpoint: p1v10_customers_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v10_customers_list_query_email:
+  endpoint: p1v10_customers_list
+  name: email
+  kind: string
+  location: query
+  required: false
+p1v10_customers_show_path_customerId:
+  endpoint: p1v10_customers_show
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v10_customers_delete_path_customerId:
+  endpoint: p1v10_customers_delete
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v10_customer_payment_methods_path_customerId:
+  endpoint: p1v10_customer_payment_methods
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1v10_disputes_list_query_limit:
+  endpoint: p1v10_disputes_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v10_disputes_list_query_starting_after:
+  endpoint: p1v10_disputes_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v10_disputes_list_query_status:
+  endpoint: p1v10_disputes_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1v10_disputes_show_path_disputeId:
+  endpoint: p1v10_disputes_show
+  name: disputeId
+  kind: string
+  location: path
+  required: true
+p1v10_disputes_close_path_disputeId:
+  endpoint: p1v10_disputes_close
+  name: disputeId
+  kind: string
+  location: path
+  required: true
+p1v10_events_list_query_type:
+  endpoint: p1v10_events_list
+  name: type
+  kind: string
+  location: query
+  required: false
+p1v10_events_list_query_limit:
+  endpoint: p1v10_events_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v10_events_list_query_starting_after:
+  endpoint: p1v10_events_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v10_events_show_path_eventId:
+  endpoint: p1v10_events_show
+  name: eventId
+  kind: string
+  location: path
+  required: true
+p1v10_payouts_list_query_limit:
+  endpoint: p1v10_payouts_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v10_payouts_list_query_starting_after:
+  endpoint: p1v10_payouts_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1v10_payouts_list_query_status:
+  endpoint: p1v10_payouts_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1v10_payouts_show_path_payoutId:
+  endpoint: p1v10_payouts_show
+  name: payoutId
+  kind: string
+  location: path
+  required: true
+p1v10_prices_list_query_active:
+  endpoint: p1v10_prices_list
+  name: active
+  kind: boolean
+  location: query
+  required: false
+p1v10_refunds_show_path_refundId:
+  endpoint: p1v10_refunds_show
+  name: refundId
+  kind: string
+  location: path
+  required: true
+p1v10_subscriptions_list_query_customer_id:
+  endpoint: p1v10_subscriptions_list
+  name: customer_id
+  kind: string
+  location: query
+  required: false
+p1v10_subscriptions_list_query_status:
+  endpoint: p1v10_subscriptions_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1v10_subscriptions_list_query_limit:
+  endpoint: p1v10_subscriptions_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1v10_subscriptions_show_path_subscriptionId:
+  endpoint: p1v10_subscriptions_show
+  name: subscriptionId
+  kind: string
+  location: path
+  required: true
+p1v10_subscriptions_delete_path_subscriptionId:
+  endpoint: p1v10_subscriptions_delete
+  name: subscriptionId
+  kind: string
+  location: path
+  required: true
+p1v10_webhook_endpoints_delete_path_endpointId:
+  endpoint: p1v10_webhook_endpoints_delete
+  name: endpointId
+  kind: string
+  location: path
+  required: true
+
+# ===== candidate rc14-v1 =====
+p1rc14v_charges_list_query_limit:
+  endpoint: p1rc14v_charges_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1rc14v_charges_list_query_starting_after:
+  endpoint: p1rc14v_charges_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1rc14v_charges_list_query_status:
+  endpoint: p1rc14v_charges_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1rc14v_charges_show_path_chargeId:
+  endpoint: p1rc14v_charges_show
+  name: chargeId
+  kind: string
+  location: path
+  required: true
+p1rc14v_customers_list_query_limit:
+  endpoint: p1rc14v_customers_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1rc14v_customers_list_query_starting_after:
+  endpoint: p1rc14v_customers_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1rc14v_customers_list_query_email:
+  endpoint: p1rc14v_customers_list
+  name: email
+  kind: string
+  location: query
+  required: false
+p1rc14v_customers_show_path_customerId:
+  endpoint: p1rc14v_customers_show
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1rc14v_customers_update_path_customerId:
+  endpoint: p1rc14v_customers_update
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1rc14v_customers_update_query_expand:
+  endpoint: p1rc14v_customers_update
+  name: expand
+  kind: string
+  location: query
+  required: false
+p1rc14v_customers_delete_path_customerId:
+  endpoint: p1rc14v_customers_delete
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1rc14v_customer_payment_methods_path_customerId:
+  endpoint: p1rc14v_customer_payment_methods
+  name: customerId
+  kind: string
+  location: path
+  required: true
+p1rc14v_disputes_list_query_limit:
+  endpoint: p1rc14v_disputes_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1rc14v_disputes_list_query_starting_after:
+  endpoint: p1rc14v_disputes_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1rc14v_disputes_list_query_status:
+  endpoint: p1rc14v_disputes_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1rc14v_disputes_show_path_disputeId:
+  endpoint: p1rc14v_disputes_show
+  name: disputeId
+  kind: string
+  location: path
+  required: true
+p1rc14v_disputes_close_path_disputeId:
+  endpoint: p1rc14v_disputes_close
+  name: disputeId
+  kind: string
+  location: path
+  required: true
+p1rc14v_events_list_query_type:
+  endpoint: p1rc14v_events_list
+  name: type
+  kind: string
+  location: query
+  required: false
+p1rc14v_events_list_query_limit:
+  endpoint: p1rc14v_events_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1rc14v_events_list_query_starting_after:
+  endpoint: p1rc14v_events_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1rc14v_events_show_path_eventId:
+  endpoint: p1rc14v_events_show
+  name: eventId
+  kind: string
+  location: path
+  required: true
+p1rc14v_payouts_list_query_limit:
+  endpoint: p1rc14v_payouts_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1rc14v_payouts_list_query_starting_after:
+  endpoint: p1rc14v_payouts_list
+  name: starting_after
+  kind: string
+  location: query
+  required: false
+p1rc14v_payouts_list_query_status:
+  endpoint: p1rc14v_payouts_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1rc14v_payouts_show_path_payoutId:
+  endpoint: p1rc14v_payouts_show
+  name: payoutId
+  kind: string
+  location: path
+  required: true
+p1rc14v_prices_list_query_active:
+  endpoint: p1rc14v_prices_list
+  name: active
+  kind: boolean
+  location: query
+  required: false
+p1rc14v_refunds_show_path_refundId:
+  endpoint: p1rc14v_refunds_show
+  name: refundId
+  kind: string
+  location: path
+  required: true
+p1rc14v_subscriptions_list_query_customer_id:
+  endpoint: p1rc14v_subscriptions_list
+  name: customer_id
+  kind: string
+  location: query
+  required: false
+p1rc14v_subscriptions_list_query_status:
+  endpoint: p1rc14v_subscriptions_list
+  name: status
+  kind: string
+  location: query
+  required: false
+p1rc14v_subscriptions_list_query_limit:
+  endpoint: p1rc14v_subscriptions_list
+  name: limit
+  kind: number
+  location: query
+  required: false
+p1rc14v_subscriptions_show_path_subscriptionId:
+  endpoint: p1rc14v_subscriptions_show
+  name: subscriptionId
+  kind: string
+  location: path
+  required: true
+p1rc14v_subscriptions_delete_path_subscriptionId:
+  endpoint: p1rc14v_subscriptions_delete
+  name: subscriptionId
+  kind: string
+  location: path
+  required: true
+p1rc14v_webhook_endpoints_delete_path_endpointId:
+  endpoint: p1rc14v_webhook_endpoints_delete
+  name: endpointId
+  kind: string
+  location: path
+  required: true
+
+# ===== statuspage v1 =====
+p2v1_incidents_show_path_incidentId:
+  endpoint: p2v1_incidents_show
+  name: incidentId
+  kind: string
+  location: path
+  required: true
+
+# ===== statuspage v2 =====
+p2v2_incidents_show_path_incidentId:
+  endpoint: p2v2_incidents_show
+  name: incidentId
+  kind: string
+  location: path
+  required: true
+p2v2_incidents_update_path_incidentId:
+  endpoint: p2v2_incidents_update
+  name: incidentId
+  kind: string
+  location: path
+  required: true
+
+# ===== statuspage v3 =====
+p2v3_incidents_show_path_incidentId:
+  endpoint: p2v3_incidents_show
+  name: incidentId
+  kind: string
+  location: path
+  required: true
+p2v3_incidents_update_path_incidentId:
+  endpoint: p2v3_incidents_update
+  name: incidentId
+  kind: string
+  location: path
+  required: true
+p2v3_incident_updates_create_path_incidentId:
+  endpoint: p2v3_incident_updates_create
+  name: incidentId
+  kind: string
+  location: path
+  required: true
+
+# ===== candidate rc4-v1 =====
+p2rc4v_incidents_show_path_incidentId:
+  endpoint: p2rc4v_incidents_show
+  name: incidentId
+  kind: string
+  location: path
+  required: true
+p2rc4v_incidents_update_path_incidentId:
+  endpoint: p2rc4v_incidents_update
+  name: incidentId
+  kind: string
+  location: path
+  required: true
+p2rc4v_incident_updates_create_path_incidentId:
+  endpoint: p2rc4v_incident_updates_create
+  name: incidentId
+  kind: string
+  location: path
+  required: true

@@ -1,35 +1,146 @@
-# ===== v3 =====
-p1v3_user_token:
-  name: UserToken
+# ===== ledgerly v2 =====
+p1v2_a_secret_key:
+  name: SecretKey
   kind: bearer
-  version: project1v3
-  note: "Bearer token from POST /sessions"
+  version: p1v2
+  note: 'Your secret key, sent as `Authorization: Bearer sk_live_…`. A test key starts `sk_test_` and moves no money.'
 
-# ===== v4 =====
-p1v4_user_token:
-  name: UserToken
+# ===== ledgerly v3 =====
+p1v3_a_secret_key:
+  name: SecretKey
   kind: bearer
-  version: project1v4
-  note: "Bearer token from POST /sessions. Expires after 24 hours."
-p1v4_admin_basic:
-  name: AdminBasic
-  kind: basic
-  version: project1v4
-  note: "Operator credentials, for the admin-only endpoints"
+  version: p1v3
+  note: 'Your secret key, sent as `Authorization: Bearer sk_live_…`. A test key starts `sk_test_` and moves no money.'
 
-# ===== unchanged / removed, so all four card states show on v4 =====
-p1v3_service_key:
-  name: ServiceKey
+# ===== candidate rc4-v1 =====
+p1rc4v_a_secret_key:
+  name: SecretKey
   kind: bearer
-  version: project1v3
-  note: "Machine-to-machine token, issued out of band"
-p1v4_service_key:
-  name: ServiceKey
+  version: p1rc4v
+  note: 'Your secret key, sent as `Authorization: Bearer sk_live_…`. A test key starts `sk_test_` and moves no money.'
+
+# ===== ledgerly v4 =====
+p1v4_a_secret_key:
+  name: SecretKey
   kind: bearer
-  version: project1v4
-  note: "Machine-to-machine token, issued out of band"
-p1v3_legacy_basic:
-  name: LegacyBasic
+  version: p1v4
+  note: 'Your secret key, sent as `Authorization: Bearer sk_live_…`. A test key starts `sk_test_` and moves no money.'
+
+# ===== ledgerly v5 =====
+p1v5_a_secret_key:
+  name: SecretKey
+  kind: bearer
+  version: p1v5
+  note: 'Your secret key, sent as `Authorization: Bearer sk_live_…`. A test key starts `sk_test_` and moves no money.'
+
+# ===== candidate rc7-v1 =====
+p1rc7v_a_secret_key:
+  name: SecretKey
+  kind: bearer
+  version: p1rc7v
+  note: 'Your secret key, sent as `Authorization: Bearer sk_live_…`. A test key starts `sk_test_` and moves no money.'
+
+# ===== ledgerly v6 =====
+p1v6_a_platform_basic:
+  name: PlatformBasic
   kind: basic
-  version: project1v3
-  note: "Username and password, retired in favour of ServiceKey"
+  version: p1v6
+  note: Platform credentials, issued out of band. Only a connected platform has a pair.
+p1v6_a_secret_key:
+  name: SecretKey
+  kind: bearer
+  version: p1v6
+  note: 'Your secret key, sent as `Authorization: Bearer sk_live_…`. A test key starts `sk_test_` and moves no money.'
+
+# ===== ledgerly v7 =====
+p1v7_a_platform_basic:
+  name: PlatformBasic
+  kind: basic
+  version: p1v7
+  note: Platform credentials, issued out of band. Only a connected platform has a pair.
+p1v7_a_secret_key:
+  name: SecretKey
+  kind: bearer
+  version: p1v7
+  note: 'Your secret key, sent as `Authorization: Bearer sk_live_…`. A test key starts `sk_test_` and moves no money.'
+
+# ===== ledgerly v8 =====
+p1v8_a_platform_key:
+  name: PlatformKey
+  kind: bearer
+  version: p1v8
+  note: 'Platform key, sent as `Authorization: Bearer pk_live_…`. Replaces the basic credentials retired in v8.'
+p1v8_a_secret_key:
+  name: SecretKey
+  kind: bearer
+  version: p1v8
+  note: 'Your secret key, sent as `Authorization: Bearer sk_live_…`. A test key starts `sk_test_` and moves no money.'
+
+# ===== candidate rc11-v1 =====
+p1rc11v_a_platform_key:
+  name: PlatformKey
+  kind: bearer
+  version: p1rc11v
+  note: 'Platform key, sent as `Authorization: Bearer pk_live_…`. Replaces the basic credentials retired in v8.'
+p1rc11v_a_secret_key:
+  name: SecretKey
+  kind: bearer
+  version: p1rc11v
+  note: 'Your secret key, sent as `Authorization: Bearer sk_live_…`. A test key starts `sk_test_` and moves no money.'
+
+# ===== ledgerly v9 =====
+p1v9_a_platform_key:
+  name: PlatformKey
+  kind: bearer
+  version: p1v9
+  note: 'Platform key, sent as `Authorization: Bearer pk_live_…`. Replaces the basic credentials retired in v8.'
+p1v9_a_secret_key:
+  name: SecretKey
+  kind: bearer
+  version: p1v9
+  note: 'Your secret key, sent as `Authorization: Bearer sk_live_…`. A test key starts `sk_test_` and moves no money.'
+
+# ===== ledgerly v10 =====
+p1v10_a_platform_key:
+  name: PlatformKey
+  kind: bearer
+  version: p1v10
+  note: 'Platform key, sent as `Authorization: Bearer pk_live_…`. Replaces the basic credentials retired in v8.'
+p1v10_a_secret_key:
+  name: SecretKey
+  kind: bearer
+  version: p1v10
+  note: 'Your secret key, sent as `Authorization: Bearer sk_live_…`. A test key starts `sk_test_` and moves no money.'
+
+# ===== candidate rc14-v1 =====
+p1rc14v_a_platform_key:
+  name: PlatformKey
+  kind: bearer
+  version: p1rc14v
+  note: 'Platform key, sent as `Authorization: Bearer pk_live_…`. Replaces the basic credentials retired in v8.'
+p1rc14v_a_secret_key:
+  name: SecretKey
+  kind: bearer
+  version: p1rc14v
+  note: 'Your secret key, sent as `Authorization: Bearer sk_live_…`. A test key starts `sk_test_` and moves no money.'
+
+# ===== statuspage v2 =====
+p2v2_a_operator_token:
+  name: OperatorToken
+  kind: bearer
+  version: p2v2
+  note: Issued to the on-call rota, and rotated when it changes. Reading needs no token at all.
+
+# ===== statuspage v3 =====
+p2v3_a_operator_token:
+  name: OperatorToken
+  kind: bearer
+  version: p2v3
+  note: Issued to the on-call rota, and rotated when it changes. Reading needs no token at all.
+
+# ===== candidate rc4-v1 =====
+p2rc4v_a_operator_token:
+  name: OperatorToken
+  kind: bearer
+  version: p2rc4v
+  note: Issued to the on-call rota, and rotated when it changes. Reading needs no token at all.

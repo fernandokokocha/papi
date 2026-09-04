@@ -1,218 +1,2435 @@
-# ===== v1 =====
-p1v1_users_list_200: { endpoint: p1v1_users_list, code: "200", note: "Request succeeded", output: "[User]" }
-p1v1_users_list_403: { endpoint: p1v1_users_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v1_users_create_201: { endpoint: p1v1_users_create, code: "201", note: "Resource created", output: "User" }
-p1v1_users_create_400: { endpoint: p1v1_users_create, code: "400", note: "Invalid request", output: "Error" }
-p1v1_users_create_403: { endpoint: p1v1_users_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v1_users_get_200: { endpoint: p1v1_users_get, code: "200", note: "Request succeeded", output: "User" }
-p1v1_users_get_403: { endpoint: p1v1_users_get, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v1_users_get_404: { endpoint: p1v1_users_get, code: "404", note: "Resource not found", output: "Error" }
-p1v1_users_delete_200: { endpoint: p1v1_users_delete, code: "200", note: "Request succeeded", output: "boolean" }
-p1v1_users_delete_403: { endpoint: p1v1_users_delete, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v1_users_delete_404: { endpoint: p1v1_users_delete, code: "404", note: "Resource not found", output: "Error" }
-p1v1_sessions_create_201: { endpoint: p1v1_sessions_create, code: "201", note: "Resource created", output: "Session" }
-p1v1_sessions_create_401: { endpoint: p1v1_sessions_create, code: "401", note: "Authentication required", output: "Error" }
+# ===== ledgerly v1 =====
+p1v1_charges_list_200:
+  endpoint: p1v1_charges_list
+  code: '200'
+  note: Every charge on the account
+  output: "[Charge]"
+p1v1_charges_create_201:
+  endpoint: p1v1_charges_create
+  code: '201'
+  note: The charge was accepted and is being settled
+  output: Charge
+p1v1_charges_create_400:
+  endpoint: p1v1_charges_create
+  code: '400'
+  note: The amount, currency or source was rejected
+  output: Error
+p1v1_charges_show_200:
+  endpoint: p1v1_charges_show
+  code: '200'
+  note: The charge
+  output: Charge
+p1v1_charges_show_404:
+  endpoint: p1v1_charges_show
+  code: '404'
+  note: No charge has that id
+  output: Error
 
-# ===== v2 =====
-p1v2_users_list_200: { endpoint: p1v2_users_list, code: "200", note: "Request succeeded", output: "{total:number,items:[User]}" }
-p1v2_users_list_403: { endpoint: p1v2_users_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v2_users_create_201: { endpoint: p1v2_users_create, code: "201", note: "Resource created", output: "User" }
-p1v2_users_create_400: { endpoint: p1v2_users_create, code: "400", note: "Invalid request", output: "Error" }
-p1v2_users_create_403: { endpoint: p1v2_users_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v2_users_get_200: { endpoint: p1v2_users_get, code: "200", note: "Request succeeded", output: "User" }
-p1v2_users_get_403: { endpoint: p1v2_users_get, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v2_users_get_404: { endpoint: p1v2_users_get, code: "404", note: "Resource not found", output: "Error" }
-p1v2_users_update_200: { endpoint: p1v2_users_update, code: "200", note: "Request succeeded", output: "User" }
-p1v2_users_update_400: { endpoint: p1v2_users_update, code: "400", note: "Invalid request", output: "Error" }
-p1v2_users_update_403: { endpoint: p1v2_users_update, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v2_users_update_404: { endpoint: p1v2_users_update, code: "404", note: "Resource not found", output: "Error" }
-p1v2_users_delete_200: { endpoint: p1v2_users_delete, code: "200", note: "Request succeeded", output: "boolean" }
-p1v2_users_delete_403: { endpoint: p1v2_users_delete, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v2_users_delete_404: { endpoint: p1v2_users_delete, code: "404", note: "Resource not found", output: "Error" }
-p1v2_sessions_create_201: { endpoint: p1v2_sessions_create, code: "201", note: "Resource created", output: "Session" }
-p1v2_sessions_create_401: { endpoint: p1v2_sessions_create, code: "401", note: "Authentication required", output: "Error" }
-p1v2_sessions_delete_200: { endpoint: p1v2_sessions_delete, code: "200", note: "Request succeeded", output: "boolean" }
-p1v2_sessions_delete_401: { endpoint: p1v2_sessions_delete, code: "401", note: "Authentication required", output: "Error" }
+# ===== ledgerly v2 =====
+p1v2_charges_list_200:
+  endpoint: p1v2_charges_list
+  code: '200'
+  note: Every charge on the account
+  output: "[Charge]"
+p1v2_charges_create_201:
+  endpoint: p1v2_charges_create
+  code: '201'
+  note: The charge was accepted and is being settled
+  output: Charge
+p1v2_charges_create_400:
+  endpoint: p1v2_charges_create
+  code: '400'
+  note: The amount, currency or source was rejected
+  output: Error
+p1v2_charges_show_200:
+  endpoint: p1v2_charges_show
+  code: '200'
+  note: The charge
+  output: Charge
+p1v2_charges_show_404:
+  endpoint: p1v2_charges_show
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1v2_refunds_create_201:
+  endpoint: p1v2_refunds_create
+  code: '201'
+  note: The refund was accepted
+  output: Refund
+p1v2_refunds_create_400:
+  endpoint: p1v2_refunds_create
+  code: '400'
+  note: The charge cannot be refunded, or the amount exceeds what is left
+  output: Error
+p1v2_refunds_create_404:
+  endpoint: p1v2_refunds_create
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1v2_refunds_show_200:
+  endpoint: p1v2_refunds_show
+  code: '200'
+  note: The refund
+  output: Refund
+p1v2_refunds_show_404:
+  endpoint: p1v2_refunds_show
+  code: '404'
+  note: No refund has that id
+  output: Error
 
-# ===== v3 =====
-p1v3_users_list_200: { endpoint: p1v3_users_list, code: "200", note: "Request succeeded", output: "{total:number,items:[User],next_cursor:(string|null)}" }
-p1v3_users_list_403: { endpoint: p1v3_users_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_users_create_201: { endpoint: p1v3_users_create, code: "201", note: "Resource created", output: "User" }
-p1v3_users_create_400: { endpoint: p1v3_users_create, code: "400", note: "Invalid request", output: "Error" }
-p1v3_users_create_403: { endpoint: p1v3_users_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_users_get_200: { endpoint: p1v3_users_get, code: "200", note: "Request succeeded", output: "User" }
-p1v3_users_get_403: { endpoint: p1v3_users_get, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_users_get_404: { endpoint: p1v3_users_get, code: "404", note: "Resource not found", output: "Error" }
-p1v3_users_update_200: { endpoint: p1v3_users_update, code: "200", note: "Request succeeded", output: "User" }
-p1v3_users_update_400: { endpoint: p1v3_users_update, code: "400", note: "Invalid request", output: "Error" }
-p1v3_users_update_403: { endpoint: p1v3_users_update, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_users_update_404: { endpoint: p1v3_users_update, code: "404", note: "Resource not found", output: "Error" }
-p1v3_users_delete_200: { endpoint: p1v3_users_delete, code: "200", note: "Request succeeded", output: "boolean" }
-p1v3_users_delete_403: { endpoint: p1v3_users_delete, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_users_delete_404: { endpoint: p1v3_users_delete, code: "404", note: "Resource not found", output: "Error" }
-p1v3_sessions_create_201: { endpoint: p1v3_sessions_create, code: "201", note: "Resource created", output: "Session" }
-p1v3_sessions_create_401: { endpoint: p1v3_sessions_create, code: "401", note: "Authentication required", output: "Error" }
-p1v3_sessions_delete_200: { endpoint: p1v3_sessions_delete, code: "200", note: "Request succeeded", output: "boolean" }
-p1v3_sessions_delete_401: { endpoint: p1v3_sessions_delete, code: "401", note: "Authentication required", output: "Error" }
-p1v3_tasks_list_200: { endpoint: p1v3_tasks_list, code: "200", note: "Request succeeded", output: "{total:number,items:[Task]}" }
-p1v3_tasks_list_403: { endpoint: p1v3_tasks_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_tasks_list_429: { endpoint: p1v3_tasks_list, code: "429", note: "Too many requests", output: "Error" }
-p1v3_tasks_create_201: { endpoint: p1v3_tasks_create, code: "201", note: "Resource created", output: "Task" }
-p1v3_tasks_create_400: { endpoint: p1v3_tasks_create, code: "400", note: "Invalid request", output: "Error" }
-p1v3_tasks_create_403: { endpoint: p1v3_tasks_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_tasks_get_200: { endpoint: p1v3_tasks_get, code: "200", note: "Request succeeded", output: "Task" }
-p1v3_tasks_get_403: { endpoint: p1v3_tasks_get, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_tasks_get_404: { endpoint: p1v3_tasks_get, code: "404", note: "Resource not found", output: "Error" }
+# ===== ledgerly v3 =====
+p1v3_charges_list_200:
+  endpoint: p1v3_charges_list
+  code: '200'
+  note: Every charge on the account
+  output: "[Charge]"
+p1v3_charges_create_201:
+  endpoint: p1v3_charges_create
+  code: '201'
+  note: The charge was accepted and is being settled
+  output: Charge
+p1v3_charges_create_400:
+  endpoint: p1v3_charges_create
+  code: '400'
+  note: The amount, currency or source was rejected
+  output: Error
+p1v3_charges_show_200:
+  endpoint: p1v3_charges_show
+  code: '200'
+  note: The charge
+  output: Charge
+p1v3_charges_show_404:
+  endpoint: p1v3_charges_show
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1v3_customers_list_200:
+  endpoint: p1v3_customers_list
+  code: '200'
+  note: Every customer on the account
+  output: "[Customer]"
+p1v3_customers_create_201:
+  endpoint: p1v3_customers_create
+  code: '201'
+  note: The customer was created
+  output: Customer
+p1v3_customers_create_400:
+  endpoint: p1v3_customers_create
+  code: '400'
+  note: The email was missing or malformed
+  output: Error
+p1v3_customers_show_200:
+  endpoint: p1v3_customers_show
+  code: '200'
+  note: The customer
+  output: Customer
+p1v3_customers_show_404:
+  endpoint: p1v3_customers_show
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v3_customer_payment_methods_200:
+  endpoint: p1v3_customer_payment_methods
+  code: '200'
+  note: The customer's payment methods
+  output: "[PaymentMethod]"
+p1v3_customer_payment_methods_404:
+  endpoint: p1v3_customer_payment_methods
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v3_payment_methods_create_201:
+  endpoint: p1v3_payment_methods_create
+  code: '201'
+  note: The payment method was attached
+  output: PaymentMethod
+p1v3_payment_methods_create_400:
+  endpoint: p1v3_payment_methods_create
+  code: '400'
+  note: The token was already used, or does not match the declared type
+  output: Error
+p1v3_refunds_create_201:
+  endpoint: p1v3_refunds_create
+  code: '201'
+  note: The refund was accepted
+  output: Refund
+p1v3_refunds_create_400:
+  endpoint: p1v3_refunds_create
+  code: '400'
+  note: The charge cannot be refunded, or the amount exceeds what is left
+  output: Error
+p1v3_refunds_create_404:
+  endpoint: p1v3_refunds_create
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1v3_refunds_show_200:
+  endpoint: p1v3_refunds_show
+  code: '200'
+  note: The refund
+  output: Refund
+p1v3_refunds_show_404:
+  endpoint: p1v3_refunds_show
+  code: '404'
+  note: No refund has that id
+  output: Error
 
-# ===== v4 =====
-p1v4_users_list_200: { endpoint: p1v4_users_list, code: "200", note: "Request succeeded", output: "{total:number,items:[User],next_cursor:(string|null),took_ms?:number}" }
-p1v4_users_list_403: { endpoint: p1v4_users_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_users_create_201: { endpoint: p1v4_users_create, code: "201", note: "Resource created", output: "User" }
-p1v4_users_create_400: { endpoint: p1v4_users_create, code: "400", note: "Invalid request", output: "Error" }
-p1v4_users_create_403: { endpoint: p1v4_users_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_users_get_200: { endpoint: p1v4_users_get, code: "200", note: "Request succeeded", output: "User" }
-p1v4_users_get_403: { endpoint: p1v4_users_get, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_users_get_404: { endpoint: p1v4_users_get, code: "404", note: "Resource not found", output: "Error" }
-p1v4_users_update_200: { endpoint: p1v4_users_update, code: "200", note: "Request succeeded", output: "User" }
-p1v4_users_update_400: { endpoint: p1v4_users_update, code: "400", note: "Invalid request", output: "Error" }
-p1v4_users_update_403: { endpoint: p1v4_users_update, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_users_update_404: { endpoint: p1v4_users_update, code: "404", note: "Resource not found", output: "Error" }
-p1v4_sessions_create_201: { endpoint: p1v4_sessions_create, code: "201", note: "Resource created", output: "Session" }
-p1v4_sessions_create_401: { endpoint: p1v4_sessions_create, code: "401", note: "Authentication required", output: "Error" }
-p1v4_sessions_delete_200: { endpoint: p1v4_sessions_delete, code: "200", note: "Request succeeded", output: "boolean" }
-p1v4_sessions_delete_401: { endpoint: p1v4_sessions_delete, code: "401", note: "Authentication required", output: "Error" }
-p1v4_tasks_list_200: { endpoint: p1v4_tasks_list, code: "200", note: "Request succeeded", output: "{total:number,items:[Task]}" }
-p1v4_tasks_list_403: { endpoint: p1v4_tasks_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_tasks_create_201: { endpoint: p1v4_tasks_create, code: "201", note: "Resource created", output: "Task" }
-p1v4_tasks_create_400: { endpoint: p1v4_tasks_create, code: "400", note: "Invalid request", output: "Error" }
-p1v4_tasks_create_403: { endpoint: p1v4_tasks_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_tasks_create_409: { endpoint: p1v4_tasks_create, code: "409", note: "A task with this title already exists", output: "Error" }
-p1v4_tasks_get_200: { endpoint: p1v4_tasks_get, code: "200", note: "Request succeeded", output: "Task" }
-p1v4_tasks_get_403: { endpoint: p1v4_tasks_get, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_tasks_get_404: { endpoint: p1v4_tasks_get, code: "404", note: "Resource not found", output: "Error" }
-p1v4_tasks_complete_200: { endpoint: p1v4_tasks_complete, code: "200", note: "Request succeeded", output: "({task:Task,notified:boolean}|{queued:boolean})" }
-p1v4_tasks_complete_403: { endpoint: p1v4_tasks_complete, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_tasks_complete_404: { endpoint: p1v4_tasks_complete, code: "404", note: "Resource not found", output: "Error" }
+# ===== candidate rc4-v1 =====
+p1rc4v_charges_list_200:
+  endpoint: p1rc4v_charges_list
+  code: '200'
+  note: One page of charges
+  output: "{data:[Charge],page:number,per_page:number,total:number}"
+p1rc4v_charges_create_201:
+  endpoint: p1rc4v_charges_create
+  code: '201'
+  note: The charge was accepted and is being settled
+  output: Charge
+p1rc4v_charges_create_400:
+  endpoint: p1rc4v_charges_create
+  code: '400'
+  note: The amount, currency or source was rejected
+  output: Error
+p1rc4v_charges_show_200:
+  endpoint: p1rc4v_charges_show
+  code: '200'
+  note: The charge
+  output: Charge
+p1rc4v_charges_show_404:
+  endpoint: p1rc4v_charges_show
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1rc4v_customers_list_200:
+  endpoint: p1rc4v_customers_list
+  code: '200'
+  note: One page of customers
+  output: "{data:[Customer],page:number,per_page:number,total:number}"
+p1rc4v_customers_create_201:
+  endpoint: p1rc4v_customers_create
+  code: '201'
+  note: The customer was created
+  output: Customer
+p1rc4v_customers_create_400:
+  endpoint: p1rc4v_customers_create
+  code: '400'
+  note: The email was missing or malformed
+  output: Error
+p1rc4v_customers_show_200:
+  endpoint: p1rc4v_customers_show
+  code: '200'
+  note: The customer
+  output: Customer
+p1rc4v_customers_show_404:
+  endpoint: p1rc4v_customers_show
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1rc4v_customer_payment_methods_200:
+  endpoint: p1rc4v_customer_payment_methods
+  code: '200'
+  note: The customer's payment methods
+  output: "[PaymentMethod]"
+p1rc4v_customer_payment_methods_404:
+  endpoint: p1rc4v_customer_payment_methods
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1rc4v_payment_methods_create_201:
+  endpoint: p1rc4v_payment_methods_create
+  code: '201'
+  note: The payment method was attached
+  output: PaymentMethod
+p1rc4v_payment_methods_create_400:
+  endpoint: p1rc4v_payment_methods_create
+  code: '400'
+  note: The token was already used, or does not match the declared type
+  output: Error
+p1rc4v_refunds_create_201:
+  endpoint: p1rc4v_refunds_create
+  code: '201'
+  note: The refund was accepted
+  output: Refund
+p1rc4v_refunds_create_400:
+  endpoint: p1rc4v_refunds_create
+  code: '400'
+  note: The charge cannot be refunded, or the amount exceeds what is left
+  output: Error
+p1rc4v_refunds_create_404:
+  endpoint: p1rc4v_refunds_create
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1rc4v_refunds_show_200:
+  endpoint: p1rc4v_refunds_show
+  code: '200'
+  note: The refund
+  output: Refund
+p1rc4v_refunds_show_404:
+  endpoint: p1rc4v_refunds_show
+  code: '404'
+  note: No refund has that id
+  output: Error
 
+# ===== ledgerly v4 =====
+p1v4_charges_list_200:
+  endpoint: p1v4_charges_list
+  code: '200'
+  note: One page of charges
+  output: "{data:[Charge],has_more:boolean,next_cursor:(string|null)}"
+p1v4_charges_create_201:
+  endpoint: p1v4_charges_create
+  code: '201'
+  note: The charge was accepted and is being settled
+  output: Charge
+p1v4_charges_create_400:
+  endpoint: p1v4_charges_create
+  code: '400'
+  note: The amount, currency or source was rejected
+  output: Error
+p1v4_charges_show_200:
+  endpoint: p1v4_charges_show
+  code: '200'
+  note: The charge
+  output: Charge
+p1v4_charges_show_404:
+  endpoint: p1v4_charges_show
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1v4_customers_list_200:
+  endpoint: p1v4_customers_list
+  code: '200'
+  note: One page of customers
+  output: "{data:[Customer],has_more:boolean,next_cursor:(string|null)}"
+p1v4_customers_create_201:
+  endpoint: p1v4_customers_create
+  code: '201'
+  note: The customer was created
+  output: Customer
+p1v4_customers_create_400:
+  endpoint: p1v4_customers_create
+  code: '400'
+  note: The email was missing or malformed
+  output: Error
+p1v4_customers_show_200:
+  endpoint: p1v4_customers_show
+  code: '200'
+  note: The customer
+  output: Customer
+p1v4_customers_show_404:
+  endpoint: p1v4_customers_show
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v4_customer_payment_methods_200:
+  endpoint: p1v4_customer_payment_methods
+  code: '200'
+  note: The customer's payment methods
+  output: "[PaymentMethod]"
+p1v4_customer_payment_methods_404:
+  endpoint: p1v4_customer_payment_methods
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v4_payment_methods_create_201:
+  endpoint: p1v4_payment_methods_create
+  code: '201'
+  note: The payment method was attached
+  output: PaymentMethod
+p1v4_payment_methods_create_400:
+  endpoint: p1v4_payment_methods_create
+  code: '400'
+  note: The token was already used, or does not match the declared type
+  output: Error
+p1v4_refunds_create_201:
+  endpoint: p1v4_refunds_create
+  code: '201'
+  note: The refund was accepted
+  output: Refund
+p1v4_refunds_create_400:
+  endpoint: p1v4_refunds_create
+  code: '400'
+  note: The charge cannot be refunded, or the amount exceeds what is left
+  output: Error
+p1v4_refunds_create_404:
+  endpoint: p1v4_refunds_create
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1v4_refunds_show_200:
+  endpoint: p1v4_refunds_show
+  code: '200'
+  note: The refund
+  output: Refund
+p1v4_refunds_show_404:
+  endpoint: p1v4_refunds_show
+  code: '404'
+  note: No refund has that id
+  output: Error
 
-# ===== backfilled: project1v3 =====
-p1v3_attachments_create_201: { endpoint: p1v3_attachments_create, code: "201", note: "Resource created", output: "Attachment" }
-p1v3_attachments_create_403: { endpoint: p1v3_attachments_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_attachments_list_200: { endpoint: p1v3_attachments_list, code: "200", note: "Request succeeded", output: "[Attachment]" }
-p1v3_attachments_list_403: { endpoint: p1v3_attachments_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_comments_create_201: { endpoint: p1v3_comments_create, code: "201", note: "Resource created", output: "Comment" }
-p1v3_comments_create_403: { endpoint: p1v3_comments_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_comments_delete_200: { endpoint: p1v3_comments_delete, code: "200", note: "Request succeeded", output: "boolean" }
-p1v3_comments_delete_403: { endpoint: p1v3_comments_delete, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_comments_list_200: { endpoint: p1v3_comments_list, code: "200", note: "Request succeeded", output: "{total:number,items:[Comment]}" }
-p1v3_comments_list_403: { endpoint: p1v3_comments_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_invites_create_201: { endpoint: p1v3_invites_create, code: "201", note: "Resource created", output: "Invite" }
-p1v3_invites_create_403: { endpoint: p1v3_invites_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_invites_pending_200: { endpoint: p1v3_invites_pending, code: "200", note: "Request succeeded", output: "[Invite]" }
-p1v3_invites_pending_403: { endpoint: p1v3_invites_pending, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_labels_create_201: { endpoint: p1v3_labels_create, code: "201", note: "Resource created", output: "Label" }
-p1v3_labels_create_403: { endpoint: p1v3_labels_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_labels_list_200: { endpoint: p1v3_labels_list, code: "200", note: "Request succeeded", output: "[Label]" }
-p1v3_labels_list_403: { endpoint: p1v3_labels_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_notifications_list_200: { endpoint: p1v3_notifications_list, code: "200", note: "Request succeeded", output: "{total:number,items:[(Notification|Comment)]}" }
-p1v3_notifications_list_403: { endpoint: p1v3_notifications_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_notifications_read_all_201: { endpoint: p1v3_notifications_read_all, code: "201", note: "Resource created", output: "boolean" }
-p1v3_notifications_read_all_403: { endpoint: p1v3_notifications_read_all, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_ping_201: { endpoint: p1v3_ping, code: "201", note: "Resource created", output: "" }
-p1v3_ping_403: { endpoint: p1v3_ping, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_projects_active_200: { endpoint: p1v3_projects_active, code: "200", note: "Request succeeded", output: "Project" }
-p1v3_projects_active_403: { endpoint: p1v3_projects_active, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_projects_create_201: { endpoint: p1v3_projects_create, code: "201", note: "Resource created", output: "Project" }
-p1v3_projects_create_403: { endpoint: p1v3_projects_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_projects_list_200: { endpoint: p1v3_projects_list, code: "200", note: "Request succeeded", output: "{total:number,items:[Project]}" }
-p1v3_projects_list_403: { endpoint: p1v3_projects_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_teams_create_201: { endpoint: p1v3_teams_create, code: "201", note: "Resource created", output: "Team" }
-p1v3_teams_create_403: { endpoint: p1v3_teams_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_teams_list_200: { endpoint: p1v3_teams_list, code: "200", note: "Request succeeded", output: "[Team]" }
-p1v3_teams_list_403: { endpoint: p1v3_teams_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_webhooks_create_201: { endpoint: p1v3_webhooks_create, code: "201", note: "Resource created", output: "Webhook" }
-p1v3_webhooks_create_403: { endpoint: p1v3_webhooks_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_webhooks_create_400: { endpoint: p1v3_webhooks_create, code: "400", note: "Invalid request", output: "Error" }
-p1v3_webhooks_create_409: { endpoint: p1v3_webhooks_create, code: "409", note: "A webhook for this URL already exists", output: "Error" }
-p1v3_webhooks_create_422: { endpoint: p1v3_webhooks_create, code: "422", note: "Callback URL could not be verified", output: "{message:string,attempts:number}" }
-p1v3_webhooks_delete_200: { endpoint: p1v3_webhooks_delete, code: "200", note: "Request succeeded", output: "boolean" }
-p1v3_webhooks_delete_403: { endpoint: p1v3_webhooks_delete, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_webhooks_list_200: { endpoint: p1v3_webhooks_list, code: "200", note: "Request succeeded", output: "[Webhook]" }
-p1v3_webhooks_list_403: { endpoint: p1v3_webhooks_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
+# ===== ledgerly v5 =====
+p1v5_charges_list_200:
+  endpoint: p1v5_charges_list
+  code: '200'
+  note: One page of charges
+  output: "{data:[Charge],has_more:boolean,next_cursor:(string|null)}"
+p1v5_charges_create_201:
+  endpoint: p1v5_charges_create
+  code: '201'
+  note: The charge was accepted and is being settled
+  output: Charge
+p1v5_charges_create_400:
+  endpoint: p1v5_charges_create
+  code: '400'
+  note: The amount, currency or source was rejected
+  output: Error
+p1v5_charges_show_200:
+  endpoint: p1v5_charges_show
+  code: '200'
+  note: The charge
+  output: Charge
+p1v5_charges_show_404:
+  endpoint: p1v5_charges_show
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1v5_customers_list_200:
+  endpoint: p1v5_customers_list
+  code: '200'
+  note: One page of customers
+  output: "{data:[Customer],has_more:boolean,next_cursor:(string|null)}"
+p1v5_customers_create_201:
+  endpoint: p1v5_customers_create
+  code: '201'
+  note: The customer was created
+  output: Customer
+p1v5_customers_create_400:
+  endpoint: p1v5_customers_create
+  code: '400'
+  note: The email was missing or malformed
+  output: Error
+p1v5_customers_show_200:
+  endpoint: p1v5_customers_show
+  code: '200'
+  note: The customer
+  output: Customer
+p1v5_customers_show_404:
+  endpoint: p1v5_customers_show
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v5_customer_payment_methods_200:
+  endpoint: p1v5_customer_payment_methods
+  code: '200'
+  note: The customer's payment methods
+  output: "[PaymentMethod]"
+p1v5_customer_payment_methods_404:
+  endpoint: p1v5_customer_payment_methods
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v5_events_list_200:
+  endpoint: p1v5_events_list
+  code: '200'
+  note: One page of events
+  output: "{data:[Event],has_more:boolean,next_cursor:(string|null)}"
+p1v5_events_show_200:
+  endpoint: p1v5_events_show
+  code: '200'
+  note: The event
+  output: Event
+p1v5_events_show_404:
+  endpoint: p1v5_events_show
+  code: '404'
+  note: No event has that id, or it aged out of the 30-day window
+  output: Error
+p1v5_payment_methods_create_201:
+  endpoint: p1v5_payment_methods_create
+  code: '201'
+  note: The payment method was attached
+  output: PaymentMethod
+p1v5_payment_methods_create_400:
+  endpoint: p1v5_payment_methods_create
+  code: '400'
+  note: The token was already used, or does not match the declared type
+  output: Error
+p1v5_refunds_create_201:
+  endpoint: p1v5_refunds_create
+  code: '201'
+  note: The refund was accepted
+  output: Refund
+p1v5_refunds_create_400:
+  endpoint: p1v5_refunds_create
+  code: '400'
+  note: The charge cannot be refunded, or the amount exceeds what is left
+  output: Error
+p1v5_refunds_create_404:
+  endpoint: p1v5_refunds_create
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1v5_refunds_show_200:
+  endpoint: p1v5_refunds_show
+  code: '200'
+  note: The refund
+  output: Refund
+p1v5_refunds_show_404:
+  endpoint: p1v5_refunds_show
+  code: '404'
+  note: No refund has that id
+  output: Error
+p1v5_webhook_endpoints_list_200:
+  endpoint: p1v5_webhook_endpoints_list
+  code: '200'
+  note: Every endpoint registered on the account
+  output: "[WebhookEndpoint]"
+p1v5_webhook_endpoints_create_201:
+  endpoint: p1v5_webhook_endpoints_create
+  code: '201'
+  note: The endpoint was registered
+  output: WebhookEndpoint
+p1v5_webhook_endpoints_create_400:
+  endpoint: p1v5_webhook_endpoints_create
+  code: '400'
+  note: The URL is not https, or an event name is not one we send
+  output: Error
+p1v5_webhook_endpoints_delete_204:
+  endpoint: p1v5_webhook_endpoints_delete
+  code: '204'
+  note: The endpoint was removed. Deliveries in flight still land.
+  output: ''
+p1v5_webhook_endpoints_delete_404:
+  endpoint: p1v5_webhook_endpoints_delete
+  code: '404'
+  note: No webhook endpoint has that id
+  output: Error
 
-# ===== backfilled: project1v4 =====
-p1v4_attachments_create_201: { endpoint: p1v4_attachments_create, code: "201", note: "Resource created", output: "Attachment" }
-p1v4_attachments_create_403: { endpoint: p1v4_attachments_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_attachments_list_200: { endpoint: p1v4_attachments_list, code: "200", note: "Request succeeded", output: "[Attachment]" }
-p1v4_attachments_list_403: { endpoint: p1v4_attachments_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_audit_logs_list_200: { endpoint: p1v4_audit_logs_list, code: "200", note: "Request succeeded", output: "{total:number,items:[AuditLog]}" }
-p1v4_audit_logs_list_403: { endpoint: p1v4_audit_logs_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_cache_clear_200: { endpoint: p1v4_cache_clear, code: "200", note: "Request succeeded", output: "" }
-p1v4_cache_clear_403: { endpoint: p1v4_cache_clear, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_comments_create_201: { endpoint: p1v4_comments_create, code: "201", note: "Resource created", output: "Comment" }
-p1v4_comments_create_403: { endpoint: p1v4_comments_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_comments_delete_200: { endpoint: p1v4_comments_delete, code: "200", note: "Request succeeded", output: "boolean" }
-p1v4_comments_delete_403: { endpoint: p1v4_comments_delete, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_comments_list_200: { endpoint: p1v4_comments_list, code: "200", note: "Request succeeded", output: "{total:number,items:[Comment]}" }
-p1v4_comments_list_403: { endpoint: p1v4_comments_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_exports_create_201: { endpoint: p1v4_exports_create, code: "201", note: "Resource created", output: "(boolean|Attachment)" }
-p1v4_exports_create_403: { endpoint: p1v4_exports_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_invites_create_201: { endpoint: p1v4_invites_create, code: "201", note: "Resource created", output: "Invite" }
-p1v4_invites_create_403: { endpoint: p1v4_invites_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_invites_pending_200: { endpoint: p1v4_invites_pending, code: "200", note: "Request succeeded", output: "[Invite]" }
-p1v4_invites_pending_403: { endpoint: p1v4_invites_pending, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_labels_create_201: { endpoint: p1v4_labels_create, code: "201", note: "Resource created", output: "Label" }
-p1v4_labels_create_403: { endpoint: p1v4_labels_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_labels_list_200: { endpoint: p1v4_labels_list, code: "200", note: "Request succeeded", output: "[Label]" }
-p1v4_labels_list_403: { endpoint: p1v4_labels_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_notifications_list_200: { endpoint: p1v4_notifications_list, code: "200", note: "Request succeeded", output: "{total:number,items:[(Notification|Comment|Invite)]}" }
-p1v4_notifications_list_403: { endpoint: p1v4_notifications_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_notifications_read_all_201: { endpoint: p1v4_notifications_read_all, code: "201", note: "Resource created", output: "boolean" }
-p1v4_notifications_read_all_403: { endpoint: p1v4_notifications_read_all, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_ping_201: { endpoint: p1v4_ping, code: "201", note: "Resource created", output: "" }
-p1v4_ping_403: { endpoint: p1v4_ping, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_projects_active_200: { endpoint: p1v4_projects_active, code: "200", note: "Request succeeded", output: "Project" }
-p1v4_projects_active_403: { endpoint: p1v4_projects_active, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_projects_create_201: { endpoint: p1v4_projects_create, code: "201", note: "Resource created", output: "Project" }
-p1v4_projects_create_403: { endpoint: p1v4_projects_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_projects_list_200: { endpoint: p1v4_projects_list, code: "200", note: "Request succeeded", output: "{total:number,items:[Project]}" }
-p1v4_projects_list_403: { endpoint: p1v4_projects_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_teams_create_201: { endpoint: p1v4_teams_create, code: "201", note: "Resource created", output: "Team" }
-p1v4_teams_create_403: { endpoint: p1v4_teams_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_teams_list_200: { endpoint: p1v4_teams_list, code: "200", note: "Request succeeded", output: "[Team]" }
-p1v4_teams_list_403: { endpoint: p1v4_teams_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_webhooks_create_201: { endpoint: p1v4_webhooks_create, code: "201", note: "Resource created", output: "Webhook" }
-p1v4_webhooks_create_403: { endpoint: p1v4_webhooks_create, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_webhooks_create_402: { endpoint: p1v4_webhooks_create, code: "402", note: "Webhook quota exceeded for this plan", output: "Error" }
-p1v4_webhooks_create_410: { endpoint: p1v4_webhooks_create, code: "410", note: "Callback URL is no longer reachable", output: "Error" }
-p1v4_webhooks_create_429: { endpoint: p1v4_webhooks_create, code: "429", note: "Too many requests", output: "{retry_after:number}" }
-p1v4_webhooks_delete_200: { endpoint: p1v4_webhooks_delete, code: "200", note: "Request succeeded", output: "boolean" }
-p1v4_webhooks_delete_403: { endpoint: p1v4_webhooks_delete, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v4_webhooks_list_200: { endpoint: p1v4_webhooks_list, code: "200", note: "Request succeeded", output: "[Webhook]" }
-p1v4_webhooks_list_403: { endpoint: p1v4_webhooks_list, code: "403", note: "Not authorized to perform this action", output: "Error" }
-p1v3_tasks_show_200: { endpoint: p1v3_tasks_show, code: "200", note: "Request succeeded", output: "Task" }
-p1v3_tasks_show_404: { endpoint: p1v3_tasks_show, code: "404", note: "Resource not found", output: "Error" }
-p1v4_tasks_show_200: { endpoint: p1v4_tasks_show, code: "200", note: "Request succeeded", output: "Task" }
-p1v4_tasks_show_404: { endpoint: p1v4_tasks_show, code: "404", note: "Resource not found", output: "Error" }
-p1v4_tasks_comments_200: { endpoint: p1v4_tasks_comments, code: "200", note: "Request succeeded", output: "Comment" }
-p1v4_tasks_comments_404: { endpoint: p1v4_tasks_comments, code: "404", note: "Resource not found", output: "Error" }
-p1v3_attachments_update_200: { endpoint: p1v3_attachments_update, code: "200", note: "Request succeeded", output: "Attachment" }
-p1v3_attachments_update_404: { endpoint: p1v3_attachments_update, code: "404", note: "Resource not found", output: "Error" }
-p1v4_attachments_update_200: { endpoint: p1v4_attachments_update, code: "200", note: "Request succeeded", output: "Attachment" }
-p1v4_attachments_update_404: { endpoint: p1v4_attachments_update, code: "404", note: "Resource not found", output: "Error" }
-p1v3_labels_update_200: { endpoint: p1v3_labels_update, code: "200", note: "Request succeeded", output: "Label" }
-p1v3_labels_update_404: { endpoint: p1v3_labels_update, code: "404", note: "Resource not found", output: "Error" }
-p1v4_labels_update_200: { endpoint: p1v4_labels_update, code: "200", note: "Request succeeded", output: "Label" }
-p1v4_labels_update_404: { endpoint: p1v4_labels_update, code: "404", note: "Resource not found", output: "Error" }
-p1v3_notifications_update_200: { endpoint: p1v3_notifications_update, code: "200", note: "Request succeeded", output: "Notification" }
-p1v3_notifications_update_404: { endpoint: p1v3_notifications_update, code: "404", note: "Resource not found", output: "Error" }
-p1v4_notifications_update_200: { endpoint: p1v4_notifications_update, code: "200", note: "Request succeeded", output: "Notification" }
-p1v4_notifications_update_404: { endpoint: p1v4_notifications_update, code: "404", note: "Resource not found", output: "Error" }
+# ===== candidate rc7-v1 =====
+p1rc7v_charges_list_200:
+  endpoint: p1rc7v_charges_list
+  code: '200'
+  note: One page of charges
+  output: "{data:[Charge],has_more:boolean,next_cursor:(string|null)}"
+p1rc7v_charges_create_201:
+  endpoint: p1rc7v_charges_create
+  code: '201'
+  note: The charge was accepted and is being settled
+  output: Charge
+p1rc7v_charges_create_400:
+  endpoint: p1rc7v_charges_create
+  code: '400'
+  note: The amount, currency or source was rejected
+  output: Error
+p1rc7v_charges_show_200:
+  endpoint: p1rc7v_charges_show
+  code: '200'
+  note: The charge
+  output: Charge
+p1rc7v_charges_show_404:
+  endpoint: p1rc7v_charges_show
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1rc7v_customers_list_200:
+  endpoint: p1rc7v_customers_list
+  code: '200'
+  note: One page of customers
+  output: "{data:[Customer],has_more:boolean,next_cursor:(string|null)}"
+p1rc7v_customers_create_201:
+  endpoint: p1rc7v_customers_create
+  code: '201'
+  note: The customer was created
+  output: Customer
+p1rc7v_customers_create_400:
+  endpoint: p1rc7v_customers_create
+  code: '400'
+  note: The email was missing or malformed
+  output: Error
+p1rc7v_customers_show_200:
+  endpoint: p1rc7v_customers_show
+  code: '200'
+  note: The customer
+  output: Customer
+p1rc7v_customers_show_404:
+  endpoint: p1rc7v_customers_show
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1rc7v_customer_payment_methods_200:
+  endpoint: p1rc7v_customer_payment_methods
+  code: '200'
+  note: The customer's payment methods
+  output: "[PaymentMethod]"
+p1rc7v_customer_payment_methods_404:
+  endpoint: p1rc7v_customer_payment_methods
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1rc7v_events_list_200:
+  endpoint: p1rc7v_events_list
+  code: '200'
+  note: One page of events
+  output: "{data:[Event],has_more:boolean,next_cursor:(string|null)}"
+p1rc7v_events_show_200:
+  endpoint: p1rc7v_events_show
+  code: '200'
+  note: The event
+  output: Event
+p1rc7v_events_show_404:
+  endpoint: p1rc7v_events_show
+  code: '404'
+  note: No event has that id, or it aged out of the 30-day window
+  output: Error
+p1rc7v_payment_methods_create_201:
+  endpoint: p1rc7v_payment_methods_create
+  code: '201'
+  note: The payment method was attached
+  output: PaymentMethod
+p1rc7v_payment_methods_create_400:
+  endpoint: p1rc7v_payment_methods_create
+  code: '400'
+  note: The token was already used, or does not match the declared type
+  output: Error
+p1rc7v_refunds_create_201:
+  endpoint: p1rc7v_refunds_create
+  code: '201'
+  note: The refund was accepted
+  output: Refund
+p1rc7v_refunds_create_400:
+  endpoint: p1rc7v_refunds_create
+  code: '400'
+  note: The charge cannot be refunded, or the amount exceeds what is left
+  output: Error
+p1rc7v_refunds_create_404:
+  endpoint: p1rc7v_refunds_create
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1rc7v_refunds_show_200:
+  endpoint: p1rc7v_refunds_show
+  code: '200'
+  note: The refund
+  output: Refund
+p1rc7v_refunds_show_404:
+  endpoint: p1rc7v_refunds_show
+  code: '404'
+  note: No refund has that id
+  output: Error
+p1rc7v_webhook_endpoints_list_200:
+  endpoint: p1rc7v_webhook_endpoints_list
+  code: '200'
+  note: Every endpoint registered on the account
+  output: "[WebhookEndpoint]"
+p1rc7v_webhook_endpoints_create_201:
+  endpoint: p1rc7v_webhook_endpoints_create
+  code: '201'
+  note: The endpoint was registered
+  output: WebhookEndpoint
+p1rc7v_webhook_endpoints_create_400:
+  endpoint: p1rc7v_webhook_endpoints_create
+  code: '400'
+  note: The URL is not https, or an event name is not one we send
+  output: Error
+p1rc7v_webhook_endpoints_delete_204:
+  endpoint: p1rc7v_webhook_endpoints_delete
+  code: '204'
+  note: The endpoint was removed. Deliveries in flight still land.
+  output: ''
+p1rc7v_webhook_endpoints_delete_404:
+  endpoint: p1rc7v_webhook_endpoints_delete
+  code: '404'
+  note: No webhook endpoint has that id
+  output: Error
+p1rc7v_deliveries_list_200:
+  endpoint: p1rc7v_deliveries_list
+  code: '200'
+  note: One page of delivery attempts
+  output: "{data:[Delivery],has_more:boolean,next_cursor:(string|null)}"
+p1rc7v_deliveries_list_404:
+  endpoint: p1rc7v_deliveries_list
+  code: '404'
+  note: No webhook endpoint has that id
+  output: Error
+p1rc7v_deliveries_replay_202:
+  endpoint: p1rc7v_deliveries_replay
+  code: '202'
+  note: The replays were queued
+  output: "{queued:number}"
+p1rc7v_deliveries_replay_400:
+  endpoint: p1rc7v_deliveries_replay
+  code: '400'
+  note: An event is older than the 30-day window, or the list was empty
+  output: Error
+p1rc7v_deliveries_replay_404:
+  endpoint: p1rc7v_deliveries_replay
+  code: '404'
+  note: No webhook endpoint has that id
+  output: Error
 
-# ===== kitchen sink =====
-p1v3_kitchen_sink_200: { endpoint: p1v3_kitchen_sink, code: "200", note: "Request succeeded", output: "User" }
-p1v3_kitchen_sink_400: { endpoint: p1v3_kitchen_sink, code: "400", note: "Invalid request", output: "Error" }
-p1v3_kitchen_sink_404: { endpoint: p1v3_kitchen_sink, code: "404", note: "Resource not found", output: "Error" }
-p1v4_kitchen_sink_200: { endpoint: p1v4_kitchen_sink, code: "200", note: "Request succeeded", output: "User" }
-p1v4_kitchen_sink_400: { endpoint: p1v4_kitchen_sink, code: "400", note: "Invalid request", output: "Error" }
-p1v4_kitchen_sink_404: { endpoint: p1v4_kitchen_sink, code: "404", note: "Resource not found", output: "Error" }
+# ===== ledgerly v6 =====
+p1v6_charges_list_200:
+  endpoint: p1v6_charges_list
+  code: '200'
+  note: One page of charges
+  output: "{data:[Charge],has_more:boolean,next_cursor:(string|null)}"
+p1v6_charges_create_201:
+  endpoint: p1v6_charges_create
+  code: '201'
+  note: The charge was accepted and is being settled
+  output: Charge
+p1v6_charges_create_400:
+  endpoint: p1v6_charges_create
+  code: '400'
+  note: The amount, currency or source was rejected
+  output: Error
+p1v6_charges_show_200:
+  endpoint: p1v6_charges_show
+  code: '200'
+  note: The charge
+  output: Charge
+p1v6_charges_show_404:
+  endpoint: p1v6_charges_show
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1v6_customers_list_200:
+  endpoint: p1v6_customers_list
+  code: '200'
+  note: One page of customers
+  output: "{data:[Customer],has_more:boolean,next_cursor:(string|null)}"
+p1v6_customers_create_201:
+  endpoint: p1v6_customers_create
+  code: '201'
+  note: The customer was created
+  output: Customer
+p1v6_customers_create_400:
+  endpoint: p1v6_customers_create
+  code: '400'
+  note: The email was missing or malformed
+  output: Error
+p1v6_customers_show_200:
+  endpoint: p1v6_customers_show
+  code: '200'
+  note: The customer
+  output: Customer
+p1v6_customers_show_404:
+  endpoint: p1v6_customers_show
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v6_customer_payment_methods_200:
+  endpoint: p1v6_customer_payment_methods
+  code: '200'
+  note: The customer's payment methods
+  output: "[PaymentMethod]"
+p1v6_customer_payment_methods_404:
+  endpoint: p1v6_customer_payment_methods
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v6_events_list_200:
+  endpoint: p1v6_events_list
+  code: '200'
+  note: One page of events
+  output: "{data:[Event],has_more:boolean,next_cursor:(string|null)}"
+p1v6_events_show_200:
+  endpoint: p1v6_events_show
+  code: '200'
+  note: The event
+  output: Event
+p1v6_events_show_404:
+  endpoint: p1v6_events_show
+  code: '404'
+  note: No event has that id, or it aged out of the 30-day window
+  output: Error
+p1v6_payment_methods_create_201:
+  endpoint: p1v6_payment_methods_create
+  code: '201'
+  note: The payment method was attached
+  output: PaymentMethod
+p1v6_payment_methods_create_400:
+  endpoint: p1v6_payment_methods_create
+  code: '400'
+  note: The token was already used, or does not match the declared type
+  output: Error
+p1v6_payouts_list_200:
+  endpoint: p1v6_payouts_list
+  code: '200'
+  note: One page of payouts
+  output: "{data:[Payout],has_more:boolean,next_cursor:(string|null)}"
+p1v6_payouts_list_403:
+  endpoint: p1v6_payouts_list
+  code: '403'
+  note: These credentials are not a platform's
+  output: Error
+p1v6_payouts_create_201:
+  endpoint: p1v6_payouts_create
+  code: '201'
+  note: The payout was scheduled
+  output: Payout
+p1v6_payouts_create_400:
+  endpoint: p1v6_payouts_create
+  code: '400'
+  note: The balance is short, or the destination is not verified
+  output: Error
+p1v6_payouts_create_403:
+  endpoint: p1v6_payouts_create
+  code: '403'
+  note: These credentials are not a platform's
+  output: Error
+p1v6_payouts_show_200:
+  endpoint: p1v6_payouts_show
+  code: '200'
+  note: The payout
+  output: Payout
+p1v6_payouts_show_404:
+  endpoint: p1v6_payouts_show
+  code: '404'
+  note: No payout has that id
+  output: Error
+p1v6_refunds_create_201:
+  endpoint: p1v6_refunds_create
+  code: '201'
+  note: The refund was accepted
+  output: Refund
+p1v6_refunds_create_400:
+  endpoint: p1v6_refunds_create
+  code: '400'
+  note: The charge cannot be refunded, or the amount exceeds what is left
+  output: Error
+p1v6_refunds_create_404:
+  endpoint: p1v6_refunds_create
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1v6_refunds_show_200:
+  endpoint: p1v6_refunds_show
+  code: '200'
+  note: The refund
+  output: Refund
+p1v6_refunds_show_404:
+  endpoint: p1v6_refunds_show
+  code: '404'
+  note: No refund has that id
+  output: Error
+p1v6_webhook_endpoints_list_200:
+  endpoint: p1v6_webhook_endpoints_list
+  code: '200'
+  note: Every endpoint registered on the account
+  output: "[WebhookEndpoint]"
+p1v6_webhook_endpoints_create_201:
+  endpoint: p1v6_webhook_endpoints_create
+  code: '201'
+  note: The endpoint was registered
+  output: WebhookEndpoint
+p1v6_webhook_endpoints_create_400:
+  endpoint: p1v6_webhook_endpoints_create
+  code: '400'
+  note: The URL is not https, or an event name is not one we send
+  output: Error
+p1v6_webhook_endpoints_delete_204:
+  endpoint: p1v6_webhook_endpoints_delete
+  code: '204'
+  note: The endpoint was removed. Deliveries in flight still land.
+  output: ''
+p1v6_webhook_endpoints_delete_404:
+  endpoint: p1v6_webhook_endpoints_delete
+  code: '404'
+  note: No webhook endpoint has that id
+  output: Error
+
+# ===== ledgerly v7 =====
+p1v7_charges_list_200:
+  endpoint: p1v7_charges_list
+  code: '200'
+  note: One page of charges
+  output: "{data:[Charge],has_more:boolean,next_cursor:(string|null)}"
+p1v7_charges_create_201:
+  endpoint: p1v7_charges_create
+  code: '201'
+  note: The charge was accepted and is being settled
+  output: Charge
+p1v7_charges_create_400:
+  endpoint: p1v7_charges_create
+  code: '400'
+  note: The amount, currency or source was rejected
+  output: Error
+p1v7_charges_show_200:
+  endpoint: p1v7_charges_show
+  code: '200'
+  note: The charge
+  output: Charge
+p1v7_charges_show_404:
+  endpoint: p1v7_charges_show
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1v7_customers_list_200:
+  endpoint: p1v7_customers_list
+  code: '200'
+  note: One page of customers
+  output: "{data:[Customer],has_more:boolean,next_cursor:(string|null)}"
+p1v7_customers_create_201:
+  endpoint: p1v7_customers_create
+  code: '201'
+  note: The customer was created
+  output: Customer
+p1v7_customers_create_400:
+  endpoint: p1v7_customers_create
+  code: '400'
+  note: The email was missing or malformed
+  output: Error
+p1v7_customers_show_200:
+  endpoint: p1v7_customers_show
+  code: '200'
+  note: The customer
+  output: Customer
+p1v7_customers_show_404:
+  endpoint: p1v7_customers_show
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v7_customers_delete_204:
+  endpoint: p1v7_customers_delete
+  code: '204'
+  note: The customer was deleted
+  output: ''
+p1v7_customers_delete_404:
+  endpoint: p1v7_customers_delete
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v7_customers_delete_409:
+  endpoint: p1v7_customers_delete
+  code: '409'
+  note: The customer has an open dispute or an unsettled charge
+  output: Error
+p1v7_customer_payment_methods_200:
+  endpoint: p1v7_customer_payment_methods
+  code: '200'
+  note: The customer's payment methods
+  output: "[PaymentMethod]"
+p1v7_customer_payment_methods_404:
+  endpoint: p1v7_customer_payment_methods
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v7_events_list_200:
+  endpoint: p1v7_events_list
+  code: '200'
+  note: One page of events
+  output: "{data:[Event],has_more:boolean,next_cursor:(string|null)}"
+p1v7_events_show_200:
+  endpoint: p1v7_events_show
+  code: '200'
+  note: The event
+  output: Event
+p1v7_events_show_404:
+  endpoint: p1v7_events_show
+  code: '404'
+  note: No event has that id, or it aged out of the 30-day window
+  output: Error
+p1v7_payment_methods_create_201:
+  endpoint: p1v7_payment_methods_create
+  code: '201'
+  note: The payment method was attached
+  output: PaymentMethod
+p1v7_payment_methods_create_400:
+  endpoint: p1v7_payment_methods_create
+  code: '400'
+  note: The token was already used, or does not match the declared type
+  output: Error
+p1v7_payouts_list_200:
+  endpoint: p1v7_payouts_list
+  code: '200'
+  note: One page of payouts
+  output: "{data:[Payout],has_more:boolean,next_cursor:(string|null)}"
+p1v7_payouts_list_403:
+  endpoint: p1v7_payouts_list
+  code: '403'
+  note: These credentials are not a platform's
+  output: Error
+p1v7_payouts_show_200:
+  endpoint: p1v7_payouts_show
+  code: '200'
+  note: The payout
+  output: Payout
+p1v7_payouts_show_404:
+  endpoint: p1v7_payouts_show
+  code: '404'
+  note: No payout has that id
+  output: Error
+p1v7_refunds_create_201:
+  endpoint: p1v7_refunds_create
+  code: '201'
+  note: The refund was accepted
+  output: Refund
+p1v7_refunds_create_400:
+  endpoint: p1v7_refunds_create
+  code: '400'
+  note: The charge cannot be refunded, or the amount exceeds what is left
+  output: Error
+p1v7_refunds_create_404:
+  endpoint: p1v7_refunds_create
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1v7_refunds_show_200:
+  endpoint: p1v7_refunds_show
+  code: '200'
+  note: The refund
+  output: Refund
+p1v7_refunds_show_404:
+  endpoint: p1v7_refunds_show
+  code: '404'
+  note: No refund has that id
+  output: Error
+p1v7_webhook_endpoints_list_200:
+  endpoint: p1v7_webhook_endpoints_list
+  code: '200'
+  note: Every endpoint registered on the account
+  output: "[WebhookEndpoint]"
+p1v7_webhook_endpoints_create_201:
+  endpoint: p1v7_webhook_endpoints_create
+  code: '201'
+  note: The endpoint was registered
+  output: WebhookEndpoint
+p1v7_webhook_endpoints_create_400:
+  endpoint: p1v7_webhook_endpoints_create
+  code: '400'
+  note: The URL is not https, or an event name is not one we send
+  output: Error
+p1v7_webhook_endpoints_delete_204:
+  endpoint: p1v7_webhook_endpoints_delete
+  code: '204'
+  note: The endpoint was removed. Deliveries in flight still land.
+  output: ''
+p1v7_webhook_endpoints_delete_404:
+  endpoint: p1v7_webhook_endpoints_delete
+  code: '404'
+  note: No webhook endpoint has that id
+  output: Error
+
+# ===== ledgerly v8 =====
+p1v8_charges_list_200:
+  endpoint: p1v8_charges_list
+  code: '200'
+  note: One page of charges
+  output: "{data:[Charge],has_more:boolean,next_cursor:(string|null)}"
+p1v8_charges_create_201:
+  endpoint: p1v8_charges_create
+  code: '201'
+  note: The charge was accepted and is being settled
+  output: Charge
+p1v8_charges_create_400:
+  endpoint: p1v8_charges_create
+  code: '400'
+  note: The amount, currency or source was rejected
+  output: Error
+p1v8_charges_show_200:
+  endpoint: p1v8_charges_show
+  code: '200'
+  note: The charge
+  output: Charge
+p1v8_charges_show_404:
+  endpoint: p1v8_charges_show
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1v8_customers_list_200:
+  endpoint: p1v8_customers_list
+  code: '200'
+  note: One page of customers
+  output: "{data:[Customer],has_more:boolean,next_cursor:(string|null)}"
+p1v8_customers_create_201:
+  endpoint: p1v8_customers_create
+  code: '201'
+  note: The customer was created
+  output: Customer
+p1v8_customers_create_400:
+  endpoint: p1v8_customers_create
+  code: '400'
+  note: The email was missing or malformed
+  output: Error
+p1v8_customers_show_200:
+  endpoint: p1v8_customers_show
+  code: '200'
+  note: The customer
+  output: Customer
+p1v8_customers_show_404:
+  endpoint: p1v8_customers_show
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v8_customers_delete_204:
+  endpoint: p1v8_customers_delete
+  code: '204'
+  note: The customer was deleted
+  output: ''
+p1v8_customers_delete_404:
+  endpoint: p1v8_customers_delete
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v8_customers_delete_409:
+  endpoint: p1v8_customers_delete
+  code: '409'
+  note: The customer has an open dispute or an unsettled charge
+  output: Error
+p1v8_customer_payment_methods_200:
+  endpoint: p1v8_customer_payment_methods
+  code: '200'
+  note: The customer's payment methods
+  output: "[PaymentMethod]"
+p1v8_customer_payment_methods_404:
+  endpoint: p1v8_customer_payment_methods
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v8_disputes_list_200:
+  endpoint: p1v8_disputes_list
+  code: '200'
+  note: One page of disputes
+  output: "{data:[Dispute],has_more:boolean,next_cursor:(string|null)}"
+p1v8_disputes_show_200:
+  endpoint: p1v8_disputes_show
+  code: '200'
+  note: The dispute
+  output: Dispute
+p1v8_disputes_show_404:
+  endpoint: p1v8_disputes_show
+  code: '404'
+  note: No dispute has that id
+  output: Error
+p1v8_disputes_close_200:
+  endpoint: p1v8_disputes_close
+  code: '200'
+  note: The dispute was closed in the customer's favour
+  output: Dispute
+p1v8_disputes_close_404:
+  endpoint: p1v8_disputes_close
+  code: '404'
+  note: No dispute has that id
+  output: Error
+p1v8_disputes_close_409:
+  endpoint: p1v8_disputes_close
+  code: '409'
+  note: The dispute is already resolved
+  output: Error
+p1v8_events_list_200:
+  endpoint: p1v8_events_list
+  code: '200'
+  note: One page of events
+  output: "{data:[Event],has_more:boolean,next_cursor:(string|null)}"
+p1v8_events_show_200:
+  endpoint: p1v8_events_show
+  code: '200'
+  note: The event
+  output: Event
+p1v8_events_show_404:
+  endpoint: p1v8_events_show
+  code: '404'
+  note: No event has that id, or it aged out of the 30-day window
+  output: Error
+p1v8_payment_methods_create_201:
+  endpoint: p1v8_payment_methods_create
+  code: '201'
+  note: The payment method was attached
+  output: PaymentMethod
+p1v8_payment_methods_create_400:
+  endpoint: p1v8_payment_methods_create
+  code: '400'
+  note: The token was already used, or does not match the declared type
+  output: Error
+p1v8_payouts_list_200:
+  endpoint: p1v8_payouts_list
+  code: '200'
+  note: One page of payouts
+  output: "{data:[Payout],has_more:boolean,next_cursor:(string|null)}"
+p1v8_payouts_list_403:
+  endpoint: p1v8_payouts_list
+  code: '403'
+  note: These credentials are not a platform's
+  output: Error
+p1v8_payouts_show_200:
+  endpoint: p1v8_payouts_show
+  code: '200'
+  note: The payout
+  output: Payout
+p1v8_payouts_show_404:
+  endpoint: p1v8_payouts_show
+  code: '404'
+  note: No payout has that id
+  output: Error
+p1v8_refunds_create_201:
+  endpoint: p1v8_refunds_create
+  code: '201'
+  note: The refund was accepted
+  output: Refund
+p1v8_refunds_create_400:
+  endpoint: p1v8_refunds_create
+  code: '400'
+  note: The charge cannot be refunded, or the amount exceeds what is left
+  output: Error
+p1v8_refunds_create_404:
+  endpoint: p1v8_refunds_create
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1v8_refunds_show_200:
+  endpoint: p1v8_refunds_show
+  code: '200'
+  note: The refund
+  output: Refund
+p1v8_refunds_show_404:
+  endpoint: p1v8_refunds_show
+  code: '404'
+  note: No refund has that id
+  output: Error
+p1v8_webhook_endpoints_list_200:
+  endpoint: p1v8_webhook_endpoints_list
+  code: '200'
+  note: Every endpoint registered on the account
+  output: "[WebhookEndpoint]"
+p1v8_webhook_endpoints_create_201:
+  endpoint: p1v8_webhook_endpoints_create
+  code: '201'
+  note: The endpoint was registered
+  output: WebhookEndpoint
+p1v8_webhook_endpoints_create_400:
+  endpoint: p1v8_webhook_endpoints_create
+  code: '400'
+  note: The URL is not https, or an event name is not one we send
+  output: Error
+p1v8_webhook_endpoints_delete_204:
+  endpoint: p1v8_webhook_endpoints_delete
+  code: '204'
+  note: The endpoint was removed. Deliveries in flight still land.
+  output: ''
+p1v8_webhook_endpoints_delete_404:
+  endpoint: p1v8_webhook_endpoints_delete
+  code: '404'
+  note: No webhook endpoint has that id
+  output: Error
+
+# ===== candidate rc11-v1 =====
+p1rc11v_charges_list_200:
+  endpoint: p1rc11v_charges_list
+  code: '200'
+  note: One page of charges
+  output: "{data:[Charge],has_more:boolean,next_cursor:(string|null)}"
+p1rc11v_charges_create_201:
+  endpoint: p1rc11v_charges_create
+  code: '201'
+  note: The charge was accepted and is being settled
+  output: Charge
+p1rc11v_charges_create_400:
+  endpoint: p1rc11v_charges_create
+  code: '400'
+  note: The amount, currency or source was rejected
+  output: Error
+p1rc11v_charges_show_200:
+  endpoint: p1rc11v_charges_show
+  code: '200'
+  note: The charge
+  output: Charge
+p1rc11v_charges_show_404:
+  endpoint: p1rc11v_charges_show
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1rc11v_customers_list_200:
+  endpoint: p1rc11v_customers_list
+  code: '200'
+  note: One page of customers
+  output: "{data:[Customer],has_more:boolean,next_cursor:(string|null)}"
+p1rc11v_customers_create_201:
+  endpoint: p1rc11v_customers_create
+  code: '201'
+  note: The customer was created
+  output: Customer
+p1rc11v_customers_create_400:
+  endpoint: p1rc11v_customers_create
+  code: '400'
+  note: The email was missing or malformed
+  output: Error
+p1rc11v_customers_show_200:
+  endpoint: p1rc11v_customers_show
+  code: '200'
+  note: The customer
+  output: Customer
+p1rc11v_customers_show_404:
+  endpoint: p1rc11v_customers_show
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1rc11v_customers_delete_204:
+  endpoint: p1rc11v_customers_delete
+  code: '204'
+  note: The customer was deleted
+  output: ''
+p1rc11v_customers_delete_404:
+  endpoint: p1rc11v_customers_delete
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1rc11v_customers_delete_409:
+  endpoint: p1rc11v_customers_delete
+  code: '409'
+  note: The customer has an open dispute or an unsettled charge
+  output: Error
+p1rc11v_customer_payment_methods_200:
+  endpoint: p1rc11v_customer_payment_methods
+  code: '200'
+  note: The customer's payment methods
+  output: "[PaymentMethod]"
+p1rc11v_customer_payment_methods_404:
+  endpoint: p1rc11v_customer_payment_methods
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1rc11v_disputes_list_200:
+  endpoint: p1rc11v_disputes_list
+  code: '200'
+  note: One page of disputes
+  output: "{data:[Dispute],has_more:boolean,next_cursor:(string|null)}"
+p1rc11v_disputes_show_200:
+  endpoint: p1rc11v_disputes_show
+  code: '200'
+  note: The dispute
+  output: Dispute
+p1rc11v_disputes_show_404:
+  endpoint: p1rc11v_disputes_show
+  code: '404'
+  note: No dispute has that id
+  output: Error
+p1rc11v_disputes_close_200:
+  endpoint: p1rc11v_disputes_close
+  code: '200'
+  note: The dispute was closed in the customer's favour
+  output: Dispute
+p1rc11v_disputes_close_404:
+  endpoint: p1rc11v_disputes_close
+  code: '404'
+  note: No dispute has that id
+  output: Error
+p1rc11v_disputes_close_409:
+  endpoint: p1rc11v_disputes_close
+  code: '409'
+  note: The dispute is already resolved
+  output: Error
+p1rc11v_events_list_200:
+  endpoint: p1rc11v_events_list
+  code: '200'
+  note: One page of events
+  output: "{data:[Event],has_more:boolean,next_cursor:(string|null)}"
+p1rc11v_events_show_200:
+  endpoint: p1rc11v_events_show
+  code: '200'
+  note: The event
+  output: Event
+p1rc11v_events_show_404:
+  endpoint: p1rc11v_events_show
+  code: '404'
+  note: No event has that id, or it aged out of the 30-day window
+  output: Error
+p1rc11v_payment_methods_create_201:
+  endpoint: p1rc11v_payment_methods_create
+  code: '201'
+  note: The payment method was attached
+  output: PaymentMethod
+p1rc11v_payment_methods_create_400:
+  endpoint: p1rc11v_payment_methods_create
+  code: '400'
+  note: The token was already used, or does not match the declared type
+  output: Error
+p1rc11v_payouts_list_200:
+  endpoint: p1rc11v_payouts_list
+  code: '200'
+  note: One page of payouts
+  output: "{data:[Payout],has_more:boolean,next_cursor:(string|null)}"
+p1rc11v_payouts_list_403:
+  endpoint: p1rc11v_payouts_list
+  code: '403'
+  note: These credentials are not a platform's
+  output: Error
+p1rc11v_payouts_show_200:
+  endpoint: p1rc11v_payouts_show
+  code: '200'
+  note: The payout
+  output: Payout
+p1rc11v_payouts_show_404:
+  endpoint: p1rc11v_payouts_show
+  code: '404'
+  note: No payout has that id
+  output: Error
+p1rc11v_refunds_create_201:
+  endpoint: p1rc11v_refunds_create
+  code: '201'
+  note: The refund was accepted
+  output: Refund
+p1rc11v_refunds_create_400:
+  endpoint: p1rc11v_refunds_create
+  code: '400'
+  note: The charge cannot be refunded, or the amount exceeds what is left
+  output: Error
+p1rc11v_refunds_create_404:
+  endpoint: p1rc11v_refunds_create
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1rc11v_refunds_show_200:
+  endpoint: p1rc11v_refunds_show
+  code: '200'
+  note: The refund
+  output: Refund
+p1rc11v_refunds_show_404:
+  endpoint: p1rc11v_refunds_show
+  code: '404'
+  note: No refund has that id
+  output: Error
+p1rc11v_webhook_endpoints_list_200:
+  endpoint: p1rc11v_webhook_endpoints_list
+  code: '200'
+  note: Every endpoint registered on the account
+  output: "[WebhookEndpoint]"
+p1rc11v_webhook_endpoints_create_201:
+  endpoint: p1rc11v_webhook_endpoints_create
+  code: '201'
+  note: The endpoint was registered
+  output: WebhookEndpoint
+p1rc11v_webhook_endpoints_create_400:
+  endpoint: p1rc11v_webhook_endpoints_create
+  code: '400'
+  note: The URL is not https, or an event name is not one we send
+  output: Error
+p1rc11v_webhook_endpoints_delete_204:
+  endpoint: p1rc11v_webhook_endpoints_delete
+  code: '204'
+  note: The endpoint was removed. Deliveries in flight still land.
+  output: ''
+p1rc11v_webhook_endpoints_delete_404:
+  endpoint: p1rc11v_webhook_endpoints_delete
+  code: '404'
+  note: No webhook endpoint has that id
+  output: Error
+
+# ===== ledgerly v9 =====
+p1v9_charges_list_200:
+  endpoint: p1v9_charges_list
+  code: '200'
+  note: One page of charges
+  output: "{data:[Charge],has_more:boolean,next_cursor:(string|null)}"
+p1v9_charges_create_201:
+  endpoint: p1v9_charges_create
+  code: '201'
+  note: The charge was accepted and is being settled
+  output: Charge
+p1v9_charges_create_400:
+  endpoint: p1v9_charges_create
+  code: '400'
+  note: The amount, currency or source was rejected
+  output: Error
+p1v9_charges_show_200:
+  endpoint: p1v9_charges_show
+  code: '200'
+  note: The charge
+  output: Charge
+p1v9_charges_show_404:
+  endpoint: p1v9_charges_show
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1v9_customers_list_200:
+  endpoint: p1v9_customers_list
+  code: '200'
+  note: One page of customers
+  output: "{data:[Customer],has_more:boolean,next_cursor:(string|null)}"
+p1v9_customers_create_201:
+  endpoint: p1v9_customers_create
+  code: '201'
+  note: The customer was created
+  output: Customer
+p1v9_customers_create_400:
+  endpoint: p1v9_customers_create
+  code: '400'
+  note: The email was missing or malformed
+  output: Error
+p1v9_customers_show_200:
+  endpoint: p1v9_customers_show
+  code: '200'
+  note: The customer
+  output: Customer
+p1v9_customers_show_404:
+  endpoint: p1v9_customers_show
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v9_customers_delete_204:
+  endpoint: p1v9_customers_delete
+  code: '204'
+  note: The customer was deleted
+  output: ''
+p1v9_customers_delete_404:
+  endpoint: p1v9_customers_delete
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v9_customers_delete_409:
+  endpoint: p1v9_customers_delete
+  code: '409'
+  note: The customer has an open dispute or an unsettled charge
+  output: Error
+p1v9_customer_payment_methods_200:
+  endpoint: p1v9_customer_payment_methods
+  code: '200'
+  note: The customer's payment methods
+  output: "[PaymentMethod]"
+p1v9_customer_payment_methods_404:
+  endpoint: p1v9_customer_payment_methods
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v9_disputes_list_200:
+  endpoint: p1v9_disputes_list
+  code: '200'
+  note: One page of disputes
+  output: "{data:[Dispute],has_more:boolean,next_cursor:(string|null)}"
+p1v9_disputes_show_200:
+  endpoint: p1v9_disputes_show
+  code: '200'
+  note: The dispute
+  output: Dispute
+p1v9_disputes_show_404:
+  endpoint: p1v9_disputes_show
+  code: '404'
+  note: No dispute has that id
+  output: Error
+p1v9_disputes_close_200:
+  endpoint: p1v9_disputes_close
+  code: '200'
+  note: The dispute was closed in the customer's favour
+  output: Dispute
+p1v9_disputes_close_404:
+  endpoint: p1v9_disputes_close
+  code: '404'
+  note: No dispute has that id
+  output: Error
+p1v9_disputes_close_409:
+  endpoint: p1v9_disputes_close
+  code: '409'
+  note: The dispute is already resolved
+  output: Error
+p1v9_events_list_200:
+  endpoint: p1v9_events_list
+  code: '200'
+  note: One page of events
+  output: "{data:[Event],has_more:boolean,next_cursor:(string|null)}"
+p1v9_events_show_200:
+  endpoint: p1v9_events_show
+  code: '200'
+  note: The event
+  output: Event
+p1v9_events_show_404:
+  endpoint: p1v9_events_show
+  code: '404'
+  note: No event has that id, or it aged out of the 30-day window
+  output: Error
+p1v9_payment_methods_create_201:
+  endpoint: p1v9_payment_methods_create
+  code: '201'
+  note: The payment method was attached
+  output: PaymentMethod
+p1v9_payment_methods_create_400:
+  endpoint: p1v9_payment_methods_create
+  code: '400'
+  note: The token was already used, or does not match the declared type
+  output: Error
+p1v9_payouts_list_200:
+  endpoint: p1v9_payouts_list
+  code: '200'
+  note: One page of payouts
+  output: "{data:[Payout],has_more:boolean,next_cursor:(string|null)}"
+p1v9_payouts_list_403:
+  endpoint: p1v9_payouts_list
+  code: '403'
+  note: These credentials are not a platform's
+  output: Error
+p1v9_payouts_show_200:
+  endpoint: p1v9_payouts_show
+  code: '200'
+  note: The payout
+  output: Payout
+p1v9_payouts_show_404:
+  endpoint: p1v9_payouts_show
+  code: '404'
+  note: No payout has that id
+  output: Error
+p1v9_prices_list_200:
+  endpoint: p1v9_prices_list
+  code: '200'
+  note: Every price on the account
+  output: "[Price]"
+p1v9_prices_create_201:
+  endpoint: p1v9_prices_create
+  code: '201'
+  note: The price was created
+  output: Price
+p1v9_prices_create_400:
+  endpoint: p1v9_prices_create
+  code: '400'
+  note: The interval is not one of day, week, month or year
+  output: Error
+p1v9_refunds_create_201:
+  endpoint: p1v9_refunds_create
+  code: '201'
+  note: The refund was accepted
+  output: Refund
+p1v9_refunds_create_400:
+  endpoint: p1v9_refunds_create
+  code: '400'
+  note: The charge cannot be refunded, or the amount exceeds what is left
+  output: Error
+p1v9_refunds_create_404:
+  endpoint: p1v9_refunds_create
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1v9_refunds_show_200:
+  endpoint: p1v9_refunds_show
+  code: '200'
+  note: The refund
+  output: Refund
+p1v9_refunds_show_404:
+  endpoint: p1v9_refunds_show
+  code: '404'
+  note: No refund has that id
+  output: Error
+p1v9_subscriptions_list_200:
+  endpoint: p1v9_subscriptions_list
+  code: '200'
+  note: One page of subscriptions
+  output: "{data:[Subscription],has_more:boolean,next_cursor:(string|null)}"
+p1v9_subscriptions_create_201:
+  endpoint: p1v9_subscriptions_create
+  code: '201'
+  note: The subscription started, and the first charge was taken
+  output: Subscription
+p1v9_subscriptions_create_400:
+  endpoint: p1v9_subscriptions_create
+  code: '400'
+  note: The price is inactive, or the customer has no payment method
+  output: Error
+p1v9_subscriptions_create_404:
+  endpoint: p1v9_subscriptions_create
+  code: '404'
+  note: No customer or price has that id
+  output: Error
+p1v9_subscriptions_show_200:
+  endpoint: p1v9_subscriptions_show
+  code: '200'
+  note: The subscription
+  output: Subscription
+p1v9_subscriptions_show_404:
+  endpoint: p1v9_subscriptions_show
+  code: '404'
+  note: No subscription has that id
+  output: Error
+p1v9_subscriptions_delete_200:
+  endpoint: p1v9_subscriptions_delete
+  code: '200'
+  note: The subscription was cancelled
+  output: Subscription
+p1v9_subscriptions_delete_404:
+  endpoint: p1v9_subscriptions_delete
+  code: '404'
+  note: No subscription has that id
+  output: Error
+p1v9_webhook_endpoints_list_200:
+  endpoint: p1v9_webhook_endpoints_list
+  code: '200'
+  note: Every endpoint registered on the account
+  output: "[WebhookEndpoint]"
+p1v9_webhook_endpoints_create_201:
+  endpoint: p1v9_webhook_endpoints_create
+  code: '201'
+  note: The endpoint was registered
+  output: WebhookEndpoint
+p1v9_webhook_endpoints_create_400:
+  endpoint: p1v9_webhook_endpoints_create
+  code: '400'
+  note: The URL is not https, or an event name is not one we send
+  output: Error
+p1v9_webhook_endpoints_delete_204:
+  endpoint: p1v9_webhook_endpoints_delete
+  code: '204'
+  note: The endpoint was removed. Deliveries in flight still land.
+  output: ''
+p1v9_webhook_endpoints_delete_404:
+  endpoint: p1v9_webhook_endpoints_delete
+  code: '404'
+  note: No webhook endpoint has that id
+  output: Error
+
+# ===== ledgerly v10 =====
+p1v10_balance_show_200:
+  endpoint: p1v10_balance_show
+  code: '200'
+  note: The balance, one entry per currency held
+  output: Balance
+p1v10_balance_show_403:
+  endpoint: p1v10_balance_show
+  code: '403'
+  note: This key cannot read the balance
+  output: Error
+p1v10_charges_list_200:
+  endpoint: p1v10_charges_list
+  code: '200'
+  note: One page of charges
+  output: "{data:[Charge],has_more:boolean,next_cursor:(string|null)}"
+p1v10_charges_create_201:
+  endpoint: p1v10_charges_create
+  code: '201'
+  note: The charge was accepted and is being settled
+  output: Charge
+p1v10_charges_create_400:
+  endpoint: p1v10_charges_create
+  code: '400'
+  note: The amount, currency or source was rejected
+  output: Error
+p1v10_charges_show_200:
+  endpoint: p1v10_charges_show
+  code: '200'
+  note: The charge
+  output: Charge
+p1v10_charges_show_404:
+  endpoint: p1v10_charges_show
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1v10_customers_list_200:
+  endpoint: p1v10_customers_list
+  code: '200'
+  note: One page of customers
+  output: "{data:[Customer],has_more:boolean,next_cursor:(string|null)}"
+p1v10_customers_create_201:
+  endpoint: p1v10_customers_create
+  code: '201'
+  note: The customer was created
+  output: Customer
+p1v10_customers_create_400:
+  endpoint: p1v10_customers_create
+  code: '400'
+  note: The email was missing or malformed
+  output: Error
+p1v10_customers_show_200:
+  endpoint: p1v10_customers_show
+  code: '200'
+  note: The customer
+  output: Customer
+p1v10_customers_show_404:
+  endpoint: p1v10_customers_show
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v10_customers_delete_204:
+  endpoint: p1v10_customers_delete
+  code: '204'
+  note: The customer was deleted
+  output: ''
+p1v10_customers_delete_404:
+  endpoint: p1v10_customers_delete
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v10_customers_delete_409:
+  endpoint: p1v10_customers_delete
+  code: '409'
+  note: The customer has an open dispute or an unsettled charge
+  output: Error
+p1v10_customer_payment_methods_200:
+  endpoint: p1v10_customer_payment_methods
+  code: '200'
+  note: The customer's payment methods
+  output: "[PaymentMethod]"
+p1v10_customer_payment_methods_404:
+  endpoint: p1v10_customer_payment_methods
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1v10_disputes_list_200:
+  endpoint: p1v10_disputes_list
+  code: '200'
+  note: One page of disputes
+  output: "{data:[Dispute],has_more:boolean,next_cursor:(string|null)}"
+p1v10_disputes_show_200:
+  endpoint: p1v10_disputes_show
+  code: '200'
+  note: The dispute
+  output: Dispute
+p1v10_disputes_show_404:
+  endpoint: p1v10_disputes_show
+  code: '404'
+  note: No dispute has that id
+  output: Error
+p1v10_disputes_close_200:
+  endpoint: p1v10_disputes_close
+  code: '200'
+  note: The dispute was closed in the customer's favour
+  output: Dispute
+p1v10_disputes_close_404:
+  endpoint: p1v10_disputes_close
+  code: '404'
+  note: No dispute has that id
+  output: Error
+p1v10_disputes_close_409:
+  endpoint: p1v10_disputes_close
+  code: '409'
+  note: The dispute is already resolved
+  output: Error
+p1v10_events_list_200:
+  endpoint: p1v10_events_list
+  code: '200'
+  note: One page of events
+  output: "{data:[Event],has_more:boolean,next_cursor:(string|null)}"
+p1v10_events_show_200:
+  endpoint: p1v10_events_show
+  code: '200'
+  note: The event
+  output: Event
+p1v10_events_show_404:
+  endpoint: p1v10_events_show
+  code: '404'
+  note: No event has that id, or it aged out of the 30-day window
+  output: Error
+p1v10_payment_methods_create_201:
+  endpoint: p1v10_payment_methods_create
+  code: '201'
+  note: The payment method was attached
+  output: PaymentMethod
+p1v10_payment_methods_create_400:
+  endpoint: p1v10_payment_methods_create
+  code: '400'
+  note: The token was already used, or does not match the declared type
+  output: Error
+p1v10_payouts_list_200:
+  endpoint: p1v10_payouts_list
+  code: '200'
+  note: One page of payouts
+  output: "{data:[Payout],has_more:boolean,next_cursor:(string|null)}"
+p1v10_payouts_list_403:
+  endpoint: p1v10_payouts_list
+  code: '403'
+  note: These credentials are not a platform's
+  output: Error
+p1v10_payouts_show_200:
+  endpoint: p1v10_payouts_show
+  code: '200'
+  note: The payout
+  output: Payout
+p1v10_payouts_show_404:
+  endpoint: p1v10_payouts_show
+  code: '404'
+  note: No payout has that id
+  output: Error
+p1v10_prices_list_200:
+  endpoint: p1v10_prices_list
+  code: '200'
+  note: Every price on the account
+  output: "[Price]"
+p1v10_prices_create_201:
+  endpoint: p1v10_prices_create
+  code: '201'
+  note: The price was created
+  output: Price
+p1v10_prices_create_400:
+  endpoint: p1v10_prices_create
+  code: '400'
+  note: The interval is not one of day, week, month or year
+  output: Error
+p1v10_refunds_create_201:
+  endpoint: p1v10_refunds_create
+  code: '201'
+  note: The refund was accepted
+  output: Refund
+p1v10_refunds_create_400:
+  endpoint: p1v10_refunds_create
+  code: '400'
+  note: The charge cannot be refunded, or the amount exceeds what is left
+  output: Error
+p1v10_refunds_create_404:
+  endpoint: p1v10_refunds_create
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1v10_refunds_show_200:
+  endpoint: p1v10_refunds_show
+  code: '200'
+  note: The refund
+  output: Refund
+p1v10_refunds_show_404:
+  endpoint: p1v10_refunds_show
+  code: '404'
+  note: No refund has that id
+  output: Error
+p1v10_subscriptions_list_200:
+  endpoint: p1v10_subscriptions_list
+  code: '200'
+  note: One page of subscriptions
+  output: "{data:[Subscription],has_more:boolean,next_cursor:(string|null)}"
+p1v10_subscriptions_create_201:
+  endpoint: p1v10_subscriptions_create
+  code: '201'
+  note: The subscription started, and the first charge was taken
+  output: Subscription
+p1v10_subscriptions_create_400:
+  endpoint: p1v10_subscriptions_create
+  code: '400'
+  note: The price is inactive, or the customer has no payment method
+  output: Error
+p1v10_subscriptions_create_404:
+  endpoint: p1v10_subscriptions_create
+  code: '404'
+  note: No customer or price has that id
+  output: Error
+p1v10_subscriptions_show_200:
+  endpoint: p1v10_subscriptions_show
+  code: '200'
+  note: The subscription
+  output: Subscription
+p1v10_subscriptions_show_404:
+  endpoint: p1v10_subscriptions_show
+  code: '404'
+  note: No subscription has that id
+  output: Error
+p1v10_subscriptions_delete_200:
+  endpoint: p1v10_subscriptions_delete
+  code: '200'
+  note: The subscription was cancelled
+  output: Subscription
+p1v10_subscriptions_delete_404:
+  endpoint: p1v10_subscriptions_delete
+  code: '404'
+  note: No subscription has that id
+  output: Error
+p1v10_webhook_endpoints_list_200:
+  endpoint: p1v10_webhook_endpoints_list
+  code: '200'
+  note: Every endpoint registered on the account
+  output: "[WebhookEndpoint]"
+p1v10_webhook_endpoints_create_201:
+  endpoint: p1v10_webhook_endpoints_create
+  code: '201'
+  note: The endpoint was registered
+  output: WebhookEndpoint
+p1v10_webhook_endpoints_create_400:
+  endpoint: p1v10_webhook_endpoints_create
+  code: '400'
+  note: The URL is not https, or an event name is not one we send
+  output: Error
+p1v10_webhook_endpoints_delete_204:
+  endpoint: p1v10_webhook_endpoints_delete
+  code: '204'
+  note: The endpoint was removed. Deliveries in flight still land.
+  output: ''
+p1v10_webhook_endpoints_delete_404:
+  endpoint: p1v10_webhook_endpoints_delete
+  code: '404'
+  note: No webhook endpoint has that id
+  output: Error
+
+# ===== candidate rc14-v1 =====
+p1rc14v_balance_show_200:
+  endpoint: p1rc14v_balance_show
+  code: '200'
+  note: The balance, one entry per currency held
+  output: Balance
+p1rc14v_balance_show_403:
+  endpoint: p1rc14v_balance_show
+  code: '403'
+  note: This key cannot read the balance
+  output: Error
+p1rc14v_charges_list_200:
+  endpoint: p1rc14v_charges_list
+  code: '200'
+  note: One page of charges
+  output: "{data:[Charge],has_more:boolean,next_cursor:(string|null)}"
+p1rc14v_charges_create_201:
+  endpoint: p1rc14v_charges_create
+  code: '201'
+  note: The charge was accepted and is being settled
+  output: Charge
+p1rc14v_charges_create_400:
+  endpoint: p1rc14v_charges_create
+  code: '400'
+  note: The amount, currency or source was rejected
+  output: Error
+p1rc14v_charges_show_200:
+  endpoint: p1rc14v_charges_show
+  code: '200'
+  note: The charge
+  output: Charge
+p1rc14v_charges_show_404:
+  endpoint: p1rc14v_charges_show
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1rc14v_customers_list_200:
+  endpoint: p1rc14v_customers_list
+  code: '200'
+  note: One page of customers
+  output: "{data:[Customer],has_more:boolean,next_cursor:(string|null)}"
+p1rc14v_customers_create_201:
+  endpoint: p1rc14v_customers_create
+  code: '201'
+  note: The customer was created
+  output: Customer
+p1rc14v_customers_create_400:
+  endpoint: p1rc14v_customers_create
+  code: '400'
+  note: The email was missing or malformed
+  output: Error
+p1rc14v_customers_show_200:
+  endpoint: p1rc14v_customers_show
+  code: '200'
+  note: The customer
+  output: Customer
+p1rc14v_customers_show_404:
+  endpoint: p1rc14v_customers_show
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1rc14v_customers_update_200:
+  endpoint: p1rc14v_customers_update
+  code: '200'
+  note: The updated customer
+  output: Customer
+p1rc14v_customers_update_400:
+  endpoint: p1rc14v_customers_update
+  code: '400'
+  note: The email is malformed, or the payment method belongs to someone else
+  output: Error
+p1rc14v_customers_update_404:
+  endpoint: p1rc14v_customers_update
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1rc14v_customers_delete_204:
+  endpoint: p1rc14v_customers_delete
+  code: '204'
+  note: The customer was deleted
+  output: ''
+p1rc14v_customers_delete_404:
+  endpoint: p1rc14v_customers_delete
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1rc14v_customers_delete_409:
+  endpoint: p1rc14v_customers_delete
+  code: '409'
+  note: The customer has an open dispute or an unsettled charge
+  output: Error
+p1rc14v_customer_payment_methods_200:
+  endpoint: p1rc14v_customer_payment_methods
+  code: '200'
+  note: The customer's payment methods
+  output: "[PaymentMethod]"
+p1rc14v_customer_payment_methods_404:
+  endpoint: p1rc14v_customer_payment_methods
+  code: '404'
+  note: No customer has that id
+  output: Error
+p1rc14v_disputes_list_200:
+  endpoint: p1rc14v_disputes_list
+  code: '200'
+  note: One page of disputes
+  output: "{data:[Dispute],has_more:boolean,next_cursor:(string|null)}"
+p1rc14v_disputes_show_200:
+  endpoint: p1rc14v_disputes_show
+  code: '200'
+  note: The dispute
+  output: Dispute
+p1rc14v_disputes_show_404:
+  endpoint: p1rc14v_disputes_show
+  code: '404'
+  note: No dispute has that id
+  output: Error
+p1rc14v_disputes_close_200:
+  endpoint: p1rc14v_disputes_close
+  code: '200'
+  note: The dispute was closed in the customer's favour
+  output: Dispute
+p1rc14v_disputes_close_404:
+  endpoint: p1rc14v_disputes_close
+  code: '404'
+  note: No dispute has that id
+  output: Error
+p1rc14v_disputes_close_409:
+  endpoint: p1rc14v_disputes_close
+  code: '409'
+  note: The dispute is already resolved
+  output: Error
+p1rc14v_events_list_200:
+  endpoint: p1rc14v_events_list
+  code: '200'
+  note: One page of events
+  output: "{data:[Event],has_more:boolean,next_cursor:(string|null)}"
+p1rc14v_events_show_200:
+  endpoint: p1rc14v_events_show
+  code: '200'
+  note: The event
+  output: Event
+p1rc14v_events_show_404:
+  endpoint: p1rc14v_events_show
+  code: '404'
+  note: No event has that id, or it aged out of the 30-day window
+  output: Error
+p1rc14v_payment_methods_create_201:
+  endpoint: p1rc14v_payment_methods_create
+  code: '201'
+  note: The payment method was attached
+  output: PaymentMethod
+p1rc14v_payment_methods_create_400:
+  endpoint: p1rc14v_payment_methods_create
+  code: '400'
+  note: The token was already used, or does not match the declared type
+  output: Error
+p1rc14v_payouts_list_200:
+  endpoint: p1rc14v_payouts_list
+  code: '200'
+  note: One page of payouts
+  output: "{data:[Payout],has_more:boolean,next_cursor:(string|null)}"
+p1rc14v_payouts_list_403:
+  endpoint: p1rc14v_payouts_list
+  code: '403'
+  note: These credentials are not a platform's
+  output: Error
+p1rc14v_payouts_show_200:
+  endpoint: p1rc14v_payouts_show
+  code: '200'
+  note: The payout
+  output: Payout
+p1rc14v_payouts_show_404:
+  endpoint: p1rc14v_payouts_show
+  code: '404'
+  note: No payout has that id
+  output: Error
+p1rc14v_prices_list_200:
+  endpoint: p1rc14v_prices_list
+  code: '200'
+  note: Every price on the account
+  output: "[Price]"
+p1rc14v_refunds_create_201:
+  endpoint: p1rc14v_refunds_create
+  code: '201'
+  note: The refund was accepted
+  output: Refund
+p1rc14v_refunds_create_400:
+  endpoint: p1rc14v_refunds_create
+  code: '400'
+  note: The charge cannot be refunded, or the amount exceeds what is left
+  output: Error
+p1rc14v_refunds_create_404:
+  endpoint: p1rc14v_refunds_create
+  code: '404'
+  note: No charge has that id
+  output: Error
+p1rc14v_refunds_show_200:
+  endpoint: p1rc14v_refunds_show
+  code: '200'
+  note: The refund
+  output: Refund
+p1rc14v_refunds_show_404:
+  endpoint: p1rc14v_refunds_show
+  code: '404'
+  note: No refund has that id
+  output: Error
+p1rc14v_subscriptions_list_200:
+  endpoint: p1rc14v_subscriptions_list
+  code: '200'
+  note: One page of subscriptions
+  output: "{data:[Subscription],has_more:boolean,next_cursor:(string|null)}"
+p1rc14v_subscriptions_create_201:
+  endpoint: p1rc14v_subscriptions_create
+  code: '201'
+  note: The subscription started, and the first charge was taken
+  output: Subscription
+p1rc14v_subscriptions_create_400:
+  endpoint: p1rc14v_subscriptions_create
+  code: '400'
+  note: The price is inactive, or the customer has no payment method
+  output: Error
+p1rc14v_subscriptions_create_404:
+  endpoint: p1rc14v_subscriptions_create
+  code: '404'
+  note: No customer or price has that id
+  output: Error
+p1rc14v_subscriptions_show_200:
+  endpoint: p1rc14v_subscriptions_show
+  code: '200'
+  note: The subscription
+  output: Subscription
+p1rc14v_subscriptions_show_404:
+  endpoint: p1rc14v_subscriptions_show
+  code: '404'
+  note: No subscription has that id
+  output: Error
+p1rc14v_subscriptions_delete_200:
+  endpoint: p1rc14v_subscriptions_delete
+  code: '200'
+  note: The subscription was cancelled
+  output: Subscription
+p1rc14v_subscriptions_delete_404:
+  endpoint: p1rc14v_subscriptions_delete
+  code: '404'
+  note: No subscription has that id
+  output: Error
+p1rc14v_webhook_endpoints_list_200:
+  endpoint: p1rc14v_webhook_endpoints_list
+  code: '200'
+  note: Every endpoint registered on the account
+  output: "[WebhookEndpoint]"
+p1rc14v_webhook_endpoints_create_201:
+  endpoint: p1rc14v_webhook_endpoints_create
+  code: '201'
+  note: The endpoint was registered
+  output: WebhookEndpoint
+p1rc14v_webhook_endpoints_create_400:
+  endpoint: p1rc14v_webhook_endpoints_create
+  code: '400'
+  note: The URL is not https, or an event name is not one we send
+  output: Error
+p1rc14v_webhook_endpoints_delete_204:
+  endpoint: p1rc14v_webhook_endpoints_delete
+  code: '204'
+  note: The endpoint was removed. Deliveries in flight still land.
+  output: ''
+p1rc14v_webhook_endpoints_delete_404:
+  endpoint: p1rc14v_webhook_endpoints_delete
+  code: '404'
+  note: No webhook endpoint has that id
+  output: Error
+
+# ===== statuspage v1 =====
+p2v1_incidents_list_200:
+  endpoint: p2v1_incidents_list
+  code: '200'
+  note: Every incident from the last 90 days
+  output: "[Incident]"
+p2v1_incidents_show_200:
+  endpoint: p2v1_incidents_show
+  code: '200'
+  note: The incident
+  output: Incident
+p2v1_incidents_show_404:
+  endpoint: p2v1_incidents_show
+  code: '404'
+  note: No incident has that id
+  output: Error
+p2v1_status_show_200:
+  endpoint: p2v1_status_show
+  code: '200'
+  note: The current status
+  output: "{status:string,components:[Component]}"
+
+# ===== statuspage v2 =====
+p2v2_incidents_list_200:
+  endpoint: p2v2_incidents_list
+  code: '200'
+  note: Every incident from the last 90 days
+  output: "[Incident]"
+p2v2_incidents_create_201:
+  endpoint: p2v2_incidents_create
+  code: '201'
+  note: The incident was opened and is live on the page
+  output: Incident
+p2v2_incidents_create_400:
+  endpoint: p2v2_incidents_create
+  code: '400'
+  note: The status is not one we recognise, or a component id is unknown
+  output: Error
+p2v2_incidents_create_401:
+  endpoint: p2v2_incidents_create
+  code: '401'
+  note: The operator token is missing or expired
+  output: Error
+p2v2_incidents_show_200:
+  endpoint: p2v2_incidents_show
+  code: '200'
+  note: The incident
+  output: Incident
+p2v2_incidents_show_404:
+  endpoint: p2v2_incidents_show
+  code: '404'
+  note: No incident has that id
+  output: Error
+p2v2_incidents_update_200:
+  endpoint: p2v2_incidents_update
+  code: '200'
+  note: The updated incident
+  output: Incident
+p2v2_incidents_update_404:
+  endpoint: p2v2_incidents_update
+  code: '404'
+  note: No incident has that id
+  output: Error
+p2v2_status_show_200:
+  endpoint: p2v2_status_show
+  code: '200'
+  note: The current status
+  output: "{status:string,components:[Component]}"
+
+# ===== statuspage v3 =====
+p2v3_components_list_200:
+  endpoint: p2v3_components_list
+  code: '200'
+  note: Every component
+  output: "[Component]"
+p2v3_incidents_list_200:
+  endpoint: p2v3_incidents_list
+  code: '200'
+  note: Every incident from the last 90 days
+  output: "[Incident]"
+p2v3_incidents_create_201:
+  endpoint: p2v3_incidents_create
+  code: '201'
+  note: The incident was opened and is live on the page
+  output: Incident
+p2v3_incidents_create_400:
+  endpoint: p2v3_incidents_create
+  code: '400'
+  note: The status is not one we recognise, or a component id is unknown
+  output: Error
+p2v3_incidents_create_401:
+  endpoint: p2v3_incidents_create
+  code: '401'
+  note: The operator token is missing or expired
+  output: Error
+p2v3_incidents_show_200:
+  endpoint: p2v3_incidents_show
+  code: '200'
+  note: The incident
+  output: Incident
+p2v3_incidents_show_404:
+  endpoint: p2v3_incidents_show
+  code: '404'
+  note: No incident has that id
+  output: Error
+p2v3_incidents_update_200:
+  endpoint: p2v3_incidents_update
+  code: '200'
+  note: The updated incident
+  output: Incident
+p2v3_incidents_update_404:
+  endpoint: p2v3_incidents_update
+  code: '404'
+  note: No incident has that id
+  output: Error
+p2v3_incident_updates_create_201:
+  endpoint: p2v3_incident_updates_create
+  code: '201'
+  note: The update was posted and mailed to confirmed subscribers
+  output: Update
+p2v3_incident_updates_create_404:
+  endpoint: p2v3_incident_updates_create
+  code: '404'
+  note: No incident has that id
+  output: Error
+p2v3_status_show_200:
+  endpoint: p2v3_status_show
+  code: '200'
+  note: The current status
+  output: "{status:string,components:[Component]}"
+p2v3_subscribers_create_201:
+  endpoint: p2v3_subscribers_create
+  code: '201'
+  note: A confirmation mail is on its way
+  output: Subscriber
+p2v3_subscribers_create_400:
+  endpoint: p2v3_subscribers_create
+  code: '400'
+  note: That is not an email address
+  output: Error
+p2v3_subscribers_create_409:
+  endpoint: p2v3_subscribers_create
+  code: '409'
+  note: That address is already subscribed and confirmed
+  output: Error
+
+# ===== candidate rc4-v1 =====
+p2rc4v_components_list_200:
+  endpoint: p2rc4v_components_list
+  code: '200'
+  note: Every component
+  output: "[Component]"
+p2rc4v_health_show_200:
+  endpoint: p2rc4v_health_show
+  code: '200'
+  note: The current status
+  output: "{status:string,components:[Component]}"
+p2rc4v_incidents_list_200:
+  endpoint: p2rc4v_incidents_list
+  code: '200'
+  note: Every incident from the last 90 days
+  output: "[Incident]"
+p2rc4v_incidents_create_201:
+  endpoint: p2rc4v_incidents_create
+  code: '201'
+  note: The incident was opened and is live on the page
+  output: Incident
+p2rc4v_incidents_create_400:
+  endpoint: p2rc4v_incidents_create
+  code: '400'
+  note: The status is not one we recognise, or a component id is unknown
+  output: Error
+p2rc4v_incidents_create_401:
+  endpoint: p2rc4v_incidents_create
+  code: '401'
+  note: The operator token is missing or expired
+  output: Error
+p2rc4v_incidents_show_200:
+  endpoint: p2rc4v_incidents_show
+  code: '200'
+  note: The incident
+  output: Incident
+p2rc4v_incidents_show_404:
+  endpoint: p2rc4v_incidents_show
+  code: '404'
+  note: No incident has that id
+  output: Error
+p2rc4v_incidents_update_200:
+  endpoint: p2rc4v_incidents_update
+  code: '200'
+  note: The updated incident
+  output: Incident
+p2rc4v_incidents_update_404:
+  endpoint: p2rc4v_incidents_update
+  code: '404'
+  note: No incident has that id
+  output: Error
+p2rc4v_incident_updates_create_201:
+  endpoint: p2rc4v_incident_updates_create
+  code: '201'
+  note: The update was posted and mailed to confirmed subscribers
+  output: Update
+p2rc4v_incident_updates_create_404:
+  endpoint: p2rc4v_incident_updates_create
+  code: '404'
+  note: No incident has that id
+  output: Error
+p2rc4v_subscribers_create_201:
+  endpoint: p2rc4v_subscribers_create
+  code: '201'
+  note: A confirmation mail is on its way
+  output: Subscriber
+p2rc4v_subscribers_create_400:
+  endpoint: p2rc4v_subscribers_create
+  code: '400'
+  note: That is not an email address
+  output: Error
+p2rc4v_subscribers_create_409:
+  endpoint: p2rc4v_subscribers_create
+  code: '409'
+  note: That address is already subscribed and confirmed
+  output: Error

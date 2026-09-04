@@ -1,510 +1,1820 @@
-# ===== v1 =====
-p1v1_users_list:
+# ===== ledgerly v1 =====
+p1v1_charges_list:
   http_verb: verb_get
-  path: /users
-  version: project1v1
-  note: "List all users"
-p1v1_users_create:
+  path: "/charges"
+  version: p1v1
+  auth: ''
+  input: ''
+  note: List charges, newest first
+p1v1_charges_create:
   http_verb: verb_post
-  path: /users
-  version: project1v1
-  note: "Create a new user"
-  input: "{email:string,name:string,password:string}"
-p1v1_users_get:
+  path: "/charges"
+  version: p1v1
+  auth: ''
+  input: "{amount:number,currency:string,source:string}"
+  note: Charge a payment source
+p1v1_charges_show:
   http_verb: verb_get
-  path: /users/me
-  version: project1v1
-  note: "Get the current user"
-p1v1_users_delete:
+  path: "/charges/:chargeId"
+  version: p1v1
+  auth: ''
+  input: ''
+  note: Fetch one charge
+
+# ===== ledgerly v2 =====
+p1v2_charges_list:
+  http_verb: verb_get
+  path: "/charges"
+  version: p1v2
+  auth: SecretKey
+  input: ''
+  note: List charges, newest first
+p1v2_charges_create:
+  http_verb: verb_post
+  path: "/charges"
+  version: p1v2
+  auth: SecretKey
+  input: "{amount:number,currency:string,source:string}"
+  note: Charge a payment source
+p1v2_charges_show:
+  http_verb: verb_get
+  path: "/charges/:chargeId"
+  version: p1v2
+  auth: SecretKey
+  input: ''
+  note: Fetch one charge
+p1v2_refunds_create:
+  http_verb: verb_post
+  path: "/refunds"
+  version: p1v2
+  auth: SecretKey
+  input: "{charge_id:string,amount?:number,reason?:string}"
+  note: Refund a charge in full, or in part
+p1v2_refunds_show:
+  http_verb: verb_get
+  path: "/refunds/:refundId"
+  version: p1v2
+  auth: SecretKey
+  input: ''
+  note: Fetch one refund
+
+# ===== ledgerly v3 =====
+p1v3_charges_list:
+  http_verb: verb_get
+  path: "/charges"
+  version: p1v3
+  auth: SecretKey
+  input: ''
+  note: List charges, newest first
+p1v3_charges_create:
+  http_verb: verb_post
+  path: "/charges"
+  version: p1v3
+  auth: SecretKey
+  input: "{amount:number,currency:string,source:string}"
+  note: Charge a payment source
+p1v3_charges_show:
+  http_verb: verb_get
+  path: "/charges/:chargeId"
+  version: p1v3
+  auth: SecretKey
+  input: ''
+  note: Fetch one charge
+p1v3_customers_list:
+  http_verb: verb_get
+  path: "/customers"
+  version: p1v3
+  auth: SecretKey
+  input: ''
+  note: List customers, newest first
+p1v3_customers_create:
+  http_verb: verb_post
+  path: "/customers"
+  version: p1v3
+  auth: SecretKey
+  input: "{email:string,name?:string}"
+  note: Create a customer
+p1v3_customers_show:
+  http_verb: verb_get
+  path: "/customers/:customerId"
+  version: p1v3
+  auth: SecretKey
+  input: ''
+  note: Fetch one customer
+p1v3_customer_payment_methods:
+  http_verb: verb_get
+  path: "/customers/:customerId/payment_methods"
+  version: p1v3
+  auth: SecretKey
+  input: ''
+  note: List everything a customer can be charged with
+p1v3_payment_methods_create:
+  http_verb: verb_post
+  path: "/payment_methods"
+  version: p1v3
+  auth: SecretKey
+  input: "{customer_id:string,type:string,token:string}"
+  note: Attach a card or bank account to a customer
+p1v3_refunds_create:
+  http_verb: verb_post
+  path: "/refunds"
+  version: p1v3
+  auth: SecretKey
+  input: "{charge_id:string,amount?:number,reason?:string}"
+  note: Refund a charge in full, or in part
+p1v3_refunds_show:
+  http_verb: verb_get
+  path: "/refunds/:refundId"
+  version: p1v3
+  auth: SecretKey
+  input: ''
+  note: Fetch one refund
+
+# ===== candidate rc4-v1 =====
+p1rc4v_charges_list:
+  http_verb: verb_get
+  path: "/charges"
+  version: p1rc4v
+  auth: SecretKey
+  input: ''
+  note: List charges, newest first
+p1rc4v_charges_create:
+  http_verb: verb_post
+  path: "/charges"
+  version: p1rc4v
+  auth: SecretKey
+  input: "{amount:number,currency:string,source:string}"
+  note: Charge a payment source
+p1rc4v_charges_show:
+  http_verb: verb_get
+  path: "/charges/:chargeId"
+  version: p1rc4v
+  auth: SecretKey
+  input: ''
+  note: Fetch one charge
+p1rc4v_customers_list:
+  http_verb: verb_get
+  path: "/customers"
+  version: p1rc4v
+  auth: SecretKey
+  input: ''
+  note: List customers, newest first
+p1rc4v_customers_create:
+  http_verb: verb_post
+  path: "/customers"
+  version: p1rc4v
+  auth: SecretKey
+  input: "{email:string,name?:string}"
+  note: Create a customer
+p1rc4v_customers_show:
+  http_verb: verb_get
+  path: "/customers/:customerId"
+  version: p1rc4v
+  auth: SecretKey
+  input: ''
+  note: Fetch one customer
+p1rc4v_customer_payment_methods:
+  http_verb: verb_get
+  path: "/customers/:customerId/payment_methods"
+  version: p1rc4v
+  auth: SecretKey
+  input: ''
+  note: List everything a customer can be charged with
+p1rc4v_payment_methods_create:
+  http_verb: verb_post
+  path: "/payment_methods"
+  version: p1rc4v
+  auth: SecretKey
+  input: "{customer_id:string,type:string,token:string}"
+  note: Attach a card or bank account to a customer
+p1rc4v_refunds_create:
+  http_verb: verb_post
+  path: "/refunds"
+  version: p1rc4v
+  auth: SecretKey
+  input: "{charge_id:string,amount?:number,reason?:string}"
+  note: Refund a charge in full, or in part
+p1rc4v_refunds_show:
+  http_verb: verb_get
+  path: "/refunds/:refundId"
+  version: p1rc4v
+  auth: SecretKey
+  input: ''
+  note: Fetch one refund
+
+# ===== ledgerly v4 =====
+p1v4_charges_list:
+  http_verb: verb_get
+  path: "/charges"
+  version: p1v4
+  auth: SecretKey
+  input: ''
+  note: List charges, newest first
+p1v4_charges_create:
+  http_verb: verb_post
+  path: "/charges"
+  version: p1v4
+  auth: SecretKey
+  input: "{amount:number,currency:string,source:string}"
+  note: Charge a payment source
+p1v4_charges_show:
+  http_verb: verb_get
+  path: "/charges/:chargeId"
+  version: p1v4
+  auth: SecretKey
+  input: ''
+  note: Fetch one charge
+p1v4_customers_list:
+  http_verb: verb_get
+  path: "/customers"
+  version: p1v4
+  auth: SecretKey
+  input: ''
+  note: List customers, newest first
+p1v4_customers_create:
+  http_verb: verb_post
+  path: "/customers"
+  version: p1v4
+  auth: SecretKey
+  input: "{email:string,name?:string}"
+  note: Create a customer
+p1v4_customers_show:
+  http_verb: verb_get
+  path: "/customers/:customerId"
+  version: p1v4
+  auth: SecretKey
+  input: ''
+  note: Fetch one customer
+p1v4_customer_payment_methods:
+  http_verb: verb_get
+  path: "/customers/:customerId/payment_methods"
+  version: p1v4
+  auth: SecretKey
+  input: ''
+  note: List everything a customer can be charged with
+p1v4_payment_methods_create:
+  http_verb: verb_post
+  path: "/payment_methods"
+  version: p1v4
+  auth: SecretKey
+  input: "{customer_id:string,type:string,token:string}"
+  note: Attach a card or bank account to a customer
+p1v4_refunds_create:
+  http_verb: verb_post
+  path: "/refunds"
+  version: p1v4
+  auth: SecretKey
+  input: "{charge_id:string,amount?:number,reason?:string}"
+  note: Refund a charge in full, or in part
+p1v4_refunds_show:
+  http_verb: verb_get
+  path: "/refunds/:refundId"
+  version: p1v4
+  auth: SecretKey
+  input: ''
+  note: Fetch one refund
+
+# ===== ledgerly v5 =====
+p1v5_charges_list:
+  http_verb: verb_get
+  path: "/charges"
+  version: p1v5
+  auth: SecretKey
+  input: ''
+  note: List charges, newest first
+p1v5_charges_create:
+  http_verb: verb_post
+  path: "/charges"
+  version: p1v5
+  auth: SecretKey
+  input: "{amount:number,currency:string,source:string}"
+  note: Charge a payment source
+p1v5_charges_show:
+  http_verb: verb_get
+  path: "/charges/:chargeId"
+  version: p1v5
+  auth: SecretKey
+  input: ''
+  note: Fetch one charge
+p1v5_customers_list:
+  http_verb: verb_get
+  path: "/customers"
+  version: p1v5
+  auth: SecretKey
+  input: ''
+  note: List customers, newest first
+p1v5_customers_create:
+  http_verb: verb_post
+  path: "/customers"
+  version: p1v5
+  auth: SecretKey
+  input: "{email:string,name?:string}"
+  note: Create a customer
+p1v5_customers_show:
+  http_verb: verb_get
+  path: "/customers/:customerId"
+  version: p1v5
+  auth: SecretKey
+  input: ''
+  note: Fetch one customer
+p1v5_customer_payment_methods:
+  http_verb: verb_get
+  path: "/customers/:customerId/payment_methods"
+  version: p1v5
+  auth: SecretKey
+  input: ''
+  note: List everything a customer can be charged with
+p1v5_events_list:
+  http_verb: verb_get
+  path: "/events"
+  version: p1v5
+  auth: SecretKey
+  input: ''
+  note: Read the event log
+p1v5_events_show:
+  http_verb: verb_get
+  path: "/events/:eventId"
+  version: p1v5
+  auth: SecretKey
+  input: ''
+  note: Fetch one event
+p1v5_payment_methods_create:
+  http_verb: verb_post
+  path: "/payment_methods"
+  version: p1v5
+  auth: SecretKey
+  input: "{customer_id:string,type:string,token:string}"
+  note: Attach a card or bank account to a customer
+p1v5_refunds_create:
+  http_verb: verb_post
+  path: "/refunds"
+  version: p1v5
+  auth: SecretKey
+  input: "{charge_id:string,amount?:number,reason?:string}"
+  note: Refund a charge in full, or in part
+p1v5_refunds_show:
+  http_verb: verb_get
+  path: "/refunds/:refundId"
+  version: p1v5
+  auth: SecretKey
+  input: ''
+  note: Fetch one refund
+p1v5_webhook_endpoints_list:
+  http_verb: verb_get
+  path: "/webhook_endpoints"
+  version: p1v5
+  auth: SecretKey
+  input: ''
+  note: List registered webhook endpoints
+p1v5_webhook_endpoints_create:
+  http_verb: verb_post
+  path: "/webhook_endpoints"
+  version: p1v5
+  auth: SecretKey
+  input: "{url:string,events:[string]}"
+  note: Register a URL to receive events
+p1v5_webhook_endpoints_delete:
   http_verb: verb_delete
-  path: /users/me
-  version: project1v1
-  note: "Delete the current user"
-  input: "{reason:string,confirm:boolean}"
-p1v1_sessions_create:
-  http_verb: verb_post
-  path: /sessions
-  version: project1v1
-  note: "Log in with email and password"
-  input: "{email:string,password:string}"
+  path: "/webhook_endpoints/:endpointId"
+  version: p1v5
+  auth: SecretKey
+  input: ''
+  note: Stop delivering to an endpoint
 
-# ===== v2 =====
-p1v2_users_list:
+# ===== candidate rc7-v1 =====
+p1rc7v_charges_list:
   http_verb: verb_get
-  path: /users
-  version: project1v2
-  note: "List users with pagination"
-p1v2_users_create:
+  path: "/charges"
+  version: p1rc7v
+  auth: SecretKey
+  input: ''
+  note: List charges, newest first
+p1rc7v_charges_create:
   http_verb: verb_post
-  path: /users
-  version: project1v2
-  note: "Create a new user"
-  input: "{email:string,name:string,password:string}"
-p1v2_users_get:
+  path: "/charges"
+  version: p1rc7v
+  auth: SecretKey
+  input: "{amount:number,currency:string,source:string}"
+  note: Charge a payment source
+p1rc7v_charges_show:
   http_verb: verb_get
-  path: /users/me
-  version: project1v2
-  note: "Get the current user"
-p1v2_users_update:
-  http_verb: verb_patch
-  path: /users/me
-  version: project1v2
-  note: "Update the current user's fields"
-  input: "{name:string}"
-p1v2_users_delete:
+  path: "/charges/:chargeId"
+  version: p1rc7v
+  auth: SecretKey
+  input: ''
+  note: Fetch one charge
+p1rc7v_customers_list:
+  http_verb: verb_get
+  path: "/customers"
+  version: p1rc7v
+  auth: SecretKey
+  input: ''
+  note: List customers, newest first
+p1rc7v_customers_create:
+  http_verb: verb_post
+  path: "/customers"
+  version: p1rc7v
+  auth: SecretKey
+  input: "{email:string,name?:string}"
+  note: Create a customer
+p1rc7v_customers_show:
+  http_verb: verb_get
+  path: "/customers/:customerId"
+  version: p1rc7v
+  auth: SecretKey
+  input: ''
+  note: Fetch one customer
+p1rc7v_customer_payment_methods:
+  http_verb: verb_get
+  path: "/customers/:customerId/payment_methods"
+  version: p1rc7v
+  auth: SecretKey
+  input: ''
+  note: List everything a customer can be charged with
+p1rc7v_events_list:
+  http_verb: verb_get
+  path: "/events"
+  version: p1rc7v
+  auth: SecretKey
+  input: ''
+  note: Read the event log
+p1rc7v_events_show:
+  http_verb: verb_get
+  path: "/events/:eventId"
+  version: p1rc7v
+  auth: SecretKey
+  input: ''
+  note: Fetch one event
+p1rc7v_payment_methods_create:
+  http_verb: verb_post
+  path: "/payment_methods"
+  version: p1rc7v
+  auth: SecretKey
+  input: "{customer_id:string,type:string,token:string}"
+  note: Attach a card or bank account to a customer
+p1rc7v_refunds_create:
+  http_verb: verb_post
+  path: "/refunds"
+  version: p1rc7v
+  auth: SecretKey
+  input: "{charge_id:string,amount?:number,reason?:string}"
+  note: Refund a charge in full, or in part
+p1rc7v_refunds_show:
+  http_verb: verb_get
+  path: "/refunds/:refundId"
+  version: p1rc7v
+  auth: SecretKey
+  input: ''
+  note: Fetch one refund
+p1rc7v_webhook_endpoints_list:
+  http_verb: verb_get
+  path: "/webhook_endpoints"
+  version: p1rc7v
+  auth: SecretKey
+  input: ''
+  note: List registered webhook endpoints
+p1rc7v_webhook_endpoints_create:
+  http_verb: verb_post
+  path: "/webhook_endpoints"
+  version: p1rc7v
+  auth: SecretKey
+  input: "{url:string,events:[string]}"
+  note: Register a URL to receive events
+p1rc7v_webhook_endpoints_delete:
   http_verb: verb_delete
-  path: /users/me
-  version: project1v2
-  note: "Delete the current user"
-  input: "{reason:string,confirm:boolean}"
-p1v2_sessions_create:
+  path: "/webhook_endpoints/:endpointId"
+  version: p1rc7v
+  auth: SecretKey
+  input: ''
+  note: Stop delivering to an endpoint
+p1rc7v_deliveries_list:
+  http_verb: verb_get
+  path: "/webhook_endpoints/:endpointId/deliveries"
+  version: p1rc7v
+  auth: SecretKey
+  input: ''
+  note: List what we tried to deliver to an endpoint
+p1rc7v_deliveries_replay:
   http_verb: verb_post
-  path: /sessions
-  version: project1v2
-  note: "Log in with email and password"
-  input: "{email:string,password:string}"
-p1v2_sessions_delete:
+  path: "/webhook_endpoints/:endpointId/replay"
+  version: p1rc7v
+  auth: SecretKey
+  input: "{event_ids:[string]}"
+  note: Send a set of events to an endpoint again
+
+# ===== ledgerly v6 =====
+p1v6_charges_list:
+  http_verb: verb_get
+  path: "/charges"
+  version: p1v6
+  auth: SecretKey
+  input: ''
+  note: List charges, newest first
+p1v6_charges_create:
+  http_verb: verb_post
+  path: "/charges"
+  version: p1v6
+  auth: SecretKey
+  input: "{amount:number,currency:string,source:string}"
+  note: Charge a payment source
+p1v6_charges_show:
+  http_verb: verb_get
+  path: "/charges/:chargeId"
+  version: p1v6
+  auth: SecretKey
+  input: ''
+  note: Fetch one charge
+p1v6_customers_list:
+  http_verb: verb_get
+  path: "/customers"
+  version: p1v6
+  auth: SecretKey
+  input: ''
+  note: List customers, newest first
+p1v6_customers_create:
+  http_verb: verb_post
+  path: "/customers"
+  version: p1v6
+  auth: SecretKey
+  input: "{email:string,name?:string}"
+  note: Create a customer
+p1v6_customers_show:
+  http_verb: verb_get
+  path: "/customers/:customerId"
+  version: p1v6
+  auth: SecretKey
+  input: ''
+  note: Fetch one customer
+p1v6_customer_payment_methods:
+  http_verb: verb_get
+  path: "/customers/:customerId/payment_methods"
+  version: p1v6
+  auth: SecretKey
+  input: ''
+  note: List everything a customer can be charged with
+p1v6_events_list:
+  http_verb: verb_get
+  path: "/events"
+  version: p1v6
+  auth: SecretKey
+  input: ''
+  note: Read the event log
+p1v6_events_show:
+  http_verb: verb_get
+  path: "/events/:eventId"
+  version: p1v6
+  auth: SecretKey
+  input: ''
+  note: Fetch one event
+p1v6_payment_methods_create:
+  http_verb: verb_post
+  path: "/payment_methods"
+  version: p1v6
+  auth: SecretKey
+  input: "{customer_id:string,type:string,token:string}"
+  note: Attach a card or bank account to a customer
+p1v6_payouts_list:
+  http_verb: verb_get
+  path: "/payouts"
+  version: p1v6
+  auth: PlatformBasic
+  input: ''
+  note: List payouts, newest first
+p1v6_payouts_create:
+  http_verb: verb_post
+  path: "/payouts"
+  version: p1v6
+  auth: PlatformBasic
+  input: "{amount:number,currency:string,destination_id:string}"
+  note: Send a payout to a bank account
+p1v6_payouts_show:
+  http_verb: verb_get
+  path: "/payouts/:payoutId"
+  version: p1v6
+  auth: PlatformBasic
+  input: ''
+  note: Fetch one payout
+p1v6_refunds_create:
+  http_verb: verb_post
+  path: "/refunds"
+  version: p1v6
+  auth: SecretKey
+  input: "{charge_id:string,amount?:number,reason?:string}"
+  note: Refund a charge in full, or in part
+p1v6_refunds_show:
+  http_verb: verb_get
+  path: "/refunds/:refundId"
+  version: p1v6
+  auth: SecretKey
+  input: ''
+  note: Fetch one refund
+p1v6_webhook_endpoints_list:
+  http_verb: verb_get
+  path: "/webhook_endpoints"
+  version: p1v6
+  auth: SecretKey
+  input: ''
+  note: List registered webhook endpoints
+p1v6_webhook_endpoints_create:
+  http_verb: verb_post
+  path: "/webhook_endpoints"
+  version: p1v6
+  auth: SecretKey
+  input: "{url:string,events:[string]}"
+  note: Register a URL to receive events
+p1v6_webhook_endpoints_delete:
   http_verb: verb_delete
-  path: /sessions
-  version: project1v2
-  note: "Log out the current session"
+  path: "/webhook_endpoints/:endpointId"
+  version: p1v6
+  auth: SecretKey
+  input: ''
+  note: Stop delivering to an endpoint
 
-# ===== v3 =====
-p1v3_users_list:
+# ===== ledgerly v7 =====
+p1v7_charges_list:
   http_verb: verb_get
-  path: /users
-  version: project1v3
-  auth: UserToken
-  note: "List users with pagination"
-p1v3_users_create:
+  path: "/charges"
+  version: p1v7
+  auth: SecretKey
+  input: ''
+  note: List charges, newest first
+p1v7_charges_create:
   http_verb: verb_post
-  path: /users
-  version: project1v3
-  note: "Create a new user"
-  input: "{email:string,name:string,password:string}"
-p1v3_users_get:
+  path: "/charges"
+  version: p1v7
+  auth: SecretKey
+  input: "{amount:number,currency:string,source:string}"
+  note: Charge a payment source
+p1v7_charges_show:
   http_verb: verb_get
-  path: /users/me
-  version: project1v3
-  auth: UserToken
-  note: "Get the current user"
-p1v3_users_update:
-  http_verb: verb_patch
-  path: /users/me
-  version: project1v3
-  auth: UserToken
-  note: "Update the current user's fields"
-  input: "{name:string}"
-p1v3_users_delete:
+  path: "/charges/:chargeId"
+  version: p1v7
+  auth: SecretKey
+  input: ''
+  note: Fetch one charge
+p1v7_customers_list:
+  http_verb: verb_get
+  path: "/customers"
+  version: p1v7
+  auth: SecretKey
+  input: ''
+  note: List customers, newest first
+p1v7_customers_create:
+  http_verb: verb_post
+  path: "/customers"
+  version: p1v7
+  auth: SecretKey
+  input: "{email:string,name?:string}"
+  note: Create a customer
+p1v7_customers_show:
+  http_verb: verb_get
+  path: "/customers/:customerId"
+  version: p1v7
+  auth: SecretKey
+  input: ''
+  note: Fetch one customer
+p1v7_customers_delete:
   http_verb: verb_delete
-  path: /users/me
-  version: project1v3
-  auth: UserToken
-  note: "Delete the current user"
-  input: "{reason:string,confirm:boolean}"
-p1v3_sessions_create:
+  path: "/customers/:customerId"
+  version: p1v7
+  auth: SecretKey
+  input: ''
+  note: Delete a customer and detach its payment methods
+p1v7_customer_payment_methods:
+  http_verb: verb_get
+  path: "/customers/:customerId/payment_methods"
+  version: p1v7
+  auth: SecretKey
+  input: ''
+  note: List everything a customer can be charged with
+p1v7_events_list:
+  http_verb: verb_get
+  path: "/events"
+  version: p1v7
+  auth: SecretKey
+  input: ''
+  note: Read the event log
+p1v7_events_show:
+  http_verb: verb_get
+  path: "/events/:eventId"
+  version: p1v7
+  auth: SecretKey
+  input: ''
+  note: Fetch one event
+p1v7_payment_methods_create:
   http_verb: verb_post
-  path: /sessions
-  version: project1v3
-  note: "Log in with email and password"
-  input: "{email:string,password:string}"
-p1v3_sessions_delete:
+  path: "/payment_methods"
+  version: p1v7
+  auth: SecretKey
+  input: "{customer_id:string,type:string,token:string}"
+  note: Attach a card or bank account to a customer
+p1v7_payouts_list:
+  http_verb: verb_get
+  path: "/payouts"
+  version: p1v7
+  auth: PlatformBasic
+  input: ''
+  note: List payouts, newest first
+p1v7_payouts_show:
+  http_verb: verb_get
+  path: "/payouts/:payoutId"
+  version: p1v7
+  auth: PlatformBasic
+  input: ''
+  note: Fetch one payout
+p1v7_refunds_create:
+  http_verb: verb_post
+  path: "/refunds"
+  version: p1v7
+  auth: SecretKey
+  input: "{charge_id:string,amount?:number,reason?:string}"
+  note: Refund a charge in full, or in part
+p1v7_refunds_show:
+  http_verb: verb_get
+  path: "/refunds/:refundId"
+  version: p1v7
+  auth: SecretKey
+  input: ''
+  note: Fetch one refund
+p1v7_webhook_endpoints_list:
+  http_verb: verb_get
+  path: "/webhook_endpoints"
+  version: p1v7
+  auth: SecretKey
+  input: ''
+  note: List registered webhook endpoints
+p1v7_webhook_endpoints_create:
+  http_verb: verb_post
+  path: "/webhook_endpoints"
+  version: p1v7
+  auth: SecretKey
+  input: "{url:string,events:[string]}"
+  note: Register a URL to receive events
+p1v7_webhook_endpoints_delete:
   http_verb: verb_delete
-  path: /sessions
-  version: project1v3
-  auth: UserToken
-  note: "Log out the current session"
-p1v3_tasks_list:
-  http_verb: verb_get
-  path: /tasks
-  version: project1v3
-  auth: UserToken
-  note: "List tasks with pagination"
-p1v3_tasks_create:
-  http_verb: verb_post
-  path: /tasks
-  version: project1v3
-  auth: UserToken
-  note: "Create a new task"
-p1v3_tasks_get:
-  http_verb: verb_get
-  path: /tasks/next
-  version: project1v3
-  auth: UserToken
-  note: "Get the next pending task"
-p1v3_tasks_show:
-  http_verb: verb_get
-  path: /tasks/:taskId
-  version: project1v3
-  auth: UserToken
-  note: "Get one task by id"
+  path: "/webhook_endpoints/:endpointId"
+  version: p1v7
+  auth: SecretKey
+  input: ''
+  note: Stop delivering to an endpoint
 
-# ===== v4 =====
-p1v4_users_list:
+# ===== ledgerly v8 =====
+p1v8_charges_list:
   http_verb: verb_get
-  path: /users
-  version: project1v4
-  auth: AdminBasic
-  note: "List users with pagination"
-p1v4_users_create:
+  path: "/charges"
+  version: p1v8
+  auth: SecretKey
+  input: ''
+  note: List charges, newest first
+p1v8_charges_create:
   http_verb: verb_post
-  path: /users
-  version: project1v4
-  note: "Create a new user"
-  input: "{email:string,name:(string|null),password:string,avatar_url:(string|null)}"
-p1v4_users_get:
+  path: "/charges"
+  version: p1v8
+  auth: SecretKey
+  input: "{amount:number,currency:string,source:string}"
+  note: Charge a payment source
+p1v8_charges_show:
   http_verb: verb_get
-  path: /users/me
-  version: project1v4
-  auth: UserToken
-  note: "Get the current user"
-p1v4_users_update:
-  http_verb: verb_patch
-  path: /users/me
-  version: project1v4
-  auth: UserToken
-  note: "Update the current user's fields"
-  input: "{name?:string,avatar_url?:string}"
-p1v4_sessions_create:
+  path: "/charges/:chargeId"
+  version: p1v8
+  auth: SecretKey
+  input: ''
+  note: Fetch one charge
+p1v8_customers_list:
+  http_verb: verb_get
+  path: "/customers"
+  version: p1v8
+  auth: SecretKey
+  input: ''
+  note: List customers, newest first
+p1v8_customers_create:
   http_verb: verb_post
-  path: /sessions
-  version: project1v4
-  note: "Log in with email and password"
-  input: "{email:string,password:string}"
-p1v4_sessions_delete:
+  path: "/customers"
+  version: p1v8
+  auth: SecretKey
+  input: "{email:string,name?:string}"
+  note: Create a customer
+p1v8_customers_show:
+  http_verb: verb_get
+  path: "/customers/:customerId"
+  version: p1v8
+  auth: SecretKey
+  input: ''
+  note: Fetch one customer
+p1v8_customers_delete:
   http_verb: verb_delete
-  path: /sessions
-  version: project1v4
-  auth: UserToken
-  note: "Log out the current session"
-p1v4_tasks_list:
+  path: "/customers/:customerId"
+  version: p1v8
+  auth: SecretKey
+  input: ''
+  note: Delete a customer and detach its payment methods
+p1v8_customer_payment_methods:
   http_verb: verb_get
-  path: /tasks
-  version: project1v4
-  auth: UserToken
-  note: "List tasks with pagination"
-p1v4_tasks_create:
+  path: "/customers/:customerId/payment_methods"
+  version: p1v8
+  auth: SecretKey
+  input: ''
+  note: List everything a customer can be charged with
+p1v8_disputes_list:
+  http_verb: verb_get
+  path: "/disputes"
+  version: p1v8
+  auth: SecretKey
+  input: ''
+  note: List disputes, newest first
+p1v8_disputes_show:
+  http_verb: verb_get
+  path: "/disputes/:disputeId"
+  version: p1v8
+  auth: SecretKey
+  input: ''
+  note: Fetch one dispute
+p1v8_disputes_close:
   http_verb: verb_post
-  path: /tasks
-  version: project1v4
-  auth: UserToken
-  note: "Create a new task"
-  input: "{title:string,assignee_id:(number|null)}"
-p1v4_tasks_get:
+  path: "/disputes/:disputeId/close"
+  version: p1v8
+  auth: SecretKey
+  input: "{reason?:string}"
+  note: Concede a dispute without submitting evidence
+p1v8_events_list:
   http_verb: verb_get
-  path: /tasks/next
-  version: project1v4
-  auth: UserToken
-  note: "Get the next pending task"
-p1v4_tasks_complete:
+  path: "/events"
+  version: p1v8
+  auth: SecretKey
+  input: ''
+  note: Read the event log
+p1v8_events_show:
+  http_verb: verb_get
+  path: "/events/:eventId"
+  version: p1v8
+  auth: SecretKey
+  input: ''
+  note: Fetch one event
+p1v8_payment_methods_create:
   http_verb: verb_post
-  path: /tasks/complete-next
-  version: project1v4
-  auth: UserToken
-  note: "Mark the next pending task as complete"
-p1v4_tasks_show:
+  path: "/payment_methods"
+  version: p1v8
+  auth: SecretKey
+  input: "{customer_id:string,type:string,token:string}"
+  note: Attach a card or bank account to a customer
+p1v8_payouts_list:
   http_verb: verb_get
-  path: /tasks/:taskId
-  version: project1v4
-  note: "Get one task by id"
-p1v4_tasks_comments:
+  path: "/payouts"
+  version: p1v8
+  auth: PlatformKey
+  input: ''
+  note: List payouts, newest first
+p1v8_payouts_show:
   http_verb: verb_get
-  path: /tasks/:taskId/comments/:commentId
-  version: project1v4
-  auth: UserToken
-  note: "Get one comment on a task"
-
-# ===== bulk fixtures =====
-
-# --- projects ---
-p1v3_projects_list:
-  http_verb: verb_get
-  path: /projects
-  version: project1v3
-  note: "List projects with pagination"
-p1v3_projects_create:
+  path: "/payouts/:payoutId"
+  version: p1v8
+  auth: PlatformKey
+  input: ''
+  note: Fetch one payout
+p1v8_refunds_create:
   http_verb: verb_post
-  path: /projects
-  version: project1v3
-  note: "Create a new project"
-p1v3_projects_active:
+  path: "/refunds"
+  version: p1v8
+  auth: SecretKey
+  input: "{charge_id:string,amount?:number,reason?:string}"
+  note: Refund a charge in full, or in part
+p1v8_refunds_show:
   http_verb: verb_get
-  path: /projects/active
-  version: project1v3
-  note: "Get the active project"
-p1v4_projects_list:
+  path: "/refunds/:refundId"
+  version: p1v8
+  auth: SecretKey
+  input: ''
+  note: Fetch one refund
+p1v8_webhook_endpoints_list:
   http_verb: verb_get
-  path: /projects
-  version: project1v4
-  note: "List projects with pagination"
-p1v4_projects_create:
+  path: "/webhook_endpoints"
+  version: p1v8
+  auth: SecretKey
+  input: ''
+  note: List registered webhook endpoints
+p1v8_webhook_endpoints_create:
   http_verb: verb_post
-  path: /projects
-  version: project1v4
-  note: "Create a new project"
-p1v4_projects_active:
-  http_verb: verb_get
-  path: /projects/active
-  version: project1v4
-  note: "Get the active project"
-
-# --- comments ---
-p1v3_comments_list:
-  http_verb: verb_get
-  path: /comments
-  version: project1v3
-  note: "List comments with pagination"
-p1v3_comments_create:
-  http_verb: verb_post
-  path: /comments
-  version: project1v3
-  note: "Create a new comment"
-p1v3_comments_delete:
+  path: "/webhook_endpoints"
+  version: p1v8
+  auth: SecretKey
+  input: "{url:string,events:[string]}"
+  note: Register a URL to receive events
+p1v8_webhook_endpoints_delete:
   http_verb: verb_delete
-  path: /comments/last
-  version: project1v3
-  note: "Delete the most recent comment"
-p1v4_comments_list:
+  path: "/webhook_endpoints/:endpointId"
+  version: p1v8
+  auth: SecretKey
+  input: ''
+  note: Stop delivering to an endpoint
+
+# ===== candidate rc11-v1 =====
+p1rc11v_charges_list:
   http_verb: verb_get
-  path: /comments
-  version: project1v4
-  note: "List comments with pagination"
-p1v4_comments_create:
+  path: "/charges"
+  version: p1rc11v
+  auth: SecretKey
+  input: ''
+  note: List charges, newest first
+p1rc11v_charges_create:
   http_verb: verb_post
-  path: /comments
-  version: project1v4
-  note: "Create a new comment"
-p1v4_comments_delete:
+  path: "/charges"
+  version: p1rc11v
+  auth: SecretKey
+  input: "{amount:number,currency:string,source:string}"
+  note: Charge a payment source
+p1rc11v_charges_show:
+  http_verb: verb_get
+  path: "/charges/:chargeId"
+  version: p1rc11v
+  auth: SecretKey
+  input: ''
+  note: Fetch one charge
+p1rc11v_customers_list:
+  http_verb: verb_get
+  path: "/customers"
+  version: p1rc11v
+  auth: SecretKey
+  input: ''
+  note: List customers, newest first
+p1rc11v_customers_create:
+  http_verb: verb_post
+  path: "/customers"
+  version: p1rc11v
+  auth: SecretKey
+  input: "{email:string,name?:string}"
+  note: Create a customer
+p1rc11v_customers_show:
+  http_verb: verb_get
+  path: "/customers/:customerId"
+  version: p1rc11v
+  auth: SecretKey
+  input: ''
+  note: Fetch one customer
+p1rc11v_customers_delete:
   http_verb: verb_delete
-  path: /comments/last
-  version: project1v4
-  note: "Delete the most recent comment"
-
-# --- notifications ---
-p1v3_notifications_list:
+  path: "/customers/:customerId"
+  version: p1rc11v
+  auth: SecretKey
+  input: ''
+  note: Delete a customer and detach its payment methods
+p1rc11v_customer_payment_methods:
   http_verb: verb_get
-  path: /notifications
-  version: project1v3
-  note: "List notifications with pagination"
-p1v3_notifications_read_all:
-  http_verb: verb_post
-  path: /notifications/read-all
-  version: project1v3
-  note: "Mark all notifications as read"
-  input: "{ids:[number]}"
-p1v4_notifications_list:
+  path: "/customers/:customerId/payment_methods"
+  version: p1rc11v
+  auth: SecretKey
+  input: ''
+  note: List everything a customer can be charged with
+p1rc11v_disputes_list:
   http_verb: verb_get
-  path: /notifications
-  version: project1v4
-  note: "List notifications with pagination"
-p1v4_notifications_read_all:
-  http_verb: verb_post
-  path: /notifications/read-all
-  version: project1v4
-  note: "Mark all notifications as read"
-
-# --- webhooks ---
-p1v3_webhooks_list:
+  path: "/disputes"
+  version: p1rc11v
+  auth: SecretKey
+  input: ''
+  note: List disputes, newest first
+p1rc11v_disputes_show:
   http_verb: verb_get
-  path: /webhooks
-  version: project1v3
-  note: "List all webhooks"
-p1v3_webhooks_create:
+  path: "/disputes/:disputeId"
+  version: p1rc11v
+  auth: SecretKey
+  input: ''
+  note: Fetch one dispute
+p1rc11v_disputes_close:
   http_verb: verb_post
-  path: /webhooks
-  version: project1v3
-  note: "Register a new webhook"
-p1v3_webhooks_delete:
+  path: "/disputes/:disputeId/close"
+  version: p1rc11v
+  auth: SecretKey
+  input: "{reason?:string}"
+  note: Concede a dispute without submitting evidence
+p1rc11v_events_list:
+  http_verb: verb_get
+  path: "/events"
+  version: p1rc11v
+  auth: SecretKey
+  input: ''
+  note: Read the event log
+p1rc11v_events_show:
+  http_verb: verb_get
+  path: "/events/:eventId"
+  version: p1rc11v
+  auth: SecretKey
+  input: ''
+  note: Fetch one event
+p1rc11v_payment_methods_create:
+  http_verb: verb_post
+  path: "/payment_methods"
+  version: p1rc11v
+  auth: SecretKey
+  input: "{customer_id:string,type:string,token:string}"
+  note: Attach a card or bank account to a customer
+p1rc11v_payouts_list:
+  http_verb: verb_get
+  path: "/payouts"
+  version: p1rc11v
+  auth: PlatformKey
+  input: ''
+  note: List payouts, newest first
+p1rc11v_payouts_show:
+  http_verb: verb_get
+  path: "/payouts/:payoutId"
+  version: p1rc11v
+  auth: PlatformKey
+  input: ''
+  note: Fetch one payout
+p1rc11v_refunds_create:
+  http_verb: verb_post
+  path: "/refunds"
+  version: p1rc11v
+  auth: SecretKey
+  input: "{charge_id:string,amount?:number,reason?:string}"
+  note: Refund a charge in full, or in part
+p1rc11v_refunds_show:
+  http_verb: verb_get
+  path: "/refunds/:refundId"
+  version: p1rc11v
+  auth: SecretKey
+  input: ''
+  note: Fetch one refund
+p1rc11v_webhook_endpoints_list:
+  http_verb: verb_get
+  path: "/webhook_endpoints"
+  version: p1rc11v
+  auth: SecretKey
+  input: ''
+  note: List registered webhook endpoints
+p1rc11v_webhook_endpoints_create:
+  http_verb: verb_post
+  path: "/webhook_endpoints"
+  version: p1rc11v
+  auth: SecretKey
+  input: "{url:string,events:[string]}"
+  note: Register a URL to receive events
+p1rc11v_webhook_endpoints_delete:
   http_verb: verb_delete
-  path: /webhooks/last
-  version: project1v3
-  note: "Delete the most recent webhook"
-p1v4_webhooks_list:
+  path: "/webhook_endpoints/:endpointId"
+  version: p1rc11v
+  auth: SecretKey
+  input: ''
+  note: Stop delivering to an endpoint
+
+# ===== ledgerly v9 =====
+p1v9_charges_list:
   http_verb: verb_get
-  path: /webhooks
-  version: project1v4
-  note: "List all webhooks"
-p1v4_webhooks_create:
+  path: "/charges"
+  version: p1v9
+  auth: SecretKey
+  input: ''
+  note: List charges, newest first
+p1v9_charges_create:
   http_verb: verb_post
-  path: /webhooks
-  version: project1v4
-  note: "Register a new webhook"
-p1v4_webhooks_delete:
+  path: "/charges"
+  version: p1v9
+  auth: SecretKey
+  input: "{amount:number,currency:string,source:string}"
+  note: Charge a payment source
+p1v9_charges_show:
+  http_verb: verb_get
+  path: "/charges/:chargeId"
+  version: p1v9
+  auth: SecretKey
+  input: ''
+  note: Fetch one charge
+p1v9_customers_list:
+  http_verb: verb_get
+  path: "/customers"
+  version: p1v9
+  auth: SecretKey
+  input: ''
+  note: List customers, newest first
+p1v9_customers_create:
+  http_verb: verb_post
+  path: "/customers"
+  version: p1v9
+  auth: SecretKey
+  input: "{email:string,name?:string}"
+  note: Create a customer
+p1v9_customers_show:
+  http_verb: verb_get
+  path: "/customers/:customerId"
+  version: p1v9
+  auth: SecretKey
+  input: ''
+  note: Fetch one customer
+p1v9_customers_delete:
   http_verb: verb_delete
-  path: /webhooks/last
-  version: project1v4
-  note: "Delete the most recent webhook"
-
-# --- teams ---
-p1v3_teams_list:
+  path: "/customers/:customerId"
+  version: p1v9
+  auth: SecretKey
+  input: ''
+  note: Delete a customer and detach its payment methods
+p1v9_customer_payment_methods:
   http_verb: verb_get
-  path: /teams
-  version: project1v3
-  note: "List all teams"
-p1v3_teams_create:
-  http_verb: verb_post
-  path: /teams
-  version: project1v3
-  note: "Create a new team"
-  input: "{team:Team,member_ids:[number]}"
-p1v4_teams_list:
+  path: "/customers/:customerId/payment_methods"
+  version: p1v9
+  auth: SecretKey
+  input: ''
+  note: List everything a customer can be charged with
+p1v9_disputes_list:
   http_verb: verb_get
-  path: /teams
-  version: project1v4
-  note: "List all teams"
-p1v4_teams_create:
-  http_verb: verb_post
-  path: /teams
-  version: project1v4
-  note: "Create a new team"
-  input: "{team:Team,member_ids:[number]}"
-
-# --- labels ---
-p1v3_labels_list:
+  path: "/disputes"
+  version: p1v9
+  auth: SecretKey
+  input: ''
+  note: List disputes, newest first
+p1v9_disputes_show:
   http_verb: verb_get
-  path: /labels
-  version: project1v3
-  note: "List all labels"
-p1v3_labels_create:
+  path: "/disputes/:disputeId"
+  version: p1v9
+  auth: SecretKey
+  input: ''
+  note: Fetch one dispute
+p1v9_disputes_close:
   http_verb: verb_post
-  path: /labels
-  version: project1v3
-  note: "Create a new label"
-p1v4_labels_list:
+  path: "/disputes/:disputeId/close"
+  version: p1v9
+  auth: SecretKey
+  input: "{reason?:string}"
+  note: Concede a dispute without submitting evidence
+p1v9_events_list:
   http_verb: verb_get
-  path: /labels
-  version: project1v4
-  note: "List all labels"
-p1v4_labels_create:
-  http_verb: verb_post
-  path: /labels
-  version: project1v4
-  note: "Create a new label"
-
-# --- attachments ---
-p1v3_attachments_list:
+  path: "/events"
+  version: p1v9
+  auth: SecretKey
+  input: ''
+  note: Read the event log
+p1v9_events_show:
   http_verb: verb_get
-  path: /attachments
-  version: project1v3
-  note: "List all attachments"
-p1v3_attachments_create:
+  path: "/events/:eventId"
+  version: p1v9
+  auth: SecretKey
+  input: ''
+  note: Fetch one event
+p1v9_payment_methods_create:
   http_verb: verb_post
-  path: /attachments
-  version: project1v3
-  note: "Upload a new attachment"
-p1v4_attachments_list:
+  path: "/payment_methods"
+  version: p1v9
+  auth: SecretKey
+  input: "{customer_id:string,type:string,token:string}"
+  note: Attach a card or bank account to a customer
+p1v9_payouts_list:
   http_verb: verb_get
-  path: /attachments
-  version: project1v4
-  note: "List all attachments"
-p1v4_attachments_create:
-  http_verb: verb_post
-  path: /attachments
-  version: project1v4
-  note: "Upload a new attachment"
-
-# --- invites ---
-p1v3_invites_create:
-  http_verb: verb_post
-  path: /invites
-  version: project1v3
-  note: "Send a new invite"
-p1v3_invites_pending:
+  path: "/payouts"
+  version: p1v9
+  auth: PlatformKey
+  input: ''
+  note: List payouts, newest first
+p1v9_payouts_show:
   http_verb: verb_get
-  path: /invites/pending
-  version: project1v3
-  note: "List pending invites"
-p1v4_invites_create:
-  http_verb: verb_post
-  path: /invites
-  version: project1v4
-  note: "Send a new invite"
-p1v4_invites_pending:
+  path: "/payouts/:payoutId"
+  version: p1v9
+  auth: PlatformKey
+  input: ''
+  note: Fetch one payout
+p1v9_prices_list:
   http_verb: verb_get
-  path: /invites/pending
-  version: project1v4
-  note: "List pending invites"
-
-# --- partial updates ---
-p1v3_attachments_update:
-  http_verb: verb_patch
-  path: /attachments/:attachmentId
-  version: project1v3
-  note: "Rename an attachment"
-  input: "{filename:string}"
-p1v4_attachments_update:
-  http_verb: verb_patch
-  path: /attachments/:attachmentId
-  version: project1v4
-  note: "Rename an attachment"
-  input: "{filename:string}"
-p1v3_labels_update:
-  http_verb: verb_patch
-  path: /labels/:labelId
-  version: project1v3
-  note: "Update a label's name or colour"
-  input: "{name?:string,color?:string}"
-p1v4_labels_update:
-  http_verb: verb_patch
-  path: /labels/:labelId
-  version: project1v4
-  note: "Update a label's name or colour"
-  input: "{name?:string,color?:string}"
-p1v3_notifications_update:
-  http_verb: verb_patch
-  path: /notifications/:notificationId
-  version: project1v3
-  note: "Mark a notification as read"
-  input: "{read:boolean}"
-p1v4_notifications_update:
-  http_verb: verb_patch
-  path: /notifications/:notificationId
-  version: project1v4
-  note: "Mark a notification as read"
-  input: "{read:boolean}"
-
-# --- v4-only additions ---
-p1v4_audit_logs_list:
+  path: "/prices"
+  version: p1v9
+  auth: SecretKey
+  input: ''
+  note: List prices
+p1v9_prices_create:
+  http_verb: verb_post
+  path: "/prices"
+  version: p1v9
+  auth: SecretKey
+  input: "{unit_amount:number,currency:string,interval:string}"
+  note: Create a price
+p1v9_refunds_create:
+  http_verb: verb_post
+  path: "/refunds"
+  version: p1v9
+  auth: SecretKey
+  input: "{charge_id:string,amount?:number,reason?:string}"
+  note: Refund a charge in full, or in part
+p1v9_refunds_show:
   http_verb: verb_get
-  path: /audit-logs
-  version: project1v4
-  note: "List audit log entries with pagination"
-p1v4_exports_create:
+  path: "/refunds/:refundId"
+  version: p1v9
+  auth: SecretKey
+  input: ''
+  note: Fetch one refund
+p1v9_subscriptions_list:
+  http_verb: verb_get
+  path: "/subscriptions"
+  version: p1v9
+  auth: SecretKey
+  input: ''
+  note: List subscriptions
+p1v9_subscriptions_create:
   http_verb: verb_post
-  path: /exports
-  version: project1v4
-  note: "Trigger a data export"
-  input: "{format:string,include_archived:boolean}"
-
-# --- empty-body endpoints ---
-p1v3_ping:
-  http_verb: verb_post
-  path: /ping
-  version: project1v3
-  note: "Ping the server (no response body)"
-p1v4_ping:
-  http_verb: verb_post
-  path: /ping
-  version: project1v4
-  note: "Ping the server (no response body)"
-p1v4_cache_clear:
+  path: "/subscriptions"
+  version: p1v9
+  auth: SecretKey
+  input: "{customer_id:string,price_id:string,trial_days?:number}"
+  note: Subscribe a customer to a price
+p1v9_subscriptions_show:
+  http_verb: verb_get
+  path: "/subscriptions/:subscriptionId"
+  version: p1v9
+  auth: SecretKey
+  input: ''
+  note: Fetch one subscription
+p1v9_subscriptions_delete:
   http_verb: verb_delete
-  path: /cache
-  version: project1v4
-  note: "Clear the server cache (no response body)"
+  path: "/subscriptions/:subscriptionId"
+  version: p1v9
+  auth: SecretKey
+  input: "{at_period_end?:boolean}"
+  note: Cancel a subscription, now or at the end of the period
+p1v9_webhook_endpoints_list:
+  http_verb: verb_get
+  path: "/webhook_endpoints"
+  version: p1v9
+  auth: SecretKey
+  input: ''
+  note: List registered webhook endpoints
+p1v9_webhook_endpoints_create:
+  http_verb: verb_post
+  path: "/webhook_endpoints"
+  version: p1v9
+  auth: SecretKey
+  input: "{url:string,events:[string]}"
+  note: Register a URL to receive events
+p1v9_webhook_endpoints_delete:
+  http_verb: verb_delete
+  path: "/webhook_endpoints/:endpointId"
+  version: p1v9
+  auth: SecretKey
+  input: ''
+  note: Stop delivering to an endpoint
 
-# --- kitchen sink: a comment in every possible place, for looking at pin density ---
-p1v3_kitchen_sink:
+# ===== ledgerly v10 =====
+p1v10_balance_show:
+  http_verb: verb_get
+  path: "/balance"
+  version: p1v10
+  auth: SecretKey
+  input: ''
+  note: Read the account balance
+p1v10_charges_list:
+  http_verb: verb_get
+  path: "/charges"
+  version: p1v10
+  auth: SecretKey
+  input: ''
+  note: List charges, newest first
+p1v10_charges_create:
+  http_verb: verb_post
+  path: "/charges"
+  version: p1v10
+  auth: SecretKey
+  input: "{amount:number,currency:string,source:string}"
+  note: Charge a payment source
+p1v10_charges_show:
+  http_verb: verb_get
+  path: "/charges/:chargeId"
+  version: p1v10
+  auth: SecretKey
+  input: ''
+  note: Fetch one charge
+p1v10_customers_list:
+  http_verb: verb_get
+  path: "/customers"
+  version: p1v10
+  auth: SecretKey
+  input: ''
+  note: List customers, newest first
+p1v10_customers_create:
+  http_verb: verb_post
+  path: "/customers"
+  version: p1v10
+  auth: SecretKey
+  input: "{email:string,name?:string}"
+  note: Create a customer
+p1v10_customers_show:
+  http_verb: verb_get
+  path: "/customers/:customerId"
+  version: p1v10
+  auth: SecretKey
+  input: ''
+  note: Fetch one customer
+p1v10_customers_delete:
+  http_verb: verb_delete
+  path: "/customers/:customerId"
+  version: p1v10
+  auth: SecretKey
+  input: ''
+  note: Delete a customer and detach its payment methods
+p1v10_customer_payment_methods:
+  http_verb: verb_get
+  path: "/customers/:customerId/payment_methods"
+  version: p1v10
+  auth: SecretKey
+  input: ''
+  note: List everything a customer can be charged with
+p1v10_disputes_list:
+  http_verb: verb_get
+  path: "/disputes"
+  version: p1v10
+  auth: SecretKey
+  input: ''
+  note: List disputes, newest first
+p1v10_disputes_show:
+  http_verb: verb_get
+  path: "/disputes/:disputeId"
+  version: p1v10
+  auth: SecretKey
+  input: ''
+  note: Fetch one dispute
+p1v10_disputes_close:
+  http_verb: verb_post
+  path: "/disputes/:disputeId/close"
+  version: p1v10
+  auth: SecretKey
+  input: "{reason?:string}"
+  note: Concede a dispute without submitting evidence
+p1v10_events_list:
+  http_verb: verb_get
+  path: "/events"
+  version: p1v10
+  auth: SecretKey
+  input: ''
+  note: Read the event log
+p1v10_events_show:
+  http_verb: verb_get
+  path: "/events/:eventId"
+  version: p1v10
+  auth: SecretKey
+  input: ''
+  note: Fetch one event
+p1v10_payment_methods_create:
+  http_verb: verb_post
+  path: "/payment_methods"
+  version: p1v10
+  auth: SecretKey
+  input: "{customer_id:string,type:string,token:string}"
+  note: Attach a card or bank account to a customer
+p1v10_payouts_list:
+  http_verb: verb_get
+  path: "/payouts"
+  version: p1v10
+  auth: PlatformKey
+  input: ''
+  note: List payouts, newest first
+p1v10_payouts_show:
+  http_verb: verb_get
+  path: "/payouts/:payoutId"
+  version: p1v10
+  auth: PlatformKey
+  input: ''
+  note: Fetch one payout
+p1v10_prices_list:
+  http_verb: verb_get
+  path: "/prices"
+  version: p1v10
+  auth: SecretKey
+  input: ''
+  note: List prices
+p1v10_prices_create:
+  http_verb: verb_post
+  path: "/prices"
+  version: p1v10
+  auth: SecretKey
+  input: "{unit_amount:number,currency:string,interval:string}"
+  note: Create a price
+p1v10_refunds_create:
+  http_verb: verb_post
+  path: "/refunds"
+  version: p1v10
+  auth: SecretKey
+  input: "{charge_id:string,amount?:number,reason?:string}"
+  note: Refund a charge in full, or in part
+p1v10_refunds_show:
+  http_verb: verb_get
+  path: "/refunds/:refundId"
+  version: p1v10
+  auth: SecretKey
+  input: ''
+  note: Fetch one refund
+p1v10_subscriptions_list:
+  http_verb: verb_get
+  path: "/subscriptions"
+  version: p1v10
+  auth: SecretKey
+  input: ''
+  note: List subscriptions
+p1v10_subscriptions_create:
+  http_verb: verb_post
+  path: "/subscriptions"
+  version: p1v10
+  auth: SecretKey
+  input: "{customer_id:string,price_id:string,trial_days?:number}"
+  note: Subscribe a customer to a price
+p1v10_subscriptions_show:
+  http_verb: verb_get
+  path: "/subscriptions/:subscriptionId"
+  version: p1v10
+  auth: SecretKey
+  input: ''
+  note: Fetch one subscription
+p1v10_subscriptions_delete:
+  http_verb: verb_delete
+  path: "/subscriptions/:subscriptionId"
+  version: p1v10
+  auth: SecretKey
+  input: "{at_period_end?:boolean}"
+  note: Cancel a subscription, now or at the end of the period
+p1v10_webhook_endpoints_list:
+  http_verb: verb_get
+  path: "/webhook_endpoints"
+  version: p1v10
+  auth: SecretKey
+  input: ''
+  note: List registered webhook endpoints
+p1v10_webhook_endpoints_create:
+  http_verb: verb_post
+  path: "/webhook_endpoints"
+  version: p1v10
+  auth: SecretKey
+  input: "{url:string,events:[string]}"
+  note: Register a URL to receive events
+p1v10_webhook_endpoints_delete:
+  http_verb: verb_delete
+  path: "/webhook_endpoints/:endpointId"
+  version: p1v10
+  auth: SecretKey
+  input: ''
+  note: Stop delivering to an endpoint
+
+# ===== candidate rc14-v1 =====
+p1rc14v_balance_show:
+  http_verb: verb_get
+  path: "/balance"
+  version: p1rc14v
+  auth: SecretKey
+  input: ''
+  note: Read the account balance
+p1rc14v_charges_list:
+  http_verb: verb_get
+  path: "/charges"
+  version: p1rc14v
+  auth: SecretKey
+  input: ''
+  note: List charges, newest first
+p1rc14v_charges_create:
+  http_verb: verb_post
+  path: "/charges"
+  version: p1rc14v
+  auth: SecretKey
+  input: "{amount:number,currency:string,source:string}"
+  note: Charge a payment source
+p1rc14v_charges_show:
+  http_verb: verb_get
+  path: "/charges/:chargeId"
+  version: p1rc14v
+  auth: SecretKey
+  input: ''
+  note: Fetch one charge
+p1rc14v_customers_list:
+  http_verb: verb_get
+  path: "/customers"
+  version: p1rc14v
+  auth: SecretKey
+  input: ''
+  note: List customers, newest first
+p1rc14v_customers_create:
+  http_verb: verb_post
+  path: "/customers"
+  version: p1rc14v
+  auth: SecretKey
+  input: "{email:string,name?:string}"
+  note: Create a customer
+p1rc14v_customers_show:
+  http_verb: verb_get
+  path: "/customers/:customerId"
+  version: p1rc14v
+  auth: SecretKey
+  input: ''
+  note: Fetch one customer
+p1rc14v_customers_update:
   http_verb: verb_patch
-  path: /kitchen-sink/:sinkId
-  version: project1v3
-  note: "Everything at once, so every comment placement shows up on one card"
-  input: "{label:string,weight:number,tags:[string],owner:User}"
-  auth: UserToken
-p1v4_kitchen_sink:
+  path: "/customers/:customerId"
+  version: p1rc14v
+  auth: SecretKey
+  input: "{email?:string,name?:string,default_payment_method_id:(string|null),metadata?:[{key:string,value:string}]}"
+  note: Update a customer's name, email or default payment method
+p1rc14v_customers_delete:
+  http_verb: verb_delete
+  path: "/customers/:customerId"
+  version: p1rc14v
+  auth: SecretKey
+  input: ''
+  note: Delete a customer and detach its payment methods
+p1rc14v_customer_payment_methods:
+  http_verb: verb_get
+  path: "/customers/:customerId/payment_methods"
+  version: p1rc14v
+  auth: SecretKey
+  input: ''
+  note: List everything a customer can be charged with
+p1rc14v_disputes_list:
+  http_verb: verb_get
+  path: "/disputes"
+  version: p1rc14v
+  auth: SecretKey
+  input: ''
+  note: List disputes, newest first
+p1rc14v_disputes_show:
+  http_verb: verb_get
+  path: "/disputes/:disputeId"
+  version: p1rc14v
+  auth: SecretKey
+  input: ''
+  note: Fetch one dispute
+p1rc14v_disputes_close:
+  http_verb: verb_post
+  path: "/disputes/:disputeId/close"
+  version: p1rc14v
+  auth: SecretKey
+  input: "{reason?:string}"
+  note: Concede a dispute without submitting evidence
+p1rc14v_events_list:
+  http_verb: verb_get
+  path: "/events"
+  version: p1rc14v
+  auth: PlatformKey
+  input: ''
+  note: Read the event log. Platform key only from v11.
+p1rc14v_events_show:
+  http_verb: verb_get
+  path: "/events/:eventId"
+  version: p1rc14v
+  auth: SecretKey
+  input: ''
+  note: Fetch one event
+p1rc14v_payment_methods_create:
+  http_verb: verb_post
+  path: "/payment_methods"
+  version: p1rc14v
+  auth: SecretKey
+  input: "{customer_id:string,type:string,token:string}"
+  note: Attach a card or bank account to a customer
+p1rc14v_payouts_list:
+  http_verb: verb_get
+  path: "/payouts"
+  version: p1rc14v
+  auth: PlatformKey
+  input: ''
+  note: List payouts, newest first
+p1rc14v_payouts_show:
+  http_verb: verb_get
+  path: "/payouts/:payoutId"
+  version: p1rc14v
+  auth: PlatformKey
+  input: ''
+  note: Fetch one payout
+p1rc14v_prices_list:
+  http_verb: verb_get
+  path: "/prices"
+  version: p1rc14v
+  auth: SecretKey
+  input: ''
+  note: List prices
+p1rc14v_refunds_create:
+  http_verb: verb_post
+  path: "/refunds"
+  version: p1rc14v
+  auth: SecretKey
+  input: "{charge_id:string,amount?:number,reason?:string}"
+  note: Refund a charge in full, or in part. A partial refund can be repeated until the charge is exhausted.
+p1rc14v_refunds_show:
+  http_verb: verb_get
+  path: "/refunds/:refundId"
+  version: p1rc14v
+  auth: SecretKey
+  input: ''
+  note: Fetch one refund
+p1rc14v_subscriptions_list:
+  http_verb: verb_get
+  path: "/subscriptions"
+  version: p1rc14v
+  auth: SecretKey
+  input: ''
+  note: List subscriptions
+p1rc14v_subscriptions_create:
+  http_verb: verb_post
+  path: "/subscriptions"
+  version: p1rc14v
+  auth: SecretKey
+  input: "{customer_id:string,price_id:string,trial_days?:number}"
+  note: Subscribe a customer to a price
+p1rc14v_subscriptions_show:
+  http_verb: verb_get
+  path: "/subscriptions/:subscriptionId"
+  version: p1rc14v
+  auth: SecretKey
+  input: ''
+  note: Fetch one subscription
+p1rc14v_subscriptions_delete:
+  http_verb: verb_delete
+  path: "/subscriptions/:subscriptionId"
+  version: p1rc14v
+  auth: SecretKey
+  input: "{at_period_end?:boolean}"
+  note: Cancel a subscription, now or at the end of the period
+p1rc14v_webhook_endpoints_list:
+  http_verb: verb_get
+  path: "/webhook_endpoints"
+  version: p1rc14v
+  auth: SecretKey
+  input: ''
+  note: List registered webhook endpoints
+p1rc14v_webhook_endpoints_create:
+  http_verb: verb_post
+  path: "/webhook_endpoints"
+  version: p1rc14v
+  auth: SecretKey
+  input: "{url:string,events:[string]}"
+  note: Register a URL to receive events
+p1rc14v_webhook_endpoints_delete:
+  http_verb: verb_delete
+  path: "/webhook_endpoints/:endpointId"
+  version: p1rc14v
+  auth: SecretKey
+  input: ''
+  note: Stop delivering to an endpoint
+
+# ===== statuspage v1 =====
+p2v1_incidents_list:
+  http_verb: verb_get
+  path: "/incidents"
+  version: p2v1
+  auth: ''
+  input: ''
+  note: List incidents, newest first
+p2v1_incidents_show:
+  http_verb: verb_get
+  path: "/incidents/:incidentId"
+  version: p2v1
+  auth: ''
+  input: ''
+  note: Fetch one incident
+p2v1_status_show:
+  http_verb: verb_get
+  path: "/status"
+  version: p2v1
+  auth: ''
+  input: ''
+  note: The one-line answer, plus every component
+
+# ===== statuspage v2 =====
+p2v2_incidents_list:
+  http_verb: verb_get
+  path: "/incidents"
+  version: p2v2
+  auth: ''
+  input: ''
+  note: List incidents, newest first
+p2v2_incidents_create:
+  http_verb: verb_post
+  path: "/incidents"
+  version: p2v2
+  auth: OperatorToken
+  input: "{title:string,status:string,component_ids:[string]}"
+  note: Open an incident
+p2v2_incidents_show:
+  http_verb: verb_get
+  path: "/incidents/:incidentId"
+  version: p2v2
+  auth: ''
+  input: ''
+  note: Fetch one incident
+p2v2_incidents_update:
   http_verb: verb_patch
-  path: /kitchen-sink/:sinkId
-  version: project1v4
-  note: "Everything at once, so every comment placement shows up on one card. Now also takes tags."
-  input: "{label:string,weight:number,tags:[string],owner:User,archived:boolean}"
-  auth: AdminBasic
+  path: "/incidents/:incidentId"
+  version: p2v2
+  auth: OperatorToken
+  input: "{title?:string,status?:string}"
+  note: Change an incident's title or status
+p2v2_status_show:
+  http_verb: verb_get
+  path: "/status"
+  version: p2v2
+  auth: ''
+  input: ''
+  note: The one-line answer, plus every component
+
+# ===== statuspage v3 =====
+p2v3_components_list:
+  http_verb: verb_get
+  path: "/components"
+  version: p2v3
+  auth: ''
+  input: ''
+  note: List components and their current status
+p2v3_incidents_list:
+  http_verb: verb_get
+  path: "/incidents"
+  version: p2v3
+  auth: ''
+  input: ''
+  note: List incidents, newest first
+p2v3_incidents_create:
+  http_verb: verb_post
+  path: "/incidents"
+  version: p2v3
+  auth: OperatorToken
+  input: "{title:string,status:string,component_ids:[string]}"
+  note: Open an incident
+p2v3_incidents_show:
+  http_verb: verb_get
+  path: "/incidents/:incidentId"
+  version: p2v3
+  auth: ''
+  input: ''
+  note: Fetch one incident
+p2v3_incidents_update:
+  http_verb: verb_patch
+  path: "/incidents/:incidentId"
+  version: p2v3
+  auth: OperatorToken
+  input: "{title?:string,status?:string}"
+  note: Change an incident's title or status
+p2v3_incident_updates_create:
+  http_verb: verb_post
+  path: "/incidents/:incidentId/updates"
+  version: p2v3
+  auth: OperatorToken
+  input: "{body:string,status:string}"
+  note: Post an update to a running incident
+p2v3_status_show:
+  http_verb: verb_get
+  path: "/status"
+  version: p2v3
+  auth: ''
+  input: ''
+  note: The one-line answer, plus every component
+p2v3_subscribers_create:
+  http_verb: verb_post
+  path: "/subscribers"
+  version: p2v3
+  auth: ''
+  input: "{email:string}"
+  note: Subscribe an email address to incident notifications
+
+# ===== candidate rc4-v1 =====
+p2rc4v_components_list:
+  http_verb: verb_get
+  path: "/components"
+  version: p2rc4v
+  auth: ''
+  input: ''
+  note: List components and their current status
+p2rc4v_health_show:
+  http_verb: verb_get
+  path: "/health"
+  version: p2rc4v
+  auth: ''
+  input: ''
+  note: The one-line answer, plus every component
+p2rc4v_incidents_list:
+  http_verb: verb_get
+  path: "/incidents"
+  version: p2rc4v
+  auth: ''
+  input: ''
+  note: List incidents, newest first
+p2rc4v_incidents_create:
+  http_verb: verb_post
+  path: "/incidents"
+  version: p2rc4v
+  auth: OperatorToken
+  input: "{title:string,status:string,component_ids:[string]}"
+  note: Open an incident
+p2rc4v_incidents_show:
+  http_verb: verb_get
+  path: "/incidents/:incidentId"
+  version: p2rc4v
+  auth: ''
+  input: ''
+  note: Fetch one incident
+p2rc4v_incidents_update:
+  http_verb: verb_patch
+  path: "/incidents/:incidentId"
+  version: p2rc4v
+  auth: OperatorToken
+  input: "{title?:string,status?:string}"
+  note: Change an incident's title or status
+p2rc4v_incident_updates_create:
+  http_verb: verb_post
+  path: "/incidents/:incidentId/updates"
+  version: p2rc4v
+  auth: OperatorToken
+  input: "{body:string,status:string}"
+  note: Post an update to a running incident
+p2rc4v_subscribers_create:
+  http_verb: verb_post
+  path: "/subscribers"
+  version: p2rc4v
+  auth: ''
+  input: "{email:string}"
+  note: Subscribe an email address to incident notifications

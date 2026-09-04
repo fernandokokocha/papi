@@ -1,34 +1,175 @@
-project1v1:
+# ===== ledgerly =====
+p1v1:
   name: v1
   order: 1
-  project: project1
-  candidate: candidate1
-  created_at: 2025-01-10 09:00:00
-project1v2:
+  candidate: p1rc1
+  created_at: '2025-01-13 10:20:00'
+  project: ledgerly
+  release_notes: |-
+    The first cut. A charge can be created, read back and listed.
+
+    Amounts are integers in the currency's smallest unit — 1250 in EUR is €12.50. There are no fractional units anywhere in this API and there never will be.
+p1v2:
   name: v2
   order: 2
-  project: project1
-  candidate: candidate2
-  created_at: 2025-02-14 11:30:00
+  candidate: p1rc2
+  created_at: '2025-02-04 14:05:00'
+  project: ledgerly
   release_notes: |-
-    Tasks arrive: /tasks, /tasks/next and /tasks/complete-next, all behind the user token.
+    Every endpoint now wants a secret key. Calls without one stop working the day this version ships; there is no grace period, because there is nobody live on v1 yet.
 
-    Commented endpoints now carry a note, so the mock server answers with something readable.
-project1v3:
+    Refunds arrive: POST /refunds takes a charge and, optionally, a partial amount. A charge that has been refunded says so with `refunded`.
+p1v3:
   name: v3
   order: 3
-  project: project1
-  candidate: candidate3
-  created_at: 2025-03-20 15:45:00
-project1v4:
+  candidate: p1rc3
+  created_at: '2025-03-06 09:40:00'
+  project: ledgerly
+  release_notes: |-
+    Customers and payment methods. A charge can now name the customer it belongs to, and a stored card or bank account can be charged more than once.
+
+    `PaymentMethod.details` is the first one-of in this API: a card and a bank account have almost nothing in common, and flattening them into one object would have made every field optional.
+p1v4:
   name: v4
   order: 4
-  project: project1
-  candidate: candidate4
-  created_at: 2025-04-05 08:15:00
+  candidate: p1rc5
+  created_at: '2025-04-08 16:30:00'
+  project: ledgerly
   release_notes: |-
-    Pagination lands on /users and /tasks. Both take page and per_page; both answer with the same envelope.
+    Lists are paginated. GET /charges and GET /customers answer an envelope instead of a bare array, and both take `limit` and `starting_after`.
 
-    name and avatar_url on a user are nullable from here on. The mobile team asked for this so an incomplete profile stops being an error case.
+    This breaks every caller that iterates the response directly. It is the last breaking change we make to a list shape — every list added from here on is born in the envelope.
+p1v5:
+  name: v5
+  order: 5
+  candidate: p1rc6
+  created_at: '2025-05-13 11:15:00'
+  project: ledgerly
+  release_notes: |-
+    Webhooks. Register an endpoint, pick the events you care about, and Ledgerly posts each one to you as it happens.
 
-    AdminBasic is new and guards /users only. Nothing else changed hands.
+    The same events are readable over HTTP at GET /events, so a missed delivery is recoverable without asking us to replay it.
+p1v6:
+  name: v6
+  order: 6
+  candidate: p1rc8
+  created_at: '2025-06-10 08:50:00'
+  project: ledgerly
+  release_notes: |-
+    Payouts, for platforms that settle to their own users' bank accounts.
+
+    These sit behind their own credentials rather than the account's secret key, because a platform's servers and its merchants' servers are not the same trust boundary.
+p1v7:
+  name: v7
+  order: 7
+  candidate: p1rc9
+  created_at: '2025-07-15 13:25:00'
+  project: ledgerly
+  release_notes: |-
+    Two breaking changes, both deliberate.
+
+    `Customer.name` is no longer nullable. Every customer created since v3 has one, and the nullable type was making callers branch for a case that never happened.
+
+    POST /payouts is gone. Payouts have been scheduled automatically since June and a manual one could only ever race the scheduler.
+
+    Also: wallets are a third kind of payment method, a customer can be deleted, and a refund carries its own status rather than being assumed settled.
+p1v8:
+  name: v8
+  order: 8
+  candidate: p1rc10
+  created_at: '2025-08-05 15:00:00'
+  project: ledgerly
+  release_notes: |-
+    Disputes are readable and closable over the API rather than only in the dashboard.
+
+    PlatformBasic is retired in favour of PlatformKey, a bearer token. Basic auth meant the credentials went out on every request in a form too many proxies log. The two overlap for 90 days.
+p1v9:
+  name: v9
+  order: 9
+  candidate: p1rc12
+  created_at: '2025-09-02 10:10:00'
+  project: ledgerly
+  release_notes: |-
+    Subscriptions. A price says how much and how often; a subscription binds one to a customer and charges it on a cycle.
+
+    A subscription carries its customer and its price whole rather than by id, because every screen that shows one shows all three.
+p1v10:
+  name: v10
+  order: 10
+  candidate: p1rc13
+  created_at: '2025-10-14 09:05:00'
+  project: ledgerly
+  release_notes: |-
+    GET /balance says what is settled and what is still on its way.
+
+    An error now carries the field that failed and a link to the page explaining it, so a 400 stops being a guessing game.
+
+    Disputes and subscriptions join the event union, which means an existing webhook consumer that matches on `type` will start seeing shapes it has not met before.
+
+# ===== candidate versions =====
+p1rc4v:
+  name: rc4-v1
+  order: 1
+  candidate: p1rc4
+  created_at: '2025-03-16 09:30:00'
+  release_notes: |-
+    Lists take a page number. GET /charges and GET /customers answer `{data, page, per_page, total}`, and both take `page` and `per_page`.
+
+    `total` is the point of it: a caller can render "showing 20 of 4,312" without walking the whole list.
+p1rc7v:
+  name: rc7-v1
+  order: 1
+  candidate: p1rc7
+  created_at: '2025-05-22 10:00:00'
+  release_notes: 'Webhook deliveries become inspectable and replayable: an endpoint lists what we tried to send it, and can ask for a failed event to be sent again.'
+p1rc11v:
+  name: rc11-v1
+  order: 1
+  candidate: p1rc11
+  created_at: '2025-08-12 09:40:00'
+  release_notes: "`Money.amount` becomes a decimal string. Every language that reads our JSON with a naive parser turns a large integer into a float, and a float is not a thing to keep money in."
+p1rc14v:
+  name: rc14-v1
+  order: 1
+  candidate: p1rc14
+  created_at: '2025-10-28 11:40:00'
+  release_notes: |-
+    A customer can be edited. Until now the only way to fix a typo in an email address was to delete the customer and lose its payment methods with it.
+
+    POST /prices goes away. Prices have been created in the dashboard for two months and the endpoint has had no live traffic since August.
+
+    GET /events moves to the platform key. Reading the whole event log is a platform-level capability and a merchant's secret key should not carry it.
+p2rc4v:
+  name: rc4-v1
+  order: 1
+  candidate: p2rc4
+  created_at: '2025-08-11 14:20:00'
+  release_notes: Renames GET /status to GET /health, so the path matches what our own probes call everywhere else.
+
+# ===== statuspage =====
+p2v1:
+  name: v1
+  order: 1
+  candidate: p2rc1
+  created_at: '2025-05-20 12:00:00'
+  project: statuspage
+p2v2:
+  name: v2
+  order: 2
+  candidate: p2rc2
+  created_at: '2025-06-24 17:45:00'
+  project: statuspage
+  release_notes: |-
+    The on-call rota can post incidents from the API rather than from the dashboard, which is what everyone was asking for at 3am.
+
+    An incident carries its updates inline. There is no separate endpoint to fetch them, because nobody ever wants an incident without them.
+p2v3:
+  name: v3
+  order: 3
+  candidate: p2rc3
+  created_at: '2025-07-29 09:30:00'
+  project: statuspage
+  release_notes: |-
+    Subscribers. Someone can hand us an email address and hear about the next incident without watching the page.
+
+    Components are listable on their own, so a dashboard can render the grid without pulling every incident with it.

@@ -1,139 +1,695 @@
-# ===== v1 =====
-p1v1_error:
+# ===== ledgerly v1 =====
+p1v1_e_charge:
+  name: Charge
+  version: p1v1
+  root: "{id:string,amount:Money,status:string,created_at:string}"
+p1v1_e_error:
   name: Error
-  version: project1v1
-  root: "{code:number,message:string,details?:string}"
-p1v1_user:
-  name: User
-  version: project1v1
-  root: "{id:number,email:string,name:(string|null)}"
-p1v1_session:
-  name: Session
-  version: project1v1
-  root: "{token:string,user_id:number,expires_at:string}"
+  version: p1v1
+  root: "{code:string,message:string}"
+p1v1_e_money:
+  name: Money
+  version: p1v1
+  root: "{amount:number,currency:string}"
 
-# ===== v2 =====
-p1v2_error:
+# ===== ledgerly v2 =====
+p1v2_e_charge:
+  name: Charge
+  version: p1v2
+  root: "{id:string,amount:Money,status:string,refunded:boolean,created_at:string}"
+p1v2_e_error:
   name: Error
-  version: project1v2
-  root: "{code:number,message:string,details?:string}"
-p1v2_user:
-  name: User
-  version: project1v2
-  root: "{id:number,email:string,name:(string|null)}"
-p1v2_session:
-  name: Session
-  version: project1v2
-  root: "{token:string,user_id:number,expires_at:string}"
+  version: p1v2
+  root: "{code:string,message:string}"
+p1v2_e_money:
+  name: Money
+  version: p1v2
+  root: "{amount:number,currency:string}"
+p1v2_e_refund:
+  name: Refund
+  version: p1v2
+  root: "{id:string,charge_id:string,amount:Money,reason:string,created_at:string}"
 
-# ===== v3 =====
-p1v3_error:
+# ===== ledgerly v3 =====
+p1v3_e_bank_account:
+  name: BankAccount
+  version: p1v3
+  root: "{bank_name:string,last4:string,country:string,routing_number:string}"
+p1v3_e_card:
+  name: Card
+  version: p1v3
+  root: "{brand:string,last4:string,exp_month:number,exp_year:number}"
+p1v3_e_charge:
+  name: Charge
+  version: p1v3
+  root: "{id:string,amount:Money,status:string,refunded:boolean,customer_id:(string|null),created_at:string}"
+p1v3_e_customer:
+  name: Customer
+  version: p1v3
+  root: "{id:string,email:string,name:(string|null),created_at:string}"
+p1v3_e_error:
   name: Error
-  version: project1v3
-  root: "{code:number,message:string,details?:string}"
-p1v3_user:
-  name: User
-  version: project1v3
-  root: "{id:number,email:string,name:(string|null)}"
-p1v3_session:
-  name: Session
-  version: project1v3
-  root: "{token:string,user_id:number,expires_at:string}"
-p1v3_task:
-  name: Task
-  version: project1v3
-  root: "{id:number,title:string,done:boolean,created_by_id:number}"
+  version: p1v3
+  root: "{code:string,message:string}"
+p1v3_e_money:
+  name: Money
+  version: p1v3
+  root: "{amount:number,currency:string}"
+p1v3_e_payment_method:
+  name: PaymentMethod
+  version: p1v3
+  root: "{id:string,type:string,customer_id:string,details:(Card|BankAccount)}"
+p1v3_e_refund:
+  name: Refund
+  version: p1v3
+  root: "{id:string,charge_id:string,amount:Money,reason:string,created_at:string}"
 
-# ===== v4 =====
-p1v4_error:
+# ===== candidate rc4-v1 =====
+p1rc4v_e_bank_account:
+  name: BankAccount
+  version: p1rc4v
+  root: "{bank_name:string,last4:string,country:string,routing_number:string}"
+p1rc4v_e_card:
+  name: Card
+  version: p1rc4v
+  root: "{brand:string,last4:string,exp_month:number,exp_year:number}"
+p1rc4v_e_charge:
+  name: Charge
+  version: p1rc4v
+  root: "{id:string,amount:Money,status:string,refunded:boolean,customer_id:(string|null),created_at:string}"
+p1rc4v_e_customer:
+  name: Customer
+  version: p1rc4v
+  root: "{id:string,email:string,name:(string|null),created_at:string}"
+p1rc4v_e_error:
   name: Error
-  version: project1v4
-  root: "{code:number,message:string,details?:string}"
-p1v4_user:
-  name: User
-  version: project1v4
-  root: "{id:number,email:string,name:(string|null),avatar_url:(string|null)}"
-p1v4_session:
-  name: Session
-  version: project1v4
-  root: "{token:string,user_id:number,expires_at:string}"
-p1v4_task:
-  name: Task
-  version: project1v4
-  root: "{id:number,title:string,status:string,assignee:(User|null)}"
+  version: p1rc4v
+  root: "{code:string,message:string}"
+p1rc4v_e_money:
+  name: Money
+  version: p1rc4v
+  root: "{amount:number,currency:string}"
+p1rc4v_e_payment_method:
+  name: PaymentMethod
+  version: p1rc4v
+  root: "{id:string,type:string,customer_id:string,details:(Card|BankAccount)}"
+p1rc4v_e_refund:
+  name: Refund
+  version: p1rc4v
+  root: "{id:string,charge_id:string,amount:Money,reason:string,created_at:string}"
 
-# ===== bulk fixtures =====
-p1v3_project:
-  name: Project
-  version: project1v3
-  root: "{id:number,name:string,owner_id:number,archived:boolean}"
-p1v3_comment:
-  name: Comment
-  version: project1v3
-  root: "{id:number,body:string,author_id:number,task_id:number}"
-p1v3_notification:
-  name: Notification
-  version: project1v3
-  root: "{id:number,kind:string,read:boolean,user_id:number}"
-p1v3_webhook:
-  name: Webhook
-  version: project1v3
-  root: "{id:number,url:string,event:string,active:boolean}"
-p1v3_team:
-  name: Team
-  version: project1v3
-  root: "{id:number,name:string,owner_id:number}"
-p1v3_label:
-  name: Label
-  version: project1v3
-  root: "{id:number,name:string,color:string}"
-p1v3_attachment:
-  name: Attachment
-  version: project1v3
-  root: "{id:number,filename:string,size:number,url:string}"
-p1v3_invite:
-  name: Invite
-  version: project1v3
-  root: "{id:number,email:string,token:string,accepted:boolean}"
-p1v4_project:
-  name: Project
-  version: project1v4
-  root: "{id:number,name:string,owner_id:number,archived:boolean}"
-p1v4_comment:
-  name: Comment
-  version: project1v4
-  root: "{id:number,body:string,author:User,task?:Task}"
-p1v4_notification:
-  name: Notification
-  version: project1v4
-  root: "{id:number,kind:string,read:boolean,user_id:number}"
-p1v4_webhook:
-  name: Webhook
-  version: project1v4
-  root: "{id:number,url:string,event:string,active:boolean}"
-p1v4_team:
-  name: Team
-  version: project1v4
-  root: "{id:number,name:string,owner_id:number}"
-p1v4_label:
-  name: Label
-  version: project1v4
-  root: "{id:number,name:string,color:string}"
-p1v4_attachment:
-  name: Attachment
-  version: project1v4
-  root: "{id:number,filename:string,size:number,url:string}"
-p1v4_invite:
-  name: Invite
-  version: project1v4
-  root: "{id:number,email:string,token:string,accepted:boolean}"
+# ===== ledgerly v4 =====
+p1v4_e_bank_account:
+  name: BankAccount
+  version: p1v4
+  root: "{bank_name:string,last4:string,country:string,routing_number:string}"
+p1v4_e_card:
+  name: Card
+  version: p1v4
+  root: "{brand:string,last4:string,exp_month:number,exp_year:number}"
+p1v4_e_charge:
+  name: Charge
+  version: p1v4
+  root: "{id:string,amount:Money,status:string,refunded:boolean,customer_id:(string|null),created_at:string}"
+p1v4_e_customer:
+  name: Customer
+  version: p1v4
+  root: "{id:string,email:string,name:(string|null),created_at:string}"
+p1v4_e_error:
+  name: Error
+  version: p1v4
+  root: "{code:string,message:string}"
+p1v4_e_money:
+  name: Money
+  version: p1v4
+  root: "{amount:number,currency:string}"
+p1v4_e_payment_method:
+  name: PaymentMethod
+  version: p1v4
+  root: "{id:string,type:string,customer_id:string,details:(Card|BankAccount)}"
+p1v4_e_refund:
+  name: Refund
+  version: p1v4
+  root: "{id:string,charge_id:string,amount:Money,reason:string,created_at:string}"
 
-p1v4_audit_log:
-  name: AuditLog
-  version: project1v4
-  root: "{id:number,action:string,actor_id:(number|string|null),created_at:string}"
+# ===== ledgerly v5 =====
+p1v5_e_bank_account:
+  name: BankAccount
+  version: p1v5
+  root: "{bank_name:string,last4:string,country:string,routing_number:string}"
+p1v5_e_card:
+  name: Card
+  version: p1v5
+  root: "{brand:string,last4:string,exp_month:number,exp_year:number}"
+p1v5_e_charge:
+  name: Charge
+  version: p1v5
+  root: "{id:string,amount:Money,status:string,refunded:boolean,customer_id:(string|null),created_at:string}"
+p1v5_e_customer:
+  name: Customer
+  version: p1v5
+  root: "{id:string,email:string,name:(string|null),created_at:string}"
+p1v5_e_error:
+  name: Error
+  version: p1v5
+  root: "{code:string,message:string}"
+p1v5_e_event:
+  name: Event
+  version: p1v5
+  root: "{id:string,type:string,created_at:string,data:(Charge|Refund|Customer)}"
+p1v5_e_money:
+  name: Money
+  version: p1v5
+  root: "{amount:number,currency:string}"
+p1v5_e_payment_method:
+  name: PaymentMethod
+  version: p1v5
+  root: "{id:string,type:string,customer_id:string,details:(Card|BankAccount)}"
+p1v5_e_refund:
+  name: Refund
+  version: p1v5
+  root: "{id:string,charge_id:string,amount:Money,reason:string,created_at:string}"
+p1v5_e_webhook_endpoint:
+  name: WebhookEndpoint
+  version: p1v5
+  root: "{id:string,url:string,events:[string],active:boolean,secret:string}"
 
-p1v3_legacy_token:
-  name: LegacyToken
-  version: project1v3
-  root: "{token:string,expires_at:string,scope:string}"
+# ===== candidate rc7-v1 =====
+p1rc7v_e_bank_account:
+  name: BankAccount
+  version: p1rc7v
+  root: "{bank_name:string,last4:string,country:string,routing_number:string}"
+p1rc7v_e_card:
+  name: Card
+  version: p1rc7v
+  root: "{brand:string,last4:string,exp_month:number,exp_year:number}"
+p1rc7v_e_charge:
+  name: Charge
+  version: p1rc7v
+  root: "{id:string,amount:Money,status:string,refunded:boolean,customer_id:(string|null),created_at:string}"
+p1rc7v_e_customer:
+  name: Customer
+  version: p1rc7v
+  root: "{id:string,email:string,name:(string|null),created_at:string}"
+p1rc7v_e_delivery:
+  name: Delivery
+  version: p1rc7v
+  root: "{id:string,event_id:string,status_code:number,attempted_at:string,succeeded:boolean}"
+p1rc7v_e_error:
+  name: Error
+  version: p1rc7v
+  root: "{code:string,message:string}"
+p1rc7v_e_event:
+  name: Event
+  version: p1rc7v
+  root: "{id:string,type:string,created_at:string,data:(Charge|Refund|Customer)}"
+p1rc7v_e_money:
+  name: Money
+  version: p1rc7v
+  root: "{amount:number,currency:string}"
+p1rc7v_e_payment_method:
+  name: PaymentMethod
+  version: p1rc7v
+  root: "{id:string,type:string,customer_id:string,details:(Card|BankAccount)}"
+p1rc7v_e_refund:
+  name: Refund
+  version: p1rc7v
+  root: "{id:string,charge_id:string,amount:Money,reason:string,created_at:string}"
+p1rc7v_e_webhook_endpoint:
+  name: WebhookEndpoint
+  version: p1rc7v
+  root: "{id:string,url:string,events:[string],active:boolean,secret:string}"
+
+# ===== ledgerly v6 =====
+p1v6_e_bank_account:
+  name: BankAccount
+  version: p1v6
+  root: "{bank_name:string,last4:string,country:string,routing_number:string}"
+p1v6_e_card:
+  name: Card
+  version: p1v6
+  root: "{brand:string,last4:string,exp_month:number,exp_year:number}"
+p1v6_e_charge:
+  name: Charge
+  version: p1v6
+  root: "{id:string,amount:Money,status:string,refunded:boolean,customer_id:(string|null),created_at:string}"
+p1v6_e_customer:
+  name: Customer
+  version: p1v6
+  root: "{id:string,email:string,name:(string|null),created_at:string}"
+p1v6_e_error:
+  name: Error
+  version: p1v6
+  root: "{code:string,message:string}"
+p1v6_e_event:
+  name: Event
+  version: p1v6
+  root: "{id:string,type:string,created_at:string,data:(Charge|Refund|Customer)}"
+p1v6_e_money:
+  name: Money
+  version: p1v6
+  root: "{amount:number,currency:string}"
+p1v6_e_payment_method:
+  name: PaymentMethod
+  version: p1v6
+  root: "{id:string,type:string,customer_id:string,details:(Card|BankAccount)}"
+p1v6_e_payout:
+  name: Payout
+  version: p1v6
+  root: "{id:string,amount:Money,status:string,arrival_date:string,destination:BankAccount}"
+p1v6_e_refund:
+  name: Refund
+  version: p1v6
+  root: "{id:string,charge_id:string,amount:Money,reason:string,created_at:string}"
+p1v6_e_webhook_endpoint:
+  name: WebhookEndpoint
+  version: p1v6
+  root: "{id:string,url:string,events:[string],active:boolean,secret:string}"
+
+# ===== ledgerly v7 =====
+p1v7_e_bank_account:
+  name: BankAccount
+  version: p1v7
+  root: "{bank_name:string,last4:string,country:string,routing_number:string}"
+p1v7_e_card:
+  name: Card
+  version: p1v7
+  root: "{brand:string,last4:string,exp_month:number,exp_year:number}"
+p1v7_e_charge:
+  name: Charge
+  version: p1v7
+  root: "{id:string,amount:Money,status:string,refunded:boolean,customer_id:(string|null),created_at:string}"
+p1v7_e_customer:
+  name: Customer
+  version: p1v7
+  root: "{id:string,email:string,name:string,default_payment_method_id:(string|null),created_at:string}"
+p1v7_e_error:
+  name: Error
+  version: p1v7
+  root: "{code:string,message:string}"
+p1v7_e_event:
+  name: Event
+  version: p1v7
+  root: "{id:string,type:string,created_at:string,data:(Charge|Refund|Customer)}"
+p1v7_e_money:
+  name: Money
+  version: p1v7
+  root: "{amount:number,currency:string}"
+p1v7_e_payment_method:
+  name: PaymentMethod
+  version: p1v7
+  root: "{id:string,type:string,customer_id:string,details:(Card|BankAccount|Wallet)}"
+p1v7_e_payout:
+  name: Payout
+  version: p1v7
+  root: "{id:string,amount:Money,status:string,arrival_date:string,destination:BankAccount}"
+p1v7_e_refund:
+  name: Refund
+  version: p1v7
+  root: "{id:string,charge_id:string,amount:Money,reason?:string,status:string,created_at:string}"
+p1v7_e_wallet:
+  name: Wallet
+  version: p1v7
+  root: "{provider:string,account_email:string}"
+p1v7_e_webhook_endpoint:
+  name: WebhookEndpoint
+  version: p1v7
+  root: "{id:string,url:string,events:[string],active:boolean,secret:string}"
+
+# ===== ledgerly v8 =====
+p1v8_e_bank_account:
+  name: BankAccount
+  version: p1v8
+  root: "{bank_name:string,last4:string,country:string,routing_number:string}"
+p1v8_e_card:
+  name: Card
+  version: p1v8
+  root: "{brand:string,last4:string,exp_month:number,exp_year:number}"
+p1v8_e_charge:
+  name: Charge
+  version: p1v8
+  root: "{id:string,amount:Money,status:string,refunded:boolean,customer_id:(string|null),created_at:string}"
+p1v8_e_customer:
+  name: Customer
+  version: p1v8
+  root: "{id:string,email:string,name:string,default_payment_method_id:(string|null),created_at:string}"
+p1v8_e_dispute:
+  name: Dispute
+  version: p1v8
+  root: "{id:string,charge_id:string,amount:Money,reason:string,status:string,evidence_due_by:string}"
+p1v8_e_error:
+  name: Error
+  version: p1v8
+  root: "{code:string,message:string}"
+p1v8_e_event:
+  name: Event
+  version: p1v8
+  root: "{id:string,type:string,created_at:string,data:(Charge|Refund|Customer)}"
+p1v8_e_money:
+  name: Money
+  version: p1v8
+  root: "{amount:number,currency:string}"
+p1v8_e_payment_method:
+  name: PaymentMethod
+  version: p1v8
+  root: "{id:string,type:string,customer_id:string,details:(Card|BankAccount|Wallet)}"
+p1v8_e_payout:
+  name: Payout
+  version: p1v8
+  root: "{id:string,amount:Money,status:string,arrival_date:string,destination:BankAccount}"
+p1v8_e_refund:
+  name: Refund
+  version: p1v8
+  root: "{id:string,charge_id:string,amount:Money,reason?:string,status:string,created_at:string}"
+p1v8_e_wallet:
+  name: Wallet
+  version: p1v8
+  root: "{provider:string,account_email:string}"
+p1v8_e_webhook_endpoint:
+  name: WebhookEndpoint
+  version: p1v8
+  root: "{id:string,url:string,events:[string],active:boolean,secret:string}"
+
+# ===== candidate rc11-v1 =====
+p1rc11v_e_bank_account:
+  name: BankAccount
+  version: p1rc11v
+  root: "{bank_name:string,last4:string,country:string,routing_number:string}"
+p1rc11v_e_card:
+  name: Card
+  version: p1rc11v
+  root: "{brand:string,last4:string,exp_month:number,exp_year:number}"
+p1rc11v_e_charge:
+  name: Charge
+  version: p1rc11v
+  root: "{id:string,amount:Money,status:string,refunded:boolean,customer_id:(string|null),created_at:string}"
+p1rc11v_e_customer:
+  name: Customer
+  version: p1rc11v
+  root: "{id:string,email:string,name:string,default_payment_method_id:(string|null),created_at:string}"
+p1rc11v_e_dispute:
+  name: Dispute
+  version: p1rc11v
+  root: "{id:string,charge_id:string,amount:Money,reason:string,status:string,evidence_due_by:string}"
+p1rc11v_e_error:
+  name: Error
+  version: p1rc11v
+  root: "{code:string,message:string}"
+p1rc11v_e_event:
+  name: Event
+  version: p1rc11v
+  root: "{id:string,type:string,created_at:string,data:(Charge|Refund|Customer)}"
+p1rc11v_e_money:
+  name: Money
+  version: p1rc11v
+  root: "{amount:string,currency:string}"
+p1rc11v_e_payment_method:
+  name: PaymentMethod
+  version: p1rc11v
+  root: "{id:string,type:string,customer_id:string,details:(Card|BankAccount|Wallet)}"
+p1rc11v_e_payout:
+  name: Payout
+  version: p1rc11v
+  root: "{id:string,amount:Money,status:string,arrival_date:string,destination:BankAccount}"
+p1rc11v_e_refund:
+  name: Refund
+  version: p1rc11v
+  root: "{id:string,charge_id:string,amount:Money,reason?:string,status:string,created_at:string}"
+p1rc11v_e_wallet:
+  name: Wallet
+  version: p1rc11v
+  root: "{provider:string,account_email:string}"
+p1rc11v_e_webhook_endpoint:
+  name: WebhookEndpoint
+  version: p1rc11v
+  root: "{id:string,url:string,events:[string],active:boolean,secret:string}"
+
+# ===== ledgerly v9 =====
+p1v9_e_bank_account:
+  name: BankAccount
+  version: p1v9
+  root: "{bank_name:string,last4:string,country:string,routing_number:string}"
+p1v9_e_card:
+  name: Card
+  version: p1v9
+  root: "{brand:string,last4:string,exp_month:number,exp_year:number}"
+p1v9_e_charge:
+  name: Charge
+  version: p1v9
+  root: "{id:string,amount:Money,status:string,refunded:boolean,customer_id:(string|null),created_at:string}"
+p1v9_e_customer:
+  name: Customer
+  version: p1v9
+  root: "{id:string,email:string,name:string,default_payment_method_id:(string|null),created_at:string}"
+p1v9_e_dispute:
+  name: Dispute
+  version: p1v9
+  root: "{id:string,charge_id:string,amount:Money,reason:string,status:string,evidence_due_by:string}"
+p1v9_e_error:
+  name: Error
+  version: p1v9
+  root: "{code:string,message:string}"
+p1v9_e_event:
+  name: Event
+  version: p1v9
+  root: "{id:string,type:string,created_at:string,data:(Charge|Refund|Customer)}"
+p1v9_e_money:
+  name: Money
+  version: p1v9
+  root: "{amount:number,currency:string}"
+p1v9_e_payment_method:
+  name: PaymentMethod
+  version: p1v9
+  root: "{id:string,type:string,customer_id:string,details:(Card|BankAccount|Wallet)}"
+p1v9_e_payout:
+  name: Payout
+  version: p1v9
+  root: "{id:string,amount:Money,status:string,arrival_date:string,destination:BankAccount}"
+p1v9_e_price:
+  name: Price
+  version: p1v9
+  root: "{id:string,unit_amount:Money,interval:string,active:boolean}"
+p1v9_e_refund:
+  name: Refund
+  version: p1v9
+  root: "{id:string,charge_id:string,amount:Money,reason?:string,status:string,created_at:string}"
+p1v9_e_subscription:
+  name: Subscription
+  version: p1v9
+  root: "{id:string,customer:Customer,price:Price,status:string,current_period_end:string,cancel_at_period_end:boolean}"
+p1v9_e_wallet:
+  name: Wallet
+  version: p1v9
+  root: "{provider:string,account_email:string}"
+p1v9_e_webhook_endpoint:
+  name: WebhookEndpoint
+  version: p1v9
+  root: "{id:string,url:string,events:[string],active:boolean,secret:string}"
+
+# ===== ledgerly v10 =====
+p1v10_e_balance:
+  name: Balance
+  version: p1v10
+  root: "{available:[Money],pending:[Money],livemode:boolean}"
+p1v10_e_bank_account:
+  name: BankAccount
+  version: p1v10
+  root: "{bank_name:string,last4:string,country:string,routing_number:string}"
+p1v10_e_card:
+  name: Card
+  version: p1v10
+  root: "{brand:string,last4:string,exp_month:number,exp_year:number}"
+p1v10_e_charge:
+  name: Charge
+  version: p1v10
+  root: "{id:string,amount:Money,status:string,refunded:boolean,customer_id:(string|null),created_at:string}"
+p1v10_e_customer:
+  name: Customer
+  version: p1v10
+  root: "{id:string,email:string,name:string,default_payment_method_id:(string|null),created_at:string}"
+p1v10_e_dispute:
+  name: Dispute
+  version: p1v10
+  root: "{id:string,charge_id:string,amount:Money,reason:string,status:string,evidence_due_by:string}"
+p1v10_e_error:
+  name: Error
+  version: p1v10
+  root: "{code:string,message:string,doc_url?:string,details?:[{field:string,issue:string}]}"
+p1v10_e_event:
+  name: Event
+  version: p1v10
+  root: "{id:string,type:string,created_at:string,data:(Charge|Refund|Customer|Dispute|Subscription)}"
+p1v10_e_money:
+  name: Money
+  version: p1v10
+  root: "{amount:number,currency:string}"
+p1v10_e_payment_method:
+  name: PaymentMethod
+  version: p1v10
+  root: "{id:string,type:string,customer_id:string,details:(Card|BankAccount|Wallet)}"
+p1v10_e_payout:
+  name: Payout
+  version: p1v10
+  root: "{id:string,amount:Money,status:string,arrival_date:string,destination:BankAccount}"
+p1v10_e_price:
+  name: Price
+  version: p1v10
+  root: "{id:string,unit_amount:Money,interval:string,active:boolean}"
+p1v10_e_refund:
+  name: Refund
+  version: p1v10
+  root: "{id:string,charge_id:string,amount:Money,reason?:string,status:string,created_at:string}"
+p1v10_e_subscription:
+  name: Subscription
+  version: p1v10
+  root: "{id:string,customer:Customer,price:Price,status:string,current_period_end:string,cancel_at_period_end:boolean}"
+p1v10_e_wallet:
+  name: Wallet
+  version: p1v10
+  root: "{provider:string,account_email:string}"
+p1v10_e_webhook_endpoint:
+  name: WebhookEndpoint
+  version: p1v10
+  root: "{id:string,url:string,events:[string],active:boolean,secret:string}"
+
+# ===== candidate rc14-v1 =====
+p1rc14v_e_balance:
+  name: Balance
+  version: p1rc14v
+  root: "{available:[Money],pending:[Money],livemode:boolean}"
+p1rc14v_e_bank_account:
+  name: BankAccount
+  version: p1rc14v
+  root: "{bank_name:string,last4:string,country:string,routing_number:string}"
+p1rc14v_e_card:
+  name: Card
+  version: p1rc14v
+  root: "{brand:string,last4:string,exp_month:number,exp_year:number}"
+p1rc14v_e_charge:
+  name: Charge
+  version: p1rc14v
+  root: "{id:string,amount:Money,status:string,refunded:boolean,description:(string|null),customer_id:(string|null),payment_method:(PaymentMethod|null),created_at:string}"
+p1rc14v_e_customer:
+  name: Customer
+  version: p1rc14v
+  root: "{id:string,email:string,name:string,default_payment_method_id:(string|null),created_at:string}"
+p1rc14v_e_dispute:
+  name: Dispute
+  version: p1rc14v
+  root: "{id:string,charge_id:string,amount:Money,reason:string,status:string,evidence_due_by:string}"
+p1rc14v_e_error:
+  name: Error
+  version: p1rc14v
+  root: "{code:string,message:string,doc_url?:string,details?:[{field:string,issue:string}]}"
+p1rc14v_e_event:
+  name: Event
+  version: p1rc14v
+  root: "{id:string,type:string,created_at:string,data:(Charge|Refund|Customer|Dispute|Subscription)}"
+p1rc14v_e_money:
+  name: Money
+  version: p1rc14v
+  root: "{amount:number,currency:string}"
+p1rc14v_e_payment_method:
+  name: PaymentMethod
+  version: p1rc14v
+  root: "{id:string,type:string,customer_id:string,details:(Card|BankAccount|Wallet)}"
+p1rc14v_e_payout:
+  name: Payout
+  version: p1rc14v
+  root: "{id:string,amount:Money,status:string,arrival_date:string,destination:BankAccount}"
+p1rc14v_e_price:
+  name: Price
+  version: p1rc14v
+  root: "{id:string,unit_amount:Money,interval:string,active:boolean}"
+p1rc14v_e_refund:
+  name: Refund
+  version: p1rc14v
+  root: "{id:string,charge_id:string,amount:Money,reason?:string,status:string,created_at:string}"
+p1rc14v_e_subscription:
+  name: Subscription
+  version: p1rc14v
+  root: "{id:string,customer:Customer,price:Price,status:string,current_period_end:string,cancel_at_period_end:boolean}"
+p1rc14v_e_wallet:
+  name: Wallet
+  version: p1rc14v
+  root: "{provider:string,account_email:string}"
+p1rc14v_e_webhook_endpoint:
+  name: WebhookEndpoint
+  version: p1rc14v
+  root: "{id:string,url:string,events:[string],active:boolean,secret:string}"
+
+# ===== statuspage v1 =====
+p2v1_e_component:
+  name: Component
+  version: p2v1
+  root: "{id:string,name:string,status:string}"
+p2v1_e_error:
+  name: Error
+  version: p2v1
+  root: "{code:string,message:string}"
+p2v1_e_incident:
+  name: Incident
+  version: p2v1
+  root: "{id:string,title:string,status:string,started_at:string,components:[Component]}"
+
+# ===== statuspage v2 =====
+p2v2_e_component:
+  name: Component
+  version: p2v2
+  root: "{id:string,name:string,status:string}"
+p2v2_e_error:
+  name: Error
+  version: p2v2
+  root: "{code:string,message:string}"
+p2v2_e_incident:
+  name: Incident
+  version: p2v2
+  root: "{id:string,title:string,status:string,started_at:string,components:[Component],updates:[Update]}"
+p2v2_e_update:
+  name: Update
+  version: p2v2
+  root: "{id:string,body:string,status:string,posted_at:string}"
+
+# ===== statuspage v3 =====
+p2v3_e_component:
+  name: Component
+  version: p2v3
+  root: "{id:string,name:string,status:string,description:(string|null)}"
+p2v3_e_error:
+  name: Error
+  version: p2v3
+  root: "{code:string,message:string}"
+p2v3_e_incident:
+  name: Incident
+  version: p2v3
+  root: "{id:string,title:string,status:string,started_at:string,components:[Component],updates:[Update]}"
+p2v3_e_subscriber:
+  name: Subscriber
+  version: p2v3
+  root: "{id:string,email:string,confirmed:boolean}"
+p2v3_e_update:
+  name: Update
+  version: p2v3
+  root: "{id:string,body:string,status:string,posted_at:string}"
+
+# ===== candidate rc4-v1 =====
+p2rc4v_e_component:
+  name: Component
+  version: p2rc4v
+  root: "{id:string,name:string,status:string,description:(string|null)}"
+p2rc4v_e_error:
+  name: Error
+  version: p2rc4v
+  root: "{code:string,message:string}"
+p2rc4v_e_incident:
+  name: Incident
+  version: p2rc4v
+  root: "{id:string,title:string,status:string,started_at:string,components:[Component],updates:[Update]}"
+p2rc4v_e_subscriber:
+  name: Subscriber
+  version: p2rc4v
+  root: "{id:string,email:string,confirmed:boolean}"
+p2rc4v_e_update:
+  name: Update
+  version: p2rc4v
+  root: "{id:string,body:string,status:string,posted_at:string}"

@@ -1,6 +1,13 @@
-project1:
-  name: Superproject
-  group: g1
-project2:
+ledgerly:
+  name: Ledgerly
+  group: drugowcy
+statuspage:
+  name: Statuspage
+  group: drugowcy
+petstore:
+  name: Petstore
+  group: drugowcy
+
+youdontseeme:
   name: youdontseeme
-  group: g2
+  group: tajna
