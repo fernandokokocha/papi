@@ -111,15 +111,17 @@ describe "Approvals requests", type: :request do
       expect(response.body).to include(">Approved ✓<")
     end
 
-    it "counts the approvals in the candidate history" do
-      candidate.merge!
-      FactoryBot.create :approval, candidate: candidate, user: reviewer
+    it "names the approvers of a release on the project page" do
+      merged = FactoryBot.create :candidate, project: project, name: "rc2", order: 2,
+                                 aasm_state: "merged", author: author, decided_by: reviewer
+      FactoryBot.create :version, project: project, candidate: merged, name: "v1", order: 1
+      FactoryBot.create :approval, candidate: merged, user: reviewer
       sign_in(reviewer)
 
       get project_path(project.name)
 
-      badge = Nokogiri::HTML5(response.body).css("span[title='1 approval']")
-      expect(badge.text.strip).to eq("1")
+      expect(response.body).to include("Approved by")
+      expect(response.body).to include(reviewer.email_address)
     end
   end
 end

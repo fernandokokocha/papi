@@ -9,7 +9,7 @@ namespace :dev do
     published = import_document(project, document, author: author, at: "2025-09-18 10:30:00")
     Candidate::Merge.new(published, decided_by: reviewer).call
     published.update!(decided_at: "2025-09-22 14:05:00")
-    published.version.update!(created_at: "2025-09-22 14:05:00", release_notes: <<~NOTES)
+    published.version.update!(created_at: "2025-09-18 10:30:00", release_notes: <<~NOTES)
       Imported wholesale from the Petstore team's own OpenAPI document, unedited.
 
       Three things did not survive the import. The oauth2 and apiKey schemes have no equivalent here, so every operation that asked for one now reads as needing no auth at all. GET /store/inventory declared a map of status to count, and a map is not a type Papi holds, so its body arrives empty.

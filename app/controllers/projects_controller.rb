@@ -6,6 +6,18 @@ class ProjectsController < ApplicationController
 
   def show
     @project = Project.find_by!(name: params[:name])
+    @tab = params[:tab] == "candidates" ? :candidates : :releases
+    @versions = @project.versions.order(order: :desc)
+    @candidates = @project.history
+
+    if params[:candidate].present?
+      @candidate = @project.candidates.find_by!(name: params[:candidate])
+    elsif params[:version].present?
+      @version = @project.versions.find_by!(name: params[:version])
+    else
+      @version = @versions.first
+      @candidate = @candidates.first unless @version
+    end
   end
 
   def new

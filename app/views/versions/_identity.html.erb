@@ -12,9 +12,9 @@
       <div class="mt-2.5 space-y-1 text-[12px] text-slate-600">
         <div>
           <% if candidate.decided_by %>
-            Merged by <%= render "shared/actor", user: candidate.decided_by %> on <%= @version.created_at.strftime("%-d %b %Y") %>
+            Merged by <%= render "shared/actor", user: candidate.decided_by %> on <%= @version.published_at.strftime("%-d %b %Y") %>
           <% else %>
-            Published <%= @version.created_at.strftime("%-d %b %Y") %>
+            Published <%= @version.published_at.strftime("%-d %b %Y") %>
           <% end %>
         </div>
         <% if candidate.author %>

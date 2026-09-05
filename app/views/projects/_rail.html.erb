@@ -1,0 +1,40 @@
+<%# locals: (project:, tab:, versions:, candidates:, selected_version:, selected_candidate:) %>
+<%
+  segment = ->(active) do
+    base = "flex-1 py-1 text-center text-[12px] font-semibold"
+    active ? "#{base} bg-sky-700 text-white" : "#{base} text-slate-700 hover:bg-slate-50"
+  end
+  row = ->(active) do
+    base = "grid grid-cols-[3.5rem_minmax(0,1fr)] items-baseline gap-x-2 px-3.5 py-1.5 hover:bg-white"
+    active ? "#{base} bg-white sidebar-link-active" : base
+  end
+%>
+
+<aside class="sticky top-0 w-64 shrink-0 self-start border-r border-slate-400 py-3">
+  <nav class="mx-3 mb-2.5 flex divide-x divide-slate-400 overflow-hidden rounded-md border border-slate-400 bg-white">
+    <%= link_to project_path(project.name), class: segment.(tab == :releases) do %>
+      Releases <span class="font-mono font-normal opacity-75"><%= versions.size %></span>
+    <% end %>
+    <%= link_to project_path(project.name, tab: "candidates"), class: segment.(tab == :candidates) do %>
+      Candidates <span class="font-mono font-normal opacity-75"><%= candidates.size %></span>
+    <% end %>
+  </nav>
+
+  <% if tab == :releases %>
+    <% versions.each do |version| %>
+      <%= link_to project_path(project.name, version: version.name),
+            class: row.(version == selected_version) do %>
+        <span class="font-mono text-[14px] text-slate-900"><%= version.name %></span>
+        <span class="text-right font-mono text-[11px] tabular-nums text-slate-600"><%= version.candidate.decided_at.strftime("%-d %b %Y") %></span>
+      <% end %>
+    <% end %>
+  <% else %>
+    <% candidates.each do |candidate| %>
+      <%= link_to project_path(project.name, tab: "candidates", candidate: candidate.name),
+            class: row.(candidate == selected_candidate) do %>
+        <span class="font-mono text-[14px] text-slate-900"><%= candidate.name %></span>
+        <span class="text-right font-mono text-[11px] tabular-nums text-slate-600"><%= candidate.created_at.strftime("%-d %b %Y") %></span>
+      <% end %>
+    <% end %>
+  <% end %>
+</aside>

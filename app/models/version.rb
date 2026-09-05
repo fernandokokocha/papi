@@ -32,6 +32,13 @@ class Version < ApplicationRecord
     Schema::EntityReferences.new(entities).names_reaching(name).size > 1
   end
 
+  # A version's own created_at is when its draft was written, which is usually
+  # days before it shipped: Candidate::Merge stamps the candidate, not the
+  # version. A version reaches the world the moment its candidate is merged.
+  def published_at
+    candidate.decided_at if candidate.merged?
+  end
+
   def previous
     return Version.null_version(project) unless project
     project.versions.find_by(order: order - 1) || Version.null_version(project)

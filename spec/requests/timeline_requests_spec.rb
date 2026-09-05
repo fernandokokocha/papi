@@ -12,6 +12,10 @@ def feed
     document.text
   end
 
+  def rail
+    Nokogiri::HTML(response.body).css("aside")
+  end
+
   def merged_candidate(name)
     candidate = FactoryBot.create(:candidate, project: project, name: name, aasm_state: "merged",
                                   author: author, decided_by: reviewer, decided_at: Time.current)
@@ -53,6 +57,30 @@ def feed
 
     expect(feed).to include("rc1")
     expect(feed).not_to include("rc2")
+  end
+
+  it "keeps a candidate in the rail when a kind filter empties it" do
+    merged_candidate("rc1")
+    FactoryBot.create(:candidate, project: project, name: "rc2", author: author)
+    sign_in(author)
+
+    get project_timeline_path(project.name, kind: "merged")
+
+    expect(rail.text).to include("rc2")
+    expect(rail.css("a").map { |link| link["href"] })
+      .not_to include(project_timeline_path(project.name, kind: "merged", candidate: "rc2"))
+  end
+
+  it "keeps a kind in the rail when a candidate filter empties it" do
+    merged_candidate("rc1")
+    FactoryBot.create(:candidate, project: project, name: "rc2", author: author)
+    sign_in(author)
+
+    get project_timeline_path(project.name, candidate: "rc2")
+
+    expect(rail.text).to include("Merged")
+    expect(rail.css("a").map { |link| link["href"] })
+      .not_to include(project_timeline_path(project.name, kind: "merged", candidate: "rc2"))
   end
 
   it "is reachable from the project page, and leads back to it" do

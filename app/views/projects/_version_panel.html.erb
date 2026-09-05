@@ -1,0 +1,69 @@
+<%# locals: (project:, version:) %>
+<% candidate = version.candidate %>
+<% previous = version.previous %>
+<% threads = candidate.comments.count { |comment| comment.parent_id.nil? } %>
+
+<div class="flex max-w-4xl flex-col gap-5 px-8 py-6">
+  <div class="flex items-center gap-3.5">
+    <span class="font-mono text-[32px] font-bold tracking-tight text-slate-900"><%= version.name %></span>
+    <% if version == project.latest_version %>
+      <span class="rounded border border-sky-300 bg-sky-100 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.08em] text-sky-800">Current</span>
+    <% end %>
+    <%= link_to "Export OpenAPI", project_version_openapi_path(project_name: project.name, version_name: version.name),
+          data: { turbo: false },
+          class: "ml-auto rounded-md border border-slate-400 bg-white px-3 py-1.5 text-[13px] font-semibold text-slate-900 hover:bg-slate-50" %>
+  </div>
+
+  <%= link_to project_version_path(project.name, version.name),
+        class: "flex items-center gap-3 rounded-lg border border-sky-800 bg-sky-700 px-4.5 py-3 text-[15px] font-semibold text-white no-underline hover:bg-sky-800" do %>
+    <% if previous.persisted? %>
+      <span>See what changed since <span class="font-mono"><%= previous.name %></span></span>
+    <% else %>
+      <span>Open <span class="font-mono"><%= version.name %></span></span>
+    <% end %>
+    <svg class="ml-auto h-4.5 w-4.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+      <path d="M7.22 5.22a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 1 1-1.06-1.06L10.94 10 7.22 6.28a.75.75 0 0 1 0-1.06Z"/>
+    </svg>
+  <% end %>
+
+  <dl class="grid grid-cols-[7.75rem_minmax(0,1fr)] gap-x-4 gap-y-2.5 border-y border-slate-200 py-4 text-[12px] text-slate-600">
+    <dt class="text-[10px] font-bold uppercase tracking-[0.12em]">Published</dt>
+    <dd class="font-mono tabular-nums"><%= candidate.decided_at.strftime("%-d %b %Y") %></dd>
+
+    <dt class="text-[10px] font-bold uppercase tracking-[0.12em]">From candidate</dt>
+    <dd><%= link_to candidate.name, project_candidate_path(project.name, candidate.name), class: "font-mono font-semibold text-sky-700 hover:underline" %></dd>
+
+    <dt class="text-[10px] font-bold uppercase tracking-[0.12em]">Proposed by</dt>
+    <dd>
+      <% if candidate.author %>
+        <%= render "shared/actor", user: candidate.author %> on <%= candidate.created_at.strftime("%-d %b %Y") %>
+      <% else %>
+        —
+      <% end %>
+    </dd>
+
+    <dt class="text-[10px] font-bold uppercase tracking-[0.12em]">Merged by</dt>
+    <dd>
+      <% if candidate.decided_by %>
+        <%= render "shared/actor", user: candidate.decided_by %> on <%= candidate.decided_at.strftime("%-d %b %Y") %>
+      <% else %>
+        —
+      <% end %>
+    </dd>
+
+    <dt class="text-[10px] font-bold uppercase tracking-[0.12em]">Approved by</dt>
+    <dd><%= render "projects/approvers", approvers: candidate.approvers %></dd>
+
+    <dt class="text-[10px] font-bold uppercase tracking-[0.12em]">Conversation</dt>
+    <dd><%= threads.zero? ? "—" : pluralize(threads, "thread") %></dd>
+  </dl>
+
+  <div class="flex flex-col gap-2">
+    <span class="text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">Release notes</span>
+    <% if version.release_notes.present? %>
+      <div class="max-w-[68ch] whitespace-pre-line text-[13px] leading-relaxed text-slate-700"><%= version.release_notes %></div>
+    <% else %>
+      <span class="text-[13px] text-slate-300">—</span>
+    <% end %>
+  </div>
+</div>

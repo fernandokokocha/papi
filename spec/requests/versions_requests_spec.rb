@@ -13,7 +13,7 @@ describe "Version requests", type: :request do
   let(:decider) { FactoryBot.create :user, email_address: "decider@example.com", group: group }
 
   describe "#show" do
-    let(:candidate) { FactoryBot.create(:candidate, project: project) }
+    let(:candidate) { FactoryBot.create(:candidate, project: project, aasm_state: "merged") }
     let(:version) { FactoryBot.create(:version, candidate: candidate, project: project) }
 
     it "accepts users from the project group" do
@@ -53,6 +53,7 @@ describe "Version requests", type: :request do
     end
 
     it "grays the new candidate out while one is open" do
+      FactoryBot.create(:candidate, project: project, name: "rc-open", order: 2)
       sign_in(user)
       get project_version_path(project.name, version.name)
 

@@ -244,7 +244,7 @@ describe "Candidates requests", type: :request do
   end
 
   describe "#edit" do
-    let(:base_candidate) { FactoryBot.create(:candidate, name: "rc8", project: project) }
+    let(:base_candidate) { FactoryBot.create(:candidate, name: "rc8", project: project, aasm_state: "merged") }
     let(:base_version) { FactoryBot.create(:version, project: project, candidate: base_candidate, name: "base", order: 1) }
     let(:candidate) { FactoryBot.create(:candidate, name: "rc9", project: project, base_version: base_version) }
 
@@ -643,7 +643,7 @@ describe "Candidates requests", type: :request do
     end
 
     it "does not drop a fresh root-line comment on a removed entity" do
-      base_candidate = FactoryBot.create(:candidate, name: "rc8", project: project)
+      base_candidate = FactoryBot.create(:candidate, name: "rc8", project: project, aasm_state: "merged")
       base_version = FactoryBot.create(:version, project: project, candidate: base_candidate, name: "base", order: 1)
       removed_entity = FactoryBot.create(:entity, version: base_version, name: "User", root: "{ name: string }")
       candidate = FactoryBot.create(:candidate, name: "rc9", project: project, base_version: base_version)

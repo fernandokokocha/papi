@@ -1,7 +1,6 @@
 <% content_for :main_class, "w-full" %>
 
 <%
-  kinds = [ :opened, :commented, :approved, :merged, :rejected ]
   dot = {
     opened:    "bg-amber-500",
     commented: "bg-slate-400",
@@ -27,11 +26,14 @@
             class: "text-[12px] #{facet.(@kind.blank?)}" do %>
         All <span class="font-normal text-slate-500"><%= @kind_counts.values.sum %></span>
       <% end %>
-      <% kinds.each do |kind| %>
-        <% next unless @kind_counts[kind] %>
-        <%= link_to project_timeline_path(@project.name, kind: kind, candidate: @candidate_name),
-              class: "text-[12px] #{facet.(@kind == kind.to_s)}" do %>
-          <%= label[kind] %> <span class="font-normal text-slate-500"><%= @kind_counts[kind] %></span>
+      <% @kind_counts.each do |kind, count| %>
+        <% if count.zero? %>
+          <span class="border-b-2 border-transparent text-[12px] text-slate-400"><%= label[kind] %> 0</span>
+        <% else %>
+          <%= link_to project_timeline_path(@project.name, kind: kind, candidate: @candidate_name),
+                class: "text-[12px] #{facet.(@kind == kind.to_s)}" do %>
+            <%= label[kind] %> <span class="font-normal text-slate-500"><%= count %></span>
+          <% end %>
         <% end %>
       <% end %>
     </div>
@@ -43,20 +45,26 @@
         All <span class="font-normal text-slate-500"><%= @candidate_counts.values.sum %></span>
       <% end %>
       <% @candidate_counts.each do |name, count| %>
-        <%= link_to project_timeline_path(@project.name, kind: @kind, candidate: name),
-              class: "font-mono text-[12px] #{facet.(@candidate_name == name)}" do %>
-          <%= name %> <span class="font-sans font-normal text-slate-500"><%= count %></span>
+        <% if count.zero? %>
+          <span class="border-b-2 border-transparent font-mono text-[12px] text-slate-400"><%= name %> <span class="font-sans">0</span></span>
+        <% else %>
+          <%= link_to project_timeline_path(@project.name, kind: @kind, candidate: name),
+                class: "font-mono text-[12px] #{facet.(@candidate_name == name)}" do %>
+            <%= name %> <span class="font-sans font-normal text-slate-500"><%= count %></span>
+          <% end %>
         <% end %>
       <% end %>
     </div>
   </aside>
 
   <div class="min-w-0 flex-1 border-b border-slate-400 bg-white">
-    <% unless @events.empty? %>
+    <% @events.chunk_while { |before, after| before.at.to_date == after.at.to_date }.each do |day| %>
+      <div class="sticky top-0 z-10 border-y border-slate-200 bg-slate-100 px-6 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-slate-600">
+        <%= day.first.at.strftime("%-d %b %Y") %>
+      </div>
       <div class="divide-y divide-slate-200">
-        <% @events.each do |event| %>
-          <div class="flex items-baseline gap-3 px-6 py-2.5 hover:bg-slate-50">
-            <span class="w-20 shrink-0 text-[10px] font-bold uppercase tracking-[0.1em] text-slate-500"><%= label[event.verb] %></span>
+        <% day.each do |event| %>
+          <div class="flex items-baseline gap-3 px-6 py-2 hover:bg-slate-50">
             <span class="relative top-[-2px] h-2 w-2 shrink-0 rounded-full <%= dot[event.verb] %>"></span>
             <span class="min-w-0 flex-1 text-[13px] text-slate-700">
               <span class="font-medium text-slate-700"><%= event.actor&.email_address || "Someone" %></span>
@@ -68,7 +76,7 @@
                          class: "font-mono font-semibold text-sky-700 hover:underline" %>
               <% end %>
             </span>
-            <span class="shrink-0 text-[11px] text-slate-500"><%= event.at.strftime("%-d %b %Y, %H:%M") %></span>
+            <span class="shrink-0 font-mono text-[11px] tabular-nums text-slate-500"><%= event.at.strftime("%H:%M") %></span>
           </div>
         <% end %>
       </div>

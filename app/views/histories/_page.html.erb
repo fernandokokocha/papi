@@ -30,7 +30,7 @@
              class="flex h-7 items-center gap-2 pl-2 pr-2 hover:bg-white">
             <span class="h-1.5 w-1.5 shrink-0 rounded-full <%= dot[milestone.kind] %>"></span>
             <span class="truncate font-mono text-[12px] text-slate-800 [.sidebar-link-active_&]:font-semibold [.sidebar-link-active_&]:text-slate-900"><%= milestone.version.name %></span>
-            <span class="ml-auto shrink-0 text-[11px] text-slate-600"><%= milestone.version.created_at.strftime("%-d %b") %></span>
+            <span class="ml-auto shrink-0 text-[11px] text-slate-600"><%= milestone.version.published_at.strftime("%-d %b") %></span>
           </a>
         <% end %>
       </div>

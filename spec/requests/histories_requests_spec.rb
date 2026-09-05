@@ -8,9 +8,9 @@ describe "History requests", type: :request do
   let!(:another_group) { Group.create!(name: "Test group 2") }
   let!(:another_user) { User.create!(email_address: "test2@example.com", password: "password", group: another_group) }
 
-  let!(:candidate1) { FactoryBot.create(:candidate, name: "rc1", project: project, order: 1) }
+  let!(:candidate1) { FactoryBot.create(:candidate, name: "rc1", project: project, order: 1, aasm_state: "merged") }
   let!(:v1) { FactoryBot.create(:version, project: project, candidate: candidate1, name: "v1", order: 1) }
-  let!(:candidate2) { FactoryBot.create(:candidate, name: "rc2", project: project, order: 2, base_version: v1) }
+  let!(:candidate2) { FactoryBot.create(:candidate, name: "rc2", project: project, order: 2, base_version: v1, aasm_state: "merged") }
   let!(:v2) { FactoryBot.create(:version, project: project, candidate: candidate2, name: "v2", order: 2) }
 
   describe "entity history" do
