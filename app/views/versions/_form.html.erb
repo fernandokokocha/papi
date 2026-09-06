@@ -8,6 +8,8 @@
   <%= hidden_field_tag :base_version_id, base_version.id, id: nil %>
 <% end %>
 
+<%= render "schema_form/type_option_lists", blocks: blocks %>
+
 <div class="group [--pinned-offset:2.75rem]" data-sidebar="open"
      data-controller="sidebar ops-lock ops-metrics"
      data-ops-lock-form-id-value="<%= SchemaForm::FORM_ID %>"

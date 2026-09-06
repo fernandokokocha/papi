@@ -193,6 +193,38 @@ rendered, so the key formula can change freely. Its derived id
 it and the turbo streams that target it — `sidebar_count_dom_id` is the only
 thing keeping the two spellings in step, so both sides go through it.
 
+## The candidate form
+
+The form is the state. Nothing is stored server-side while it is open: every
+schema block, endpoint and auth method posts itself with each op
+(`SchemaForm::Blocks.from` and friends rebuild the world from params), and the
+server stays a function. A draft table and a JS mirror of the grammar were both
+weighed and declined — the editing audience is authors, who absorb latency
+knowingly; the reading surfaces are the ones that may not be slow.
+
+**An op answers with the cards it can have moved, not with the form.** The test
+is the entity reference graph: `SchemaForm::Blocks#reference_map` is read before
+and after the op, and if it changed the op rewires what every card may name, so
+the whole form is the answer. If it did not, only `Blocks#touched_by` is — the
+edited block, plus, for an entity, every card that reaches it, because `Diff`
+descends through a reference. The sidebars and the submit bar are re-read
+whatever the op, at a fortieth of what the cards cost.
+
+**So a card may only draw from its own block, the base version, and things that
+move the graph.** Give a card something to render that depends on another
+card's state and nothing fails — the answer is simply stale, on the screen,
+with no error. That is the trap. A new op, or a new thing a card renders, has
+to be checked against it: when in doubt, answer globally.
+
+**A type select carries one option and a pointer to its list.** The page renders
+a handful of `<template>`s in `#type_options` — one per entity, narrowed by the
+names that would close a circle, and two for the schemas, since a root may also
+be nothing — and `type_select_controller.js` copies the one the select names on
+first open. The server still decides everything, including which names a
+one-of's sibling has taken (`data-type-select-taken-value`); the controller only
+copies. `#type_options` moves exactly when the graph does, so it rides with the
+global answer and never with a narrow one.
+
 ## Frontend
 
 **All JavaScript is Stimulus, loaded through importmap.** There is no bundler

@@ -1,25 +1,9 @@
+<%# locals: (row:, source:, url:, css:) %>
 <select class="<%= css %>" aria-label="Type" form="<%= SchemaForm::OPS_FORM_ID %>"
-        data-controller="schema-edit"
+        data-controller="schema-edit type-select"
         data-schema-edit-url-value="<%= url %>"
-        data-action="change->schema-edit#submit">
-  <% if nothing %>
-    <option <%= "selected" if row.type == SchemaForm::Operation::NOTHING %>><%= SchemaForm::Operation::NOTHING %></option>
-  <% end %>
-  <optgroup label="Primitive">
-    <% (Schema::Parser::PRIMITIVE_KINDS - row.taken).each do |kind| %>
-      <option <%= "selected" if kind == row.type %>><%= kind %></option>
-    <% end %>
-  </optgroup>
-  <optgroup label="Structure">
-    <% SchemaForm::Operation::STRUCTURES.each do |structure| %>
-      <option <%= "selected" if structure == row.type %>><%= structure %></option>
-    <% end %>
-  </optgroup>
-  <% if (referenceable_names - row.taken).any? %>
-    <optgroup label="Entity">
-      <% (referenceable_names - row.taken).each do |entity_name| %>
-        <option <%= "selected" if entity_name == row.type %>><%= entity_name %></option>
-      <% end %>
-    </optgroup>
-  <% end %>
+        data-type-select-source-value="<%= source %>"
+        data-type-select-taken-value="<%= row.taken.join(",") %>"
+        data-action="change->schema-edit#submit pointerdown->type-select#fill focus->type-select#fill">
+  <option selected><%= row.type %></option>
 </select>

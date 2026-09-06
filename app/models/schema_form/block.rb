@@ -1,10 +1,14 @@
 class SchemaForm::Block
-  attr_reader :id, :field, :notes_field, :name, :root, :notes, :removed, :added
+  ENDPOINT_KEY = /\Aendpoint_(?:input|output)_(\d+)/
 
-  def initialize(id:, field:, name:, root:, notes_field: nil, notes: [], removed: false, added: false)
+  attr_reader :id, :field, :notes_field, :name_field, :name, :root, :notes, :removed, :added
+
+  def initialize(id:, field:, name:, root:, notes_field: nil, name_field: nil, notes: [], removed: false,
+                 added: false)
     @id = id
     @field = field
     @notes_field = notes_field
+    @name_field = name_field
     @name = name
     @root = root
     @notes = notes
@@ -18,6 +22,12 @@ class SchemaForm::Block
 
   def belongs_to_endpoint?(key)
     id == SchemaForm::Blocks.input_id(key) || id.start_with?(SchemaForm::Blocks.output_id(key, ""))
+  end
+
+  # An entity block is a card of its own; a schema block draws inside the card
+  # of the endpoint whose key it was stamped with.
+  def endpoint_key
+    id[ENDPOINT_KEY, 1]
   end
 
   def note_at(path)
@@ -45,14 +55,14 @@ class SchemaForm::Block
     copy(removed: removed)
   end
 
-  def at_slot(id, field, notes_field)
-    copy(id: id, field: field, notes_field: notes_field)
+  def at_slot(id:, field:, name_field:, notes_field:)
+    copy(id: id, field: field, name_field: name_field, notes_field: notes_field)
   end
 
   private
 
   def copy(**changes)
-    self.class.new(**{ id: id, field: field, notes_field: notes_field, name: name, root: root, notes: notes,
-                       removed: removed, added: added }, **changes)
+    self.class.new(**{ id: id, field: field, notes_field: notes_field, name_field: name_field, name: name,
+                       root: root, notes: notes, removed: removed, added: added }, **changes)
   end
 end

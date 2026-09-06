@@ -272,7 +272,7 @@ end
   end
 
   def entity_blocks(notes = {})
-    { "entity_root_0" => { field: "version[entities_attributes][0][root]",
+    { "entity_root_0" => { field: "version[entities_attributes][0][root]", name_field: "version[entities_attributes][0][name]",
                            notes_field: "version[entities_attributes][0][schema_notes_attributes]",
                            name: "Customer", root: "{id:number,name:string}", notes: notes } }
   end
@@ -334,8 +334,8 @@ end
                             query_params: { "0" => { name: "expand", kind: "boolean" } },
                             responses: { "200" => { note: "The customer." }, "404" => { note: "No such customer." } } } },
       blocks: {
-        "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Customer", root: "{id:number,name:string}" },
-        "entity_root_1" => { field: "version[entities_attributes][1][root]", name: "Order", root: "{customer:Customer,total:number}" },
+        "entity_root_0" => { field: "version[entities_attributes][0][root]", name_field: "version[entities_attributes][0][name]", name: "Customer", root: "{id:number,name:string}" },
+        "entity_root_1" => { field: "version[entities_attributes][1][root]", name_field: "version[entities_attributes][1][name]", name: "Order", root: "{customer:Customer,total:number}" },
         "endpoint_input_0" => { field: "version[endpoints_attributes][][input]", root: "" },
         "endpoint_output_0_200" => { field: "version[endpoints_attributes][][responses][200][output]", root: "Customer" },
         "endpoint_output_0_404" => { field: "version[endpoints_attributes][][responses][404][output]", root: "" }
@@ -388,7 +388,7 @@ end
     with_forgery_protection do
       post schema_edit_path, params: {
         authenticity_token: token,
-        blocks: { "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Customer", root: "{id:number}" } },
+        blocks: { "entity_root_0" => { field: "version[entities_attributes][0][root]", name_field: "version[entities_attributes][0][name]", name: "Customer", root: "{id:number}" } },
         id: "entity_root_0", op: "change_type", path: [ "id" ], value: "string"
       }
     end

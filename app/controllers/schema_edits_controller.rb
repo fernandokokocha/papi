@@ -5,17 +5,18 @@ class SchemaEditsController < ApplicationController
     when "drop_entity" then render_entities(blocks.dropping(params[:id]))
     when "remove_entity" then render_entities(blocks.removing(params[:id]))
     when "restore_entity" then render_entities(blocks.restoring(params[:id]))
-    when "endpoint" then render_endpoints(endpoints)
+    when "endpoint" then render_endpoint_edit(endpoints)
     when "add_endpoint" then add_endpoint
-    when "drop_endpoint" then render_endpoints(endpoints.dropping(key), blocks.dropping_endpoint(key))
-    when "remove_endpoint" then render_endpoints(endpoints.removing(key), blocks.removing_endpoint(key))
-    when "restore_endpoint" then render_endpoints(endpoints.restoring(key), blocks.restoring_endpoint(key))
-    when "add_query_param" then render_endpoints(endpoints.adding_query_param(key))
-    when "drop_query_param" then render_endpoints(endpoints.dropping_query_param(key, query_position))
-    when "toggle_query_param" then render_endpoints(endpoints.toggling_query_param(key, query_position))
+    when "drop_endpoint" then render_form(endpoints.dropping(key), blocks.dropping_endpoint(key))
+    when "remove_endpoint" then render_form(endpoints.removing(key), blocks.removing_endpoint(key))
+    when "restore_endpoint" then render_form(endpoints.restoring(key), blocks.restoring_endpoint(key))
+    when "add_query_param" then render_endpoint_edit(endpoints.adding_query_param(key))
+    when "drop_query_param" then render_endpoint_edit(endpoints.dropping_query_param(key, query_position))
+    when "toggle_query_param" then render_endpoint_edit(endpoints.toggling_query_param(key, query_position))
     when "add_response" then add_response
-    when "drop_response" then render_endpoints(endpoints.dropping_response(key, params[:code]))
-    when "note" then render_entities(blocks.noting(params[:id], params[:note], params[:value].to_s))
+    when "drop_response" then render_endpoint_edit(endpoints.dropping_response(key, params[:code]),
+                                                   blocks.dropping_output(key, params[:code]))
+    when "note" then render_block_edit(blocks.noting(params[:id], params[:note], params[:value].to_s))
     when "auth" then render_auth_methods(auth_methods)
     when "add_auth_method" then add_auth_method
     when "drop_auth_method" then render_auth_methods(auth_methods.dropping(position))
@@ -110,17 +111,16 @@ class SchemaEditsController < ApplicationController
 
   # An entity the form no longer holds is one an input may no longer name, and
   # a new one is a name every input may take from now on, so the endpoints are
-  # answered along with the entities. The same holds of the auth methods.
+  # answered along with the entities. It reads the other way too: an endpoint
+  # that goes takes its references with it, and the entity it was the last to
+  # name becomes one the form will now offer to remove.
+  def render_form(edited_endpoints = endpoints, edited_blocks = blocks, asking: nil, landed: nil)
+    render turbo_stream: form_streams(endpoints: edited_endpoints, blocks: edited_blocks,
+                                      asking: asking, landed: landed) + menu_stream(asking)
+  end
+
   def render_entities(edited, asking: nil, landed: nil)
-    render turbo_stream: [
-      turbo_stream.replace("entities", partial: "entities/form_list",
-                           locals: { blocks: edited, base: base_version, landed: landed }),
-      turbo_stream.replace("entities_nav", partial: "entities/form_nav",
-                           locals: { blocks: edited, checks: checks_for(blocks: edited),
-                                     asking: asking_for("entities_nav", asking) }),
-      *endpoints_stream(blocks: edited),
-      *menu_stream(asking)
-    ]
+    render_form(endpoints, edited, asking: asking, landed: landed)
   end
 
   def render_auth_methods(edited, asking: nil, landed: nil)
@@ -140,8 +140,7 @@ class SchemaEditsController < ApplicationController
   def add_response
     code = params[:new_response][key]
 
-    render turbo_stream: endpoints_stream(endpoints: endpoints.adding_response(key, code),
-                                          blocks: blocks.adding_output(key, code))
+    render_endpoint_edit(endpoints.adding_response(key, code), blocks.adding_output(key, code))
   end
 
   # An endpoint arrives with an input of its own, and it is nothing until the
@@ -153,34 +152,48 @@ class SchemaEditsController < ApplicationController
     twin = endpoints.removed_twin(http_verb, path)
 
     if error
-      asked = asking("endpoint", value: path, verb: http_verb, error: error)
-      render turbo_stream: endpoints_stream(asking: asked) + menu_stream(asked)
+      render_form(asking: asking("endpoint", value: path, verb: http_verb, error: error))
     elsif twin
-      render turbo_stream: endpoints_stream(endpoints: endpoints.restoring(twin.key),
-                                            blocks: blocks.restoring_endpoint(twin.key),
-                                            landed: twin.key) + menu_stream(nil)
+      render_form(endpoints.restoring(twin.key), blocks.restoring_endpoint(twin.key), landed: twin.key)
     else
       added = endpoints.next_key
-      render turbo_stream: endpoints_stream(endpoints: endpoints.adding(added, http_verb, path),
-                                            blocks: blocks.adding_endpoint(added),
-                                            landed: added) + menu_stream(nil)
+      render_form(endpoints.adding(added, http_verb, path), blocks.adding_endpoint(added), landed: added)
     end
   end
 
-  def render_endpoints(edited, edited_blocks = blocks)
-    render turbo_stream: endpoints_stream(endpoints: edited, blocks: edited_blocks)
+  # What a type select may offer moves only when the entities do, which is the
+  # same thing that makes an op global — so the lists are re-read here and
+  # nowhere else.
+  def form_streams(endpoints: self.endpoints, blocks: self.blocks, asking: nil, landed: nil)
+    [
+      turbo_stream.replace("type_options", partial: "schema_form/type_option_lists", locals: { blocks: blocks }),
+      turbo_stream.replace("entities", partial: "entities/form_list",
+                           locals: { blocks: blocks, base: base_version, landed: landed })
+    ] + endpoints_stream(endpoints: endpoints, blocks: blocks, asking: asking, landed: landed)
   end
 
   def endpoints_stream(endpoints: self.endpoints, auth_methods: self.auth_methods, blocks: self.blocks,
                        asking: nil, landed: nil)
-    checks = checks_for(endpoints: endpoints, auth_methods: auth_methods, blocks: blocks)
     [
       turbo_stream.replace("endpoints", partial: "endpoints/form_list",
                            locals: { endpoints: endpoints, auth_methods: auth_methods, blocks: blocks,
-                                     base: base_version, landed: landed }),
+                                     base: base_version, landed: landed })
+    ] + nav_streams(endpoints: endpoints, auth_methods: auth_methods, blocks: blocks, asking: asking)
+  end
+
+  # Both sidebar lists annotate every card with what changed in it, and the
+  # submit bar answers for the form as a whole, so all three are re-read
+  # however narrow the edit that prompted them was. They cost a fortieth of
+  # what the cards do.
+  def nav_streams(endpoints: self.endpoints, auth_methods: self.auth_methods, blocks: self.blocks, asking: nil)
+    checks = checks_for(endpoints: endpoints, auth_methods: auth_methods, blocks: blocks)
+    [
       turbo_stream.replace("endpoints_nav", partial: "endpoints/form_nav",
                            locals: { endpoints: endpoints, checks: checks,
                                      asking: asking_for("endpoints_nav", asking) }),
+      turbo_stream.replace("entities_nav", partial: "entities/form_nav",
+                           locals: { blocks: blocks, checks: checks,
+                                     asking: asking_for("entities_nav", asking) }),
       turbo_stream.replace("submit_bar", partial: "versions/submit_bar", locals: { checks: checks })
     ]
   end
@@ -194,6 +207,41 @@ class SchemaEditsController < ApplicationController
     root = SchemaForm::Operation.new(blocks.parse(block), blocks.version.entities)
       .apply(params[:op], Array(params[:path]), params[:value])
 
-    render_entities(blocks.replacing(block.id, root.serialize))
+    render_block_edit(blocks.replacing(block.id, root.serialize))
+  end
+
+  def render_block_edit(edited)
+    render_narrowly(endpoints, edited) { |narrowed| narrowed.touched_by(narrowed.fetch(params[:id])) }
+  end
+
+  # An endpoint's own fields — its verb, path, params, auth, notes — are drawn
+  # nowhere but its card, and adding or dropping a response moves nothing
+  # outside it either unless the schema that went named an entity.
+  def render_endpoint_edit(edited_endpoints, edited_blocks = blocks)
+    render_narrowly(edited_endpoints, edited_blocks) { |narrowed| narrowed.for_endpoint(key) }
+  end
+
+  # Rewiring the reference graph moves what every card may name and how every
+  # card naming it reads, so that is answered with the whole form. An edit that
+  # leaves the graph where it was reaches no further than the cards drawing the
+  # blocks it touched, and re-rendering the other ninety costs a megabyte of
+  # markup to say nothing.
+  def render_narrowly(edited_endpoints, edited_blocks)
+    return render_form(edited_endpoints, edited_blocks) if blocks.reference_map != edited_blocks.reference_map
+
+    render turbo_stream: card_streams(edited_endpoints, edited_blocks, yield(edited_blocks)) +
+      nav_streams(endpoints: edited_endpoints, blocks: edited_blocks)
+  end
+
+  def card_streams(edited_endpoints, edited_blocks, touched)
+    touched.select(&:entity?).map do |block|
+      turbo_stream.replace("form-entity-#{block.id}", partial: "entities/form_card",
+                           locals: { blocks: edited_blocks, block: block, base: base_version })
+    end +
+      touched.filter_map(&:endpoint_key).uniq.map do |endpoint_key|
+        turbo_stream.replace("form-endpoint-#{endpoint_key}", partial: "endpoints/form_card",
+                             locals: { endpoint: edited_endpoints.find { |e| e.key == endpoint_key },
+                                       blocks: edited_blocks, auth_methods: auth_methods, base: base_version })
+      end
   end
 end

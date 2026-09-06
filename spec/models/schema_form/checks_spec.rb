@@ -79,8 +79,8 @@ describe SchemaForm::Checks do
   # that would close one.
   it "names entities that reference each other in a circle" do
     circular = SchemaForm::Blocks.from(
-      "entity_root_0" => { field: "version[entities_attributes][0][root]", name: "Customer", root: "{order:Order}" },
-      "entity_root_1" => { field: "version[entities_attributes][1][root]", name: "Order", root: "{customer:Customer}" }
+      "entity_root_0" => { field: "version[entities_attributes][0][root]", name_field: "version[entities_attributes][0][name]", name: "Customer", root: "{order:Order}" },
+      "entity_root_1" => { field: "version[entities_attributes][1][root]", name_field: "version[entities_attributes][1][name]", name: "Order", root: "{customer:Customer}" }
     )
 
     expect(said(checks(blocks: circular))).to include("Customer → Order → Customer reference each other in a circle")

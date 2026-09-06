@@ -1,0 +1,7 @@
+<%# locals: (blocks:) %>
+<div id="type_options">
+  <% blocks.type_option_lists.each do |id, referenceable_names, nothing| %>
+    <template id="<%= id %>"><%= render "schema_form/type_options",
+                referenceable_names: referenceable_names, nothing: nothing %></template>
+  <% end %>
+</div>

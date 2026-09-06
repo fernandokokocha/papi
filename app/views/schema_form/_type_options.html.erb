@@ -1,0 +1,21 @@
+<%# locals: (referenceable_names:, nothing:) %>
+<% if nothing %>
+  <option><%= SchemaForm::Operation::NOTHING %></option>
+<% end %>
+<optgroup label="Primitive">
+  <% Schema::Parser::PRIMITIVE_KINDS.each do |kind| %>
+    <option><%= kind %></option>
+  <% end %>
+</optgroup>
+<optgroup label="Structure">
+  <% SchemaForm::Operation::STRUCTURES.each do |structure| %>
+    <option><%= structure %></option>
+  <% end %>
+</optgroup>
+<% if referenceable_names.any? %>
+  <optgroup label="Entity">
+    <% referenceable_names.each do |entity_name| %>
+      <option><%= entity_name %></option>
+    <% end %>
+  </optgroup>
+<% end %>

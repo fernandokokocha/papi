@@ -1,8 +1,11 @@
+<%# locals: (endpoint:, blocks:, auth_methods:, base:, landed: nil) %>
 <% ops = SchemaForm::OPS_FORM_ID %>
 <% key = endpoint.key %>
+<% base_endpoint = base.endpoints.find { |record| record.identity_name == endpoint.identity_name } %>
+<% live_auth_methods = auth_methods.reject(&:removed) %>
 <% op_url = ->(op, **rest) { schema_edit_path(op: op, index: key, **rest) } %>
 <% field = ->(name) { "endpoints[#{key}]#{name}" } %>
-<% chosen = auth_methods.find { |auth_method| auth_method.name == endpoint.auth } %>
+<% chosen = live_auth_methods.find { |auth_method| auth_method.name == endpoint.auth } %>
 <% input = blocks.input_for(key) %>
 <% removed = endpoint.removed %>
 <% added = base_endpoint.nil? && !removed %>
@@ -44,7 +47,7 @@
 <% show_query = !removed || endpoint.query_params.any? %>
 
 <div id="form-endpoint-<%= key %>" data-sidebar-target="card"
-     data-controller="<%= "landing" if landed %>"
+     data-controller="<%= "landing" if landed == key %>"
      class="group grid grid-cols-2 gap-x-2 scroll-mt-[var(--pinned-offset)]">
   <% if removed %>
     <%= hidden_field_tag field.("[http_verb]"), endpoint.http_verb, id: nil, form: ops %>
@@ -220,7 +223,7 @@
               data-action="change->schema-edit#submit"
               class="field-sizing-content cursor-pointer appearance-none rounded bg-slate-200 px-1 font-mono text-[12px] leading-[18px] text-slate-700 ring-1 ring-inset ring-slate-400 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-600">
         <option value="">none</option>
-        <% auth_methods.each do |auth_method| %>
+        <% live_auth_methods.each do |auth_method| %>
           <option <%= "selected" if auth_method == chosen %>><%= auth_method.name %></option>
         <% end %>
       </select>

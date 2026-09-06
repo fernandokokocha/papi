@@ -4,10 +4,13 @@
 # here and both go into the version this form cuts.
 class SchemaForm::Blocks
   NEW_ROOT = "string".freeze
+  SCHEMA_TYPES = "types_schema".freeze
+  SCHEMA_TYPES_WITH_NOTHING = "types_schema_nothing".freeze
 
   def self.from(submitted)
     new((submitted || {}).each_pair.map do |id, attributes|
       SchemaForm::Block.new(id: id, field: attributes[:field], notes_field: attributes[:notes_field],
+                            name_field: attributes[:name_field],
                             name: attributes[:name], root: attributes[:root],
                             notes: SchemaForm::Note.from(attributes[:notes]),
                             removed: attributes[:removed].present?, added: attributes[:added].present?)
@@ -101,6 +104,14 @@ class SchemaForm::Blocks
     self.class.new(@blocks.reject { |block| block.belongs_to_endpoint?(key) })
   end
 
+  def dropping_output(key, code)
+    self.class.new(@blocks.reject { |block| block.id == self.class.output_id(key, code) })
+  end
+
+  def for_endpoint(key)
+    @blocks.select { |block| block.belongs_to_endpoint?(key) }
+  end
+
   def removing_endpoint(key)
     mapping_endpoint(key) { |block| block.with_removed(true) }
   end
@@ -157,17 +168,56 @@ class SchemaForm::Blocks
       next block unless block.entity?
 
       slot += 1
-      block.at_slot("entity_root_#{slot}", "version[entities_attributes][#{slot}][root]",
-                    "version[entities_attributes][#{slot}][schema_notes_attributes]")
+      block.at_slot(id: "entity_root_#{slot}",
+                    field: "version[entities_attributes][#{slot}][root]",
+                    name_field: "version[entities_attributes][#{slot}][name]",
+                    notes_field: "version[entities_attributes][#{slot}][schema_notes_attributes]")
     end)
   end
 
+  # Which entity each block names is what decides how far an edit reaches, so
+  # the two readings of it — before the op and after — are what the answer is
+  # chosen by.
+  def reference_map
+    @blocks.to_h { |block| [ block.id, parse(block).entity_names.uniq.sort ] }
+  end
+
+  # A diff descends through a reference, so an entity's own card is not the
+  # only one its edit redraws: everything naming that entity, or naming
+  # something that names it, reads differently now.
+  def touched_by(block)
+    return [ block ] unless block.entity?
+
+    reaching = Schema::EntityReferences.new(all_records).names_reaching(block.name).to_set
+    @blocks.select do |other|
+      other.entity? ? reaching.include?(other.name) : parse(other).entity_names.any? { |name| reaching.include?(name) }
+    end
+  end
+
   def locals_for(block)
-    { root: parse(block), block: block, referenceable_names: referenceable_names(block), nothing: !block.entity? }
+    { root: parse(block), block: block, nothing: !block.entity? }
   end
 
   def referenceable_names(block)
     version.referenceable_entity_names(block.name)
+  end
+
+  # Every type select on the page chooses from one of a handful of lists: one
+  # per entity, narrowed by the names that would close a circle around it, and
+  # one for the schemas, which no circle threatens — twice over, because a
+  # schema's root may also be nothing. They are rendered once for the page and
+  # pointed at, rather than stamped into three hundred and eighty selects.
+  def type_option_lists
+    entities.reject(&:removed).map do |block|
+      [ self.class.type_options_id(block, false), referenceable_names(block), false ]
+    end + [ [ SCHEMA_TYPES, version.referenceable_entity_names(nil), false ],
+            [ SCHEMA_TYPES_WITH_NOTHING, version.referenceable_entity_names(nil), true ] ]
+  end
+
+  def self.type_options_id(block, offers_nothing)
+    return "types_#{block.id}" if block.entity?
+
+    offers_nothing ? SCHEMA_TYPES_WITH_NOTHING : SCHEMA_TYPES
   end
 
   def referenced?(block)

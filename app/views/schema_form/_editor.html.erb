@@ -1,11 +1,14 @@
+<%# locals: (root:, block:, nothing:) %>
 <% op_url = ->(op, row, value = nil) { schema_edit_path(id: block.id, op: op, path: row.path, value: value) } %>
 <% ops = SchemaForm::OPS_FORM_ID %>
+<% rows = SchemaForm::Rows.for(root) %>
+<% source = ->(row) { SchemaForm::Blocks.type_options_id(block, nothing && row.path.empty?) } %>
 <div id="<%= block.id %>" class="overflow-hidden rounded-md bg-slate-50 py-2 ring-1 ring-inset ring-slate-200">
   <%= hidden_field_tag block.field, root.serialize, id: nil %>
   <%= render "schema_form/notes", name: block.notes_field, notes: block.notes %>
   <%= render "schema_form/ops_fields", block: block %>
   <% number = 0 %>
-  <% SchemaForm::Rows.for(root).each_with_index do |row, index| %>
+  <% rows.each_with_index do |row, index| %>
     <% number += 1 if row.numbered? %>
     <div class="group/row flex min-h-[18px] items-center pr-2.5 hover:bg-white">
       <span class="w-8 shrink-0 select-none pr-2 text-right font-mono text-[11px] leading-[18px] text-slate-500"><%= number if row.numbered? %></span>
@@ -33,14 +36,12 @@
         <% if row.bracket %>
           <span class="relative inline-flex">
             <span class="rounded px-0.5 font-mono text-[12px] leading-[18px] text-slate-700 ring-1 ring-transparent group-hover/row:ring-slate-400"><%= row.bracket %></span>
-            <%= render "schema_form/type_select", row: row, referenceable_names: referenceable_names,
-                       nothing: nothing && row.path.empty?,
+            <%= render "schema_form/type_select", row: row, source: source.(row),
                        url: op_url.("change_type", row, "__VALUE__"),
                        css: "absolute inset-0 cursor-pointer opacity-0" %>
           </span>
         <% elsif row.type %>
-          <%= render "schema_form/type_select", row: row, referenceable_names: referenceable_names,
-                     nothing: nothing && row.path.empty?,
+          <%= render "schema_form/type_select", row: row, source: source.(row),
                      url: op_url.("change_type", row, "__VALUE__"),
                      css: "field-sizing-content cursor-pointer appearance-none rounded px-1 font-mono text-[12px] leading-[18px] ring-1 ring-inset focus:outline-none focus:ring-2 focus:ring-sky-600 #{type_tint(row.type)}" %>
         <% end %>

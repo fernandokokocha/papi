@@ -1,4 +1,9 @@
+<%# locals: (blocks:, block:, base:, landed: nil) %>
 <% ops = SchemaForm::OPS_FORM_ID %>
+<% root = blocks.parse(block) %>
+<% record = blocks.record_for(block) %>
+<% base_entity = base.entities.find { |entity| entity.identity_name == block.name } %>
+<% referenced = blocks.referenced?(block) %>
 <% removed = block.removed %>
 <% added = base_entity.nil? && !removed %>
 <% diff = Diff::FromValues.new(base_entity.parsed_root, root) if base_entity && !removed %>
@@ -24,13 +29,13 @@
      "border-x border-b border-violet-400"
    end %>
 <div id="form-entity-<%= block.id %>" data-sidebar-target="card"
-     data-controller="<%= "landing" if landed %>"
+     data-controller="<%= "landing" if landed == block.name %>"
      class="group grid grid-cols-2 gap-x-2 scroll-mt-[var(--pinned-offset)]">
   <% if removed %>
     <%= render "schema_form/ops_fields", block: block %>
     <%= hidden_field_tag "blocks[#{block.id}][removed]", "1", id: nil, form: ops %>
   <% else %>
-    <%= hidden_field_tag "version[entities_attributes][#{index}][name]", block.name, id: nil %>
+    <%= hidden_field_tag block.name_field, block.name, id: nil %>
     <% if block.added %>
       <%= hidden_field_tag "blocks[#{block.id}][added]", "1", id: nil, form: ops %>
     <% end %>
@@ -66,8 +71,7 @@
     <% if removed %>
       <%= render "endpoints/schema", lines: root.to_diff(:no_change), tints: false %>
     <% else %>
-      <%= render "schema_form/editor", root: root, block: block, nothing: false,
-                 referenceable_names: referenceable_names %>
+      <%= render "schema_form/editor", root: root, block: block, nothing: false %>
     <% end %>
   </div>
 </div>
