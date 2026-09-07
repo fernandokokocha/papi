@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Papi</title>
+    <link><%= posts_url %></link>
+    <atom:link href="<%= posts_url(format: :rss) %>" rel="self" type="application/rss+xml"/>
+    <description>Notes on building an API specification tool.</description>
+    <language>en</language>
+    <% @posts.each do |post| %>
+      <item>
+        <title><%= post.title %></title>
+        <link><%= post_url(post.slug) %></link>
+        <guid isPermaLink="true"><%= post_url(post.slug) %></guid>
+        <pubDate><%= post.date.to_time.rfc822 %></pubDate>
+        <description><%= post.summary %></description>
+      </item>
+    <% end %>
+  </channel>
+</rss>

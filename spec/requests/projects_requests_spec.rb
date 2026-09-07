@@ -19,7 +19,7 @@ describe "Projects requests", type: :request do
       FactoryBot.create(:approval, candidate: open_candidate, user: teammate)
       sign_in(user)
 
-      get root_path
+      get projects_path
 
       expect(response.body).to include("proj")
       expect(response.body).to include(project_version_path(project.name, "v1"))
@@ -32,7 +32,7 @@ describe "Projects requests", type: :request do
       FactoryBot.create(:project, name: "quiet", group: group)
       sign_in(user)
 
-      get root_path
+      get projects_path
 
       expect(response.body).to include("quiet")
       expect(response.body).to include("—")
@@ -159,7 +159,7 @@ describe "Projects requests", type: :request do
       post projects_path, params: { project: { name: "Test Project", group_id: another_group.id } }
       expect(Project.count).to eq(0)
       expect(response.status).to eq(302)
-      expect(response).to redirect_to('/')
+      expect(response).to redirect_to('/projects')
       expect(flash[:alert]).to eq('You are not authorized to perform this action.')
     end
   end

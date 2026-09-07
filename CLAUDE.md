@@ -250,6 +250,10 @@ picks up `@x` from the rendering controller and prefills itself.
 **Design.** `/design-preview` (`app/views/design_preview/show.html.erb`) is the
 palette, rendered. Read it rather than a written spec.
 
+`/design-preview` covers the **app surface only**. The landing page, About and the
+blog are not represented there and are not meant to be — they are a different
+density with their own type scale, and they are reviewed by looking at them.
+
 **It is part of the change, not a follow-up.** A change to the visual language —
 a new element type, a colour or size retired, a treatment unified, a component
 restyled — is finished when the preview shows it. Leaving it stale is how the

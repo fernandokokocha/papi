@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-.logotype {
+.logotype, .display {
   font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   font-weight: 700;
 }
@@ -107,3 +107,66 @@ body {
   background: var(--color-slate-300);
   color: var(--color-slate-600);
 }
+
+/* ── Public pages: long-form prose ── */
+
+.prose { color: var(--color-slate-700); font-size: 16px; line-height: 1.7; }
+.prose > * + * { margin-top: 1.1em; }
+
+.prose h2, .prose h3 {
+  font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  color: var(--color-slate-900);
+  letter-spacing: -0.01em;
+  margin-top: 2em;
+}
+.prose h2 { font-size: 24px; }
+.prose h3 { font-size: 19px; }
+
+.prose a { color: var(--color-sky-700); }
+.prose strong { color: var(--color-slate-900); }
+
+.prose ul, .prose ol { padding-left: 1.4em; }
+.prose ul { list-style: disc; }
+.prose ol { list-style: decimal; }
+.prose li + li { margin-top: 0.35em; }
+
+.prose blockquote {
+  border-left: 2px solid var(--color-slate-200);
+  padding-left: 1em;
+  color: var(--color-slate-600);
+}
+
+.prose code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.875em;
+  background: var(--color-slate-100);
+  padding: 0.1em 0.35em;
+  border-radius: 3px;
+}
+
+/* ── Code blocks (kramdown + rouge, HTML formatter) ── */
+
+.prose .highlighter-rouge {
+  white-space: pre;
+  overflow-x: auto;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 13px;
+  line-height: 1.65;
+  background: var(--color-slate-50);
+  border: 1px solid var(--color-slate-400);
+  border-radius: 4px;
+  padding: 1em 1.1em;
+  color: var(--color-slate-800);
+}
+.prose .highlighter-rouge code { background: none; padding: 0; font-size: inherit; }
+
+.highlighter-rouge .c, .highlighter-rouge .c1, .highlighter-rouge .cm { color: var(--color-slate-500); font-style: italic; }
+.highlighter-rouge .k, .highlighter-rouge .kd, .highlighter-rouge .kn, .highlighter-rouge .kp { color: var(--color-sky-800); font-weight: 600; }
+.highlighter-rouge .s, .highlighter-rouge .s1, .highlighter-rouge .s2, .highlighter-rouge .sb, .highlighter-rouge .se { color: var(--color-emerald-700); }
+.highlighter-rouge .mi, .highlighter-rouge .mf, .highlighter-rouge .m { color: var(--color-amber-700); }
+.highlighter-rouge .no, .highlighter-rouge .nc, .highlighter-rouge .nn { color: var(--color-sky-900); }
+.highlighter-rouge .nl { color: var(--color-sky-800); }
+.highlighter-rouge .nf { color: var(--color-slate-900); font-weight: 600; }
+.highlighter-rouge .o, .highlighter-rouge .p { color: var(--color-slate-500); }
+.highlighter-rouge .nb, .highlighter-rouge .bp { color: var(--color-sky-800); }

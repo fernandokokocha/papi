@@ -35,5 +35,8 @@ Rails.application.routes.draw do
   get "design-preview" => "design_preview#show"
   resource :schema_edit, only: [ :create ]
 
-  root "projects#index"
+  resources :posts, only: %i[ index show ], path: "blog", param: :slug
+  get "about" => "pages#about"
+
+  root "pages#landing"
 end

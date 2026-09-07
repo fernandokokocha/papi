@@ -16,7 +16,7 @@ describe "Comments requests", type: :request do
         post project_candidate_comments_path(project.name, candidate.name),
              params: { comment: { body: "Sneaky" } }
       }.not_to change(Comment, :count)
-      expect(response).to redirect_to("/")
+      expect(response).to redirect_to("/projects")
       expect(flash[:alert]).to eq("You are not authorized to perform this action.")
     end
 

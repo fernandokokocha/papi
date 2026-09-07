@@ -45,7 +45,7 @@ describe "History requests", type: :request do
       sign_in(another_user)
       get project_entity_history_path(project_name: project.name, entity_id: entity.id)
 
-      expect(response).to redirect_to(root_path)
+      expect(response).to redirect_to(projects_path)
     end
   end
 

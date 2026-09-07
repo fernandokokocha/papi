@@ -1,0 +1,17 @@
+<% content_for :title, "Blog, Papi" %>
+
+<div class="mx-auto max-w-3xl px-6 py-16">
+  <h1 class="display text-[34px] tracking-tight">Blog</h1>
+
+  <div class="mt-10 divide-y divide-slate-200 border-y border-slate-400">
+    <% @posts.each do |post| %>
+      <article class="py-6">
+        <div class="font-mono text-[12px] tabular-nums text-slate-600"><%= post.date.strftime("%-d %B %Y") %></div>
+        <h2 class="display mt-1 text-[21px] tracking-tight">
+          <%= link_to post.title, post_path(post.slug), class: "text-slate-900 no-underline hover:text-sky-800 hover:underline" %>
+        </h2>
+        <p class="mt-2 text-[15px] leading-relaxed text-slate-600"><%= post.summary %></p>
+      </article>
+    <% end %>
+  </div>
+</div>

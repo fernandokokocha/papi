@@ -73,7 +73,7 @@ describe "Candidates requests", type: :request do
       post project_candidates_path(project.name), params: valid_params
       expect(Version.count).to eq(0)
       expect(response.status).to eq(302)
-      expect(response).to redirect_to('/')
+      expect(response).to redirect_to('/projects')
       expect(flash[:alert]).to eq('You are not authorized to perform this action.')
     end
 
@@ -106,7 +106,7 @@ describe "Candidates requests", type: :request do
       sign_in(another_user)
       get project_candidate_path(project.name, candidate.name)
       expect(response.status).to eq(302)
-      expect(response).to redirect_to('/')
+      expect(response).to redirect_to('/projects')
       expect(flash[:alert]).to eq('You are not authorized to perform this action.')
     end
 
@@ -159,7 +159,7 @@ describe "Candidates requests", type: :request do
       sign_in(another_user)
       get new_project_candidate_path(project.name)
       expect(response.status).to eq(302)
-      expect(response).to redirect_to('/')
+      expect(response).to redirect_to('/projects')
       expect(flash[:alert]).to eq('You are not authorized to perform this action.')
     end
   end
@@ -197,7 +197,7 @@ describe "Candidates requests", type: :request do
       sign_in(user)
       patch project_candidate_path(project_name: project.name, name: candidate_name), params: valid_params
       expect(Version.last.endpoints.first.id).to eq(endpoint_id)
-      expect(response).to redirect_to('/')
+      expect(response).to redirect_to('/projects')
       expect(flash[:alert]).to eq('You are not authorized to perform this action.')
     end
 
@@ -210,7 +210,7 @@ describe "Candidates requests", type: :request do
       sign_in(another_user)
       patch project_candidate_path(project_name: project.name, name: candidate_name), params: valid_params
       expect(Version.last.endpoints.first.id).to eq(endpoint_id)
-      expect(response).to redirect_to('/')
+      expect(response).to redirect_to('/projects')
       expect(flash[:alert]).to eq('You are not authorized to perform this action.')
     end
 
@@ -224,7 +224,7 @@ describe "Candidates requests", type: :request do
       patch project_candidate_path(project_name: project.name, name: candidate.name), params: valid_params
 
       expect(Version.last.endpoints.first.id).to eq(endpoint_id)
-      expect(response).to redirect_to('/')
+      expect(response).to redirect_to('/projects')
       expect(flash[:alert]).to eq('You are not authorized to perform this action.')
     end
 
@@ -238,7 +238,7 @@ describe "Candidates requests", type: :request do
       patch project_candidate_path(project_name: project.name, name: candidate.name), params: valid_params
 
       expect(Version.last.endpoints.first.id).to eq(endpoint_id)
-      expect(response).to redirect_to('/')
+      expect(response).to redirect_to('/projects')
       expect(flash[:alert]).to eq('You are not authorized to perform this action.')
     end
   end
@@ -356,7 +356,7 @@ describe "Candidates requests", type: :request do
       sign_in(user)
       get edit_project_candidate_path(project.name, candidate.name)
 
-      expect(response).to redirect_to('/')
+      expect(response).to redirect_to('/projects')
       expect(flash[:alert]).to eq('You are not authorized to perform this action.')
     end
 
@@ -366,7 +366,7 @@ describe "Candidates requests", type: :request do
       sign_in(another_user)
       get edit_project_candidate_path(project.name, candidate.name)
 
-      expect(response).to redirect_to('/')
+      expect(response).to redirect_to('/projects')
       expect(flash[:alert]).to eq('You are not authorized to perform this action.')
     end
 
@@ -377,7 +377,7 @@ describe "Candidates requests", type: :request do
       sign_in(admin)
       get edit_project_candidate_path(project.name, merged.name)
 
-      expect(response).to redirect_to('/')
+      expect(response).to redirect_to('/projects')
       expect(flash[:alert]).to eq('You are not authorized to perform this action.')
     end
 
@@ -388,7 +388,7 @@ describe "Candidates requests", type: :request do
       sign_in(admin)
       get edit_project_candidate_path(project.name, rejected.name)
 
-      expect(response).to redirect_to('/')
+      expect(response).to redirect_to('/projects')
       expect(flash[:alert]).to eq('You are not authorized to perform this action.')
     end
   end

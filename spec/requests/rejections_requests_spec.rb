@@ -53,7 +53,7 @@ describe "Rejections requests", type: :request do
         expect(project.versions.count).to eq(0)
         expect(@candidate.reload).to be_rejected
         expect(response.status).to eq(302)
-        expect(response).to redirect_to(root_path)
+        expect(response).to redirect_to(projects_path)
       end
 
       it "does not accept if regular user from the group" do

@@ -1,45 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title><%= content_for(:title) || "Papi" %></title>
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
-
-    <%= yield :head %>
-
-    <link rel="icon" href="/icon.png" type="image/png">
-    <link rel="icon" href="/icon.svg" type="image/svg+xml">
-    <link rel="apple-touch-icon" href="/icon.png">
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
-
-    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
-    <%= javascript_importmap_tags %>
+    <%= render "layouts/head" %>
   </head>
 
   <body class="min-h-screen bg-slate-100 text-slate-900">
-    <header id="top" class="bg-slate-900">
-      <div class="flex h-11 items-center gap-3 px-6">
-        <%= link_to "Papi", root_path, class: "logotype text-[19px] tracking-tight text-white no-underline hover:text-slate-300" %>
-
-        <% if @project&.persisted? %>
-          <span class="h-5 w-px bg-slate-600"></span>
-          <%= link_to @project.name, project_path(@project.name),
-                class: "text-[12px] font-bold uppercase tracking-[0.14em] text-slate-300 no-underline hover:text-white" %>
-        <% end %>
-
-        <% if Current.user %>
-          <div class="ml-auto flex items-center gap-3">
-            <span class="text-[12px] text-slate-300"><%= Current.user.email_address %></span>
-            <%= button_to "Log out", session_path, method: :delete,
-                  class: "cursor-pointer rounded-md bg-white px-2.5 py-1 text-[12px] font-semibold text-slate-900 hover:bg-slate-200" %>
-          </div>
-        <% end %>
-      </div>
-    </header>
+    <%= render "shared/header" %>
 
     <main class="<%= content_for(:main_class) || "max-w-7xl mx-auto px-6 py-6" %>">
       <%= yield %>

@@ -26,7 +26,7 @@ describe "Version requests", type: :request do
       sign_in(another_user)
       get project_version_path(project.name, version.name)
       expect(response.status).to eq(302)
-      expect(response).to redirect_to('/')
+      expect(response).to redirect_to('/projects')
       expect(flash[:alert]).to eq('You are not authorized to perform this action.')
     end
 

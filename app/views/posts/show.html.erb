@@ -1,0 +1,10 @@
+<% content_for :title, "#{@post.title}, Papi" %>
+
+<article class="mx-auto max-w-3xl px-6 py-16">
+  <div class="font-mono text-[12px] tabular-nums text-slate-600"><%= @post.date.strftime("%-d %B %Y") %></div>
+  <h1 class="display mt-2 text-[34px] leading-tight tracking-tight"><%= @post.title %></h1>
+
+  <div class="prose mt-8"><%= raw @post.body_html %></div>
+
+  <%= link_to "← All posts", posts_path, class: "mt-12 inline-block text-[13px] text-slate-600 no-underline hover:text-slate-900 hover:underline" %>
+</article>

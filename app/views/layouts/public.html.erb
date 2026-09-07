@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%= render "layouts/head" %>
+    <link rel="alternate" type="application/rss+xml" title="Papi" href="<%= posts_path(format: :rss) %>">
+  </head>
+
+  <body class="min-h-screen bg-white text-slate-900">
+    <%= render "shared/header" %>
+
+    <main><%= yield %></main>
+  </body>
+</html>
