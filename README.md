@@ -12,35 +12,21 @@ Use `bin/dev` — **not** `bin/rails server`. `bin/dev` runs Rails and the Tailw
 bin/dev
 ```
 
-## Reset DB
-
-For convenience, early in the development, migrations can be updated in place. After it's done, all the database should be wiped and recreated via migrations like this:
+## Reset the dev database
 
 ```
-rake db:migrate:reset
+bin/rails dev:setup
 ```
+
+Wipes and recreates the database through the migrations, loads the fixtures, and
+imports the Petstore document. It prints the logins when it finishes. Early in the
+development, migrations are edited in place rather than added to, so this is how a
+changed migration is picked up.
 
 Occasionally, this requires setting up the test database:
 
 ```
 bin/rails db:test:prepare
-```
-
-In order to have some data after the wipe, fixtures are present and used in the development.
-
-## Load fixtures
-
-Because of circular dependency (`Version` belongs to `Candidate` but `Candidate` can belong to `Version` via `:base_version`) one needs to patch the fixtures every time they are loaded
-
-```
-bin/rails db:fixtures:load
-bin/rails dev:fill_fixtures_dependencies
-```
-
-To quickly reset and populate dev database, use custom rake task (`lib/tasks/dev_setup.rake`):
-
-```
-bin/rails dev:setup
 ```
 
 ## Mail in development
