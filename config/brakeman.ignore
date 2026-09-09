@@ -1,0 +1,177 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Cross-Site Scripting",
+      "warning_code": 2,
+      "fingerprint": "3e6ebec6a0fadf0cde7df4c6469153a18cc066667d20c2b1987ded8d0477c3e9",
+      "check_name": "CrossSiteScripting",
+      "message": "Unescaped model attribute",
+      "file": "app/views/posts/show.html.erb",
+      "line": 7,
+      "link": "https://brakemanscanner.org/docs/warning_types/cross_site_scripting",
+      "code": "Blog::Post.find(params[:slug]).body_html",
+      "render_path": [
+        {
+          "type": "controller",
+          "class": "PostsController",
+          "method": "show",
+          "line": 12,
+          "file": "app/controllers/posts_controller.rb",
+          "rendered": {
+            "name": "posts/show",
+            "file": "app/views/posts/show.html.erb"
+          }
+        }
+      ],
+      "location": {
+        "type": "template",
+        "template": "posts/show"
+      },
+      "user_input": null,
+      "confidence": "High",
+      "cwe_id": [
+        79
+      ],
+      "note": "body_html is rendered from markdown files committed to this repo, not from user input"
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "3f62c451373d22c2464e2d0968def0c953d9e761d85bad66314f43cf8c7e8346",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/controllers/schema_edits_controller.rb",
+      "line": 48,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "SchemaForm::Endpoints.from(params[:endpoints])",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "SchemaEditsController",
+        "method": "endpoints"
+      },
+      "user_input": "params[:endpoints]",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "SchemaForm::Endpoints.from is our own constructor, not the ActiveRecord from scope"
+    },
+    {
+      "warning_type": "Mass Assignment",
+      "warning_code": 70,
+      "fingerprint": "62eaf1f905a300344f5233fed2f4aa1cfb0f9c2472dfd7783b7458a2d0ada106",
+      "check_name": "MassAssignment",
+      "message": "Specify exact keys allowed for mass assignment instead of using `permit!` which allows any keys",
+      "file": "app/controllers/projects_controller.rb",
+      "line": 29,
+      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+      "code": "params.permit!",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "ProjectsController",
+        "method": "create"
+      },
+      "user_input": null,
+      "confidence": "High",
+      "cwe_id": [
+        915
+      ],
+      "note": "projects#create builds a Project, whose only writable column is name"
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "9d3094dccd4ecfa878117b7588ed395d30cdeb6a35bd7c08695f291d28d08b8d",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/controllers/schema_edits_controller.rb",
+      "line": 44,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "SchemaForm::AuthMethods.from(params[:auth_methods])",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "SchemaEditsController",
+        "method": "auth_methods"
+      },
+      "user_input": "params[:auth_methods]",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "SchemaForm::AuthMethods.from is our own constructor, not the ActiveRecord from scope"
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
+      "fingerprint": "9ebb1d20b7f3902337f32e9d17ceaf3cea0ac296a781d32ee76bb5e97d2cf175",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/controllers/schema_edits_controller.rb",
+      "line": 32,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "SchemaForm::Blocks.from(params[:blocks])",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "SchemaEditsController",
+        "method": "blocks"
+      },
+      "user_input": "params[:blocks]",
+      "confidence": "Medium",
+      "cwe_id": [
+        89
+      ],
+      "note": "SchemaForm::Blocks.from is our own constructor, not the ActiveRecord from scope"
+    },
+    {
+      "warning_type": "Mass Assignment",
+      "warning_code": 70,
+      "fingerprint": "aec620956ffdb7ea8ffef9df14d7e0588315bec46508322acd67711901340682",
+      "check_name": "MassAssignment",
+      "message": "Specify exact keys allowed for mass assignment instead of using `permit!` which allows any keys",
+      "file": "app/controllers/candidates_controller.rb",
+      "line": 53,
+      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+      "code": "params.permit!",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CandidatesController",
+        "method": "update"
+      },
+      "user_input": null,
+      "confidence": "Medium",
+      "cwe_id": [
+        915
+      ],
+      "note": "Candidate::Update never writes the candidate"
+    },
+    {
+      "warning_type": "Mass Assignment",
+      "warning_code": 70,
+      "fingerprint": "ba924d33607e619f309baab63342348a42801dd8050bf41ed25dcf09dd24cb8f",
+      "check_name": "MassAssignment",
+      "message": "Specify exact keys allowed for mass assignment instead of using `permit!` which allows any keys",
+      "file": "app/controllers/candidates_controller.rb",
+      "line": 31,
+      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+      "code": "params.permit!",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "CandidatesController",
+        "method": "create"
+      },
+      "user_input": null,
+      "confidence": "High",
+      "cwe_id": [
+        915
+      ],
+      "note": "Candidate::Create overwrites every attribute that decides authorship or state"
+    }
+  ],
+  "brakeman_version": "8.0.6"
+}

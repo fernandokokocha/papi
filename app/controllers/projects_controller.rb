@@ -6,6 +6,7 @@ class ProjectsController < ApplicationController
 
   def show
     @project = Project.find_by!(name: params[:name])
+    authorize @project
     @tab = params[:tab] == "candidates" ? :candidates : :releases
     @versions = @project.versions.order(order: :desc)
     @candidates = @project.history

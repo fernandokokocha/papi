@@ -3,6 +3,7 @@ class TimelinesController < ApplicationController
 
   def show
     @project = Project.find_by!(name: params[:project_name])
+    authorize @project
     @kind = params[:kind]
     @candidate_name = params[:candidate]
 

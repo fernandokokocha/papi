@@ -101,4 +101,16 @@ it "renders an empty stream for a project with no activity" do
     expect(response.status).to eq(200)
     expect(response.body).not_to include("divide-y divide-slate-200")
   end
+
+it "bounces a user from another group" do
+  merged_candidate("rc1")
+  stranger = FactoryBot.create(:user, email_address: "stranger@example.com", password: "password",
+                                      group: FactoryBot.create(:group, name: "Other group"))
+  sign_in(stranger)
+
+  get project_timeline_path(project.name)
+
+  expect(response).to redirect_to(projects_path)
+  expect(flash[:alert]).to eq("You are not authorized to perform this action.")
+end
 end

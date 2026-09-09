@@ -35,6 +35,7 @@ class Candidate::Create
     params[:candidate][:author_id] = @author.id
     params[:candidate][:decided_by_id] = nil
     params[:candidate][:decided_at] = nil
+    params[:candidate][:aasm_state] = "open"
   end
 
   # A candidate may take the last endpoint away, and a form holding none submits

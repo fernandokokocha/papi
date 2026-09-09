@@ -134,6 +134,20 @@ describe "Projects requests", type: :request do
     end
   end
 
+  describe "#show isolation" do
+    it "bounces a user from another group" do
+      project = FactoryBot.create(:project, name: "proj", group: group)
+      candidate = FactoryBot.create(:candidate, project: project, name: "rc1", author: user)
+      FactoryBot.create(:version, project: project, candidate: candidate, name: "rc1-v1", order: 1)
+      sign_in(another_user)
+
+      get project_path(project.name)
+
+      expect(response).to redirect_to(projects_path)
+      expect(flash[:alert]).to eq("You are not authorized to perform this action.")
+    end
+  end
+
   describe "#create" do
     it "creates a project with valid params" do
       sign_in(user)

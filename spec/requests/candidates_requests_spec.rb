@@ -68,6 +68,14 @@ describe "Candidates requests", type: :request do
       expect(response_record.output).to eq("User")
     end
 
+    it "opens a candidate posted as merged" do
+      sign_in(user)
+
+      post project_candidates_path(project.name), params: valid_params.deep_merge(candidate: { aasm_state: "merged" })
+
+      expect(Candidate.last).to be_open
+    end
+
     it "does not create a version if user outside group" do
       sign_in(another_user)
       post project_candidates_path(project.name), params: valid_params
