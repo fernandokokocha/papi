@@ -118,10 +118,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_08_14_000001) do
   create_table "projects", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.integer "group_id", null: false
+    t.string "mock_token", null: false
     t.string "name", null: false
     t.datetime "updated_at", null: false
     t.index ["group_id", "name"], name: "index_projects_on_group_id_and_name", unique: true
     t.index ["group_id"], name: "index_projects_on_group_id"
+    t.index ["mock_token"], name: "index_projects_on_mock_token", unique: true
   end
 
   create_table "responses", force: :cascade do |t|

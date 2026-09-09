@@ -171,7 +171,7 @@
                     <span class="text-[10px] font-bold uppercase leading-none tracking-[0.08em] <%= tag_tint %>"><%= gone ? "removed" : "added" %></span>
                   <% end %>
                   <% if column == curl_at %>
-                    <%= render "endpoints/copy_curl", verb: current.verb, path: current.path, query: current.example_query_string, code: response.code %>
+                    <%= render "endpoints/copy_curl", endpoint: current, code: response.code %>
                   <% end %>
                   <% if expandable && column == chip_at %>
                     <%= render "endpoints/ref_toggle", expanded: expanded.include?(response.code), url: toggle_url.(toggled.(response.code)) %>

@@ -1,13 +1,17 @@
 ledgerly:
   name: Ledgerly
   group: drugowcy
+  mock_token: 7Wq3ZmKfR8tLbYn2VdJhPcXs
 statuspage:
   name: Statuspage
   group: drugowcy
+  mock_token: Q4vNjTgB6xHwZr9KmSdLpF2c
 petstore:
   name: Petstore
   group: drugowcy
+  mock_token: Mb8YcRkX3nJwPqT5vGhZdL7s
 
 youdontseeme:
   name: youdontseeme
   group: tajna
+  mock_token: Hn2PkVzR9bXcMdT4qWyJfL6g

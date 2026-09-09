@@ -84,6 +84,11 @@ class Endpoint < ApplicationRecord
     version.auth_methods.find_by(name: auth)
   end
 
+  # A candidate's draft version belongs to no project; its candidate does.
+  def project
+    version.candidate.project
+  end
+
   def param_names
     path.scan(PARAM_TOKEN).flatten
   end

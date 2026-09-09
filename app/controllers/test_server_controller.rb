@@ -5,9 +5,20 @@ class TestServerController < ApplicationController
   class InvalidResponseCode < StandardError; end
   class MissingRequiredParam < StandardError; end
 
+  BAD_MOCK_TOKEN = "PAPI MOCK SERVER: the mock_token in this URL is missing or wrong, " \
+    "so Papi refused the request before it looked at the endpoint you are mocking " \
+    "or at the Authorization that endpoint declares. " \
+    "Copy the command again from the cURL button next to any response in this project, " \
+    "which carries the right token.".freeze
+
+  before_action :require_mock_token
+
+  rescue_from InvalidResponseCode, MissingRequiredParam do |error|
+    render json: { error: error.message }, status: :bad_request
+  end
+
   def version
-    project = Project.find_by!(name: request.params[:project_name])
-    version = Version.find_by!(project: project, name: request.params[:version_name])
+    version = Version.find_by!(project: @project, name: request.params[:version_name])
     endpoint = Endpoint.from_version_request(request, version)
     return if refuse_unauthorized(endpoint)
 
@@ -15,13 +26,23 @@ class TestServerController < ApplicationController
   end
 
   def candidate
-    project = Project.find_by!(name: request.params[:project_name])
-    candidate = Candidate.find_by!(name: request.params[:candidate_name], project: project)
+    candidate = Candidate.find_by!(name: request.params[:candidate_name], project: @project)
     version = candidate.proposed_version
     endpoint = Endpoint.from_candidate_request(request, version)
     return if refuse_unauthorized(endpoint)
 
     render json: output(endpoint, request).to_example_json
+  end
+
+  # Papi's own credential, and it opens this project's mock server and nothing
+  # else. The Authorization header below is the documented API's own declared
+  # auth, which the mock only checks the shape of; a curl carries both.
+  def require_mock_token
+    @project = Project.find_by!(name: request.params[:project_name])
+    given = request.params[:mock_token].to_s
+    return if ActiveSupport::SecurityUtils.secure_compare(given, @project.mock_token)
+
+    render json: { error: BAD_MOCK_TOKEN }, status: :unauthorized
   end
 
   # A 401 is declared behaviour, not a malformed request, so it is answered

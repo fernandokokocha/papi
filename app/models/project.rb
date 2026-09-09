@@ -1,4 +1,6 @@
 class Project < ApplicationRecord
+  has_secure_token :mock_token
+
   has_many :versions, dependent: :destroy
   has_many :candidates, dependent: :destroy
   belongs_to :group

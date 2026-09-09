@@ -1,10 +1,12 @@
 <button type="button"
         title="Copy cURL"
         data-controller="clipboard"
-        data-clipboard-verb-value="<%= verb %>"
-        data-clipboard-path-value="<%= path %>"
-        data-clipboard-query-value="<%= query %>"
+        data-clipboard-verb-value="<%= endpoint.verb %>"
+        data-clipboard-path-value="<%= endpoint.path %>"
+        data-clipboard-query-value="<%= endpoint.example_query_string %>"
         data-clipboard-response-value="<%= code %>"
+        data-clipboard-mock-token-value="<%= endpoint.project.mock_token %>"
+        data-clipboard-authorization-value="<%= endpoint.auth_method&.example_authorization %>"
         data-action="clipboard#copy"
         class="group/copy flex h-5 w-5 shrink-0 cursor-pointer items-center justify-center rounded opacity-60 hover:bg-black/10 hover:opacity-100 data-copied:opacity-100">
   <svg class="h-3.5 w-3.5 group-data-copied/copy:hidden" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">

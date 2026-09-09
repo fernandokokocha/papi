@@ -117,6 +117,28 @@ describe "Version requests", type: :request do
       expect(response.body).to include(%(data-clipboard-query-value="page=number&amp;q=string"))
     end
 
+    it "gives the cURL button the mock token, and the Authorization the endpoint declares" do
+      FactoryBot.create(:auth_method, version: version, name: "UserToken", kind: "bearer")
+      endpoint = FactoryBot.create(:endpoint, version: version, path: "/me", http_verb: "verb_get", auth: "UserToken")
+      FactoryBot.create(:response, endpoint: endpoint, code: "200", output: "string")
+
+      sign_in(user)
+      get project_version_path(project.name, version.name)
+
+      expect(response.body).to include(%(data-clipboard-mock-token-value="#{project.mock_token}"))
+      expect(response.body).to include(%(data-clipboard-authorization-value="Bearer your-token-here"))
+    end
+
+    it "leaves the Authorization empty for an endpoint that declares no auth" do
+      endpoint = FactoryBot.create(:endpoint, version: version, path: "/tasks", http_verb: "verb_get")
+      FactoryBot.create(:response, endpoint: endpoint, code: "200", output: "string")
+
+      sign_in(user)
+      get project_version_path(project.name, version.name)
+
+      expect(response.body).to include(%(data-clipboard-authorization-value=""))
+    end
+
     it "omits the params section for an endpoint whose path takes none" do
       endpoint = FactoryBot.create(:endpoint, version: version, path: "/tasks", http_verb: "verb_get")
       FactoryBot.create(:response, endpoint: endpoint, code: "200", output: "string")

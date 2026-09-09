@@ -30,6 +30,15 @@ class AuthMethod < ApplicationRecord
     SCHEME_BY_KIND.fetch(kind)
   end
 
+  EXAMPLE_CREDENTIAL_BY_KIND = {
+    "bearer" => "your-token-here",
+    "basic" => Base64.strict_encode64("user:password")
+  }.freeze
+
+  def example_authorization
+    "#{challenge} #{EXAMPLE_CREDENTIAL_BY_KIND.fetch(kind)}"
+  end
+
   # The mock has no credentials to check against, so it checks the shape of the
   # header and takes any value: enough to prove a client wired its auth up.
   def satisfied_by?(authorization_header)
