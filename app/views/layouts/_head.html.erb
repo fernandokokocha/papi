@@ -1,7 +1,21 @@
-<title><%= content_for(:title) || "Papi" %></title>
+<% page_title = content_for(:title) || "Papi" %>
+<% page_description = content_for(:description) ||
+     "Papi describes an HTTP API the way OpenAPI does, with a tenth of the surface. " \
+     "It adds a review workflow, a diff that reads schemas rather than text, comments " \
+     "that survive the next version, and a mock server that answers real requests." %>
+
+<title><%= page_title %></title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="<%= page_description %>">
 <%= csrf_meta_tags %>
 <%= csp_meta_tag %>
+
+<meta property="og:site_name" content="Papi">
+<meta property="og:type" content="website">
+<meta property="og:title" content="<%= page_title %>">
+<meta property="og:description" content="<%= page_description %>">
+<meta property="og:url" content="<%= request.original_url %>">
+<meta name="twitter:card" content="summary">
 
 <%= yield :head %>
 

@@ -36,7 +36,7 @@ Rails.application.routes.draw do
   resource :schema_edit, only: [ :create ]
 
   resources :posts, only: %i[ index show ], path: "blog", param: :slug
-  get "about" => "pages#about"
+  get "demo-access" => "pages#demo_access", as: :demo_access
 
   root "pages#landing"
 end
